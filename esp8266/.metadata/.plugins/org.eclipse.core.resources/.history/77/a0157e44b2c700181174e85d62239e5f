@@ -1,0 +1,98 @@
+/**
+ * This is a smart light decor.  Randomly shows light sequences.
+ * But if it receives E1.31 data, it will synchronize to that if it receives a universe it recognizes.
+ */
+#include "Arduino.h"
+#include <ESPAsyncE131.h>
+#include <FastLED.h>
+#include "Symphony.h"
+
+//#define DEBUG_PIXELS
+#define MY_VERSION 1.22
+#define LED_STRINGS    2	//this corresponds to the number of strings in vixen
+#define NUM_PIXELS    30	//this corresponds to the number of pixels in vixen
+#define LED_PIN1     14
+#define LED_PIN2     12
+#define LED_TYPE    WS2812B
+#define BRIGHTNESS  64
+#define COLOR_ORDER GRB
+#define CHANNEL_START 1 /* Channel to start listening at */
+#define UNIVERSE_START 1
+#define UNIVERSE_COUNT 7
+#define UPDATES_PER_SECOND 100
+
+uint16_t myUniverse = 1;
+CRGB leds[LED_STRINGS][NUM_PIXELS];
+uint16_t countE131 = 0;  //this will be the count to be used to countdown if we are not receiving any E131 packets, then we shift to normal socket mode
+ESPAsyncE131 e131;
+
+Symphony s = Symphony();
+bool isNormal = true;
+
+
+void handleInit(AsyncWebServerRequest *request) {
+	request->send(200, "text/html", "Init of SymphonyLight E1.31 is called.");
+	Serial.println("handleInit");
+}
+
+//The setup function is called once at startup of the sketch
+void setup()
+{
+	Serial.begin(115200);
+	delay(10);
+	Serial.println("\n\n************START SymphonyLight Setup***************");
+	s.setup();
+	s.on("/init", HTTP_GET, handleInit);
+	FastLED.setBrightness(  BRIGHTNESS );
+	if (e131.begin(E131_MULTICAST, myUniverse, UNIVERSE_COUNT))   // Listen via Multicast
+		Serial.println(F("Listening for data..."));
+	else
+		Serial.println(F("*** e131.begin failed ***"));
+	FastLED.addLeds<LED_TYPE, LED_PIN1, COLOR_ORDER>(leds[0], NUM_PIXELS).setCorrection( TypicalLEDStrip );
+	FastLED.addLeds<LED_TYPE, LED_PIN2, COLOR_ORDER>(leds[1], NUM_PIXELS).setCorrection( TypicalLEDStrip );
+	Serial.printf("************PIXELS=%d STRINGS=%d***************", NUM_PIXELS, LED_STRINGS);
+	Serial.printf("\n************END SymphonyLight Setup Version%.3f***************", MY_VERSION);
+}
+
+// The loop function is called in an endless loop
+void loop()
+{
+	if (s.loop()) {
+		if (!e131.isEmpty()) {
+			countE131 = 100;	//we set to 100 so that when we countdown, it would take 5 secs
+			isNormal = false;
+			e131_packet_t packet;
+			e131.pull(&packet);     // Pull packet from ring buffer
+	#ifdef DEBUG_PIXELS
+			Serial.printf("Listening to Universe%u: thisUniverse %u / %u Channels | Packet#: %u / Errors: %u / CH1: %u,%u,%u\n",
+			myUniverse,
+			htons(packet.universe),                 // The Universe for this packet
+			htons(packet.property_value_count) - 1, // Start code is ignored, we're interested in dimmer data
+			e131.stats.num_packets,                 // Packet counter
+			e131.stats.packet_errors,               // Packet error counter
+			packet.property_values[1],  packet.property_values[2], packet.property_values[3]); // Dimmer data for Channel 1
+	#endif
+			if (myUniverse == htons(packet.universe)) {  //we will only handle packets if universe is myUniverse
+				for (int i = 0; i < NUM_PIXELS; i++) {
+					for (int k=0; k< LED_STRINGS;k++) {
+						int l = k * NUM_PIXELS + i;
+						int j = l * 3 + (CHANNEL_START - 1);
+						leds[k][i].setRGB(packet.property_values[j+1], packet.property_values[j+3], packet.property_values[j+2]);
+					}
+				}
+				FastLED.show();
+			}
+		} else {
+			countE131 = countE131 -1;
+			if (countE131 <= 0)
+				countE131 = 0;
+			delay(50);
+		}
+		if (countE131 <= 0 && !isNormal) {
+			//the normal socket state
+			isNormal = true;
+			delay(5);
+			Serial.printf("normal symphony light state ****************** %u", countE131);
+		}
+	}
+}

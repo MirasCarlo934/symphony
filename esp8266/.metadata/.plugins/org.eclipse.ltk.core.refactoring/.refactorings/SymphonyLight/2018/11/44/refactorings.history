@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;SymphonyLight/html/light.html&apos; to &apos;patterns.html&apos;" description="Rename resource &apos;light.html&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="html/light.html" name="patterns.html" stamp="1541068396064" updateReferences="true"/>
+</session>

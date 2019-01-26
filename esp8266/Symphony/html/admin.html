@@ -1,0 +1,78 @@
+<html>
+<head>
+<title>Home Symphony</title>
+<link rel="stylesheet" type="text/css" href="symphony.css">
+</head>
+<script type="text/javascript" src="symphony.js"></script>
+<body onload="initialize()">
+<div class="header" id="theName">thename</div>
+<h2>Device Setup</h2>
+<div class="header" id="msg"></div>
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'device');getDeviceInfo();" id="defaultOpen">Device</button>
+  <button class="tablinks" onclick="openTab(event, 'mqtt')">MQTT</button>
+  <button class="tablinks" onclick="openTab(event, 'upload')">Files</button>
+  <!--button class="tablinks" onclick="window.location.pathname = '/files';">Files</button-->
+  <button class="tablinks" onclick="openTab(event, 'firmware')">Firmware</button>
+  <button class="tablinks" onclick="openTab(event, 'test')">test</button>
+</div>
+<div class="footer" id="status"></div>
+<div class="blurred"></div>
+
+<div id="mqtt" class="tabcontent">
+<h3>Configure Mqtt Settings</h3>
+<form action='/handleMqttConfig' method='get' id='form'>
+<center><fieldset style="width:300px"><legend><b>Mqtt Details</b></legend>
+<label>IP:</label><input type='text' name='ip'><br>
+<label>Port:</label><input type='text' name='port' value="1883"><br>
+<input type='submit' value='Submit'>
+</fieldset></center>
+</form>
+</div>
+<div id="firmware" class="tabcontent">
+<h3>Firmware Management</h3>
+<center><fieldset style="width:300px"><legend><b>Firmware Update</b></legend>
+<div id="main" data-role="header" align="center">
+    <div id="note">Device will reboot after file is uploaded.</div>    
+    <form id='fileUpload' method='POST' enctype='multipart/form-data'>
+	<br><input type="file" id="bin" name="fileFW" accept=".bin">
+	<br><br><input type='button' id='btn' value='Update' onclick='updateFirmware()'>
+    </table>
+	</form>
+    <!--div id="debug">debug</div-->
+</div>
+</fieldset></center>
+</div>
+<div id="device" class="tabcontent">
+<h3>Manage Device</h3>
+<form action='/config' method='get' id='form'>
+<center><fieldset style="width:300px"><legend><b>Settings</b></legend>
+<label>Name:</label><input type='text' id='pName' maxlength="8"><br>
+<label>Wifi SSID:</label><input type='text' id='pSSID'><br>
+<label>Passkey:</label><input type='text' id='pPass'><br>
+<input type='button' id='btnCommit' value='Commit' onclick='commitConfig()'>
+</fieldset></center>
+</form>
+</div>
+
+<div id="upload" class="tabcontent">
+<h3>File Management</h3>
+<center><fieldset style="width:300px"><legend>Upload File</legend>
+<iframe src="/files" height="350px">
+  <a href="/files">Upload</a>
+</iframe>
+</fieldset></center>
+</div>
+
+<div id="test" class="tabcontent">
+<fieldset style="width:300px">
+<legend>g1</legend>
+<label class="bar barchkbox">
+<div class="lbl">GREEN</div>
+<input onclick="sendOnOffWs(this)" lbl="RED" id="$NAME$:0007" name="g1" type="checkbox">
+<div class="btn btntxt">
+</div></label><br>
+</fieldset>
+</div>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<head>
+  <title>Home Symphony</title>
+<link rel="stylesheet" type="text/css" href="symphony.css">
+<script type="text/javascript" src="symphony.js"></script>
+<script type="text/javascript" src="light.js"></script>
+</head>
+<body onload="loadPatterns()" style="background-color:darkgreen;">
+<center>
+<h3>Symphony Light</h3>
+<fieldset style="width:30em;text-align:center;"><legend><label  id="legend">SymphonyLight</label></legend>
+<div id="main" data-role="header" align="left">
+</div>
+<input type="button" onclick="sendData()" value="Submit">
+</fieldset>
+<div id='msg' class='init'>Connecting...</div>
+</center>
+<div align="center">
+<label id="lbl1">For Debug Only:</label><input type="text" id="txt1"><br>
+From Websocket:<textarea rows="5" cols="25" id="txt2"></textarea><br>
+<input type="button" onclick="testShow()" value="show">
+</div>
+</body>
+</html>

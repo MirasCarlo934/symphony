@@ -1,0 +1,14 @@
+21:31:08 **** Incremental Build of configuration Release for project SymphonyMotionSensor ****
+"C:\\sloeber\\arduinoPlugin\\tools\\make\\make" all 
+'Building file: ..\sloeber.ino.cpp'
+'Starting C++ compile'
+"C:\sloeber\arduinoPlugin\packages\esp8266\tools\xtensa-lx106-elf-gcc\1.20.0-26-gb404fb9-2/bin/xtensa-lx106-elf-g++" -D__ets__ -DICACHE_FLASH -U__STRICT_ANSI__ "-IC:\sloeber\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/tools/sdk/include" "-IC:\sloeber\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/tools/sdk/lwip2/include" "-IC:\sloeber\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/tools/sdk/libc/xtensa-lx106-elf/include" "-ID:/workspace/SymphonyMotionSensor/Release/core" -c -Wall -Wextra  -Os -g -mlongcalls -mtext-section-literals -fno-exceptions -fno-rtti -falign-functions=4 -std=c++11 -MMD -ffunction-sections -fdata-sections -DF_CPU=80000000L -DLWIP_OPEN_SRC -DTCP_MSS=536 -DDEBUG_ESP_PORT=Serial  -DARDUINO=10802 -DARDUINO_ESP8266_GENERIC -DARDUINO_ARCH_ESP8266 -DARDUINO_BOARD="\"ESP8266_GENERIC\"" -DLED_BUILTIN=2  -DESP8266   -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\cores\esp8266" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\variants\generic" -I"D:\projects\arduinolibraries\SymphonyCore" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\DNSServer\src" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\ESP8266HTTPClient\src" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\ESP8266httpUpdate\src" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\ESP8266WebServer\src" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\ESP8266WiFi\src" -I"C:\sloeber\arduinoPlugin\libraries\PubSubClient\2.6.0\src" -I"C:\Users\User\Documents\Arduino\libraries\WebSockets\src" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\Hash\src" -I"C:\Users\User\Documents\Arduino\libraries\ArduinoJson\src" -I"D:\projects\arduinolibraries\Symphony" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\ESP8266mDNS" -I"C:\Users\User\Documents\Arduino\libraries\ESPAsyncTCP-master\src" -I"C:\Users\User\Documents\Arduino\libraries\ESPAsyncWebServer-master\src" -MMD -MP -MF"sloeber.ino.cpp.d" -MT"sloeber.ino.cpp.o" -D__IN_ECLIPSE__=1 -x c++ "..\sloeber.ino.cpp"  -o  "sloeber.ino.cpp.o"
+..\sloeber.ino.cpp:9:26: fatal error: SymphonyCore.h: No such file or directory
+ #include "SymphonyCore.h"
+                          ^
+compilation terminated.
+subdir.mk:18: recipe for target 'sloeber.ino.cpp.o' failed
+make: *** [sloeber.ino.cpp.o] Error 1
+
+21:31:10 Build Failed. 3 errors, 0 warnings. (took 2s.734ms)
+

@@ -1,0 +1,77 @@
+20:57:21 **** Incremental Build of configuration Release for project TestUDP ****
+"C:\\sloeber\\arduinoPlugin\\tools\\make\\make" all 
+'Building file: ..\sloeber.ino.cpp'
+'Starting C++ compile'
+"C:\sloeber\arduinoPlugin\packages\esp8266\tools\xtensa-lx106-elf-gcc\1.20.0-26-gb404fb9-2/bin/xtensa-lx106-elf-g++" -D__ets__ -DICACHE_FLASH -U__STRICT_ANSI__ "-IC:\sloeber\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/tools/sdk/include" "-IC:\sloeber\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/tools/sdk/lwip2/include" "-IC:\sloeber\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/tools/sdk/libc/xtensa-lx106-elf/include" "-ID:/workspace/TestUDP/Release/core" -c -Wall -Wextra  -Os -g -mlongcalls -mtext-section-literals -fno-exceptions -fno-rtti -falign-functions=4 -std=c++11 -MMD -ffunction-sections -fdata-sections -DF_CPU=160000000L -DLWIP_OPEN_SRC -DTCP_MSS=536 -DDEBUG_ESP_PORT=Serial  -DARDUINO=10802 -DARDUINO_ESP8266_GENERIC -DARDUINO_ARCH_ESP8266 -DARDUINO_BOARD="\"ESP8266_GENERIC\"" -DLED_BUILTIN=2  -DESP8266   -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\cores\esp8266" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\variants\generic" -I"C:\Users\User\Documents\Arduino\libraries\ESP_Async_E1.31" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\ESP8266WiFi\src" -I"C:\Users\User\Documents\Arduino\libraries\ESPAsyncUDP-master\src" -I"D:\projects\arduinolibraries\Symphony" -I"C:\Users\User\Documents\Arduino\libraries\ArduinoJson\src" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\DNSServer\src" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\ESP8266mDNS" -I"C:\Users\User\Documents\Arduino\libraries\ESPAsyncTCP-master\src" -I"C:\Users\User\Documents\Arduino\libraries\ESPAsyncWebServer-master\src" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\Hash\src" -MMD -MP -MF"sloeber.ino.cpp.d" -MT"sloeber.ino.cpp.o" -D__IN_ECLIPSE__=1 -x c++ "..\sloeber.ino.cpp"  -o  "sloeber.ino.cpp.o"
+In file included from C:\Users\User\Documents\Arduino\libraries\ESPAsyncWebServer-master\src/ESPAsyncWebServer.h:454:0,
+                 from D:\projects\arduinolibraries\Symphony/Symphony.h:14,
+                 from ..\sloeber.ino.cpp:10:
+C:\Users\User\Documents\Arduino\libraries\ESPAsyncWebServer-master\src/AsyncWebSocket.h:82:10: warning: unused parameter 'i' [-Wunused-parameter]
+     void operator ++(int i) { _count++; }
+          ^
+C:\Users\User\Documents\Arduino\libraries\ESPAsyncWebServer-master\src/AsyncWebSocket.h:83:10: warning: unused parameter 'i' [-Wunused-parameter]
+     void operator --(int i) {  if (_count > 0) { _count--; } ;  }
+          ^
+'Finished building: ..\sloeber.ino.cpp'
+' '
+'Building file: D:\projects\arduinolibraries\Symphony\Symphony.cpp'
+'Starting C++ compile'
+"C:\sloeber\arduinoPlugin\packages\esp8266\tools\xtensa-lx106-elf-gcc\1.20.0-26-gb404fb9-2/bin/xtensa-lx106-elf-g++" -D__ets__ -DICACHE_FLASH -U__STRICT_ANSI__ "-IC:\sloeber\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/tools/sdk/include" "-IC:\sloeber\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/tools/sdk/lwip2/include" "-IC:\sloeber\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/tools/sdk/libc/xtensa-lx106-elf/include" "-ID:/workspace/TestUDP/Release/core" -c -Wall -Wextra  -Os -g -mlongcalls -mtext-section-literals -fno-exceptions -fno-rtti -falign-functions=4 -std=c++11 -MMD -ffunction-sections -fdata-sections -DF_CPU=160000000L -DLWIP_OPEN_SRC -DTCP_MSS=536 -DDEBUG_ESP_PORT=Serial  -DARDUINO=10802 -DARDUINO_ESP8266_GENERIC -DARDUINO_ARCH_ESP8266 -DARDUINO_BOARD="\"ESP8266_GENERIC\"" -DLED_BUILTIN=2  -DESP8266   -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\cores\esp8266" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\variants\generic" -I"C:\Users\User\Documents\Arduino\libraries\ESP_Async_E1.31" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\ESP8266WiFi\src" -I"C:\Users\User\Documents\Arduino\libraries\ESPAsyncUDP-master\src" -I"D:\projects\arduinolibraries\Symphony" -I"C:\Users\User\Documents\Arduino\libraries\ArduinoJson\src" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\DNSServer\src" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\ESP8266mDNS" -I"C:\Users\User\Documents\Arduino\libraries\ESPAsyncTCP-master\src" -I"C:\Users\User\Documents\Arduino\libraries\ESPAsyncWebServer-master\src" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\Hash\src" -MMD -MP -MF"libraries\Symphony\Symphony.cpp.d" -MT"libraries\Symphony\Symphony.cpp.o" -D__IN_ECLIPSE__=1 -x c++ "D:\projects\arduinolibraries\Symphony\Symphony.cpp"  -o  "libraries\Symphony\Symphony.cpp.o"
+In file included from C:\Users\User\Documents\Arduino\libraries\ESPAsyncWebServer-master\src/ESPAsyncWebServer.h:454:0,
+                 from D:\projects\arduinolibraries\Symphony\Symphony.h:14,
+                 from D:\projects\arduinolibraries\Symphony\Symphony.cpp:27:
+C:\Users\User\Documents\Arduino\libraries\ESPAsyncWebServer-master\src/AsyncWebSocket.h:82:10: warning: unused parameter 'i' [-Wunused-parameter]
+     void operator ++(int i) { _count++; }
+          ^
+C:\Users\User\Documents\Arduino\libraries\ESPAsyncWebServer-master\src/AsyncWebSocket.h:83:10: warning: unused parameter 'i' [-Wunused-parameter]
+     void operator --(int i) {  if (_count > 0) { _count--; } ;  }
+          ^
+In file included from D:\projects\arduinolibraries\Symphony\Symphony.cpp:30:0:
+D:\projects\arduinolibraries\Symphony\DeviceDiscovery.h: In function 'void packetArrived(AsyncUDPPacket)':
+D:\projects\arduinolibraries\Symphony\DeviceDiscovery.h:88:34: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+  for (int i = 0; i < ipData.size(); i++) {
+                                  ^
+In file included from D:\projects\arduinolibraries\Symphony\Symphony.cpp:30:0:
+D:\projects\arduinolibraries\Symphony\DeviceDiscovery.h: In function 'bool nominateServer()':
+D:\projects\arduinolibraries\Symphony\DeviceDiscovery.h:148:1: warning: no return statement in function returning non-void [-Wreturn-type]
+ }
+ ^
+D:\projects\arduinolibraries\Symphony\DeviceDiscovery.h: In function 'void sendIdentify()':
+D:\projects\arduinolibraries\Symphony\DeviceDiscovery.h:157:32: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   if (millis() - timeMillis >= timerInterval) { //send multicast every TIMER_INTERVAL ms
+                                ^
+D:\projects\arduinolibraries\Symphony\DeviceDiscovery.h: In function 'void startDiscovery(String)':
+D:\projects\arduinolibraries\Symphony\DeviceDiscovery.h:204:8: warning: unused variable 'timeMillis' [-Wunused-variable]
+   long timeMillis = millis();
+        ^
+D:\projects\arduinolibraries\Symphony\Symphony.cpp: At global scope:
+D:\projects\arduinolibraries\Symphony\Symphony.cpp:80:6: warning: unused parameter 'server' [-Wunused-parameter]
+ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void * arg, uint8_t *data, size_t len) {
+      ^
+D:\projects\arduinolibraries\Symphony\Symphony.cpp:80:6: warning: unused parameter 'len' [-Wunused-parameter]
+D:\projects\arduinolibraries\Symphony\Symphony.cpp:169:6: warning: unused parameter 'event' [-Wunused-parameter]
+ void onWifiConnect(const WiFiEventStationModeGotIP &event) {
+      ^
+D:\projects\arduinolibraries\Symphony\Symphony.cpp:183:6: warning: unused parameter 'event' [-Wunused-parameter]
+ void onWiFiDisconnect(const WiFiEventStationModeDisconnected &event) {
+      ^
+D:\projects\arduinolibraries\Symphony\Symphony.cpp:209:6: warning: unused parameter 'request' [-Wunused-parameter]
+ void handleFileUpload(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final) { // upload a new file to the SPIFFS
+      ^
+D:\projects\arduinolibraries\Symphony\Symphony.cpp:237:6: warning: unused parameter 'request' [-Wunused-parameter]
+ void handleFirmWareUpload(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final) {
+      ^
+'Finished building: D:\projects\arduinolibraries\Symphony\Symphony.cpp'
+' '
+'Starting combiner'
+"C:\sloeber\arduinoPlugin\packages\esp8266\tools\xtensa-lx106-elf-gcc\1.20.0-26-gb404fb9-2/bin/xtensa-lx106-elf-gcc" -CC -E -P -DVTABLES_IN_FLASH "C:\sloeber\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/tools/sdk/ld/eagle.app.v6.common.ld.h" -o "C:\sloeber\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/tools/sdk/ld/eagle.app.v6.common.ld"
+"C:\sloeber\arduinoPlugin\packages\esp8266\tools\xtensa-lx106-elf-gcc\1.20.0-26-gb404fb9-2/bin/xtensa-lx106-elf-gcc" -Wl,-Map "-Wl,D:\workspace\TestUDP/Release/TestUDP.map" -g -Wall -Wextra -Os -nostdlib -Wl,--no-check-sections -u app_entry -u _printf_float -u _scanf_float -Wl,-static "-LC:\sloeber\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/tools/sdk/lib" "-LC:\sloeber\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/tools/sdk/ld" "-LC:\sloeber\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/tools/sdk/libc/xtensa-lx106-elf/lib" "-Teagle.flash.4m1m.ld" -Wl,--gc-sections -Wl,-wrap,system_restart_local -Wl,-wrap,spi_flash_read  -o "D:\workspace\TestUDP/Release/TestUDP.elf" -Wl,--start-group    .\sloeber.ino.cpp.o  .\libraries\Symphony\FileManager.cpp.o .\libraries\Symphony\Symphony.cpp.o  .\libraries\Hash\src\sha1\sha1.c.o  .\libraries\Hash\src\Hash.cpp.o  .\libraries\ESP_Async_E1.31\ESPAsyncE131.cpp.o .\libraries\ESP_Async_E1.31\RingBuf.c.o  .\libraries\ESPAsyncWebServer-master\src\AsyncEventSource.cpp.o .\libraries\ESPAsyncWebServer-master\src\AsyncWebSocket.cpp.o .\libraries\ESPAsyncWebServer-master\src\SPIFFSEditor.cpp.o .\libraries\ESPAsyncWebServer-master\src\WebAuthentication.cpp.o .\libraries\ESPAsyncWebServer-master\src\WebHandlers.cpp.o .\libraries\ESPAsyncWebServer-master\src\WebRequest.cpp.o .\libraries\ESPAsyncWebServer-master\src\WebResponses.cpp.o .\libraries\ESPAsyncWebServer-master\src\WebServer.cpp.o  .\libraries\ESPAsyncUDP-master\src\AsyncUDP.cpp.o  .\libraries\ESPAsyncTCP-master\src\AsyncPrinter.cpp.o .\libraries\ESPAsyncTCP-master\src\ESPAsyncTCP.cpp.o .\libraries\ESPAsyncTCP-master\src\ESPAsyncTCPbuffer.cpp.o .\libraries\ESPAsyncTCP-master\src\SyncClient.cpp.o .\libraries\ESPAsyncTCP-master\src\tcp_axtls.c.o  .\libraries\ESP8266mDNS\ESP8266mDNS.cpp.o  .\libraries\ESP8266WiFi\src\BearSSLHelpers.cpp.o .\libraries\ESP8266WiFi\src\CertStoreBearSSL.cpp.o .\libraries\ESP8266WiFi\src\ESP8266WiFi.cpp.o .\libraries\ESP8266WiFi\src\ESP8266WiFiAP.cpp.o .\libraries\ESP8266WiFi\src\ESP8266WiFiGeneric.cpp.o .\libraries\ESP8266WiFi\src\ESP8266WiFiMulti.cpp.o .\libraries\ESP8266WiFi\src\ESP8266WiFiSTA.cpp.o .\libraries\ESP8266WiFi\src\ESP8266WiFiScan.cpp.o .\libraries\ESP8266WiFi\src\WiFiClient.cpp.o .\libraries\ESP8266WiFi\src\WiFiClientSecureAxTLS.cpp.o .\libraries\ESP8266WiFi\src\WiFiClientSecureBearSSL.cpp.o .\libraries\ESP8266WiFi\src\WiFiServer.cpp.o .\libraries\ESP8266WiFi\src\WiFiServerSecureAxTLS.cpp.o .\libraries\ESP8266WiFi\src\WiFiServerSecureBearSSL.cpp.o .\libraries\ESP8266WiFi\src\WiFiUdp.cpp.o  .\libraries\DNSServer\src\DNSServer.cpp.o   "D:\workspace\TestUDP/Release/arduino.ar" -lhal -lphy -lpp -lnet80211 -llwip2 -lwpa -lcrypto -lmain -lwps -lbearssl -laxtls -lespnow -lsmartconfig -lairkiss -lwpa2 -lstdc++ -lm -lc -lgcc -Wl,--end-group  "-LD:\workspace\TestUDP/Release" D:\workspace\TestUDP/Release/arduino.ar   
+.\libraries\Symphony\Symphony.cpp.o: In function `AsyncWebHandler::handleBody(AsyncWebServerRequest*, unsigned char*, unsigned int, unsigned int, unsigned int)':
+C:\Users\User\Documents\Arduino\libraries\ArduinoJson\src/ArduinoJson/Deserialization/../Serialization/JsonWriter.hpp:68: multiple definition of `udp'
+.\sloeber.ino.cpp.o:c:\sloeber\arduinoplugin\packages\esp8266\tools\xtensa-lx106-elf-gcc\1.20.0-26-gb404fb9-2\xtensa-lx106-elf\include\c++\4.8.2/functional:2069: first defined here
+collect2.exe: error: ld returned 1 exit status
+makefile:92: recipe for target 'TestUDP.elf' failed
+make: *** [TestUDP.elf] Error 1
+
+20:57:55 Build Failed. 4 errors, 14 warnings. (took 34s.104ms)
+

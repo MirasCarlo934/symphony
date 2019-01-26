@@ -1,0 +1,18 @@
+This new version of the core needs the data folder for the html, css and js files
+below are the files:
+	admin.html
+	control.css
+	symphony.css
+	symphony.js
+	
+1. if there are changes on any of these files, you need to run the mkspiffs external tool
+	a. click on the SymphonyCore folder
+	b. click on Run-->External Tools-->mkspiffs  (mkspiffs was created using the details in Mkspiffs_esptool_settings.docx)
+	c. spiffs/data.bin file will be created, this will be loaded into the esp
+	
+2. Load the spiffs/data.bin to esp
+	a. set the esp to load mode
+	b. click on the SymphonyCore folder
+	c. click on Run-->External Tools-->esptool  (esptool was created using the details in Mkspiffs_esptool_settings.docx)
+	d. files should be loaded to esp
+	e. you're done!

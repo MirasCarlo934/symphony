@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;SymphonySocket/html/admin.html&apos; to &apos;socket.html&apos;" description="Rename resource &apos;admin.html&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="html/admin.html" name="socket.html" stamp="1546342011886" updateReferences="true"/>
+</session>

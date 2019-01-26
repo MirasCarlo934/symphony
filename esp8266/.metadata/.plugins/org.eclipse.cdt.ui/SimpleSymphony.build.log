@@ -1,0 +1,82 @@
+11:19:42 **** Incremental Build of configuration Release for project SimpleSymphony ****
+"C:\\sloeber\\arduinoPlugin\\tools\\make\\make" all 
+'Building file: ..\SimpleSymphony.cpp'
+'Starting C++ compile'
+"C:\sloeber\arduinoPlugin\packages\esp8266\tools\xtensa-lx106-elf-gcc\1.20.0-26-gb404fb9-2/bin/xtensa-lx106-elf-g++" -D__ets__ -DICACHE_FLASH -U__STRICT_ANSI__ "-IC:\sloeber\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/tools/sdk/include" "-IC:\sloeber\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/tools/sdk/lwip2/include" "-IC:\sloeber\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/tools/sdk/libc/xtensa-lx106-elf/include" "-ID:/workspace/SimpleSymphony/Release/core" -c -Wall -Wextra  -Os -g -mlongcalls -mtext-section-literals -fno-exceptions -fno-rtti -falign-functions=4 -std=c++11 -MMD -ffunction-sections -fdata-sections -DF_CPU=80000000L -DLWIP_OPEN_SRC -DTCP_MSS=536 -DDEBUG_ESP_PORT=Serial  -DARDUINO=10802 -DARDUINO_ESP8266_GENERIC -DARDUINO_ARCH_ESP8266 -DARDUINO_BOARD="\"ESP8266_GENERIC\"" -DLED_BUILTIN=2  -DESP8266   -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\cores\esp8266" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\variants\generic" -I"C:\Users\User\Documents\Arduino\libraries\ArduinoJson\src" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\ESP8266mDNS" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\ESP8266WiFi\src" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\Hash\src" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\SPI" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\Ticker" -I"C:\Users\User\Documents\Arduino\libraries\async-mqtt-client-master\src" -I"C:\Users\User\Documents\Arduino\libraries\ESP_Async_E1.31" -I"C:\Users\User\Documents\Arduino\libraries\ESPAsyncTCP-master\src" -I"C:\Users\User\Documents\Arduino\libraries\ESPAsyncUDP-master\src" -I"C:\Users\User\Documents\Arduino\libraries\ESPAsyncWebServer-master\src" -MMD -MP -MF"SimpleSymphony.cpp.d" -MT"SimpleSymphony.cpp.o" -D__IN_ECLIPSE__=1 -x c++ "..\SimpleSymphony.cpp"  -o  "SimpleSymphony.cpp.o"
+In file included from C:\Users\User\Documents\Arduino\libraries\ESPAsyncWebServer-master\src/ESPAsyncWebServer.h:454:0,
+                 from ..\SimpleSymphony.h:29,
+                 from ..\SimpleSymphony.cpp:19:
+C:\Users\User\Documents\Arduino\libraries\ESPAsyncWebServer-master\src/AsyncWebSocket.h:82:10: warning: unused parameter 'i' [-Wunused-parameter]
+     void operator ++(int i) { _count++; }
+          ^
+C:\Users\User\Documents\Arduino\libraries\ESPAsyncWebServer-master\src/AsyncWebSocket.h:83:10: warning: unused parameter 'i' [-Wunused-parameter]
+     void operator --(int i) {  if (_count > 0) { _count--; } ;  }
+          ^
+In file included from ..\SimpleSymphony.cpp:19:0:
+..\SimpleSymphony.h:120:8: error: variable or field 'connectToMqtt' declared void
+   void connectToMqtt;
+        ^
+In file included from ..\SimpleSymphony.cpp:19:0:
+..\SimpleSymphony.h:123:135: error: expected ';' at end of member declaration
+   void onMqttMessage(char* topic, char* p_payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total)
+                                                                                                                                       ^
+..\SimpleSymphony.cpp: In function 'void connectToMqtt()':
+..\SimpleSymphony.cpp:37:5: error: 'mqtt' was not declared in this scope
+     mqtt.connect();
+     ^
+..\SimpleSymphony.cpp: At global scope:
+..\SimpleSymphony.cpp:40:6: warning: unused parameter 'sessionPresent' [-Wunused-parameter]
+ void onMqttConnect(bool sessionPresent) {
+      ^
+..\SimpleSymphony.cpp: In function 'void onMqttDisconnect(AsyncMqttClientDisconnectReason)':
+..\SimpleSymphony.cpp:47:9: error: 'mqttTicker' was not declared in this scope
+         mqttTicker.once(2, connectToMqtt);
+         ^
+..\SimpleSymphony.cpp: At global scope:
+..\SimpleSymphony.cpp:44:6: warning: unused parameter 'reason' [-Wunused-parameter]
+ void onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
+      ^
+..\SimpleSymphony.cpp:51:6: warning: unused parameter 'properties' [-Wunused-parameter]
+ void onMqttMessage(char* topic, char* p_payload,
+      ^
+..\SimpleSymphony.cpp:51:6: warning: unused parameter 'index' [-Wunused-parameter]
+..\SimpleSymphony.cpp:51:6: warning: unused parameter 'total' [-Wunused-parameter]
+..\SimpleSymphony.cpp:119:6: warning: unused parameter 'event' [-Wunused-parameter]
+ void Symphony::onWifiConnect(const WiFiEventStationModeGotIP &event) {
+      ^
+..\SimpleSymphony.cpp: In member function 'void Symphony::onWiFiDisconnect(const WiFiEventStationModeDisconnected&)':
+..\SimpleSymphony.cpp:145:41: error: no matching function for call to 'Ticker::once(int, <unresolved overloaded function type>)'
+     wifiTicker.once(2, this->connectWifi);
+                                         ^
+..\SimpleSymphony.cpp:145:41: note: candidates are:
+In file included from ..\SimpleSymphony.h:24:0,
+                 from ..\SimpleSymphony.cpp:19:
+C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\Ticker/Ticker.h:70:7: note: void Ticker::once(float, Ticker::callback_t)
+  void once(float seconds, callback_t callback)
+       ^
+C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\Ticker/Ticker.h:70:7: note:   no known conversion for argument 2 from '<unresolved overloaded function type>' to 'Ticker::callback_t {aka void (*)()}'
+C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\Ticker/Ticker.h:81:7: note: template<class TArg> void Ticker::once(float, void (*)(TArg), TArg)
+  void once(float seconds, void (*callback)(TArg), TArg arg)
+       ^
+C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\Ticker/Ticker.h:81:7: note:   template argument deduction/substitution failed:
+..\SimpleSymphony.cpp:145:41: note:   mismatched types 'void (*)(TArg)' and 'void (Symphony::*)()'
+     wifiTicker.once(2, this->connectWifi);
+                                         ^
+..\SimpleSymphony.cpp:145:41: note:   could not resolve address from overloaded function '((Symphony*)this)->Symphony::connectWifi'
+..\SimpleSymphony.cpp: At global scope:
+..\SimpleSymphony.cpp:140:6: warning: unused parameter 'event' [-Wunused-parameter]
+ void Symphony::onWiFiDisconnect(const WiFiEventStationModeDisconnected &event) {
+      ^
+..\SimpleSymphony.cpp:310:6: warning: unused parameter 'server' [-Wunused-parameter]
+ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client,
+      ^
+..\SimpleSymphony.cpp:310:6: warning: unused parameter 'len' [-Wunused-parameter]
+..\SimpleSymphony.cpp:383:69: warning: unused parameter 'request' [-Wunused-parameter]
+     web.on("/updatefw", HTTP_POST, [](AsyncWebServerRequest *request) {
+                                                                     ^
+..\SimpleSymphony.cpp:383:69: warning: unused parameter 'request' [-Wunused-parameter]
+subdir.mk:31: recipe for target 'SimpleSymphony.cpp.o' failed
+make: *** [SimpleSymphony.cpp.o] Error 1
+
+11:19:47 Build Failed. 7 errors, 13 warnings. (took 4s.375ms)
+

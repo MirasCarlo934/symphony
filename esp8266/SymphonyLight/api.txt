@@ -1,0 +1,42 @@
+Patterns
+10 = Flow, 11 = Solid, 12 = Fade, 13 = Twinkle
+{
+  "cmd": 1,
+  "data": [
+    10,
+    11,
+    12,
+    13,
+    10,
+    10,
+    10,
+    10,
+    10,
+    10,
+    10,
+    10
+  ]
+}
+---------------------------
+Fire
+Normal = 0, Green = 1, Blue = 2
+{
+  "cmd": 3,
+  "data": 1
+}
+---------------------------
+Sparkle (colors does not have effect yet)
+{
+  "cmd": 6,
+  "data": 0
+}
+---------------------------
+Picker
+{ 
+  "cmd": 4,
+  "data": [
+    55,  //r
+    28,  //g
+    255  //b
+  ]
+}

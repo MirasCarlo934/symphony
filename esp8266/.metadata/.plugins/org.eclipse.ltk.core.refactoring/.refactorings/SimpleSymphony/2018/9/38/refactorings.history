@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">&#x0A;<refactoring comment="Rename resource &apos;SimpleSymphony/ESPixelStick.ino&apos; to &apos;SimpleSymphony.cpp&apos;" description="Rename resource &apos;ESPixelStick.ino&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="ESPixelStick.ino" name="SimpleSymphony.cpp" stamp="1537571870674" updateReferences="true"/>&#x0A;<refactoring comment="Rename resource &apos;SimpleSymphony/ESPixelStick.h&apos; to &apos;SimpleSymphony.h&apos;" description="Rename resource &apos;ESPixelStick.h&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="ESPixelStick.h" name="SimpleSymphony.h" stamp="1537571892973" updateReferences="true"/>
+</session>

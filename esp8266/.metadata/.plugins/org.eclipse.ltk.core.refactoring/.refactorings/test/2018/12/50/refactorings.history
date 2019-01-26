@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;test/compare/vixen2017.xml&apos; to &apos;vixen-systemconfig2017.xml&apos;" description="Rename resource &apos;vixen2017.xml&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="compare/vixen2017.xml" name="vixen-systemconfig2017.xml" stamp="1544839464289" updateReferences="true"/>
+</session>

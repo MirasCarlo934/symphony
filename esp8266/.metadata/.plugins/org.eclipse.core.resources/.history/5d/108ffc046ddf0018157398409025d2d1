@@ -1,0 +1,68 @@
+#include "Arduino.h"
+#define FASTLED_INTERRUPT_RETRY_COUNT 3
+#include "Symphony.h"
+#include "ESPAsyncUDP.h"
+
+
+Symphony s = Symphony();
+AsyncUDP udp;
+
+void handleUdp(AsyncWebServerRequest *request) {
+	size_t size = udp.print("Hello Server from init!");
+	char buff[50];
+	sprintf(buff,"send udp, size:%i\n", size);
+	request->send(200, "text/html", buff);
+	Serial.println("handleInit");
+}
+
+//The setup function is called once at startup of the sketch
+void setup()
+{
+
+// Add your initialization code here
+	Serial.begin(115200);
+	delay(10);
+	s.setup("UDPServer");
+	s.on("/test", HTTP_GET, handleUdp);
+	startUdpClient();
+}
+
+// The loop function is called in an endless loop
+void loop()
+{
+//Add your repeated code here
+	if (s.loop()) {
+
+	}
+}
+
+void startUdpClient() {
+	;
+	if(udp.connect(IPAddress(239,1,2,3), 1234)) {
+		Serial.println("UDP connected");
+		udp.onPacket([](AsyncUDPPacket packet) {
+			Serial.print("UDP Packet Type: ");
+			Serial.print(packet.isBroadcast()?"Broadcast":packet.isMulticast()?"Multicast":"Unicast");
+			Serial.print(", From: ");
+			Serial.print(packet.remoteIP());
+			Serial.print(":");
+			Serial.print(packet.remotePort());
+			Serial.print(", To: ");
+			Serial.print(packet.localIP());
+			Serial.print(":");
+			Serial.print(packet.localPort());
+			Serial.print(", Length: ");
+			Serial.print(packet.length());
+			Serial.print(", Data: ");
+			Serial.write(packet.data(), packet.length());
+			Serial.println();
+			//reply to the client
+			packet.printf("Got %u bytes of data", packet.length());
+		});
+		//Send unicast
+		udp.print("Hello Server!");
+		udp.broadcastTo("Anyone here?", 1234);
+	} else {
+		Serial.println("cannot connect to UDP Server");
+	}
+}

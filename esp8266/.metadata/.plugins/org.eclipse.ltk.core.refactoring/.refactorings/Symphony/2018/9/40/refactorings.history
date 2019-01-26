@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">&#x0A;<refactoring comment="Rename resource &apos;Symphony/Firmware.cpp&apos; to &apos;FileManager.cpp&apos;" description="Rename resource &apos;Firmware.cpp&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="Firmware.cpp" name="FileManager.cpp" stamp="1538291761292" updateReferences="true"/>&#x0A;<refactoring comment="Rename resource &apos;Symphony/Firmware.h&apos; to &apos;FileManager.h&apos;" description="Rename resource &apos;Firmware.h&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="Firmware.h" name="FileManager.h" stamp="1538291970678" updateReferences="true"/>
+</session>

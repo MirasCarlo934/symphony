@@ -1,0 +1,93 @@
+<html>
+<head>
+  <title>Home Symphony</title>
+<link rel="stylesheet" type="text/css" href="symphony.css">
+<script type="text/javascript" src="symphony.js"></script>
+<script type="text/javascript" src="light.js"></script>
+</head>
+<body onload="initialize()">
+<div class="header" id="theName">thename</div>
+<h2>Symphony Light</h2>
+<div class="header" id="msg"></div>
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'patterns');loadPatterns();"  id="defaultOpen">Patterns</button>
+  <button class="tablinks" onclick='openTab(event, "fire");sendFireData();'>Fire</button>
+  <button class="tablinks" onclick='openTab(event, "sparkle");sendSparkleData();'>Sparkle</button>  
+  <button class="tablinks" onclick="window.location.pathname = '/picker.html';">Picker</button>
+  <button class="tablinks" onclick="openTab(event, 'config');getConfig();">Configure</button>
+</div>
+<div class="footer" id="status"></div>
+<div class="blurred"></div>
+
+<div id="patterns" class="tabcontent">
+<h3>Light Patterns</h3>
+<center>
+<fieldset style="width:95%;text-align:center;"><legend><label  id="legend">SymphonyLight</label></legend>
+<div id="main" data-role="header" align="left">
+</div>
+<input type="button" onclick="sendCycleData()" value="Submit">
+</fieldset></center>
+</div>
+<div id="fire" class="tabcontent">
+<h3>Symphony Fire</h3>
+<center><fieldset style="width:95%;text-align:center;"><legend><label  id="legend">Fire</label></legend>
+<div id="fire" data-role="header" align="left"><center>
+	<input type="radio" name="rFire" value="0" checked><label>Normal Fire</label><br>
+	<input type="radio" name="rFire" value="1"><label>Blue Fire</label><br>
+	<input type="radio" name="rFire" value="2"><label>Green Fire</label><br>
+	</center>
+</div>
+<input type="button" onclick="sendFireData()" value="Submit">
+	<label>pattern1</label><input type="text" name="ptrn1"><input type="text" name="color1"><input type="text" name="dur1"><br>
+	<label>pattern2</label><input type="text" name="ptrn2"><input type="text" name="color2"><input type="text" name="dur2"><br>
+	<input type="button" onclick="sendTestData()" value="Submit">
+</fieldset></center>
+</div>
+<div id="sparkle" class="tabcontent">
+<h3>Symphony Sparkle</h3>
+<center><fieldset style="width:95%;text-align:center;"><legend><label  id="legend">Sparkle</label></legend>
+<div id="sparkle" data-role="header" align="left"><center>
+	<input type="radio" name="rSparkle" value="0" checked><label>White</label><br>
+	<input type="radio" name="rSparkle" value="1"><label>Red</label><br>
+	<input type="radio" name="rSparkle" value="2"><label>Green</label><br>
+	</center>
+</div>
+<input type="button" onclick="sendSparkleData()" value="Submit">
+</fieldset></center>
+</div>
+<div id="config" class="tabcontent">
+<h3>Configure Lights</h3>
+<center><fieldset style="width:95%"><legend><b>Configure</b></legend>
+<div class="workpane" id="composer" category="CMPSR" style="width:55%;float:left;">
+<fieldset><legend>no reset</legend>
+<label>Universe:</label>
+<select id="txtU" style="width:5em"">
+  <option value="1">1</option>
+  <option value="2">2</option>
+  <option value="3">3</option>
+  <option value="4">4</option>
+  <option value="5">5</option>
+  <option value="6">6</option>
+  <option value="7">7</option>
+</select><br>
+<label>Mirrored:</label><input type='checkbox' id="chkM"><br>
+</fieldset>
+<fieldset><legend>change below will reset device</legend>
+<label>Strings:</label>
+<select id="txtS" style="width:5em" onchange="refreshPins();handleChange(this)">
+  <option value="1">1</option>
+  <option value="2">2</option>
+  <option value="3">3</option>
+  <option value="4">4</option>
+</select><br>
+<label>Pix/String:</label><input type='text' id='txtPix' style="width:3em" value="30" onchange="handleChange(this)"><br>
+</fieldset>
+<input type='button' value='Submit' onclick='sendConfig()'>
+</div>
+<div class="workpane" id="pins" style="width:40%; float: right;">
+</div>
+</fieldset></center>
+</div>
+
+</body>
+</html>

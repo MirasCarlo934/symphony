@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;Symphony/UdpServer.h&apos; to &apos;DeviceDiscovery.h&apos;" description="Rename resource &apos;UdpServer.h&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="UdpServer.h" name="DeviceDiscovery.h" stamp="1541302196359" updateReferences="true"/>
+</session>

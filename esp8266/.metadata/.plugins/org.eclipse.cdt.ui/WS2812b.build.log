@@ -1,0 +1,141 @@
+12:25:33 **** Build of configuration Release for project WS2812b ****
+"C:\\sloeber\\arduinoPlugin\\tools\\make\\make" all 
+'Building file: ..\sloeber.ino.cpp'
+'Starting C++ compile'
+"C:\sloeber\arduinoPlugin\packages\esp8266\tools\xtensa-lx106-elf-gcc\1.20.0-26-gb404fb9-2/bin/xtensa-lx106-elf-g++" -D__ets__ -DICACHE_FLASH -U__STRICT_ANSI__ "-IC:\sloeber\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/tools/sdk/include" "-IC:\sloeber\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/tools/sdk/lwip2/include" "-IC:\sloeber\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/tools/sdk/libc/xtensa-lx106-elf/include" "-ID:/workspace/WS2812b/Release/core" -c -Wall -Wextra  -Os -g -mlongcalls -mtext-section-literals -fno-exceptions -fno-rtti -falign-functions=4 -std=c++11 -MMD -ffunction-sections -fdata-sections -DF_CPU=80000000L -DLWIP_OPEN_SRC -DTCP_MSS=536 -DDEBUG_ESP_PORT=Serial  -DARDUINO=10802 -DARDUINO_ESP8266_GENERIC -DARDUINO_ARCH_ESP8266 -DARDUINO_BOARD="\"ESP8266_GENERIC\"" -DLED_BUILTIN=2  -DESP8266   -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\cores\esp8266" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\variants\generic" -I"C:\sloeber\arduinoPlugin\libraries\FastLED\3.2.0" -I"D:\workspace\SymphonyCore" -I"C:\sloeber\arduinoPlugin\libraries\ArduinoJson\6.4.0-beta\src" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\DNSServer\src" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\ESP8266HTTPClient\src" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\ESP8266httpUpdate\src" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\ESP8266WebServer\src" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\ESP8266WiFi\src" -I"C:\sloeber\arduinoPlugin\libraries\PubSubClient\2.6.0\src" -I"C:\Users\User\Documents\Arduino\libraries\WebSockets\src" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\Hash\src" -MMD -MP -MF"sloeber.ino.cpp.d" -MT"sloeber.ino.cpp.o" -D__IN_ECLIPSE__=1 -x c++ "..\sloeber.ino.cpp"  -o  "sloeber.ino.cpp.o"
+In file included from ..\sloeber.ino.cpp:9:0:
+D:\workspace\SymphonyCore/SymphonyCore.h:28:0: warning: "DEBUG_" redefined [enabled by default]
+ #define DEBUG_ true
+ ^
+In file included from D:\workspace\SymphonyCore/SymphonyCore.h:19:0,
+                 from ..\sloeber.ino.cpp:9:
+D:\workspace\SymphonyCore/MqttUtil.h:20:0: note: this is the location of the previous definition
+ #define DEBUG_
+ ^
+In file included from ..\sloeber.ino.cpp:10:0:
+C:\sloeber\arduinoPlugin\libraries\FastLED\3.2.0/FastLED.h:17:21: note: #pragma message: FastLED version 3.002.000
+ #    pragma message "FastLED version 3.002.000"
+                     ^
+In file included from C:\sloeber\arduinoPlugin\libraries\FastLED\3.2.0/FastLED.h:68:0,
+                 from ..\sloeber.ino.cpp:10:
+C:\sloeber\arduinoPlugin\libraries\FastLED\3.2.0/fastspi.h:110:23: note: #pragma message: No hardware SPI pins defined.  All SPI access will default to bitbanged output
+ #      pragma message "No hardware SPI pins defined.  All SPI access will default to bitbanged output"
+                       ^
+In file included from ..\sloeber.ino.cpp:37:0:
+..\SymphonyLed.ino: In function 'void setup()':
+..\SymphonyLed.ino:168:101: error: no matching function for call to 'SymphProduct::createGui(guiType, const char [10], int, int, int)'
+  product.addProperty(Warmwhite, "0049", false, SymphProduct::createGui(RADIO_OUT,"WarmWhite",0, 1, 0));
+                                                                                                     ^
+..\SymphonyLed.ino:168:101: note: candidate is:
+In file included from D:\workspace\SymphonyCore/MqttUtil.h:17:0,
+                 from D:\workspace\SymphonyCore/SymphonyCore.h:19,
+                 from ..\sloeber.ino.cpp:9:
+D:\workspace\SymphonyCore/SymphonyProduct.h:92:22: note: static guiStruct SymphProduct::createGui(String, guiType, String, int, int, int)
+     static guiStruct createGui(String group, guiType pinType, String label, int min, int max, int value);
+                      ^
+D:\workspace\SymphonyCore/SymphonyProduct.h:92:22: note:   candidate expects 6 arguments, 5 provided
+In file included from ..\sloeber.ino.cpp:37:0:
+..\SymphonyLed.ino:169:89: error: no matching function for call to 'SymphProduct::createGui(guiType, const char [4], int, int, int)'
+  product.addProperty(Red, "0050", false, SymphProduct::createGui(RADIO_OUT,"Red",0, 1, 0));
+                                                                                         ^
+..\SymphonyLed.ino:169:89: note: candidate is:
+In file included from D:\workspace\SymphonyCore/MqttUtil.h:17:0,
+                 from D:\workspace\SymphonyCore/SymphonyCore.h:19,
+                 from ..\sloeber.ino.cpp:9:
+D:\workspace\SymphonyCore/SymphonyProduct.h:92:22: note: static guiStruct SymphProduct::createGui(String, guiType, String, int, int, int)
+     static guiStruct createGui(String group, guiType pinType, String label, int min, int max, int value);
+                      ^
+D:\workspace\SymphonyCore/SymphonyProduct.h:92:22: note:   candidate expects 6 arguments, 5 provided
+In file included from ..\sloeber.ino.cpp:37:0:
+..\SymphonyLed.ino:170:95: error: no matching function for call to 'SymphProduct::createGui(guiType, const char [7], int, int, int)'
+  product.addProperty(Random, "0051", false, SymphProduct::createGui(RADIO_OUT,"Random",0, 1, 1));
+                                                                                               ^
+..\SymphonyLed.ino:170:95: note: candidate is:
+In file included from D:\workspace\SymphonyCore/MqttUtil.h:17:0,
+                 from D:\workspace\SymphonyCore/SymphonyCore.h:19,
+                 from ..\sloeber.ino.cpp:9:
+D:\workspace\SymphonyCore/SymphonyProduct.h:92:22: note: static guiStruct SymphProduct::createGui(String, guiType, String, int, int, int)
+     static guiStruct createGui(String group, guiType pinType, String label, int min, int max, int value);
+                      ^
+D:\workspace\SymphonyCore/SymphonyProduct.h:92:22: note:   candidate expects 6 arguments, 5 provided
+In file included from ..\sloeber.ino.cpp:37:0:
+..\SymphonyLed.ino:171:99: error: no matching function for call to 'SymphProduct::createGui(guiType, const char [9], int, int, int)'
+  product.addProperty(Sequence, "0052", false, SymphProduct::createGui(RADIO_OUT,"Sequence",0, 1, 0));
+                                                                                                   ^
+..\SymphonyLed.ino:171:99: note: candidate is:
+In file included from D:\workspace\SymphonyCore/MqttUtil.h:17:0,
+                 from D:\workspace\SymphonyCore/SymphonyCore.h:19,
+                 from ..\sloeber.ino.cpp:9:
+D:\workspace\SymphonyCore/SymphonyProduct.h:92:22: note: static guiStruct SymphProduct::createGui(String, guiType, String, int, int, int)
+     static guiStruct createGui(String group, guiType pinType, String label, int min, int max, int value);
+                      ^
+D:\workspace\SymphonyCore/SymphonyProduct.h:92:22: note:   candidate expects 6 arguments, 5 provided
+In file included from ..\sloeber.ino.cpp:37:0:
+..\SymphonyLed.ino:172:90: error: no matching function for call to 'SymphProduct::createGui(guiType, const char [4], int, int, int)'
+  product.addProperty(Off, "0053", false, SymphProduct::createGui(BUTTON_OUT,"Off",0, 1, 0));
+                                                                                          ^
+..\SymphonyLed.ino:172:90: note: candidate is:
+In file included from D:\workspace\SymphonyCore/MqttUtil.h:17:0,
+                 from D:\workspace\SymphonyCore/SymphonyCore.h:19,
+                 from ..\sloeber.ino.cpp:9:
+D:\workspace\SymphonyCore/SymphonyProduct.h:92:22: note: static guiStruct SymphProduct::createGui(String, guiType, String, int, int, int)
+     static guiStruct createGui(String group, guiType pinType, String label, int min, int max, int value);
+                      ^
+D:\workspace\SymphonyCore/SymphonyProduct.h:92:22: note:   candidate expects 6 arguments, 5 provided
+In file included from ..\sloeber.ino.cpp:37:0:
+..\SymphonyLed.ino:173:94: error: no matching function for call to 'SymphProduct::createGui(guiType, const char [6], int, int, int)'
+  product.addProperty(Group, "0054", false, SymphProduct::createGui(BUTTON_OUT,"Group",0, 1, 0));
+                                                                                              ^
+..\SymphonyLed.ino:173:94: note: candidate is:
+In file included from D:\workspace\SymphonyCore/MqttUtil.h:17:0,
+                 from D:\workspace\SymphonyCore/SymphonyCore.h:19,
+                 from ..\sloeber.ino.cpp:9:
+D:\workspace\SymphonyCore/SymphonyProduct.h:92:22: note: static guiStruct SymphProduct::createGui(String, guiType, String, int, int, int)
+     static guiStruct createGui(String group, guiType pinType, String label, int min, int max, int value);
+                      ^
+D:\workspace\SymphonyCore/SymphonyProduct.h:92:22: note:   candidate expects 6 arguments, 5 provided
+In file included from ..\sloeber.ino.cpp:37:0:
+..\SymphonyLed.ino:174:96: error: no matching function for call to 'SymphProduct::createGui(guiType, const char [7], int, int, int)'
+  product.addProperty(Groups, "0055", false, SymphProduct::createGui(SLIDER_OUT,"Groups",1, 8, 1));
+                                                                                                ^
+..\SymphonyLed.ino:174:96: note: candidate is:
+In file included from D:\workspace\SymphonyCore/MqttUtil.h:17:0,
+                 from D:\workspace\SymphonyCore/SymphonyCore.h:19,
+                 from ..\sloeber.ino.cpp:9:
+D:\workspace\SymphonyCore/SymphonyProduct.h:92:22: note: static guiStruct SymphProduct::createGui(String, guiType, String, int, int, int)
+     static guiStruct createGui(String group, guiType pinType, String label, int min, int max, int value);
+                      ^
+D:\workspace\SymphonyCore/SymphonyProduct.h:92:22: note:   candidate expects 6 arguments, 5 provided
+In file included from ..\sloeber.ino.cpp:37:0:
+..\SymphonyLed.ino:175:104: error: no matching function for call to 'SymphProduct::createGui(guiType, const char [11], int, int, int)'
+  product.addProperty(StartTimer, "0056", false, SymphProduct::createGui(BUTTON_OUT,"StartTimer",0, 1, 0));
+                                                                                                        ^
+..\SymphonyLed.ino:175:104: note: candidate is:
+In file included from D:\workspace\SymphonyCore/MqttUtil.h:17:0,
+                 from D:\workspace\SymphonyCore/SymphonyCore.h:19,
+                 from ..\sloeber.ino.cpp:9:
+D:\workspace\SymphonyCore/SymphonyProduct.h:92:22: note: static guiStruct SymphProduct::createGui(String, guiType, String, int, int, int)
+     static guiStruct createGui(String group, guiType pinType, String label, int min, int max, int value);
+                      ^
+D:\workspace\SymphonyCore/SymphonyProduct.h:92:22: note:   candidate expects 6 arguments, 5 provided
+In file included from ..\sloeber.ino.cpp:37:0:
+..\SymphonyLed.ino:176:102: error: no matching function for call to 'SymphProduct::createGui(guiType, const char [12], int, int, int)'
+  product.addProperty(Timer, "0057", false, SymphProduct::createGui(SLIDER_OUT,"Timer(Mins)",0, 120, 0));
+                                                                                                      ^
+..\SymphonyLed.ino:176:102: note: candidate is:
+In file included from D:\workspace\SymphonyCore/MqttUtil.h:17:0,
+                 from D:\workspace\SymphonyCore/SymphonyCore.h:19,
+                 from ..\sloeber.ino.cpp:9:
+D:\workspace\SymphonyCore/SymphonyProduct.h:92:22: note: static guiStruct SymphProduct::createGui(String, guiType, String, int, int, int)
+     static guiStruct createGui(String group, guiType pinType, String label, int min, int max, int value);
+                      ^
+D:\workspace\SymphonyCore/SymphonyProduct.h:92:22: note:   candidate expects 6 arguments, 5 provided
+In file included from ..\sloeber.ino.cpp:37:0:
+..\SymphonyLed.ino:167:6: warning: unused variable 'pIndex' [-Wunused-variable]
+  int pIndex;
+      ^
+subdir.mk:18: recipe for target 'sloeber.ino.cpp.o' failed
+make: *** [sloeber.ino.cpp.o] Error 1
+
+12:25:36 Build Failed. 11 errors, 2 warnings. (took 3s.62ms)
+

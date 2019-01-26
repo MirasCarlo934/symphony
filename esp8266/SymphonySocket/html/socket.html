@@ -1,0 +1,115 @@
+<html>
+<head>
+<title>Home Symphony</title>
+<link rel="stylesheet" type="text/css" href="symphony.css">
+</head>
+<script type="text/javascript" src="symphony.js"></script>
+<script>
+TSK_TIMER_INFO = 1;
+TSK_SOCKET_ON = 2;
+timerRunning = false;
+
+function countDownTimer() {
+	distance = distance - 1000;
+	dSeconds = distance/1000;
+	hours = Math.floor(dSeconds / (60*60))
+	minutes = Math.floor((dSeconds % (60*60)) / 60)
+	seconds = Math.floor(dSeconds - hours*60*60 - minutes*60)
+	document.getElementById("lblValue").innerHTML = hours + "h "
+	+ minutes + "m " + seconds + "s ";
+	
+	// If the count down is finished, write some text 
+	if (distance < 0) {
+	  clearInterval(timer);
+	  timerRunning = false;
+	  document.getElementById("lblValue").innerHTML = "EXPIRED";
+	  document.getElementById("lblEnabled").innerHTML = "False";
+	}	else {
+	 timerRunning = true;
+	}
+};
+/**
+ * serverResponseHandler(json) is called by symphony.js
+ */
+function serverResponseHandler(json) {
+	var task = json.tsk;
+	switch(task) {
+		case TSK_TIMER_INFO:
+			document.getElementById("hrs").value = json.hrs;
+			document.getElementById("mins1").value = json.mins1;
+			document.getElementById("mins2").value = json.mins2;
+			document.getElementById("secs1").value = json.secs1;
+			document.getElementById("secs2").value = json.secs2;
+			document.getElementById("lblEnabled").innerHTML = json.e?"True":"False";
+			if (json.e) {
+				distance =  parseFloat(json.value, 10);
+				if (!timerRunning) {
+					timer = setInterval(countDownTimer, 1000);	
+				}
+			}
+			break;
+		case TSK_SOCKET_ON:
+			break;
+	}
+}
+function initTimerForm() {
+	var jsonRequest = {"cmd":1};//we are sending fetch timer cmd to the device 	
+	websocket.send(JSON.stringify(jsonRequest));
+	for (i=0;i<6;i++) {
+		var e1 = document.getElementById("hrs");
+		var option1 = document.createElement("option");
+		option1.text = i;
+		var e2 = document.getElementById("mins1");
+		var option2 = document.createElement("option");
+		option2.text = i;
+		var e3 = document.getElementById("secs1");
+		var option3 = document.createElement("option");
+		option3.text = i;
+		e1.add(option1);
+		e2.add(option2);
+		e3.add(option3);
+	}
+	for (i=0;i<10;i++) {
+		var e2 = document.getElementById("mins2");
+		var option2 = document.createElement("option");
+		option2.text = i;
+		var e3 = document.getElementById("secs2");
+		var option3 = document.createElement("option");
+		option3.text = i;
+		e2.add(option2);
+		e3.add(option3);
+	}
+}
+</script>
+
+<body onload="initialize()">
+<div class="header" id="theName">thename</div>
+<h2>Device Setup</h2>
+<div class="header" id="msg"></div>
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'control');loadDoc();" id="defaultOpen">Control</button>
+  <button class="tablinks" onclick="openTab(event, 'timer');initTimerForm()">Timer</button>
+</div>
+<div class="footer" id="status"></div>
+<div class="blurred"></div>
+
+<div id="timer" class="tabcontent">
+<h3>Timer Settings</h3>
+<center><fieldset style="width:300px"><legend><b>Timer Details</b></legend>
+<label>Enabled:</label><label id="lblEnabled"></label><br>
+<label>Value:</label><label id="lblValue"></label>
+<form action='/handleTimer' method='get' id='form'>
+<label>Hours:</label>
+<select id="hrs" style="width:50px"></select><br>
+<label>Minutes:</label>
+<select id="mins1" style="width:50px"></select><select id="mins2" style="width:50px"></select><br>
+<label>Seconds:</label>
+<select id="secs1" style="width:50px"></select><select id="secs2" style="width:50px"></select><br>
+<input type='button' value='Submit' onclick='sendWSRequestToServer("form")'>
+</form>
+</fieldset></center>
+</div>
+<div id="control" class="tabcontent">
+</div>
+</body>
+</html>

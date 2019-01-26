@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<head>
+  <title>SymphonyLight</title>
+<link rel="stylesheet" type="text/css" href="symphony.css">
+<script type="text/javascript" src="symphony.js"></script>
+<script type="text/javascript" src="light.js"></script>
+<script type="text/javascript">
+	function doColorChange(color, changes) {
+		console.log(color.rgb.r);
+		sendColor(color.rgb);
+	}
+	var debouncedFn = debounce(doColorChange, 1);
+	window.addEventListener('resize', debouncedFn);
+	var demoColorPicker = new iro.ColorPicker("#picker", {
+		// Set the size of the color picker UI
+		width: 300,
+		height: 300,
+		// Set the initial color to red
+		color: "#f00"
+	});
+	// Listen to the color:change event
+	demoColorPicker.on("color:change", debouncedFn);
+</script>
+</head>
+<body>
+<center>
+<h3>Symphony Fire</h3>
+<fieldset style="width:30em;text-align:center;"><legend><label  id="legend">Choose Color</label></legend>
+<p id="picker"></p>
+</fieldset>
+<div id='msg' class='init'>Connecting...</div>
+</center>
+</body>
+</html>

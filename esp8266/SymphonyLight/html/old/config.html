@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<head>
+  <title>Home Symphony</title>
+<link rel="stylesheet" type="text/css" href="symphony.css">
+<script type="text/javascript" src="symphony.js"></script>
+<script type="text/javascript" src="light.js"></script>
+</head>
+<body onload="init()">
+<div class = "main" id="main">
+
+<div class="workpane" id="composer" category="CMPSR" style="width:80%;float:left;">
+Select Configuration
+</div>
+<div class="workpane" id="menu" style="width:17%; float: right;">
+	<br>
+	<div class="menu" id="divChangeString">
+		<label id="lblU">Universe:</label><label id="txtU">1</label><br>
+		<label id="lblP">Pixels:</label><label id="txtPix">60</label><br>
+		<label id="lblS">Strings:</label><label id="txtS">1</label><br>
+	</div>
+	<br>
+	<div class="menu" id="operationsId">
+		<a onclick='sendConfig()' class="submenu" id="submit">Submit</a>
+	</div>
+	<br>
+</div>
+</div>
+<div id='msg' class='init'>Connecting...</div>
+</body>
+</html>

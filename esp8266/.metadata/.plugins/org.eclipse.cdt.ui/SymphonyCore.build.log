@@ -1,0 +1,55 @@
+12:24:01 **** Incremental Build of configuration Release for project SymphonyCore ****
+"C:\\sloeber\\arduinoPlugin\\tools\\make\\make" all 
+'Building file: ..\MqttUtil.cpp'
+'Starting C++ compile'
+"C:\sloeber\arduinoPlugin\packages\esp8266\tools\xtensa-lx106-elf-gcc\1.20.0-26-gb404fb9-2/bin/xtensa-lx106-elf-g++" -D__ets__ -DICACHE_FLASH -U__STRICT_ANSI__ "-IC:\sloeber\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/tools/sdk/include" "-IC:\sloeber\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/tools/sdk/lwip2/include" "-IC:\sloeber\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/tools/sdk/libc/xtensa-lx106-elf/include" "-ID:/workspace/SymphonyCore/Release/core" -c -Wall -Wextra  -Os -g -mlongcalls -mtext-section-literals -fno-exceptions -fno-rtti -falign-functions=4 -std=c++11 -MMD -ffunction-sections -fdata-sections -DF_CPU=80000000L -DLWIP_OPEN_SRC -DTCP_MSS=536 -DDEBUG_ESP_PORT=Serial  -DARDUINO=10802 -DARDUINO_ESP8266_GENERIC -DARDUINO_ARCH_ESP8266 -DARDUINO_BOARD="\"ESP8266_GENERIC\"" -DLED_BUILTIN=2  -DESP8266   -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\cores\esp8266" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\variants\generic" -I"C:\sloeber\arduinoPlugin\libraries\ArduinoJson\6.4.0-beta\src" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\DNSServer\src" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\ESP8266HTTPClient\src" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\ESP8266httpUpdate\src" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\ESP8266WebServer\src" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\ESP8266WiFi\src" -I"C:\sloeber\arduinoPlugin\libraries\PubSubClient\2.6.0\src" -I"C:\Users\User\Documents\Arduino\libraries\WebSockets\src" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\Hash\src" -MMD -MP -MF"MqttUtil.cpp.d" -MT"MqttUtil.cpp.o" -D__IN_ECLIPSE__=1 -x c++ "..\MqttUtil.cpp"  -o  "MqttUtil.cpp.o"
+..\MqttUtil.cpp: In function 'uint8_t parseDefaultTopic(char*)':
+..\MqttUtil.cpp:45:3: error: 'StaticJsonBuffer' was not declared in this scope
+   StaticJsonBuffer<200> jsonBuffer;
+   ^
+..\MqttUtil.cpp:45:25: error: 'jsonBuffer' was not declared in this scope
+   StaticJsonBuffer<200> jsonBuffer;
+                         ^
+..\MqttUtil.cpp:51:13: error: 'class ArduinoJson::JsonObject' has no member named 'success'
+   if (!root.success()) {
+             ^
+..\MqttUtil.cpp:57:18: warning: unknown escape sequence: '\c' [enabled by default]
+     Serial.print("\clientID is--");Serial.println(MqttUtil::clientID);
+                  ^
+..\MqttUtil.cpp:79:1: warning: no return statement in function returning non-void [-Wreturn-type]
+ }
+ ^
+..\MqttUtil.cpp: In function 'void handleJSONResponse(char*)':
+..\MqttUtil.cpp:88:7: error: 'StaticJsonBuffer' was not declared in this scope
+       StaticJsonBuffer<200> jsonBuffer;
+       ^
+..\MqttUtil.cpp:88:29: error: 'jsonBuffer' was not declared in this scope
+       StaticJsonBuffer<200> jsonBuffer;
+                             ^
+..\MqttUtil.cpp:91:17: error: 'class ArduinoJson::JsonObject' has no member named 'success'
+       if (!root.success()) {
+                 ^
+..\MqttUtil.cpp: In function 'void callback(char*, uint8_t*, unsigned int)':
+..\MqttUtil.cpp:138:13: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+  for(i=0; i<length; i++) {
+             ^
+..\MqttUtil.cpp:146:11: warning: unused variable 'response' [-Wunused-variable]
+   uint8_t response = parseDefaultTopic(message_buff);
+           ^
+..\MqttUtil.cpp: In static member function 'static boolean MqttUtil::connectToMQTT(const char*, const char*, int, PubSubClient*, WiFiClient, SymphProduct)':
+..\MqttUtil.cpp:195:34: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+  for(int i=0; i<payload.length()+1; i++) {
+                                  ^
+..\MqttUtil.cpp: At global scope:
+..\MqttUtil.cpp:171:9: warning: unused parameter 'wc' [-Wunused-parameter]
+ boolean MqttUtil::connectToMQTT(const char *id, const char *url, int port, PubSubClient *c, WiFiClient wc, SymphProduct p) { //to connect to MQTT server
+         ^
+..\MqttUtil.cpp: In static member function 'static void MqttUtil::signin(String, String, String)':
+..\MqttUtil.cpp:236:18: warning: unknown escape sequence: '\S' [enabled by default]
+     Serial.print("\SignIn to BM topic:");Serial.println(payload);
+                  ^
+subdir.mk:43: recipe for target 'MqttUtil.cpp.o' failed
+make: *** [MqttUtil.cpp.o] Error 1
+
+12:24:05 Build Failed. 8 errors, 7 warnings. (took 3s.828ms)
+
