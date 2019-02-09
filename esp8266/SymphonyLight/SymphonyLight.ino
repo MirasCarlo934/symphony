@@ -110,8 +110,8 @@ int wsHandlerJason(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& 
 					String confData;
 					json.printTo(confData);
 					file.saveToSPIFFS(lightConfigFile.c_str(), confData.c_str());
-					json["cmd"] = 20;
-					json["tsk"] = 4;//the task, 4=showConfig;
+					json["core"] = 7;
+					json["cmd"] = 4;//the task, 4=showConfig;
 					json["msg"] = "Light Config successful.";
 					s.textAll(json);
 					if (doReset)
@@ -121,8 +121,8 @@ int wsHandlerJason(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& 
 				}
 			} else {
 				//show config
-				json["cmd"] = 20;
-				json["tsk"] = 4;//the task, 4=showConfig;
+				json["core"] = 7;
+				json["cmd"] = 4;//the task, 4=showConfig;
 				json["p"] = pixelCount;
 				json["s"] = stringCount;
 				json["u"] = myUniverse;
@@ -157,8 +157,8 @@ int wsHandlerJason(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& 
 #endif
 			if (json.containsKey("data")) {
 				int fireType = json["data"].as<int>();
-				json["cmd"] = 20;
-				json["tsk"] = 1;//the task, 1=showFire;
+				json["core"] = 7;
+				json["cmd"] = 1;//the task, 1=showFire;
 				s.textAll(json);
 				setupFire(fireType);
 				json["msg"] = "Fire command successful.";
@@ -235,8 +235,8 @@ int wsHandlerJason(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& 
 			}
 		}
 		if (cmd == 9) {
-			json["cmd"] = 20;
-			json["tsk"] = 2;
+			json["core"] = 7;
+			json["cmd"] = 2;
 
 			for (int i = 0; i < 2; i++) {
 //				sequenceArray[i].color = color;

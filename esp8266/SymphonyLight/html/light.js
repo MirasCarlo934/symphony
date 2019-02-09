@@ -2,9 +2,9 @@ patterns = ["Flow", "Solid", "Fade", "Twinkle"];
 colors=["RainbowColors","ForestColors","RedGreenBlue","OceanColors","OrangeWhiteBlue","Heat","GreenRedWhiteStripe","YellowBlueWhiteStripe","Christmas","PartyColors","RedWhiteBlue","CloudColors"];
 //colors=["RainbowColors","Green","Blue","Red","Orange","Yellow","Rainbow","Green","Blue","Red","Orange","Yellow"];
 staticPins = [14, 12, 13, 5];
-TSK_PATTERNS = 0;
-TSK_CONFIG = 4;
-TSK_FIRE = 1;
+CMD_PATTERNS = 0;
+CMD_CONFIG = 4;
+CMD_FIRE = 1;
 var cfgJson;
 var doReset = 0;
 //var wsUri = "ws://"+location.hostname+"/ws";
@@ -33,9 +33,9 @@ var doReset = 0;
 //    };
 //  } 
 function serverResponseHandler(json) {
-	var task = json.tsk;
-	switch(task) {
-		case TSK_PATTERNS:
+	var cmd = json.cmd;
+	switch(cmd) {
+		case CMD_PATTERNS:
 			prevIndex = 11;
 			s = json.data;
 //			if (s.index != 1) {
@@ -50,9 +50,9 @@ function serverResponseHandler(json) {
 			var tr = document.getElementById("tr"+currentIndex);
 			tr.style.backgroundColor=('red');
 			break;
-		case TSK_FIRE:
+		case CMD_FIRE:
 			break;
-		case TSK_CONFIG:
+		case CMD_CONFIG:
 			cfgJson = json;
 			showPins(cfgJson, false);
 			break;

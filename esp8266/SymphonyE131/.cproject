@@ -39,6 +39,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyE131/libraries/ESPAsyncWebServer-master/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyE131/libraries/SymphonyCore}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyE131/libraries/ESPAsyncUDP-master/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyE131/libraries/Ethernet/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.1200313292" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>
@@ -64,6 +65,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyE131/libraries/ESPAsyncWebServer-master/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyE131/libraries/SymphonyCore}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyE131/libraries/ESPAsyncUDP-master/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyE131/libraries/Ethernet/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.688580420" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
 							</tool>
@@ -89,6 +91,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyE131/libraries/ESPAsyncWebServer-master/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyE131/libraries/SymphonyCore}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyE131/libraries/ESPAsyncUDP-master/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyE131/libraries/Ethernet/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.S.sketch.input.415669407" name="Assembly source files" superClass="io.sloeber.compiler.S.sketch.input"/>
 							</tool>

@@ -438,8 +438,8 @@ void ChangePalettePeriodically()
         	paletteIndex++;
         	DynamicJsonBuffer jsonBuffer;
 			JsonObject& reply = jsonBuffer.createObject();
-			reply["cmd"] = 20;//the command
-			reply["tsk"] = 0;//the task, 0=showPattern;
+			reply["core"] = CORE_TOCHILD;//the command
+			reply["cmd"] = 0;//the task, 0=showPattern;
 			JsonObject& data = reply.createNestedObject("data");
 			data["index"] = paletteIndex;
 			data["pattern"] = palettes[paletteIndex].pattern;

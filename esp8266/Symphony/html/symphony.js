@@ -3,6 +3,7 @@ const CMD_VALUES = 2
 const CMD_CLIENT = 10
 const CMD_SERVER = 20
 const CORE_GETDEVICEINFO = 4;
+const CORE_TOCHILD = 7;
 
 var itm;
 var updateDone;
@@ -341,6 +342,13 @@ function handleWsMessage(evt) {
   		case CORE_GETDEVICEINFO:
   			populateDeviceInfo(jsonResponse);
   			break;
+  		case CORE_TOCHILD://data from server to the child javascript
+  			var msg = document.getElementById("msg");//comment this out later
+  			msg.innerHTML = JSON.stringify(jsonResponse);//comment this out later
+				if (serverResponseHandler!=null) {//serverResponseHandler method can be defined in the child's javascript
+					serverResponseHandler(jsonResponse);//pass the jsonResponse to the child's javascript
+				}
+  			break;
   	}
   	if (status!=null) {
   		if (jsonResponse.msg!=null)
@@ -381,13 +389,6 @@ function handleWsMessage(evt) {
             	else
             		input.checked=false;
             }
-		}
-  		 break;
-  	 case CMD_SERVER://data from server to all clients to update the elements
-var msg = document.getElementById("msg");//comment this out later
-msg.innerHTML = JSON.stringify(jsonResponse);//comment this out later
-		if (serverResponseHandler!=null) {
-			serverResponseHandler(jsonResponse);//this handler can be defined from other javascript files
 		}
   		 break;
   	 default:

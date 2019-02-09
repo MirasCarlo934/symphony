@@ -57,8 +57,8 @@ void handleToggle(AsyncWebServerRequest *request) {
 }
 
 void sendTimerData(AsyncWebSocketClient *client, JsonObject& json) {
-	json["cmd"] = CMD_SERVER;
-	json["tsk"] = 1;
+	json["core"] = CORE_TOCHILD;
+	json["cmd"] = 1;
 	json["e"] = timerData.enabled?1:0;
 	json["hrs"] = timerData.hour;
 	json["mins1"] = timerData.mins1;
@@ -168,9 +168,9 @@ void loop() {
 					timerData.enabled = false;		//disable timer
 					DynamicJsonBuffer jsonBuffer;
 					JsonObject& json = jsonBuffer.createObject();
-					json["cmd"] = CMD_SERVER;
+					json["core"] = CORE_TOCHILD;
+					json["cmd"] = 1;
 					json["e"] = 0;
-					json["tsk"] = 1;
 					json["hrs"] = timerData.hour;
 					json["mins1"] = timerData.mins1;
 					json["mins2"] = timerData.mins2;
