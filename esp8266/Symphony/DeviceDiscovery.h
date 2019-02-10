@@ -1,6 +1,22 @@
 /*
  * DeviceDiscovery.h
  *
+ *TODO Feb 10 2019
+ *TODO Modify the data structure to this:
+ *TODO { "client" : {"ip": 192
+ *TODO 						- 168
+ *TODO 							- 0
+ *TODO 								[111: {"name" : name1, "mac" : macAddress},
+ *TODO 						 		 112: {"name" : name1, "mac" : macAddress},
+ *TODO 						 		 113: {"name" : name1, "mac" : macAddress}]},
+ *TODO 	"server" : {"ip" : 192
+ *TODO 						- 168
+ *TODO 							- 0
+ *TODO 								- 110
+ *TODO 				"name" : name}
+ *TODO
+ *
+ *
  * Enables the Symphony core to do simple device discovery.  Uses multicast to manage the ip addresses.
  * multicast ip is 239.1.2.3 port is 1234
  *
@@ -379,10 +395,14 @@ void startDiscovery(String name) {
 		Serial.println("[startDiscovery]");
 		gJson.printTo(Serial);
 #endif
-		gServerIP.add(0);
-		gServerIP.add(0);
-		gServerIP.add(0);
-		gServerIP.add(0);
+		if (gServerIP.size() <= 0) {
+			//we create a new array of serverIP, we should ensure that there is only 1 IP.
+			//possibility of creating more IPs is when connection to router is gone and this device reconnects
+			gServerIP.add(0);
+			gServerIP.add(0);
+			gServerIP.add(0);
+			gServerIP.add(0);
+		}
 	}
 	Serial.println("\n[startDiscovery] end");
 }

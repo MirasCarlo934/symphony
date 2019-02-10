@@ -55,7 +55,7 @@ bool 		isUpdateFw = false; // used to indicate if firmware update is ongoing
 Filemanager	fManager = 		Filemanager();
 int8_t		fwResult = 0;
 long identifyTries[] = {5000, 10000, 20000};
-int tries = 0;
+int discoveryTries = 0;
 
 /*
  * This is the callback handler that will be called when a Websocket event arrives.
@@ -235,8 +235,9 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 }
 
 void onWifiConnect(const WiFiEventStationModeGotIP &event) {
-    Serial.print(F("Connected with IP: "));
-    Serial.println(WiFi.localIP());
+    Serial.print(F("*** Connected with IP: "));
+    Serial.print(WiFi.localIP());
+    Serial.println(" ***");
 
     // Setup mDNS / DNS-SD
     char chipId[7] = { 0 };
@@ -247,6 +248,10 @@ void onWifiConnect(const WiFiEventStationModeGotIP &event) {
     } else {
         Serial.println(F("*** Error setting up mDNS responder ***"));
     }
+#ifdef DISCOVERABLE
+	 startDiscovery(Symphony::hostName);
+	 discoveryTries = 0;
+#endif
 }
 void onWiFiDisconnect(const WiFiEventStationModeDisconnected &event) {
     Serial.println(F("*** WiFi Disconnected ***"));
@@ -414,9 +419,9 @@ bool Symphony::loop() {
 	}
 	if (!isUpdateFw) {
 #ifdef DISCOVERABLE
-		if (tries < 3) {
-			sendIdentify(identifyTries[tries]);
-			tries++;
+		if (discoveryTries < 3) {
+			sendIdentify(identifyTries[discoveryTries]);
+			discoveryTries++;
 		} else
 			sendIdentify();	//this device sends discovery identify mode every 2mins, use sendIdentify(ms) if you want to override interval
 #endif
@@ -515,9 +520,7 @@ void Symphony::connectToWifi(String theHostName) {
 	if (WiFi.status() != WL_CONNECTED) {
 		setupAP();
 	} else {
-#ifdef DISCOVERABLE
-	    startDiscovery(hostName);
-#endif
+
 	}
 }
 /*

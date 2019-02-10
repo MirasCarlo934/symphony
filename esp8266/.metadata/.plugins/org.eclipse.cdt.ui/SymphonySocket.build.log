@@ -1,32 +1,5 @@
-11:07:57 **** Incremental Build of configuration Release for project SymphonySocket ****
+20:23:01 **** Incremental Build of configuration Release for project SymphonySocket ****
 "C:\\sloeber\\arduinoPlugin\\tools\\make\\make" all 
-'Building file: ..\sloeber.ino.cpp'
-'Starting C++ compile'
-"C:\sloeber\arduinoPlugin\packages\esp8266\tools\xtensa-lx106-elf-gcc\1.20.0-26-gb404fb9-2/bin/xtensa-lx106-elf-g++" -D__ets__ -DICACHE_FLASH -U__STRICT_ANSI__ "-IC:\sloeber\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/tools/sdk/include" "-IC:\sloeber\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/tools/sdk/lwip2/include" "-IC:\sloeber\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/tools/sdk/libc/xtensa-lx106-elf/include" "-ID:/git_symphony/esp8266/SymphonySocket/Release/core" -c -Wall -Wextra  -Os -g -mlongcalls -mtext-section-literals -fno-exceptions -fno-rtti -falign-functions=4 -std=c++11 -MMD -ffunction-sections -fdata-sections -DF_CPU=160000000L -DLWIP_OPEN_SRC -DTCP_MSS=536 -DDEBUG_ESP_PORT=Serial  -DARDUINO=10802 -DARDUINO_ESP8266_GENERIC -DARDUINO_ARCH_ESP8266 -DARDUINO_BOARD="\"ESP8266_GENERIC\"" -DLED_BUILTIN=2  -DESP8266   -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\cores\esp8266" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\variants\generic" -I"D:\projects\arduinolibraries\Symphony" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\DNSServer\src" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\ESP8266mDNS" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\ESP8266WiFi\src" -I"C:\Users\User\Documents\Arduino\libraries\ESPAsyncTCP-master\src" -I"C:\Users\User\Documents\Arduino\libraries\ESPAsyncWebServer-master\src" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\Hash\src" -I"C:\Users\User\Documents\Arduino\libraries\ESP_Async_E1.31" -I"C:\Users\User\Documents\Arduino\libraries\ESPAsyncUDP-master\src" -I"C:\Users\User\Documents\Arduino\libraries\ArduinoJson\src" -MMD -MP -MF"sloeber.ino.cpp.d" -MT"sloeber.ino.cpp.o" -D__IN_ECLIPSE__=1 -x c++ "..\sloeber.ino.cpp"  -o  "sloeber.ino.cpp.o"
-In file included from C:\Users\User\Documents\Arduino\libraries\ESPAsyncWebServer-master\src/ESPAsyncWebServer.h:454:0,
-                 from D:\projects\arduinolibraries\Symphony/Symphony.h:14,
-                 from ..\sloeber.ino.cpp:10:
-C:\Users\User\Documents\Arduino\libraries\ESPAsyncWebServer-master\src/AsyncWebSocket.h:82:10: warning: unused parameter 'i' [-Wunused-parameter]
-     void operator ++(int i) { _count++; }
-          ^
-C:\Users\User\Documents\Arduino\libraries\ESPAsyncWebServer-master\src/AsyncWebSocket.h:83:10: warning: unused parameter 'i' [-Wunused-parameter]
-     void operator --(int i) {  if (_count > 0) { _count--; } ;  }
-          ^
-In file included from ..\sloeber.ino.cpp:18:0:
-..\SymphonySocket.ino: In function 'int wsHandler(AsyncWebSocket, AsyncWebSocketClient*, ArduinoJson::JsonObject&)':
-..\SymphonySocket.ino:112:1: warning: no return statement in function returning non-void [-Wreturn-type]
- }
- ^
-..\SymphonySocket.ino: At global scope:
-..\SymphonySocket.ino:76:5: warning: unused parameter 'ws' [-Wunused-parameter]
- int wsHandler(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json) {
-     ^
-..\SymphonySocket.ino: In function 'void loop()':
-..\SymphonySocket.ino:165:62: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
-     if (millis() >= (timerData.startMillis + timerData.millis)) {
-                                                              ^
-'Finished building: ..\sloeber.ino.cpp'
-' '
 'Building file: D:\projects\arduinolibraries\Symphony\Symphony.cpp'
 'Starting C++ compile'
 "C:\sloeber\arduinoPlugin\packages\esp8266\tools\xtensa-lx106-elf-gcc\1.20.0-26-gb404fb9-2/bin/xtensa-lx106-elf-g++" -D__ets__ -DICACHE_FLASH -U__STRICT_ANSI__ "-IC:\sloeber\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/tools/sdk/include" "-IC:\sloeber\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/tools/sdk/lwip2/include" "-IC:\sloeber\/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/tools/sdk/libc/xtensa-lx106-elf/include" "-ID:/git_symphony/esp8266/SymphonySocket/Release/core" -c -Wall -Wextra  -Os -g -mlongcalls -mtext-section-literals -fno-exceptions -fno-rtti -falign-functions=4 -std=c++11 -MMD -ffunction-sections -fdata-sections -DF_CPU=160000000L -DLWIP_OPEN_SRC -DTCP_MSS=536 -DDEBUG_ESP_PORT=Serial  -DARDUINO=10802 -DARDUINO_ESP8266_GENERIC -DARDUINO_ARCH_ESP8266 -DARDUINO_BOARD="\"ESP8266_GENERIC\"" -DLED_BUILTIN=2  -DESP8266   -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\cores\esp8266" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\variants\generic" -I"D:\projects\arduinolibraries\Symphony" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\DNSServer\src" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\ESP8266mDNS" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\ESP8266WiFi\src" -I"C:\Users\User\Documents\Arduino\libraries\ESPAsyncTCP-master\src" -I"C:\Users\User\Documents\Arduino\libraries\ESPAsyncWebServer-master\src" -I"C:\sloeber\arduinoPlugin\packages\esp8266\hardware\esp8266\2.4.2\libraries\Hash\src" -I"C:\Users\User\Documents\Arduino\libraries\ESP_Async_E1.31" -I"C:\Users\User\Documents\Arduino\libraries\ESPAsyncUDP-master\src" -I"C:\Users\User\Documents\Arduino\libraries\ArduinoJson\src" -MMD -MP -MF"libraries\Symphony\Symphony.cpp.d" -MT"libraries\Symphony\Symphony.cpp.o" -D__IN_ECLIPSE__=1 -x c++ "D:\projects\arduinolibraries\Symphony\Symphony.cpp"  -o  "libraries\Symphony\Symphony.cpp.o"
@@ -78,13 +51,13 @@ D:\projects\arduinolibraries\Symphony\Symphony.cpp:88:6: warning: unused paramet
 D:\projects\arduinolibraries\Symphony\Symphony.cpp:237:6: warning: unused parameter 'event' [-Wunused-parameter]
  void onWifiConnect(const WiFiEventStationModeGotIP &event) {
       ^
-D:\projects\arduinolibraries\Symphony\Symphony.cpp:251:6: warning: unused parameter 'event' [-Wunused-parameter]
+D:\projects\arduinolibraries\Symphony\Symphony.cpp:256:6: warning: unused parameter 'event' [-Wunused-parameter]
  void onWiFiDisconnect(const WiFiEventStationModeDisconnected &event) {
       ^
-D:\projects\arduinolibraries\Symphony\Symphony.cpp:288:6: warning: unused parameter 'request' [-Wunused-parameter]
+D:\projects\arduinolibraries\Symphony\Symphony.cpp:293:6: warning: unused parameter 'request' [-Wunused-parameter]
  void handleFileUpload(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final) { // upload a new file to the SPIFFS
       ^
-D:\projects\arduinolibraries\Symphony\Symphony.cpp:316:6: warning: unused parameter 'request' [-Wunused-parameter]
+D:\projects\arduinolibraries\Symphony\Symphony.cpp:321:6: warning: unused parameter 'request' [-Wunused-parameter]
  void handleFirmWareUpload(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final) {
       ^
 'Finished building: D:\projects\arduinolibraries\Symphony\Symphony.cpp'
@@ -107,16 +80,16 @@ section                                                                         
 .noinit                                                                                                                                                                                                                                                                                                        4   1073645152
 .irom0.text                                                                                                                                                                                                                                                                                               339248   1075843088
 .text                                                                                                                                                                                                                                                                                                      29184   1074790400
-.rodata                                                                                                                                                                                                                                                                                                     9296   1073645168
-.bss                                                                                                                                                                                                                                                                                                       26024   1073654464
+.rodata                                                                                                                                                                                                                                                                                                     9304   1073645168
+.bss                                                                                                                                                                                                                                                                                                       26016   1073654472
 .debug_frame                                                                                                                                                                                                                                                                                              110824            0
-.debug_info                                                                                                                                                                                                                                                                                              3202003            0
+.debug_info                                                                                                                                                                                                                                                                                              3201954            0
 .debug_abbrev                                                                                                                                                                                                                                                                                             290432            0
-.debug_loc                                                                                                                                                                                                                                                                                                872785            0
+.debug_loc                                                                                                                                                                                                                                                                                                872871            0
 .debug_aranges                                                                                                                                                                                                                                                                                             34816            0
-.debug_ranges                                                                                                                                                                                                                                                                                             115480            0
-.debug_line                                                                                                                                                                                                                                                                                               744947            0
-.debug_str                                                                                                                                                                                                                                                                                                595278            0
+.debug_ranges                                                                                                                                                                                                                                                                                             115536            0
+.debug_line                                                                                                                                                                                                                                                                                               745013            0
+.debug_str                                                                                                                                                                                                                                                                                                595233            0
 .comment                                                                                                                                                                                                                                                                                                    5482            0
 .xtensa.info                                                                                                                                                                                                                                                                                                  56            0
 .xt.lit._ZN11ArduinoJson9Internals21DynamicJsonBufferBaseINS0_16DefaultAllocatorEE5allocEj                                                                                                                                                                                                                     0            0
@@ -656,11 +629,11 @@ section                                                                         
 .xt.lit._ZNSt10_List_baseIN18ScheduledFunctions16ScheduledElementESaIS1_EE8_M_clearEv                                                                                                                                                                                                                          0            0
 .xt.prop._ZN18ScheduledFunctions16ScheduledElementD2Ev                                                                                                                                                                                                                                                        36            0
 .xt.prop._ZNSt10_List_baseIN18ScheduledFunctions16ScheduledElementESaIS1_EE8_M_clearEv                                                                                                                                                                                                                        60            0
-Total                                                                                                                                                                                                                                                                                                    6396719
+Total                                                                                                                                                                                                                                                                                                    6396833
 
 
 'Finished building target: SymphonySocket'
 ' '
 
-11:08:28 Build Finished. 0 errors, 21 warnings. (took 31s.355ms)
+20:23:37 Build Finished. 0 errors, 16 warnings. (took 35s.958ms)
 

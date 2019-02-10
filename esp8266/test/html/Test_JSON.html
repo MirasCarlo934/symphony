@@ -1,0 +1,47 @@
+<html>
+<head>
+<title>Home Symphony</title>
+</head>
+<script>
+
+/**
+ * serverResponseHandler(json) is called by symphony.js
+ */
+function testjson() {
+/*
+	json = {"client" : {"ip":{"octet1":{"octet2":{"octet3":"octet4"}}}}}
+	alert(JSON.stringify(json));
+	
+	client = json.client
+	alert (client);
+	ip = client.ip;
+	alert(ip);
+	octet1 = ip.octet1
+	alert(octet1);
+	octet2 = octet1.octet2
+	alert(octet2);
+	octet3 = octet2.octet3
+	alert(octet3);
+	
+	alert(json.client.ip.octet1.octet2.octet3)
+*/	
+	json = {"client" : {"ip":{192:{168:{0:111}}}}}
+	alert(JSON.stringify(json));
+	
+	client = json.client
+	alert (client);
+	ip = client.ip;
+	alert(ip);
+	octet1 = ip["192"];
+	alert(octet1);
+	octet2 = octet1["168"];
+	alert(octet2);
+	octet3 = octet2["0"];
+	alert(octet3);
+}
+</script>
+
+<body >
+<input type='button' value='Test' onclick='testjson()'>
+</body>
+</html>
