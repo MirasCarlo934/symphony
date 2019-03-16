@@ -31,7 +31,7 @@
 #define  CORE_DELETE 3
 #define  CORE_GETDEVICEINFO 4
 #define  CORE_VALUES 20
-#define  CORE_TOCHILD 7
+#define  CORE_CONTROL 7
 
 class Symphony {
 	public:

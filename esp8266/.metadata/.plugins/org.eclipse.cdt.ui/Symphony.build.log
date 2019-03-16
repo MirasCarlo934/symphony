@@ -1,4 +1,4 @@
-15:19:43 **** Incremental Build of configuration Release for project Symphony ****
+22:18:31 **** Incremental Build of configuration Release for project Symphony ****
 "C:\\sloeber\\arduinoPlugin\\tools\\make\\make" all 
 'Building file: ..\Symphony.cpp'
 'Starting C++ compile'
@@ -14,50 +14,50 @@ C:\Users\User\Documents\Arduino\libraries\ESPAsyncWebServer-master\src/AsyncWebS
           ^
 In file included from ..\Symphony.cpp:28:0:
 ..\DeviceDiscovery.h: In member function 'void DeviceInfo::selectServer()':
-..\DeviceDiscovery.h:127:36: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+..\DeviceDiscovery.h:143:36: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
    for (int i = 0; i < devices.size(); i++) {
                                     ^
 ..\DeviceDiscovery.h: At global scope:
-..\DeviceDiscovery.h:156:6: warning: unused parameter 'name' [-Wunused-parameter]
+..\DeviceDiscovery.h:172:6: warning: unused parameter 'name' [-Wunused-parameter]
  void DeviceInfo::addServer(String name, IPAddress ip) {
       ^
-..\DeviceDiscovery.h:156:6: warning: unused parameter 'ip' [-Wunused-parameter]
+..\DeviceDiscovery.h:172:6: warning: unused parameter 'ip' [-Wunused-parameter]
 ..\DeviceDiscovery.h: In member function 'void DeviceInfo::refresh()':
-..\DeviceDiscovery.h:164:49: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+..\DeviceDiscovery.h:180:49: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
   if (millis() - timeMs >= timerIntervalMillis * 10) { //refresh rate is 10 * timerIntervalMillis
                                                  ^
-..\DeviceDiscovery.h:170:36: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+..\DeviceDiscovery.h:186:36: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
    for (int i = 0; i < devices.size(); i++) {
                                     ^
-..\DeviceDiscovery.h:172:55: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+..\DeviceDiscovery.h:188:55: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
     if (millis() - devices[i]["time"].as<long>() > 3 * timerIntervalMillis && devices[i]["ip"][3] != WiFi.localIP()[3]) {
                                                        ^
 ..\DeviceDiscovery.h: In member function 'boolean DeviceInfo::exists(IPAddress)':
-..\DeviceDiscovery.h:192:35: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+..\DeviceDiscovery.h:208:35: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
   for (int i = 0; i < devices.size(); i++) {
                                    ^
 ..\DeviceDiscovery.h: In function 'void sendIdentify()':
-..\DeviceDiscovery.h:326:32: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+..\DeviceDiscovery.h:342:32: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
    if (millis() - timeMillis >= timerIntervalMillis) { //send multicast every timerIntervalMillis ms
                                 ^
 ..\DeviceDiscovery.h: In function 'void startDiscovery(String)':
-..\DeviceDiscovery.h:375:8: warning: unused variable 'timeMillis' [-Wunused-variable]
+..\DeviceDiscovery.h:391:8: warning: unused variable 'timeMillis' [-Wunused-variable]
    long timeMillis = millis();
         ^
 ..\Symphony.cpp: At global scope:
 ..\Symphony.cpp:88:6: warning: unused parameter 'server' [-Wunused-parameter]
  void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void * arg, uint8_t *data, size_t len) {
       ^
-..\Symphony.cpp:237:6: warning: unused parameter 'event' [-Wunused-parameter]
+..\Symphony.cpp:247:6: warning: unused parameter 'event' [-Wunused-parameter]
  void onWifiConnect(const WiFiEventStationModeGotIP &event) {
       ^
-..\Symphony.cpp:251:6: warning: unused parameter 'event' [-Wunused-parameter]
+..\Symphony.cpp:266:6: warning: unused parameter 'event' [-Wunused-parameter]
  void onWiFiDisconnect(const WiFiEventStationModeDisconnected &event) {
       ^
-..\Symphony.cpp:288:6: warning: unused parameter 'request' [-Wunused-parameter]
+..\Symphony.cpp:303:6: warning: unused parameter 'request' [-Wunused-parameter]
  void handleFileUpload(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final) { // upload a new file to the SPIFFS
       ^
-..\Symphony.cpp:316:6: warning: unused parameter 'request' [-Wunused-parameter]
+..\Symphony.cpp:331:6: warning: unused parameter 'request' [-Wunused-parameter]
  void handleFirmWareUpload(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final) {
       ^
 'Finished building: ..\Symphony.cpp'
@@ -92,18 +92,18 @@ D:/git_symphony/esp8266/Symphony/Release/Symphony.elf  :
 section                                                                                                                                                                                                                                                                                                     size         addr
 .data                                                                                                                                                                                                                                                                                                       1628   1073643520
 .noinit                                                                                                                                                                                                                                                                                                        4   1073645148
-.irom0.text                                                                                                                                                                                                                                                                                               331488   1075843088
+.irom0.text                                                                                                                                                                                                                                                                                               331920   1075843088
 .text                                                                                                                                                                                                                                                                                                      29184   1074790400
-.rodata                                                                                                                                                                                                                                                                                                     8828   1073645152
-.bss                                                                                                                                                                                                                                                                                                       25888   1073653984
-.debug_frame                                                                                                                                                                                                                                                                                              122956            0
-.debug_info                                                                                                                                                                                                                                                                                              3679522            0
+.rodata                                                                                                                                                                                                                                                                                                     9016   1073645152
+.bss                                                                                                                                                                                                                                                                                                       25880   1073654168
+.debug_frame                                                                                                                                                                                                                                                                                              123084            0
+.debug_info                                                                                                                                                                                                                                                                                              3683203            0
 .debug_abbrev                                                                                                                                                                                                                                                                                             326139            0
-.debug_loc                                                                                                                                                                                                                                                                                                986482            0
-.debug_aranges                                                                                                                                                                                                                                                                                             38384            0
-.debug_ranges                                                                                                                                                                                                                                                                                             124568            0
-.debug_line                                                                                                                                                                                                                                                                                               815513            0
-.debug_str                                                                                                                                                                                                                                                                                                667244            0
+.debug_loc                                                                                                                                                                                                                                                                                                987725            0
+.debug_aranges                                                                                                                                                                                                                                                                                             38416            0
+.debug_ranges                                                                                                                                                                                                                                                                                             124912            0
+.debug_line                                                                                                                                                                                                                                                                                               816134            0
+.debug_str                                                                                                                                                                                                                                                                                                667811            0
 .comment                                                                                                                                                                                                                                                                                                    5482            0
 .xtensa.info                                                                                                                                                                                                                                                                                                  56            0
 .xt.lit._ZN2fs4File9readBytesEPcj                                                                                                                                                                                                                                                                              0            0
@@ -182,6 +182,7 @@ section                                                                         
 .xt.lit._ZN11ArduinoJson10JsonObject8set_implIPKcRKbEEbT_T0_                                                                                                                                                                                                                                                   0            0
 .xt.lit._ZN11ArduinoJson10JsonObject3setINS_9JsonArrayEKcEEbPT0_RKT_                                                                                                                                                                                                                                           0            0
 .xt.lit._ZN11ArduinoJson10JsonObject8set_implIPKcRKiEEbT_T0_                                                                                                                                                                                                                                                   0            0
+.xt.lit._ZN11ArduinoJson10JsonObject23createNestedObject_implIPKcEERS0_T_                                                                                                                                                                                                                                      0            0
 .xt.lit._ZN11ArduinoJson10JsonObject3setIKcS2_EEbPT0_PT_                                                                                                                                                                                                                                                       0            0
 .xt.lit._ZN11ArduinoJson10JsonObject3setImKcEEbPT0_RKT_                                                                                                                                                                                                                                                        0            0
 .xt.lit._ZNK11ArduinoJson10JsonObject8get_implIPKcNS_9JsonArrayEEENS_9Internals13JsonVariantAsIT0_E4typeET_                                                                                                                                                                                                    0            0
@@ -268,6 +269,7 @@ section                                                                         
 .xt.prop._ZN11ArduinoJson10JsonObject8set_implIPKcRKbEEbT_T0_                                                                                                                                                                                                                                                 72            0
 .xt.prop._ZN11ArduinoJson10JsonObject3setINS_9JsonArrayEKcEEbPT0_RKT_                                                                                                                                                                                                                                         72            0
 .xt.prop._ZN11ArduinoJson10JsonObject8set_implIPKcRKiEEbT_T0_                                                                                                                                                                                                                                                 72            0
+.xt.prop._ZN11ArduinoJson10JsonObject23createNestedObject_implIPKcEERS0_T_                                                                                                                                                                                                                                    60            0
 .xt.prop._ZN11ArduinoJson10JsonObject3setIKcS2_EEbPT0_PT_                                                                                                                                                                                                                                                     72            0
 .xt.prop._ZN11ArduinoJson10JsonObject3setImKcEEbPT0_RKT_                                                                                                                                                                                                                                                      72            0
 .xt.prop._ZNK11ArduinoJson10JsonObject8get_implIPKcNS_9JsonArrayEEENS_9Internals13JsonVariantAsIT0_E4typeET_                                                                                                                                                                                                  60            0
@@ -614,11 +616,11 @@ section                                                                         
 .xt.lit._ZNSt10_List_baseIN18ScheduledFunctions16ScheduledElementESaIS1_EE8_M_clearEv                                                                                                                                                                                                                          0            0
 .xt.prop._ZN18ScheduledFunctions16ScheduledElementD2Ev                                                                                                                                                                                                                                                        36            0
 .xt.prop._ZNSt10_List_baseIN18ScheduledFunctions16ScheduledElementESaIS1_EE8_M_clearEv                                                                                                                                                                                                                        60            0
-Total                                                                                                                                                                                                                                                                                                    7180578
+Total                                                                                                                                                                                                                                                                                                    7187866
 
 
 'Finished building target: Symphony'
 ' '
 
-15:20:27 Build Finished. 0 errors, 18 warnings. (took 44s.86ms)
+22:19:22 Build Finished. 0 errors, 18 warnings. (took 51s.463ms)
 

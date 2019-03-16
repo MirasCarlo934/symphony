@@ -4,9 +4,10 @@
 **/libraries
 **/.settings
 **/core
+**/.metadata
+**.metadata
 /spec.d
 /sloeber.ino.cpp
 /api.txt
 /.cproject
 /.project
-/.metadata/

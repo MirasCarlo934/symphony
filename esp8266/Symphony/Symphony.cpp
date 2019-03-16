@@ -109,8 +109,9 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 							//this is for the core
 							int cmd = json["core"].as<int>();
 							switch (cmd) {
+
 								case CORE_INIT:
-									//this is the connection handling
+									//this is the INIT command from the WS client.
 									if (json.containsKey("data")) {
 										String d = json["data"].as<String>();
 										if (d.equals("INIT")) {
@@ -130,8 +131,8 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 											client->text("PING Successful");
 									}
 									break;
-								case CORE_COMMIT:
-									//this is the commit AP, Passkey and Device Name, then reboot is done
+								case CORE_COMMIT://this is the commit AP, Passkey and Device Name, then reboot is done
+									//this is from the admin WS client
 									if (json.containsKey("data")) {
 										String cfg = json["data"].as<String>();
 #ifdef DEBUG_ONLY
@@ -141,7 +142,7 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 										reboot = true;
 									}
 									break;
-								case CORE_DELETE://this is the delete file
+								case CORE_DELETE://this is the delete file command from the WS admin client
 									//delete path fr SPIFFS
 									if (json.containsKey("data")) {
 										String path = json["data"].as<String>();
@@ -152,10 +153,13 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 										client->text(path + " deleted");
 									}
 									break;
-								case CORE_VALUES://VALUES command
+								case CORE_VALUES://VALUES command from the WS client, sends the current values of the product
+									//this is used by the client app to display the current state of the product
 										client->text(Symphony::product.stringifyValues());
 									break;
-								case CORE_GETDEVICEINFO://GET DEVICE INFO command
+								case CORE_GETDEVICEINFO://GET DEVICE INFO command from the WS client
+								{
+									//this is used by the admin client to display the current device info like Device name, SSID, passkey
 									Serial.println("********************* Get device Info.");
 //									DynamicJsonBuffer jsonBuffer;
 //									JsonObject& jsonObj = jsonBuffer.createObject();
@@ -167,7 +171,7 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 									JsonObject& jsonObj = jsonBuffer.parseObject(fManager.readConfig());
 									if (jsonObj.success()) {
 #ifdef DEBUG_ONLY
-										Serial.println("*********************8 Get device Info.");
+										Serial.println("********************** Get device Info.");
 										jsonObj.prettyPrintTo(Serial);
 #endif
 										jsonObj["core"] = CORE_GETDEVICEINFO;
@@ -176,36 +180,42 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 										client->text(deviceInfo);
 									}
 									break;
-							}
-						} else if (json.containsKey("cmd")) {
-							int cmd = json["cmd"].as<int>();
-							if (cmd == 10) {//command from control
-								//evaluate if corePin==true, execute here.  Else pass to wscallback
-								attribStruct attrib = Symphony::product.getProperty(json["ssid"].as<char *>());
-	#ifdef DEBUG_ONLY
-								Serial.printf("got attribute %s, current value=%i, pin=%i, corePin=%s\n", attrib.ssid.c_str(), attrib.gui.value, attrib.pin, attrib.corePin?"true":"false");
-	#endif
-								if (attrib.corePin) {
-									Symphony::product.setValue(json["ssid"].as<char *>(), json["val"].as<int>());
-								} else {
-									//this is for the implementor
-									if (WsCallback != nullptr) {
-										WsCallback(ws, client, json);
-									} else {
-										Serial.println("[wsEvent]No Websocket callback set!!!");
+								}
+								case CORE_CONTROL://transactions from client to control the device
+								{
+									int cmd = json["cmd"].as<int>();
+									if (cmd == 10) {//command from control
+										//evaluate if corePin==true, execute here.  Else pass to wscallback
+										attribStruct attrib = Symphony::product.getProperty(json["ssid"].as<char *>());
+#ifdef DEBUG_ONLY
+										Serial.printf("got attribute %s, current value=%i, pin=%i, corePin=%s\n", attrib.ssid.c_str(), attrib.gui.value, attrib.pin, attrib.corePin?"true":"false");
+#endif
+										if (attrib.corePin) {
+											Symphony::product.setValue(json["ssid"].as<char *>(), json["val"].as<int>());
+										} else {
+											//this is for the implementor
+											if (WsCallback != nullptr) {
+												WsCallback(ws, client, json);
+											} else {
+												Serial.println("[wsEvent]No Websocket callback set!!!");
+											}
+										}
+										String strReply;
+										json.printTo(strReply);
+										ws.textAll(strReply);
+									} else {//other commands like setup, etc specific to the control of device
+										//this is for the implementor
+										if (WsCallback != nullptr) {
+											WsCallback(ws, client, json);
+										} else {
+											Serial.println("[wsEvent]No Websocket callback set!!!");
+										}
 									}
 								}
-								String strReply;
-								json.printTo(strReply);
-								ws.textAll(strReply);
-							} else {
-								//this is for the implementor
-								if (WsCallback != nullptr) {
-									WsCallback(ws, client, json);
-								} else {
-									Serial.println("[wsEvent]No Websocket callback set!!!");
-								}
+									break;
 							}
+						} else if (json.containsKey("cmd")) {
+
 						}
 					}
 				} else {
@@ -329,7 +339,7 @@ void handleFirmWareUpload(AsyncWebServerRequest *request, String filename, size_
  */
 void initWebServer() {
 
-	webServer.on("/", showControl);
+	webServer.on("/control", showControl);		//shows the properties of the device for control functions
 	webServer.serveStatic("/admin", SPIFFS, "/admin.html");
 	webServer.serveStatic("/img.jpg", SPIFFS, "/img.jpg");
 	webServer.serveStatic("/symphony.css", SPIFFS, "/symphony.css");
@@ -391,7 +401,7 @@ void Symphony::setup(String theHostName) {
 	// Setup WebSockets
 	ws.onEvent(wsEvent);
 	webServer.addHandler(&ws);
-	initWebServer();
+	initWebServer();	//initialize the html pages
 
 	wifiDisconnectHandler = WiFi.onStationModeDisconnected(onWiFiDisconnect);
 	webServer.begin();
@@ -477,6 +487,9 @@ void Symphony::setupAP() {
 	webServer.serveStatic("/wifisave", SPIFFS, "/admin.html");
 	webServer.serveStatic("/i", SPIFFS, "/admin.html");
 	webServer.serveStatic("/r", SPIFFS, "/admin.html");
+	webServer.onNotFound([](AsyncWebServerRequest *request) {
+		request->send(200, "text/html", "Captive Portal");
+		});
 //	webServer.on("/generate_204", HTTP_ANY, [](AsyncWebServerRequest *request) {
 //		request->send(200, "text/html", "Captive Portal");
 //		});
@@ -486,6 +499,7 @@ void Symphony::setupAP() {
 }
 /**
  * Connect to the AP using the passkey
+ * If unable to connect, setup its own AP
  */
 void Symphony::connectToWifi(String theHostName) {
 	// Switch to station mode and disconnect just in case

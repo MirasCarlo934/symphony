@@ -28,6 +28,15 @@ function testjson() {
 	json = {"client" : {"ip":{192:{168:{0:111}}}}}
 	alert(JSON.stringify(json));
 	
+	var key1 = Object.keys(json);
+	alert(key1)
+	var key2 = Object.keys(json[key1]);
+	alert(key2)
+	var key3 = Object.keys(key2);
+	alert(key3)
+	var key4 = Object.keys(key3);
+	alert(key4)
+	
 	client = json.client
 	alert (client);
 	ip = client.ip;
@@ -38,6 +47,8 @@ function testjson() {
 	alert(octet2);
 	octet3 = octet2["0"];
 	alert(octet3);
+	
+	
 }
 </script>
 

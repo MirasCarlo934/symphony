@@ -137,7 +137,7 @@ function getProgress() {
 /*
  * Loads the control page
  */
-function loadDoc() {
+function loadControlPage() {
   var xhttp;
   xhttp=new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
@@ -148,6 +148,11 @@ function loadDoc() {
   xhttp.open("GET", "/properties.html", true);
   xhttp.send();
 }
+/**
+ * Renders the control page returned by /properties.html
+ * @param xhttp
+ * @returns
+ */
 function renderPage(xhttp) {
 	//reponseText is of this form:
 	//	{"cmd":1,"name":"symphonyLight",
@@ -290,7 +295,7 @@ function sendWSRequestToServer(formId) {
 	websocket.send(JSON.stringify(jsonRequest));
 }
 function sendOnOffWs(e) {
-	var jsonResponse = {"cmd":10};//we are sending a cmd to the device
+	var jsonResponse = {"core":7, "cmd":10};// core:7 - this transaction is to control the device
 	jsonResponse["mac"] = mac;
 	jsonResponse["ssid"] = e.id;
 	jsonResponse["cid"] = cid;
@@ -345,9 +350,9 @@ function handleWsMessage(evt) {
   		case CORE_TOCHILD://data from server to the child javascript
   			var msg = document.getElementById("msg");//comment this out later
   			msg.innerHTML = JSON.stringify(jsonResponse);//comment this out later
-				if (serverResponseHandler!=null) {//serverResponseHandler method can be defined in the child's javascript
-					serverResponseHandler(jsonResponse);//pass the jsonResponse to the child's javascript
-				}
+			if (serverResponseHandler!=null) {//serverResponseHandler method can be defined in the child's javascript
+				serverResponseHandler(jsonResponse);//pass the jsonResponse to the child's javascript
+			}
   			break;
   	}
   	if (status!=null) {

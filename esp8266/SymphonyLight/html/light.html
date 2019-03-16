@@ -15,6 +15,8 @@
   <button class="tablinks" onclick='openTab(event, "sparkle");sendSparkleData();'>Sparkle</button>  
   <button class="tablinks" onclick="window.location.pathname = '/picker.html';">Picker</button>
   <button class="tablinks" onclick="openTab(event, 'config');getConfig();">Configure</button>
+  <button class="tablinks" onclick="openTab(event, 'setSeq');setSequence();">Set Seq</button>
+  <button class="tablinks" onclick="openTab(event, 'getSeq');getSequence();">Get Seq</button>
 </div>
 <div class="footer" id="status"></div>
 <div class="blurred"></div>
@@ -88,6 +90,21 @@
 </div>
 </fieldset></center>
 </div>
-
+<div id="setSeq" class="tabcontent">
+<h3>Set Sequence</h3>
+<center><fieldset style="width:95%;text-align:center;"><legend><label  id="legend">Fire</label></legend>
+<label>pattern1</label><input type="text" style="width:5em" name="ptrn1"><input type="text" style="width:5em" name="color1"><input type="text" style="width:5em" name="dur1"><br>
+<label>pattern2</label><input type="text" style="width:5em" name="ptrn2"><input type="text" style="width:5em" name="color2"><input type="text" style="width:5em" name="dur2"><br>
+<input type="button" onclick="sendSetSequence()" value="Submit">
+</fieldset></center>
+</div>
+<div id="getSeq" class="tabcontent">
+<h3>Get Sequence</h3>
+<center><fieldset style="width:95%;text-align:center;"><legend><label  id="legend">Fire</label></legend>
+<label>pattern1</label><input type="text" style="width:5em" name="ptrn1"><input type="text" style="width:5em" name="color1"><input type="text" style="width:5em" name="dur1"><br>
+<label>pattern2</label><input type="text" style="width:5em" name="ptrn2"><input type="text" style="width:5em" name="color2"><input type="text" style="width:5em" name="dur2"><br>
+<input type="button" onclick="sendGetSequence()" value="Submit">
+</fieldset></center>
+</div>
 </body>
 </html>

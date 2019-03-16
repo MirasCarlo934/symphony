@@ -201,7 +201,8 @@ int wsHandlerJason(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& 
 		if (cmd == 8) {//reserved
 //			data has this format
 //			{
-//				"cmd": 1,
+//				"core": 7,
+//				"cmd": 8,
 //				"seq": [
 //					{
 //						"ptrn": 0,
@@ -217,6 +218,7 @@ int wsHandlerJason(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& 
 //			}
 			seq = CYCLE;
 			if (json.containsKey("seq")) {
+
 				JsonArray& a = json["seq"];
 #ifdef DEBUG_PIXELS
 				a.printTo(Serial);
@@ -225,23 +227,34 @@ int wsHandlerJason(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& 
 				for (int i = 0; i < a.size(); i++) {
 					int color = a[i]["color"];
 					int pattern = a[i]["ptrn"];
-					int duration = a[i]["dir"];
+					int duration = a[i]["dur"];
+					Serial.printf("color:%i, pattern:%i, duration:%i\n", color, pattern, duration);
 					sequenceArray[i].color = color;
 					sequenceArray[i].pattern = pattern;
 					sequenceArray[i].duration = duration;
 				}
-//				Serial.println("done");
-				client->text("Change Light Cycle successful.");
+				client->text("{\"core\":7,\"rcode\":1,\"msg\":\"Set sequence successful.\"}");
+
 			}
 		}
 		if (cmd == 9) {
 			json["core"] = 7;
 			json["cmd"] = 2;
-
+			json["rcode"] = 1;
+			json["msg"] = "Get sequence successful.";
+			JsonArray& a = json.createNestedArray("seq");
 			for (int i = 0; i < 2; i++) {
-//				sequenceArray[i].color = color;
-//				sequenceArray[i].pattern = pattern;
-//				sequenceArray[i].duration = duration;
+				JsonObject& o = a.createNestedObject();
+				o["color"] = sequenceArray[i].color;
+				o["ptrn"] = sequenceArray[i].pattern;
+				o["dur"] = sequenceArray[i].duration;
+			}
+//			client->text("{\"core\":7,\"rcode\":1,\"msg\":\"Get sequence successful.\"}");
+			size_t len = json.measureLength();
+			AsyncWebSocketMessageBuffer * buffer = ws.makeBuffer(len);
+			if (buffer) {
+				json.printTo((char *)buffer->get(), len + 1);
+				client->text(buffer);
 			}
 		}
 		if (cmd == 10) { //on-off command from the control page

@@ -62,14 +62,14 @@ function serverResponseHandler(json) {
  * Sends data for the pick color
  */
 function sendColor(rgb){
-	var data = '{"cmd":4,"data":['+rgb.r+","+rgb.g+","+rgb.b+"]}";
+	var data = '{"core":7,"cmd":4,"data":['+rgb.r+","+rgb.g+","+rgb.b+"]}";
 	websocket.send(data);
 }
 /*
  * Sends data for the light sequence
  */
 function sendCycleData(){
-	var data = '{"cmd":1,"data":[';
+	var data = '{"core":7,"cmd":1,"data":[';
 	for (i = 0; i < colors.length; i++) {
 		var chk = document.getElementById("in_"+i);	//the checkbox object
 		if (chk.checked)
@@ -94,7 +94,7 @@ function sendCycleData(){
  * sends data for fire sequence
  */
 function sendFireData(){
-	var data = '{"cmd":3,"data":';
+	var data = '{"core":7,"cmd":3,"data":';
 	var r = document.getElementsByName("rFire");	//radiobutton group
     for (var j=0, len=r.length; j<len; j++) {
     	if (r[j].checked) {
@@ -105,17 +105,20 @@ function sendFireData(){
 	txt2.value=data;
 	websocket.send(data);
 }
-function sendTestData(){
-
+function sendSetSequence(){
 	var seq = [{ ptrn:1, color:11, dur: 111}, { ptrn:2, color:22, dur: 222}];
-	var obj = { cmd: 8, seq: seq};
+	var obj = { core:7, cmd: 8, seq: seq};
+	websocket.send(JSON.stringify(obj));
+}
+function sendGetSequence(){
+	var obj = { core:7, cmd: 9};
 	websocket.send(JSON.stringify(obj));
 }
 /*
  * sends data for sparkle sequence
  */
 function sendSparkleData(){
-	var data = '{"cmd":6,"data":';
+	var data = '{"core":7,"cmd":6,"data":';
 	var r = document.getElementsByName("rSparkle");	//radiobutton group
     for (var j=0, len=r.length; j<len; j++) {
     	if (r[j].checked) {
@@ -213,7 +216,7 @@ function loadPatterns(){
 	}
 	p.appendChild(table);
 	mainDiv.appendChild(p);
-	websocket.send('{"cmd":7}');
+	websocket.send('{"core":7,"cmd":7}');
 }
 /////////////////////// for the config
 var stringToChange = 1;
@@ -298,7 +301,7 @@ function drawPixels(table, strings, numPixels, lightStyle) {
  * Read the config data from the ESP
  */
 function getConfig(){
-	var obj = { cmd: 2, cfg: 0};//cfg = 0; read config data
+	var obj = {core:7, cmd: 2, cfg: 0};//cfg = 0; read config data
 	websocket.send(JSON.stringify(obj));
 }
 /*
@@ -312,7 +315,7 @@ function sendConfig(){
 	var mirror = 0;
 	if (document.getElementById("chkM").checked)
 		mirror = 1;
-	var obj = { cmd: 2, cfg: 1, s:s, p:p, u:u, m:mirror, rst:doReset};//cfg = 1; send config data
+	var obj = { core:7, cmd: 2, cfg: 1, s:s, p:p, u:u, m:mirror, rst:doReset};//cfg = 1; send config data
 	var arr = [];
 	for (i = 0; i<s; i++) {
 		var pin = parseInt(document.getElementById("pin"+i).value, 10);

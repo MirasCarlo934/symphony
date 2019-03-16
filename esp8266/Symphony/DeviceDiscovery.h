@@ -405,6 +405,23 @@ void startDiscovery(String name) {
 		}
 	}
 	Serial.println("\n[startDiscovery] end");
+	Serial.println("************* start test JSON ******************");
+	DynamicJsonBuffer jsonBuff;
+	JsonObject& jsonObj = jsonBuff.createObject();
+	JsonObject& client = jsonObj.createNestedObject("client");
+	JsonArray& ip = client.createNestedArray("192.168.0");
+	JsonObject& device1 = ip.createNestedObject();
+	device1["id"] = "111";
+	device1["name"] = "device1";
+	device1["mac"] = "mac1";
+	JsonObject& device2 = ip.createNestedObject();
+	device2["id"] = "112";
+	device2["name"] = "device2";
+	device2["mac"] = "mac2";
+	JsonObject& server = jsonObj.createNestedObject("server");
+	server["ip"] = 192;
+	jsonObj.prettyPrintTo(Serial);
+	Serial.println("\n************* end test JSON ******************");
 }
 
 

@@ -17,7 +17,7 @@ const char CONTROL_HTML1[] PROGMEM = R"=====(
 </head>
 <link rel="stylesheet" type="text/css" href="symphony.css">
 <script type="text/javascript" src="symphony.js"></script>
-<body onload="loadDoc()">
+<body onload="loadControlPage()">
 <div class="header" id="theName"></div>
 <h2>Symphony</h2>
 <div class="header" id="msg"></div>

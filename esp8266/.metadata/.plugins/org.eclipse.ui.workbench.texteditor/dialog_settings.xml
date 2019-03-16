@@ -2,27 +2,27 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="request-&gt;" key="selection"/>
+		<item value="INIT" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="true" key="wholeword"/>
 		<list key="findhistory">
-			<item value="request-&gt;"/>
-			<item value="printf"/>
-			<item value="send"/>
-			<item value="schema"/>
-			<item value="&quot;cmd&quot;"/>
-			<item value="20"/>
-			<item value="["/>
-			<item value="/ws"/>
-			<item value="ws"/>
-			<item value="websocket"/>
-			<item value="FillLEDsFromPaletteColors"/>
-			<item value="stringCount"/>
-			<item value="FillLEDsAsStatic"/>
-			<item value="loopFire"/>
-			<item value="paletteIndex"/>
+			<item value="INIT"/>
+			<item value="saveconfig"/>
+			<item value="JsonArray"/>
+			<item value="cmd"/>
+			<item value="CORE_TOCHILD"/>
+			<item value="loaddoc"/>
+			<item value="homehtml"/>
+			<item value="core_tochild"/>
+			<item value="createNestedArray"/>
+			<item value="createNestedObject"/>
+			<item value="json"/>
+			<item value="add"/>
+			<item value="devices"/>
+			<item value="DeviceInfo::refresh"/>
+			<item value="startDiscovery"/>
 		</list>
 		<list key="replacehistory">
 			<item value=""/>

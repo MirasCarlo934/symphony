@@ -97,19 +97,9 @@
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/libraries/Hash</locationURI>
 		</link>
 		<link>
-			<name>libraries/PubSubClient</name>
-			<type>2</type>
-			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/PubSubClient/2.6.0</locationURI>
-		</link>
-		<link>
 			<name>libraries/Symphony</name>
 			<type>2</type>
 			<location>D:/projects/arduinolibraries/Symphony</location>
-		</link>
-		<link>
-			<name>libraries/SymphonyCore</name>
-			<type>2</type>
-			<location>D:/projects/arduinolibraries/SymphonyCore</location>
 		</link>
 		<link>
 			<name>libraries/WebSockets</name>

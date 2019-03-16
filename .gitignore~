@@ -1,0 +1,13 @@
+**/Release
+**/data
+**/node_modules
+**/libraries
+**/.settings
+**/core
+**/.metadata
+**.metadata
+/spec.d
+/sloeber.ino.cpp
+/api.txt
+/.cproject
+/.project
