@@ -50,6 +50,17 @@ function serverResponseHandler(json) {
 			break;
 		case CMD_SOCKET_ON:
 			break;
+		case 10:
+			//command to toggle On/Off
+			var val = json.val;
+			var input =  document.getElementById(json.ssid);
+			if (input.type == "checkbox" || input.type == "radio") {
+            	if (json.val == 1)
+    				input.checked=true;	
+            	else
+            		input.checked=false;
+            }
+			break;
 	}
 }
 function initTimerForm() {
@@ -87,7 +98,7 @@ function initTimerForm() {
 <h2>Device Setup</h2>
 <div class="header" id="msg"></div>
 <div class="tab">
-  <button class="tablinks" onclick="openTab(event, 'control');loadDoc();" id="defaultOpen">Control</button>
+  <button class="tablinks" onclick="openTab(event, 'control');loadControlPage();" id="defaultOpen">Control</button>
   <button class="tablinks" onclick="openTab(event, 'timer');initTimerForm()">Timer</button>
 </div>
 <div class="footer" id="status"></div>

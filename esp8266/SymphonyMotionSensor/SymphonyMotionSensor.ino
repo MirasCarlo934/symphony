@@ -74,6 +74,16 @@ void loop()
 				if (inputState) {
 					oldInputState = !oldInputState;
 					product.setValue("0026", oldInputState);
+					DynamicJsonBuffer jsonBuffer;
+					JsonObject& reply = jsonBuffer.createObject();
+					reply["core"] = 7;
+					reply["cmd"] = 10;
+					reply["ssid"] = "0001";
+					reply["cid"] = 25;
+					reply["val"] = oldInputState?1:0;
+					String replyStr;
+					reply.printTo(replyStr);
+					s.sendToWsServer(replyStr);
 	//				MqttUtil::sendCommand("0026", oldInputState);
 				}
 				Serial.println("*** MotionSensor isLatch\n");
@@ -81,6 +91,16 @@ void loop()
 				char state[2];
 				sprintf(state, "%d", inputState);
 				product.setValue("0026", inputState);
+				DynamicJsonBuffer jsonBuffer;
+				JsonObject& reply = jsonBuffer.createObject();
+				reply["core"] = 7;
+				reply["cmd"] = 10;
+				reply["ssid"] = "0001";
+				reply["cid"] = 25;
+				reply["val"] = inputState?1:0;
+				String replyStr;
+				reply.printTo(replyStr);
+				s.sendToWsServer(replyStr);
 	//			MqttUtil::sendCommand("0026", inputState);
 				Serial.println("*** MotionSensor isMomentary\n");
 			}

@@ -69,7 +69,7 @@
 #ifndef DEVICEDISCOVERY_H_
 #define DEVICEDISCOVERY_H_
 
-#define DEBUG_
+//#define DEBUG_DISCOVERY
 #define MAX_ID_COUNT 3
 
 #define ID_REQ 1
@@ -135,12 +135,13 @@ void DeviceInfo::add(String name, IPAddress ip) {
  * This will select the device with the lowest active ip address as the server.
  */
 void DeviceInfo::selectServer() {
-#ifdef DEBUG_
+#ifdef DEBUG_DISCOVERY
 		Serial.printf("[selectServer] count:%i, will nominate server:\n", idCounter);
 #endif
 		int lowest = 500;
 		//we loop in the devices, to evaluate if our ip's 4th octet is the lowest from the active devices. If it is, then we will be the server
 		for (int i = 0; i < devices.size(); i++) {
+#ifdef DEBUG_DISCOVERY
 			Serial.printf("[selectServer]devices IP: %u.%u.%u.%u, i:%i, me:%s, serverIp: %u.%u.%u.%u\n",
 				devices[i]["ip"][0].as<int>(),
 				devices[i]["ip"][1].as<int>(),
@@ -151,12 +152,13 @@ void DeviceInfo::selectServer() {
 				gServerIP[2].as<int>(),
 				gServerIP[3].as<int>()
 				);
+#endif
 			if (devices[i]["ip"][3].as<int>() <= lowest && devices[i]["ip"][3].as<int>() != gServerIP[3].as<int>() && devices[i]["active"].as<bool>()) {
 				lowest = devices[i]["ip"][3].as<int>();
 			}
 		}
 		if (lowest == WiFi.localIP()[3] ) {
-			Serial.println("Ayos!");
+//			Serial.println("Ayos!");
 			isDiscoveryServer = true;
 			gServerIP[0] = WiFi.localIP()[0];
 			gServerIP[1] = WiFi.localIP()[1];
@@ -179,17 +181,17 @@ void DeviceInfo::addServer(String name, IPAddress ip) {
 void DeviceInfo::refresh() {
 	if (millis() - timeMs >= timerIntervalMillis * 10) {	//refresh rate is 10 * timerIntervalMillis
 		timeMs = millis();
-#ifdef DEBUG_
+#ifdef DEBUG_DISCOVERY
 		Serial.println("\n********************** DeviceInfo::refresh start");
-#endif
 		devices.printTo(Serial);
+#endif
 		for (int i = 0; i < devices.size(); i++) {
 			//if time > 3* timerIntervalMillis & ip is not ip of this device, mark it as inactive
 			if (millis() - devices[i]["time"].as<long>() > 3 * timerIntervalMillis && devices[i]["ip"][3] != WiFi.localIP()[3]) {
 				devices[i]["active"] = false;
 			}
 		}
-#ifdef DEBUG_
+#ifdef DEBUG_DISCOVERY
 		Serial.println("\n********************** DeviceInfo::refresh end");
 #endif
 	}
@@ -201,12 +203,12 @@ void DeviceInfo::refresh() {
  */
 boolean DeviceInfo::exists(IPAddress findIP) {
 	boolean isFound = false;
-#ifdef DEBUG_
+#ifdef DEBUG_DISCOVERY
 	Serial.println("\n********************** DeviceInfo::exists start");
-#endif
 	devices.printTo(Serial);
+#endif
 	for (int i = 0; i < devices.size(); i++) {
-#ifdef DEBUG_
+#ifdef DEBUG_DISCOVERY
 		JsonArray& iArray = devices[i]["ip"];
 		Serial.printf("\nDevice IP: %u.%u.%u.%u, find IP:%u.%u.%u.%u, i:%i\n",
 				iArray[0].as<int>(), iArray[1].as<int>(), iArray[2].as<int>(), iArray[3].as<int>(),
@@ -221,7 +223,7 @@ boolean DeviceInfo::exists(IPAddress findIP) {
 			break;
 		}
 	}
-#ifdef DEBUG_
+#ifdef DEBUG_DISCOVERY
 	Serial.println("\n********************** DeviceInfo::exists end");
 #endif
 	return isFound;
@@ -239,7 +241,7 @@ void packetArrived(AsyncUDPPacket packet) {
 	//we received a data, let us determine if we are the server
 	DynamicJsonBuffer jsonParsedBuffer;
 	JsonObject & json = jsonParsedBuffer.parseObject(packet.data());
-#ifdef DEBUG_
+#ifdef DEBUG_DISCOVERY
 	Serial.printf("\n[packetArrived] start, i am %s devices.size:%i\nGlobal json is:\n", isDiscoveryServer ? "Server" : "Client", devices.size());
 	Serial.println("packet.data parsed:");
 	json.printTo(Serial);
@@ -254,7 +256,7 @@ void packetArrived(AsyncUDPPacket packet) {
  */
 
 			//a client sent an identify command
-#ifdef DEBUG_
+#ifdef DEBUG_DISCOVERY
 			Serial.println("**************** start ID_REQ MODE ***********************");
 #endif
 			if (json.containsKey("ip")) {
@@ -281,17 +283,17 @@ void packetArrived(AsyncUDPPacket packet) {
 				String replyStr;
 				reply.printTo(replyStr);
 				packet.printf(replyStr.c_str());
-#ifdef DEBUG_
+#ifdef DEBUG_DISCOVERY
 				Serial.println("I am server, will reply with:");\
 				reply.printTo(Serial);
 				Serial.println("\ndone reply");
 #endif
 			}
-#ifdef DEBUG_
+#ifdef DEBUG_DISCOVERY
 			Serial.println("**************** end ID_REQ MODE ***********************");
 #endif
 		} else if (mode == ID_RESP) {
-#ifdef DEBUG_
+#ifdef DEBUG_DISCOVERY
 			Serial.println("**************** start ID_RESP MODE ***********************");
 #endif
 			idCounter = 0;
@@ -302,7 +304,7 @@ void packetArrived(AsyncUDPPacket packet) {
 				gServerIP[2] = packet.remoteIP()[2];
 				gServerIP[3] = packet.remoteIP()[3];
 			}
-#ifdef DEBUG_
+#ifdef DEBUG_DISCOVERY
 			Serial.println("Got server response.");
 			gServerIP.printTo(Serial);
 			Serial.println();
@@ -319,14 +321,14 @@ void packetArrived(AsyncUDPPacket packet) {
 				String replyStr;
 				reply.printTo(replyStr);
 				packet.printf(replyStr.c_str());
-#ifdef DEBUG_
+#ifdef DEBUG_DISCOVERY
 				reply.printTo(Serial);
 				Serial.println();
 #endif
 			}
 		}
 	}
-#ifdef DEBUG_
+#ifdef DEBUG_DISCOVERY
 	Serial.println("[packetArrived] end\n");
 #endif
 }
@@ -352,7 +354,7 @@ void sendIdentify() {
 			data.add(WiFi.localIP()[1]);
 			data.add(WiFi.localIP()[2]);
 			data.add(WiFi.localIP()[3]);
-#ifdef DEBUG_
+#ifdef DEBUG_DISCOVERY
 			Serial.printf("[sendIdentify %s] count:%i, will send data:\n", isDiscoveryServer ? "Server" : "Client", idCounter);
 			tmpJson.printTo(Serial);
 			Serial.printf("\n[sendIdentify %s] data sent.\n", isDiscoveryServer ? "Server" : "Client");
@@ -363,7 +365,7 @@ void sendIdentify() {
 		}
 		if (idCounter > MAX_ID_COUNT) {
 			//count for identify message already exceeded
-#ifdef DEBUG_
+#ifdef DEBUG_DISCOVERY
 			Serial.printf("[sendIdentify] count:%i, Server not responding, will evaluate if i can be server:\n", idCounter);
 			idCounter = 0;
 #endif
@@ -384,14 +386,16 @@ void sendIdentify(long intervalMillis) {
  * this will enable "auto-discovery" from the udp server 239.1.2.3 port 1234
  */
 void startDiscovery(String name) {
+#ifdef DEBUG_DISCOVERY
 	Serial.println("[startDiscovery] start");
+#endif
 	deviceName = name;
 	if (udp.listenMulticast(IPAddress(239, 1, 2, 3), 1234)) {
 		udp.onPacket(packetArrived);
 		long timeMillis = millis();
 		sendIdentify();
 		deviceInfo.add(deviceName, WiFi.localIP());
-#ifdef DEBUG_
+#ifdef DEBUG_DISCOVERY
 		Serial.println("[startDiscovery]");
 		gJson.printTo(Serial);
 #endif
@@ -404,8 +408,10 @@ void startDiscovery(String name) {
 			gServerIP.add(0);
 		}
 	}
+#ifdef DEBUG_DISCOVERY
 	Serial.println("\n[startDiscovery] end");
 	Serial.println("************* start test JSON ******************");
+#endif
 	DynamicJsonBuffer jsonBuff;
 	JsonObject& jsonObj = jsonBuff.createObject();
 	JsonObject& client = jsonObj.createNestedObject("client");
@@ -420,8 +426,10 @@ void startDiscovery(String name) {
 	device2["mac"] = "mac2";
 	JsonObject& server = jsonObj.createNestedObject("server");
 	server["ip"] = 192;
+#ifdef DEBUG_DISCOVERY
 	jsonObj.prettyPrintTo(Serial);
 	Serial.println("\n************* end test JSON ******************");
+#endif
 }
 
 

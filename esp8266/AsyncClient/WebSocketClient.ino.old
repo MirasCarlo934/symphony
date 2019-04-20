@@ -1,0 +1,89 @@
+/*
+ * This is the Symphony Socket
+ * It is an ordinary wifi controllable socket.
+ * But if it receives E1.31 data, it will synchronize to that if it receives a universe it recognizes.
+ */
+
+#include "Arduino.h"
+#include <ArduinoWebsockets.h>
+#include "Symphony.h"
+
+#define MY_VERSION 2.21
+
+String myName = "WebSocketClient";
+
+long timerMilli = 0;
+
+using namespace websockets;
+
+Product product;
+Symphony s = Symphony();
+WebsocketsClient client;
+
+void handleInit(AsyncWebServerRequest *request) {
+	// try to connect to Websockets server
+	bool connected = client.connect("ws://192.168.0.111:80/ws");
+	if(connected) {
+		Serial.println("=========Connected Websocket client!");
+		client.send("Hello Server");
+		request->send(200, "text/html", "WebsocketClient connected.");
+	} else {
+		Serial.println("=========Not Connected Websocket client!");
+
+		request->send(200, "text/html", "WebsocketClient not connected.");
+	}
+	// run callback when messages are received
+	client.onMessage([&](WebsocketsMessage message) {
+		Serial.print("Got Message: ");
+		Serial.println(message.data());
+	});
+
+	Serial.println("handleInit");
+}
+
+
+/*
+ * Callback function for the websocket transactions
+ */
+int wsHandler(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json) {
+//int wsHandler(AsyncWebSocket ws, AsyncWebSocketClient *client, uint8_t * payload, size_t len) {
+	Serial.println("callback executed start");
+	json.prettyPrintTo(Serial);
+	if (json.containsKey("cmd")) {
+			uint8_t cmd = json["cmd"];
+			switch (cmd) {
+
+			}
+	}
+	Serial.println("\ncallback executed end");
+}
+
+void setup()
+{
+	Serial.begin(115200);
+	delay(10);
+	Serial.println("\n\n************START WebSocketClient Setup***************");
+	s.setWsCallback(wsHandler);
+	s.setup(myName);
+	s.on("/init", HTTP_GET, handleInit);
+	product = Product(s.myName, "Test", "Client");
+	Gui gui1 = Gui("Client", BUTTON_CTL, "test", 0, 1, 1);
+	product.addProperty("0001", false, 13, gui1);//add aproperty that has an attached pin
+	s.setProduct(product);
+
+	Serial.printf("\n************END Symphony WebSocketClient Setup Version%.2f***************", MY_VERSION);
+}
+
+// The loop function is called in an endless loop
+void loop() {
+
+	if (s.loop()) {
+		// let the websockets client check for incoming messages
+		if(client.available()) {
+			client.poll();
+		}
+		if (millis() - timerMilli >= 1000) {
+			timerMilli = millis();
+		}
+	}
+}

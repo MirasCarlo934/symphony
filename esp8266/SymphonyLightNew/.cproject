@@ -33,6 +33,11 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyLightNew/libraries/Hash/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyLightNew/libraries/ESPAsyncWiFiManager-master}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyLightNew/libraries/FastLED}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyLightNew/libraries/Firebase_ESP8266_Client/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyLightNew/libraries/SD/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyLightNew/libraries/SPI}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyLightNew/libraries/firebase-arduino-master/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyLightNew/libraries/ESP8266WebServer/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.1458275370" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>
@@ -52,6 +57,11 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyLightNew/libraries/Hash/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyLightNew/libraries/ESPAsyncWiFiManager-master}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyLightNew/libraries/FastLED}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyLightNew/libraries/Firebase_ESP8266_Client/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyLightNew/libraries/SD/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyLightNew/libraries/SPI}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyLightNew/libraries/firebase-arduino-master/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyLightNew/libraries/ESP8266WebServer/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.1581671162" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
 							</tool>
@@ -71,6 +81,11 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyLightNew/libraries/Hash/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyLightNew/libraries/ESPAsyncWiFiManager-master}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyLightNew/libraries/FastLED}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyLightNew/libraries/Firebase_ESP8266_Client/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyLightNew/libraries/SD/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyLightNew/libraries/SPI}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyLightNew/libraries/firebase-arduino-master/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonyLightNew/libraries/ESP8266WebServer/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.S.sketch.input.1694279689" name="Assembly source files" superClass="io.sloeber.compiler.S.sketch.input"/>
 							</tool>
@@ -81,7 +96,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="libraries/FastLED/platforms|libraries/FastLED/lib8tion|libraries/FastLED/docs|libraries/ESPAsyncWebServer-master/travis|libraries/ESPAsyncUDP-master/travis|libraries/ESPAsyncTCP-master/travis|libraries/ESPAsyncTCP-master/ssl|libraries/ArduinoJson/scripts|libraries/ArduinoJson/fuzzing|libraries/?*/**/?xamples/**|libraries/?*/**/?xtras/**|libraries/?*/**/test*/**|libraries/?*/**/third-party/**|libraries/**/._*|libraries/?*/utility/*/*" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
+						<entry excluding="libraries/firebase-arduino-master/docs|libraries/firebase-arduino-master/contrib|libraries/FastLED/platforms|libraries/FastLED/lib8tion|libraries/FastLED/docs|libraries/ESPAsyncWebServer-master/travis|libraries/ESPAsyncUDP-master/travis|libraries/ESPAsyncTCP-master/travis|libraries/ESPAsyncTCP-master/ssl|libraries/ArduinoJson/scripts|libraries/ArduinoJson/fuzzing|libraries/?*/**/?xamples/**|libraries/?*/**/?xtras/**|libraries/?*/**/test*/**|libraries/?*/**/third-party/**|libraries/**/._*|libraries/?*/utility/*/*" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

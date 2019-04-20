@@ -2,27 +2,27 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="INIT" key="selection"/>
+		<item value="core" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="true" key="wholeword"/>
 		<list key="findhistory">
+			<item value="core"/>
+			<item value="sendWSRequestToServer"/>
+			<item value="setRootProperties"/>
+			<item value="rootProperties"/>
+			<item value="webSocketClientEvent"/>
+			<item value="serial"/>
+			<item value="JsonObject"/>
+			<item value="ipaddress"/>
+			<item value="firebase"/>
+			<item value="fire"/>
+			<item value="firebasedata"/>
+			<item value="file"/>
 			<item value="INIT"/>
 			<item value="saveconfig"/>
 			<item value="JsonArray"/>
-			<item value="cmd"/>
-			<item value="CORE_TOCHILD"/>
-			<item value="loaddoc"/>
-			<item value="homehtml"/>
-			<item value="core_tochild"/>
-			<item value="createNestedArray"/>
-			<item value="createNestedObject"/>
-			<item value="json"/>
-			<item value="add"/>
-			<item value="devices"/>
-			<item value="DeviceInfo::refresh"/>
-			<item value="startDiscovery"/>
 		</list>
 		<list key="replacehistory">
 			<item value=""/>
@@ -33,7 +33,7 @@
 		<item value="469" key="DIALOG_WIDTH"/>
 		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
 		<item value="426" key="DIALOG_HEIGHT"/>
-		<item value="820" key="DIALOG_X_ORIGIN"/>
-		<item value="295" key="DIALOG_Y_ORIGIN"/>
+		<item value="823" key="DIALOG_X_ORIGIN"/>
+		<item value="256" key="DIALOG_Y_ORIGIN"/>
 	</section>
 </section>

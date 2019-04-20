@@ -57,6 +57,8 @@ int8_t		fwResult = 0;
 long identifyTries[] = {5000, 10000, 20000};
 int discoveryTries = 0;
 
+WebSocketsClient webSocketClient;
+
 /*
  * This is the callback handler that will be called when a Websocket event arrives.
  * This enables the instantiator to handle websocket events.
@@ -64,6 +66,58 @@ int discoveryTries = 0;
  * AsyncWebSocketClient *client is exposed to enable response to the calling client.
  */
 int (* WsCallback) (AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json);
+
+/**
+ * webSocketClientEvent handles the transactions sent by websocketserver.
+ * This device acts as a client to a websocket server
+ */
+void webSocketClientEvent(WStype_t type, uint8_t * payload, size_t length) {
+
+	switch(type) {
+		case WStype_DISCONNECTED:
+			Serial.printf("[WSc] Disconnected!\n");
+			break;
+		case WStype_CONNECTED: {
+			Serial.printf("[WSc] Connected to url: %s\n", payload);
+			// send message to server when Connected
+			webSocketClient.sendTXT("Connected");
+		}
+			break;
+		case WStype_TEXT:
+			Serial.printf("[WSc] get text: %s\n", payload);
+
+			// send message to server
+			// webSocket.sendTXT("message here");
+			break;
+		case WStype_BIN:
+			Serial.printf("[WSc] get binary length: %u\n", length);
+			hexdump(payload, length);
+
+			// send data to server
+			// webSocket.sendBIN(payload, length);
+			break;
+	}
+
+}
+
+/**
+ * Start connection to the Websocket
+ */
+int startWebSocketClients() {
+	// server address, port and URL
+	webSocketClient.begin("192.168.0.111", 80, "/ws");
+
+	// event handler
+	webSocketClient.onEvent(webSocketClientEvent);
+	// try ever 5000 again if connection has failed
+	webSocketClient.setReconnectInterval(5000);
+
+	// start heartbeat (optional)
+	// ping server every 15000 ms
+	// expect pong from server within 3000 ms
+	// consider connection disconnected if pong is not received 2 times
+	webSocketClient.enableHeartbeat(15000, 3000, 2);
+}
 
 /*
  *	wsEvent handles the transactions sent by client websockets.
@@ -107,8 +161,8 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 							//this is for both the core and implementor
 						} else if (json.containsKey("core")) {
 							//this is for the core
-							int cmd = json["core"].as<int>();
-							switch (cmd) {
+							int core = json["core"].as<int>();
+							switch (core) {
 
 								case CORE_INIT:
 									//this is the INIT command from the WS client.
@@ -214,8 +268,8 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 								}
 									break;
 							}
-						} else if (json.containsKey("cmd")) {
-
+						} else {
+							Serial.println("core value-pair not found.");
 						}
 					}
 				} else {
@@ -262,6 +316,7 @@ void onWifiConnect(const WiFiEventStationModeGotIP &event) {
 	 startDiscovery(Symphony::hostName);
 	 discoveryTries = 0;
 #endif
+
 }
 void onWiFiDisconnect(const WiFiEventStationModeDisconnected &event) {
     Serial.println(F("*** WiFi Disconnected ***"));
@@ -406,6 +461,8 @@ void Symphony::setup(String theHostName) {
 	wifiDisconnectHandler = WiFi.onStationModeDisconnected(onWiFiDisconnect);
 	webServer.begin();
 
+	startWebSocketClients();
+
 	Serial.print(F("- Web Server started on port "));
 	Serial.println(HTTP_PORT);
 	Serial.printf("\n************END Core Setup Version %s,  boot:%i***************\n", ver, reboot);
@@ -426,6 +483,7 @@ bool Symphony::loop() {
 	} else {
 		//we process other items if it is not reboot mode
 		dnsServer.processNextRequest();
+		webSocketClient.loop();
 	}
 	if (!isUpdateFw) {
 #ifdef DISCOVERABLE
@@ -585,6 +643,9 @@ void Symphony::doReboot() {
  */
 void Symphony::setRootProperties(String s) {
 	Symphony::rootProperties = s;
+}
+void Symphony::sendToWsServer(String replyStr){
+	webSocketClient.sendTXT(replyStr);
 }
 /***********************************************************************
 *					Utility classes

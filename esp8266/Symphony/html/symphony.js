@@ -283,7 +283,7 @@ function getRange(e) {
  */
 function sendWSRequestToServer(formId) {
 	var count = document.getElementById(formId).elements.length;
-	var jsonRequest = {"cmd":3};//we are sending a cmd to the device
+	var jsonRequest = {"core":7, "cmd":3};//we are sending a cmd to the device
 	for (i=0;i<count;i++) {
 		var id = document.getElementById(formId).elements[i].id;
 		var typ = document.getElementById(formId).elements[i].type;

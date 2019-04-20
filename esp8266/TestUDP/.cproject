@@ -31,6 +31,11 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/TestUDP/libraries/ESPAsyncTCP-master/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/TestUDP/libraries/ESPAsyncWebServer-master/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/TestUDP/libraries/Hash/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/TestUDP/libraries/Firebase_ESP8266_Client/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/TestUDP/libraries/SD/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/TestUDP/libraries/SPI}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/TestUDP/libraries/firebase-arduino-master/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/TestUDP/libraries/ESP8266WebServer/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.1312827539" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>
@@ -48,6 +53,11 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/TestUDP/libraries/ESPAsyncTCP-master/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/TestUDP/libraries/ESPAsyncWebServer-master/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/TestUDP/libraries/Hash/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/TestUDP/libraries/Firebase_ESP8266_Client/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/TestUDP/libraries/SD/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/TestUDP/libraries/SPI}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/TestUDP/libraries/firebase-arduino-master/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/TestUDP/libraries/ESP8266WebServer/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.572944242" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
 							</tool>
@@ -65,6 +75,11 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/TestUDP/libraries/ESPAsyncTCP-master/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/TestUDP/libraries/ESPAsyncWebServer-master/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/TestUDP/libraries/Hash/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/TestUDP/libraries/Firebase_ESP8266_Client/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/TestUDP/libraries/SD/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/TestUDP/libraries/SPI}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/TestUDP/libraries/firebase-arduino-master/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/TestUDP/libraries/ESP8266WebServer/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.S.sketch.input.1137744364" name="Assembly source files" superClass="io.sloeber.compiler.S.sketch.input"/>
 							</tool>
@@ -75,7 +90,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="libraries/ESPAsyncWebServer-master/travis|libraries/ESPAsyncTCP-master/travis|libraries/ESPAsyncTCP-master/ssl|libraries/ArduinoJson/scripts|libraries/ArduinoJson/fuzzing|libraries/ESPAsyncUDP-master/travis|libraries/?*/**/?xamples/**|libraries/?*/**/?xtras/**|libraries/?*/**/test*/**|libraries/?*/**/third-party/**|libraries/**/._*|libraries/?*/utility/*/*" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
+						<entry excluding="libraries/firebase-arduino-master/docs|libraries/firebase-arduino-master/contrib|libraries/ESPAsyncWebServer-master/travis|libraries/ESPAsyncTCP-master/travis|libraries/ESPAsyncTCP-master/ssl|libraries/ArduinoJson/scripts|libraries/ArduinoJson/fuzzing|libraries/ESPAsyncUDP-master/travis|libraries/?*/**/?xamples/**|libraries/?*/**/?xtras/**|libraries/?*/**/test*/**|libraries/?*/**/third-party/**|libraries/**/._*|libraries/?*/utility/*/*" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -90,4 +105,5 @@
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
+	<storageModule moduleId="refreshScope"/>
 </cproject>

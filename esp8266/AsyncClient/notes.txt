@@ -1,0 +1,2 @@
+1. edit Websockets.h of Arduino Websockets (github https://github.com/Links2004/arduinoWebSockets)
+	#define WEBSOCKETS_NETWORK_TYPE NETWORK_ESP8266_ASYNC

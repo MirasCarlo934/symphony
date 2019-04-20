@@ -18,6 +18,7 @@
 #include "FileManager.h"
 #include "html.h"
 #include "Product.h"
+#include <WebSocketsClient.h>
 
 #define DEBUG_ONLY
 //#define SHOW_FLASH
@@ -56,11 +57,13 @@ class Symphony {
 	    static void setRootProperties(String s);
 	    void setProduct(Product p);
 	    void doReboot();
+	    void sendToWsServer(String replyStr);
 
 	private:
 	    String ap_ssid, ap_passphrase = "12345678";
 	    IPAddress apIP = IPAddress (192, 168, 7, 1);
 	    String ssid = "bahay", pwd = "carlopiadredcels";
+
 	    int wifiMaxConnCount=50;  //max counter when connecting to wifi AP, corresponds to 10secs
 	    long restartTimer = 0;  //the restart timer in millis.  this will restart every maxrestartTimer if wifi is not connected.
 	    const long maxRestartTimer = 120000; //the max millis before restart.  2 mins

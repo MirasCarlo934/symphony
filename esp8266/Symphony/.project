@@ -97,6 +97,11 @@
 			<location>C:/Users/User/Documents/Arduino/libraries/ESPAsyncWiFiManager-master</location>
 		</link>
 		<link>
+			<name>libraries/Ethernet</name>
+			<type>2</type>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/libraries/Ethernet</locationURI>
+		</link>
+		<link>
 			<name>libraries/Hash</name>
 			<type>2</type>
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/libraries/Hash</locationURI>
@@ -107,14 +112,24 @@
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/PubSubClient/2.6.0</locationURI>
 		</link>
 		<link>
+			<name>libraries/SD</name>
+			<type>2</type>
+			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/libraries/SD</locationURI>
+		</link>
+		<link>
 			<name>libraries/SPI</name>
 			<type>2</type>
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/libraries/SPI</locationURI>
 		</link>
 		<link>
-			<name>libraries/WebSockets</name>
+			<name>libraries/arduinoWebSockets-master</name>
 			<type>2</type>
-			<location>C:/Users/User/Documents/Arduino/libraries/WebSockets</location>
+			<location>C:/Users/User/Documents/Arduino/libraries/arduinoWebSockets-master</location>
+		</link>
+		<link>
+			<name>libraries/firebase-arduino-master</name>
+			<type>2</type>
+			<location>C:/Users/User/Documents/Arduino/libraries/firebase-arduino-master</location>
 		</link>
 	</linkedResources>
 </projectDescription>
