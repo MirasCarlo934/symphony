@@ -53,13 +53,23 @@ function updateFirmware() {
 	  xhttp.onreadystatechange = function() {
 	    if (this.readyState==4 && this.status==200) {
 	      document.getElementById("status").innerHTML = this.responseText;
+	      document.getElementById("msg").innerHTML = "Please refresh browser or wait for ready status.";
 	      isUpdateFW = true;
 	    }
 	  }
-	  var form = document.getElementById('fileUpload');
-	  var formData = new FormData(form);
-	  xhttp.open('POST', '/updateFirmware', true);
-	  xhttp.send(formData);
+	  xhttp.upload.addEventListener('progress', function(e){
+		  document.getElementById("status").innerHTML = 'Uploaded: '+Math.ceil(e.loaded/e.total * 100) + '%' ;
+		  document.getElementById("pct").innerHTML = Math.ceil(e.loaded/e.total * 100)+ '%'  ;
+		  document.getElementById("pct_bar").style.width = Math.ceil(e.loaded/e.total * 100) + '%';
+	  }, false);
+	  if( document.getElementById('bin').files.length === 0){
+		  document.getElementById("status").innerHTML = "Please choose bin file.";
+	  } else {
+		  var form = document.getElementById('fileUpload');
+		  var formData = new FormData(form);
+		  xhttp.open('POST', '/updateFirmware', true);
+		  xhttp.send(formData);  
+	  }
 }
 /*
  * Function that commits the Ap, passkey and Device name
@@ -92,25 +102,25 @@ function sendToServer(method, url, responseHandler){
 /*
  * cels TODO, may not be needed, we could have this handled in wsHandler
  */
-function genericHandler(xhttp) {
-	var jsonObj = JSON.parse(xhttp.responseText);
-	if (jsonObj.resp == "1") {
-		document.getElementById("msg").innerHTML = jsonObj.msg;
-		document.getElementById("btn").disabled = true;
-		updateDone = setInterval(getProgress, 1000);
-	} else if (jsonObj.resp == "0") {
-		document.getElementById("msg").innerHTML = jsonObj.msg;
-		clearInterval(updateDone);
-		counter = 0;
-		document.getElementById("btn").innerHTML = "Done";
-	} else if (jsonObj.resp == "203") {
-		document.getElementById("msg").innerHTML = jsonObj.msg;
-		clearInterval(updateDone);
-		counter = 0;
-		document.getElementById("btn").innerHTML = "Update";
-		document.getElementById("btn").disabled = false;
-	}
-}
+//function genericHandler(xhttp) {
+//	var jsonObj = JSON.parse(xhttp.responseText);
+//	if (jsonObj.resp == "1") {
+//		document.getElementById("msg").innerHTML = jsonObj.msg;
+//		document.getElementById("btn").disabled = true;
+//		updateDone = setInterval(getProgress, 1000);
+//	} else if (jsonObj.resp == "0") {
+//		document.getElementById("msg").innerHTML = jsonObj.msg;
+//		clearInterval(updateDone);
+//		counter = 0;
+//		document.getElementById("btn").innerHTML = "Done";
+//	} else if (jsonObj.resp == "203") {
+//		document.getElementById("msg").innerHTML = jsonObj.msg;
+//		clearInterval(updateDone);
+//		counter = 0;
+//		document.getElementById("btn").innerHTML = "Update";
+//		document.getElementById("btn").disabled = false;
+//	}
+//}
 function fetchHandler(xhttp) {
 	document.getElementById("msg").innerHTML = xhttp.responseText;
 }
@@ -128,11 +138,11 @@ function uploadFile() {
   xhttp.open('POST', '/uploadFile', true);
   xhttp.send(formData);
 }
-function getProgress() {
-	counter++;
-	sendToServer('GET', '/progress', genericHandler);
-	document.getElementById("btn").innerHTML = counter;
-}	
+//function getProgress() {
+//	counter++;
+//	sendToServer('GET', '/progress', genericHandler);
+//	document.getElementById("btn").innerHTML = counter;
+//}	
 
 /*
  * Loads the control page
@@ -368,6 +378,8 @@ function handleWsMessage(evt) {
   		cid = jsonResponse["cid"];
   		header.innerHTML = jsonResponse["name"];
   		mac = jsonResponse["mac"];
+  		var msg = document.getElementById("msg");
+  		msg.innerHTML = "Synchronized";
   	 	break;
   	 case CMD_VALUES:
    		//response from the VALUES

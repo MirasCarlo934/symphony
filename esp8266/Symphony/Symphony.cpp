@@ -207,10 +207,11 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 										client->text(path + " deleted");
 									}
 									break;
-								case CORE_VALUES://VALUES command from the WS client, sends the current values of the product
+								case CORE_VALUES: {//VALUES command from the WS client, sends the current values of the product
 									//this is used by the client app to display the current state of the product
 										client->text(Symphony::product.stringifyValues());
 									break;
+								}
 								case CORE_GETDEVICEINFO://GET DEVICE INFO command from the WS client
 								{
 									//this is used by the admin client to display the current device info like Device name, SSID, passkey
@@ -277,21 +278,36 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 				}
 				break;
 			}
-			case WS_EVT_CONNECT:
+			case WS_EVT_CONNECT: {
 				Serial.print(F("WS Connect - "));
 				Serial.println(client->id());
-				client->text("{\"box\":\"status\",\"msg\":\"Connected\"}");
+//				client->text("{\"box\":\"status\",\"msg\":\"Connected\"}");
+				DynamicJsonBuffer connReplyBuffer;
+				JsonObject& connReply = connReplyBuffer.createObject();
+				connReply["name"] = Symphony::hostName;
+				connReply["msg"] = "Connected";
+				connReply["mac"] = Symphony::myName;
+				connReply["box"] = "status";	//the element to show the message
+				connReply["cid"] = client->id();	//the client id
+				connReply.prettyPrintTo(Serial);
+				String strConnReply;
+				connReply.printTo(strConnReply);
+				client->text(strConnReply);
 				break;
-			case WS_EVT_DISCONNECT:
+			}
+			case WS_EVT_DISCONNECT: {
 				Serial.print(F("WS Disconnect - "));
 				Serial.println(client->id());
 				break;
-			case WS_EVT_PONG:
+			}
+			case WS_EVT_PONG: {
 				Serial.println(F("WS PONG"));
 				break;
-			case WS_EVT_ERROR:
+			}
+			case WS_EVT_ERROR: {
 				Serial.println(F("WS ERROR"));
 				break;
+			}
 		}
 	} else {
 		Serial.print(F("Cannot do websocket request since we are updating firmware.\n"));
