@@ -43,7 +43,8 @@ class Symphony {
 	    //public attributes
 	    static String rootProperties;//the properties of the form {typ:'Rad',lbl:'RED',val:'0007', grp:'g2'}
 	    static String hostName;//the hostName of this device
-	    static String myName;//the name of this device that includes the mac address
+	    static String mac;//the mac address
+	    static String nameWithMac;//the name of this device that includes the mac address
 	    static Product product;
 
 	    //public methods

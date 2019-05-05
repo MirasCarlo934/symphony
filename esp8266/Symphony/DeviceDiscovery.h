@@ -69,7 +69,7 @@
 #ifndef DEVICEDISCOVERY_H_
 #define DEVICEDISCOVERY_H_
 
-//#define DEBUG_DISCOVERY
+#define DEBUG_DISCOVERY
 #define MAX_ID_COUNT 3
 
 #define ID_REQ 1
@@ -105,7 +105,7 @@ long timerIntervalMillis = 120000;  //2-min timer interval
 class DeviceInfo {
 	public:
 		DeviceInfo();
-		void add(String name, IPAddress ip);
+		void add(String name, IPAddress ip, String mac);
 		void addServer(String name, IPAddress ip);
 		void selectServer();
 		void refresh();
@@ -119,9 +119,10 @@ DeviceInfo::DeviceInfo() {
 /*
  * adds a device object to JsonArray& devices;
  */
-void DeviceInfo::add(String name, IPAddress ip) {
+void DeviceInfo::add(String name, IPAddress ip, String mac) {
 	JsonObject& device = devices.createNestedObject();
 	device["name"] = name;
+	device["mac"] = mac;
 	device["time"] = millis();
 	device["active"] = true;
 	JsonArray& theIp = device.createNestedArray("ip");
@@ -265,7 +266,7 @@ void packetArrived(AsyncUDPPacket packet) {
 
 				} else {
 					//device is new, we add it to deviceInfo
-					deviceInfo.add(json["name"], packet.remoteIP());
+					deviceInfo.add(json["name"], packet.remoteIP(), json["mac"]);
 				}
 			}
 			if (isDiscoveryServer) {
@@ -333,6 +334,7 @@ void packetArrived(AsyncUDPPacket packet) {
 #endif
 }
 /*
+ * Sent to the UDP server to identify this device.
  * put this in the loop function of arduino code.
  * sendIndentify
  * 	timerInterval should not be too small as it will flood the network
@@ -385,7 +387,7 @@ void sendIdentify(long intervalMillis) {
  * Starts a UDP server to listen to Symphony devices and stores their IP addresses.
  * this will enable "auto-discovery" from the udp server 239.1.2.3 port 1234
  */
-void startDiscovery(String name) {
+void startDiscovery(String name, String mac) {
 #ifdef DEBUG_DISCOVERY
 	Serial.println("[startDiscovery] start");
 #endif
@@ -394,7 +396,7 @@ void startDiscovery(String name) {
 		udp.onPacket(packetArrived);
 		long timeMillis = millis();
 		sendIdentify();
-		deviceInfo.add(deviceName, WiFi.localIP());
+		deviceInfo.add(deviceName, WiFi.localIP(), mac);
 #ifdef DEBUG_DISCOVERY
 		Serial.println("[startDiscovery]");
 		gJson.printTo(Serial);

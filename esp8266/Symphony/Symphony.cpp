@@ -32,7 +32,8 @@
 
 String Symphony::rootProperties = "";
 String Symphony::hostName = "hostName";
-String Symphony::myName = "myName";
+String Symphony::mac = "";
+String Symphony::nameWithMac = "myName";
 Product Symphony::product;
 
 AsyncWebServer		webServer(HTTP_PORT); // Web Server
@@ -174,7 +175,7 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 											reply["cmd"] = 1;
 											reply["name"] = Symphony::hostName;
 											reply["msg"] = "Ready for commands.";
-											reply["mac"] = Symphony::myName;
+											reply["mac"] = Symphony::mac;
 											reply["box"] = "status";	//the element to show the message
 											reply["cid"] = client->id();	//the client id
 											String strReply;
@@ -286,7 +287,7 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 				JsonObject& connReply = connReplyBuffer.createObject();
 				connReply["name"] = Symphony::hostName;
 				connReply["msg"] = "Connected";
-				connReply["mac"] = Symphony::myName;
+				connReply["mac"] = Symphony::mac;
 				connReply["box"] = "status";	//the element to show the message
 				connReply["cid"] = client->id();	//the client id
 				connReply.prettyPrintTo(Serial);
@@ -329,7 +330,7 @@ void onWifiConnect(const WiFiEventStationModeGotIP &event) {
         Serial.println(F("*** Error setting up mDNS responder ***"));
     }
 #ifdef DISCOVERABLE
-	 startDiscovery(Symphony::hostName);
+	 startDiscovery(Symphony::hostName, Symphony::mac);
 	 discoveryTries = 0;
 #endif
 
@@ -589,7 +590,7 @@ void Symphony::connectToWifi(String theHostName) {
 			//ssid key is found, this means pwd and name are also there
 			ssid = json["ssid"].as<String>();
 			pwd = json["pwd"].as<String>();
-			myName = json["name"].as<String>();
+			nameWithMac = json["name"].as<String>();
 		}
 #ifdef DEBUG_ONLY
 		json.prettyPrintTo(Serial);
@@ -617,17 +618,18 @@ void Symphony::connectToWifi(String theHostName) {
  * if there is no config file, it will be theHostName
  */
 void Symphony::createMyName(String theHostName) {
-	if (myName.length() == 0)
-		myName = theHostName;
-	hostName = myName;
+	if (nameWithMac.length() == 0)
+		nameWithMac = theHostName;
+	hostName = nameWithMac;
 	hostName.toLowerCase();
-	myName += "_";
+	nameWithMac += "_";
 	// Generate device name based on MAC address
-	uint8_t mac[6];
-	WiFi.macAddress(mac);
+	uint8_t _mac[6];
+	WiFi.macAddress(_mac);
 	//	we generate the name based on the MAC values
 	for (int i = 0; i < 6; ++i) {
-		myName += String(mac[i], 16);
+		nameWithMac += String(_mac[i], 16);
+		mac += String(_mac[i], 16);
 	}
 }
 /**
