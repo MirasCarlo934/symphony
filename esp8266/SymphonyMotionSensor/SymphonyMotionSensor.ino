@@ -8,6 +8,7 @@ Symphony s = Symphony();
 #define USER_PWD_LEN      40
 bool oldInputState;
 bool isLatchSwitch = false;
+bool isController = false;
 volatile bool pirStateChanged = 0;
 
 
@@ -25,13 +26,18 @@ int wsHandler(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json)
 	if (json.containsKey("cmd")) {
 		uint8_t cmd = json["cmd"];
 		switch (cmd) {
-		case 1:
-			break;
-		case 3:
-			break;
-		case 10:
-			isLatchSwitch = json["val"];
-			break;
+			case 1:
+				break;
+			case 3:
+				break;
+			case 10: {
+				String ssid = json["ssid"].as<char*>();
+				if (ssid.toInt() == 25)
+					isLatchSwitch = json["val"];
+				else if (ssid.toInt() == 27)
+					isController = json["val"];
+				break;
+			}
 		}
 	}
 	Serial.println("\ncallback executed end");
@@ -51,6 +57,8 @@ void setup()
 	product.addProperty("0025", false, LED_PIN1, gui1);
 	Gui gui2 = Gui("Mode", BUTTON_SNSR, "Sensor", 0, 1, 0);
 	product.addProperty("0026", true, INPUT_PIN, gui2);
+	Gui gui4 = Gui("Mode", BUTTON_SNSR, "Controller", 0, 1, 0);
+	product.addProperty("0027", false, gui4);
 	Gui gui3 = Gui("State", BUTTON_CTL, "State", 0, 1, 0);
 	product.addProperty("0060", false, gui3);
 	s.setProduct(product);
@@ -74,16 +82,18 @@ void loop()
 				if (inputState) {
 					oldInputState = !oldInputState;
 					product.setValue("0026", oldInputState);
-					DynamicJsonBuffer jsonBuffer;
-					JsonObject& reply = jsonBuffer.createObject();
-					reply["core"] = 7;
-					reply["cmd"] = 10;
-					reply["ssid"] = "0001";
-					reply["cid"] = 25;
-					reply["val"] = oldInputState?1:0;
-					String replyStr;
-					reply.printTo(replyStr);
-					s.sendToWsServer(replyStr);
+					if (isController) {
+						DynamicJsonBuffer jsonBuffer;
+						JsonObject& reply = jsonBuffer.createObject();
+						reply["core"] = 7;
+						reply["cmd"] = 10;
+						reply["ssid"] = "0001";
+						reply["cid"] = 25;
+						reply["val"] = oldInputState?1:0;
+						String replyStr;
+						reply.printTo(replyStr);
+						s.sendToWsServer(replyStr);
+					}
 	//				MqttUtil::sendCommand("0026", oldInputState);
 				}
 				Serial.println("*** MotionSensor isLatch\n");
@@ -91,16 +101,18 @@ void loop()
 				char state[2];
 				sprintf(state, "%d", inputState);
 				product.setValue("0026", inputState);
-				DynamicJsonBuffer jsonBuffer;
-				JsonObject& reply = jsonBuffer.createObject();
-				reply["core"] = 7;
-				reply["cmd"] = 10;
-				reply["ssid"] = "0001";
-				reply["cid"] = 25;
-				reply["val"] = inputState?1:0;
-				String replyStr;
-				reply.printTo(replyStr);
-				s.sendToWsServer(replyStr);
+				if (isController) {
+					DynamicJsonBuffer jsonBuffer;
+					JsonObject& reply = jsonBuffer.createObject();
+					reply["core"] = 7;
+					reply["cmd"] = 10;
+					reply["ssid"] = "0001";
+					reply["cid"] = 25;
+					reply["val"] = inputState?1:0;
+					String replyStr;
+					reply.printTo(replyStr);
+					s.sendToWsServer(replyStr);
+				}
 	//			MqttUtil::sendCommand("0026", inputState);
 				Serial.println("*** MotionSensor isMomentary\n");
 			}
