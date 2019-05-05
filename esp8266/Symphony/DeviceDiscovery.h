@@ -86,6 +86,7 @@ JsonArray& devices = gJsonBuffer.createArray();	//container for the device info
 JsonArray& gServerIP = gJson.createNestedArray("serverIp");
 bool isDiscoveryServer = false;
 String deviceName;
+String mac;
 uint8_t idCounter = 0;
 long timeMillis = millis();
 long timerIntervalMillis = 120000;  //2-min timer interval
@@ -230,7 +231,7 @@ boolean DeviceInfo::exists(IPAddress findIP) {
 	return isFound;
 }
 
-DeviceInfo deviceInfo = DeviceInfo();
+DeviceInfo deviceInfo = DeviceInfo();  //container of the devices that are discovered, includes self
 
 /**
  *  handles the packets that arrive
@@ -351,6 +352,7 @@ void sendIdentify() {
 			JsonObject& tmpJson = jsonIDBuffer.createObject();
 			tmpJson["mode"] = 1;
 			tmpJson["name"] = deviceName;
+			tmpJson["mac"] = mac;
 			JsonArray& data = tmpJson.createNestedArray("ip");
 			data.add(WiFi.localIP()[0]);
 			data.add(WiFi.localIP()[1]);
@@ -387,16 +389,17 @@ void sendIdentify(long intervalMillis) {
  * Starts a UDP server to listen to Symphony devices and stores their IP addresses.
  * this will enable "auto-discovery" from the udp server 239.1.2.3 port 1234
  */
-void startDiscovery(String name, String mac) {
+void startDiscovery(String name, String mac_) {
 #ifdef DEBUG_DISCOVERY
 	Serial.println("[startDiscovery] start");
 #endif
 	deviceName = name;
+	mac = mac_;
 	if (udp.listenMulticast(IPAddress(239, 1, 2, 3), 1234)) {
 		udp.onPacket(packetArrived);
 		long timeMillis = millis();
 		sendIdentify();
-		deviceInfo.add(deviceName, WiFi.localIP(), mac);
+		deviceInfo.add(deviceName, WiFi.localIP(), mac_);
 #ifdef DEBUG_DISCOVERY
 		Serial.println("[startDiscovery]");
 		gJson.printTo(Serial);
@@ -413,7 +416,6 @@ void startDiscovery(String name, String mac) {
 #ifdef DEBUG_DISCOVERY
 	Serial.println("\n[startDiscovery] end");
 	Serial.println("************* start test JSON ******************");
-#endif
 	DynamicJsonBuffer jsonBuff;
 	JsonObject& jsonObj = jsonBuff.createObject();
 	JsonObject& client = jsonObj.createNestedObject("client");
@@ -428,7 +430,6 @@ void startDiscovery(String name, String mac) {
 	device2["mac"] = "mac2";
 	JsonObject& server = jsonObj.createNestedObject("server");
 	server["ip"] = 192;
-#ifdef DEBUG_DISCOVERY
 	jsonObj.prettyPrintTo(Serial);
 	Serial.println("\n************* end test JSON ******************");
 #endif
