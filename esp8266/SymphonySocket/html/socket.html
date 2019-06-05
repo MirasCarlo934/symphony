@@ -64,7 +64,7 @@ function serverResponseHandler(json) {
 	}
 }
 function initTimerForm() {
-	var jsonRequest = {"cmd":1};//we are sending fetch timer cmd to the device 	
+	var jsonRequest = {"core":7,"cmd":1};//we are sending fetch timer cmd to the device 	
 	websocket.send(JSON.stringify(jsonRequest));
 	for (i=0;i<6;i++) {
 		var e1 = document.getElementById("hrs");
