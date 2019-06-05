@@ -1,7 +1,7 @@
 /*
  * Product.h
 
- *  name		= name of this device (includes mac address)
+ *  name_mac	= name of this device (includes mac address)
     room		= room where this device is located;
     productType	= the product type;
  *
@@ -17,7 +17,7 @@
  * 	max			= the maximum value
  * 	value		= the actual value
 
-	{"name":"NAME", "room":"ROOM", "type":"Product Type",
+	{"name_mac":"NAME", "room":"ROOM", "type":"Product Type",
 		"props" :[
 			{"ssid":"SSID", "corePin":1, "pin":12, "gui":{"type":"PINTYPE", "lbl":"LABEL", "min":"MIN", "max":"MAX", "value":1, "grp":"GROUP"}},
 			{"ssid":"SSID", "corePin":1, "pin":12, "gui":{"type":"PINTYPE", "lbl":"LABEL", "min":"MIN", "max":"MAX", "value":1, "grp":"GROUP"}}
@@ -74,11 +74,11 @@ class Product {
   public:
     String room;
     String productType;
-    String name = "";
+    String name_mac = "";
     attribStruct *attributes = NULL;
 
     Product();
-    Product(String name, String room, String productType);
+    Product(String name_mac, String room, String productType);
     void addProperty(String ssid, boolean corePin, int8_t pin, Gui gui);
     void addProperty(String ssid, boolean corePin, Gui gui); //an overloaded function. for logical properties that are not physically connected to a pin
 

@@ -10,10 +10,10 @@
 
 Product::Product(){}
 
-Product::Product(String name, String room, String productType){
+Product::Product(String name_mac, String room, String productType){
   this->room = room;
   this->productType = productType;
-  this->name = name;
+  this->name_mac = name_mac;
   attributes = new attribStruct[0];
 }
 
@@ -155,7 +155,7 @@ String Product::stringify() {
 	DynamicJsonBuffer jsonBuffer;
 	JsonObject& json = jsonBuffer.createObject();
 	json["cmd"] = 1;
-	json["mac"] = name;
+	json["name_mac"] = name_mac;
 	JsonArray& data = json.createNestedArray("data");
 	for (int i=0; i<size; i++) {
 		JsonObject& element = data.createNestedObject();
@@ -177,8 +177,9 @@ String Product::stringify() {
 String Product::stringifyValues() {
 	DynamicJsonBuffer jsonBuffer;
 	JsonObject& json = jsonBuffer.createObject();
+	json["core"] = 20;
 	json["cmd"] = 2;
-	json["mac"] = name;
+	json["name_mac"] = name_mac;
 	JsonArray& data = json.createNestedArray("data");
 	for (int i=0; i<size; i++) {
 		JsonObject& element = data.createNestedObject();

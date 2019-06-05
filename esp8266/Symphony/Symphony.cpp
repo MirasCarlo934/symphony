@@ -465,6 +465,7 @@ void Symphony::setup(String theHostName) {
 	wifiConnectHandler = WiFi.onStationModeGotIP(onWifiConnect);
 	delay(100);
 	connectToWifi(theHostName);		//we are connecting to the wifi AP
+	createMyName(theHostName);		//create this device's name
 	homeHtml = CONTROL_HTML1;
 	homeHtml.replace("$AAA$", hostName);
 	Serial.printf("Hostname is %s.local\n", hostName.c_str());
@@ -597,7 +598,7 @@ void Symphony::connectToWifi(String theHostName) {
 		Serial.printf("\nssid:%s pwd:%s\n", ssid.c_str(), pwd.c_str());
 #endif
 	}
-	createMyName(theHostName);
+
 	WiFi.begin(ssid.c_str(), pwd.c_str());
 	int i = 0;
 	//tries to connect to the AP

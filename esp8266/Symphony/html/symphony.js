@@ -1,7 +1,7 @@
 const CMD_INIT = 1
 const CMD_VALUES = 2
 const CMD_CLIENT = 10
-const CMD_SERVER = 20
+const CORE_VALUERESPONSE = 20
 const CORE_GETDEVICEINFO = 4;
 const CORE_TOCHILD = 7;
 
@@ -364,6 +364,41 @@ function handleWsMessage(evt) {
 				serverResponseHandler(jsonResponse);//pass the jsonResponse to the child's javascript
 			}
   			break;
+  		case CORE_VALUERESPONSE://value response from server
+  			{
+  			switch(cmd) {
+  		  	 case CMD_VALUES:
+  		   		//response from the VALUES
+  		//alert(JSON.stringify(jsonResponse));
+				name = document.getElementById("theName").innerHTML;
+  		   		if (jsonResponse["name_mac"] == name+'_'+mac) {
+  		   			for (i in jsonResponse.data){
+  						var input =  document.getElementById(jsonResponse.data[i].id);
+  						if (input.type == "checkbox" || input.type == "radio") {
+  			            	if (jsonResponse.data[i].val == 1)
+  			    				input.checked=true;	
+  			            	else
+  			            		input.checked=false;
+  			            }
+  		   			}
+  		   		}
+  		  		 break;
+  		  	 case CMD_CLIENT://data forwarded by the server from a client.
+  		//alert(JSON.stringify(jsonResponse));
+  				if (jsonResponse.mac == mac && !(jsonResponse.cid == cid)) {//update input if cid is not our cid
+  					var input =  document.getElementById(jsonResponse.ssid);
+  					if (input.type == "checkbox" || input.type == "radio") {
+  		            	if (jsonResponse.val == 1)
+  		    				input.checked=true;	
+  		            	else
+  		            		input.checked=false;
+  		            }
+  				}
+  		  		 break;
+  		  	 default:
+  		  	 }		
+  			}
+  			break;
   	}
   	if (status!=null) {
   		if (jsonResponse.msg!=null)
@@ -381,33 +416,6 @@ function handleWsMessage(evt) {
   		var msg = document.getElementById("msg");
   		msg.innerHTML = "Synchronized";
   	 	break;
-  	 case CMD_VALUES:
-   		//response from the VALUES
-//alert(JSON.stringify(jsonResponse));
-   		if (jsonResponse["mac"] == mac) {
-   			for (i in jsonResponse.data){
-				var input =  document.getElementById(jsonResponse.data[i].id);
-				if (input.type == "checkbox" || input.type == "radio") {
-	            	if (jsonResponse.data[i].val == 1)
-	    				input.checked=true;	
-	            	else
-	            		input.checked=false;
-	            }
-   			}
-   		}
-  		 break;
-  	 case CMD_CLIENT://data forwarded by the server from a client.
-//alert(JSON.stringify(jsonResponse));
-		if (jsonResponse.mac == mac && !(jsonResponse.cid == cid)) {//update input if cid is not our cid
-			var input =  document.getElementById(jsonResponse.ssid);
-			if (input.type == "checkbox" || input.type == "radio") {
-            	if (jsonResponse.val == 1)
-    				input.checked=true;	
-            	else
-            		input.checked=false;
-            }
-		}
-  		 break;
   	 default:
   	 }
    } else {
