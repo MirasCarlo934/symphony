@@ -411,7 +411,7 @@ function handleWsMessage(evt) {
   	 	//response from the INIT
   		var header = document.getElementById("theName");
   		cid = jsonResponse["cid"];
-  		header.innerHTML = jsonResponse["name"];
+  		header.innerHTML = jsonResponse["name"] + " v"+jsonResponse["ver"];
   		mac = jsonResponse["mac"];
   		var msg = document.getElementById("msg");
   		msg.innerHTML = "Synchronized";

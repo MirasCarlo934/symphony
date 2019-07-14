@@ -11,8 +11,7 @@
 <div class="tab">
   <button class="tablinks" onclick="openTab(event, 'device');getDeviceInfo();" id="defaultOpen">Device</button>
   <button class="tablinks" onclick="openTab(event, 'mqtt')">MQTT</button>
-  <button class="tablinks" onclick="openTab(event, 'upload')">Files</button>
-  <!--button class="tablinks" onclick="window.location.pathname = '/files';">Files</button-->
+  <button class="tablinks" onclick="openTab(event, 'upload');">Files</button>
   <button class="tablinks" onclick="openTab(event, 'firmware')">Firmware</button>
   <button class="tablinks" onclick="openTab(event, 'test')">test</button>
 </div>
@@ -62,9 +61,7 @@
 <div id="upload" class="tabcontent">
 <h3>File Management</h3>
 <center><fieldset style="width:300px"><legend>Upload File</legend>
-<iframe src="/files" height="350px">
-  <a href="/files">Upload</a>
-</iframe>
+<a href="/files.html">File Manager</a>
 </fieldset></center>
 </div>
 

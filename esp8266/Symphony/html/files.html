@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<head>
+  <title>Home Symphony</title>
+<link rel="stylesheet" type="text/css" href="symphony.css">
+<script type="text/javascript">
+function initFiles() {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState==4 && this.status==200) {
+	displayFiles(this.responseText);
+    }
+  }
+  xhttp.open('GET', '/getFiles', true);
+  xhttp.send();
+}
+function uploadFile() {
+  var fileInput = document.getElementById('fileInput');
+  document.getElementById("msg").innerHTML = "";
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState==4 && this.status==200) {
+      document.getElementById("msg").innerHTML = this.responseText;
+    }
+  }
+  var status = document.getElementById("selectedFiles");
+  status.innerHTML = ""
+  for (var i = 0; i < fileInput.files.length; i++) {
+    status.innerHTML += i+1
+    status.innerHTML += ". "
+    status.innerHTML += fileInput.files[i].name
+    status.innerHTML += "  sent<br>"
+  }
+  var form = document.getElementById('fileUpload');
+  var formData = new FormData(form);
+  xhttp.open('POST', '/uploadFile', true);
+  xhttp.send(formData);
+}
+function displayFiles(responseText) {
+  var p = document.getElementById("files");
+  p.innerHTML = "";
+  var jsonObj = JSON.parse(responseText);
+  var len = 0;
+  for (i in jsonObj.files) {
+	var s = jsonObj.files[i];
+    var lbl = document.createElement('label');
+	lbl.innerHTML = s;
+	var input = document.createElement('input');
+	input.setAttribute('type',"radio");
+	input.setAttribute('name',"fNames");
+	input.setAttribute('value',s);
+	p.appendChild(input);
+	p.appendChild(lbl);
+  	var br = document.createElement('br');
+	p.appendChild(br);
+    len++;
+  }
+  if (len >0) {
+	var input = document.createElement('input');
+	input.setAttribute('type',"button");
+	input.setAttribute('onclick',"delFile()");
+	input.setAttribute('value',"Delete");
+	p.appendChild(input);
+  }
+}
+function delFile() {
+	var data = '{"core":3,"data":"';
+	var r = document.getElementsByName("fNames");	//radiobutton group
+	for (var j=0, len=r.length; j<len; j++) {
+	  	if (r[j].checked) {
+				data = data + r[j].value +'"}';
+	  	}
+	}
+	websocket.send(data);
+	initFiles();
+}
+function showSelectedFiles() {
+  var fileInput = document.getElementById('fileInput');
+  var status = document.getElementById("selectedFiles");
+  status.innerHTML = ""
+  for (var i = 0; i < fileInput.files.length; i++) {
+    status.innerHTML += i+1
+    status.innerHTML += ". "
+    status.innerHTML += fileInput.files[i].name
+    status.innerHTML += "<br>"
+  }
+}
+</script>
+</head>
+<body bgcolor="#EFE4B0" onload="initFiles()"">
+<h3>Life in Harmony</h3>
+<fieldset><legend></legend>
+<div>
+<div style="width:500;"><p id='files'></p></div><br>
+<form id='fileUpload' method='POST' action='/uploadFile' enctype='multipart/form-data'>
+<input id='fileInput' type='file' name='file' multiple onchange='showSelectedFiles()' accept=".gz">
+<input type='button' value='Upload' onclick='uploadFile()'>
+<p id='selectedFiles'></p>
+<p id='msg'></p>
+</form>
+</div>
+</fieldset>
+</body>
+</html>

@@ -27,7 +27,6 @@
 #include "Symphony.h"
 #include "DeviceDiscovery.h"
 
-#define ver "1.3.2"
 #define DISCOVERABLE
 
 String Symphony::rootProperties = "";
@@ -35,6 +34,7 @@ String Symphony::hostName = "hostName";
 String Symphony::mac = "";
 String Symphony::nameWithMac = "myName";
 Product Symphony::product;
+String Symphony::version = "0.0";
 
 AsyncWebServer		webServer(HTTP_PORT); // Web Server
 AsyncWebSocket      ws("/ws");      // Web Socket Plugin
@@ -58,7 +58,7 @@ int8_t		fwResult = 0;
 long identifyTries[] = {5000, 10000, 20000};
 int discoveryTries = 0;
 
-WebSocketsClient webSocketClient;
+//WebSocketsClient webSocketClient;  July 13 2019 do we really need this device to be a ws client?
 
 /*
  * This is the callback handler that will be called when a Websocket event arrives.
@@ -81,7 +81,7 @@ void webSocketClientEvent(WStype_t type, uint8_t * payload, size_t length) {
 		case WStype_CONNECTED: {
 			Serial.printf("[WSc] Connected to url: %s\n", payload);
 			// send message to server when Connected
-			webSocketClient.sendTXT("Connected");
+//			webSocketClient.sendTXT("Connected");  July 13 2019 do we really need this device to be a ws client?
 		}
 			break;
 		case WStype_TEXT:
@@ -101,24 +101,26 @@ void webSocketClientEvent(WStype_t type, uint8_t * payload, size_t length) {
 
 }
 
-/**
- * Start connection to the Websocket
- */
-int startWebSocketClients() {
-	// server address, port and URL
-	webSocketClient.begin("192.168.0.111", 80, "/ws");
-
-	// event handler
-	webSocketClient.onEvent(webSocketClientEvent);
-	// try ever 5000 again if connection has failed
-	webSocketClient.setReconnectInterval(5000);
-
-	// start heartbeat (optional)
-	// ping server every 15000 ms
-	// expect pong from server within 3000 ms
-	// consider connection disconnected if pong is not received 2 times
-	webSocketClient.enableHeartbeat(15000, 3000, 2);
-}
+//July 13 2019 do we really need this device to be a ws client?
+///**
+// * Start connection to the Websocket
+// * June 15, 2019, this is just a test to show how we can connect as websocket client to another ESP vi websocket
+// */
+//int startWebSocketClients() {
+//	// server address, port and URL
+//	webSocketClient.begin("192.168.0.111", 80, "/ws");
+//
+//	// event handler
+//	webSocketClient.onEvent(webSocketClientEvent);
+//	// try ever 5000 again if connection has failed
+//	webSocketClient.setReconnectInterval(5000);
+//
+//	// start heartbeat (optional)
+//	// ping server every 15000 ms
+//	// expect pong from server within 3000 ms
+//	// consider connection disconnected if pong is not received 2 times
+//	webSocketClient.enableHeartbeat(15000, 3000, 2);
+//}
 
 /*
  *	wsEvent handles the transactions sent by client websockets.
@@ -178,6 +180,7 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 											reply["mac"] = Symphony::mac;
 											reply["box"] = "status";	//the element to show the message
 											reply["cid"] = client->id();	//the client id
+											reply["ver"] = Symphony::version;	//the version
 											String strReply;
 											reply.printTo(strReply);
 											client->text(strReply);
@@ -366,8 +369,8 @@ void showProperties(AsyncWebServerRequest *request) {
  * File upload Section
  */
 void showFileUpload(AsyncWebServerRequest *request) {
-	request->send(200, "text/html", UPLOAD_HTML);//shows file upload html from the PROGMEM defined in html.h, we are doing this because initial loading of firmware does not have the SPIFFS files
 	Serial.println("**************************** showFileUpload");
+	request->send(200, "text/html", UPLOAD_HTML);//shows file upload html from the PROGMEM defined in html.h, we are doing this because initial loading of firmware does not have the SPIFFS files
 }
 /*
  * handles the upload of upload File
@@ -423,6 +426,7 @@ void initWebServer() {
 	webServer.on("/uploadFile", HTTP_POST, doneFileUpload, handleFileUpload); //handle the file update request
 	webServer.on("/getFiles", HTTP_GET, handleGetFiles);  //show the Files in SPIFFS
 	webServer.on("/properties.html", showProperties);
+	webServer.serveStatic("/files.html", SPIFFS, "/files.html");
 	webServer.serveStatic("/test.html", SPIFFS, "/test.html");
 	webServer.onNotFound([](AsyncWebServerRequest *request) {
 		request->send(404, "text/plain", "Page not found");
@@ -437,8 +441,11 @@ Symphony::Symphony(){
 
 /*
  * Initiates the Symphony module
+ * theHostName is passed by the child
+ * ver is passed by the child and should be composed of SYMPHONY_VERSION.CHILD_VERSION
+ *
  */
-void Symphony::setup(String theHostName) {
+void Symphony::setup(String theHostName, String ver) {
 //	Serial.begin(115200);	//implementing objects should set the baud rate
 //	wifi_set_sleep_type(NONE_SLEEP_T);
 #ifdef SHOW_FLASH
@@ -461,6 +468,7 @@ void Symphony::setup(String theHostName) {
 		Serial.println();
 		Serial.println("****************** Start core setup ******************");
 #endif
+	Symphony::version = ver;
 	// Setup WiFi Handler
 	wifiConnectHandler = WiFi.onStationModeGotIP(onWifiConnect);
 	delay(100);
@@ -468,7 +476,7 @@ void Symphony::setup(String theHostName) {
 	createMyName(theHostName);		//create this device's name
 	homeHtml = CONTROL_HTML1;
 	homeHtml.replace("$AAA$", hostName);
-	Serial.printf("Hostname is %s.local\n", hostName.c_str());
+	Serial.printf("Hostname is %s.local version is %s\n", hostName.c_str(), Symphony::version.c_str());
 	// Handle OTA update from asynchronous callbacks
 	Update.runAsync(true);
 	// Setup WebSockets
@@ -479,11 +487,13 @@ void Symphony::setup(String theHostName) {
 	wifiDisconnectHandler = WiFi.onStationModeDisconnected(onWiFiDisconnect);
 	webServer.begin();
 
+#ifdef WSCLIENT
 	startWebSocketClients();
+#endif
 
 	Serial.print(F("- Web Server started on port "));
 	Serial.println(HTTP_PORT);
-	Serial.printf("\n************END Core Setup Version %s,  boot:%i***************\n", ver, reboot);
+	Serial.printf("\n************[Symphony] Setup Version %i,  boot:%i***************\n", SYMPHONY_VERSION, reboot);
 }
 
 /*
@@ -501,7 +511,7 @@ bool Symphony::loop() {
 	} else {
 		//we process other items if it is not reboot mode
 		dnsServer.processNextRequest();
-		webSocketClient.loop();
+//		webSocketClient.loop();July 13 2019 do we really need this device to be a ws client?
 	}
 	if (!isUpdateFw) {
 #ifdef DISCOVERABLE
@@ -664,7 +674,7 @@ void Symphony::setRootProperties(String s) {
 	Symphony::rootProperties = s;
 }
 void Symphony::sendToWsServer(String replyStr){
-	webSocketClient.sendTXT(replyStr);
+//	webSocketClient.sendTXT(replyStr);July 13 2019 do we really need this device to be a ws client?
 }
 /***********************************************************************
 *					Utility classes

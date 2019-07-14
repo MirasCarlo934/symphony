@@ -17,6 +17,7 @@
 
 #include "FileManager.h"
 #include "html.h"
+#include "version.h"
 #include "Product.h"
 #include <WebSocketsClient.h>
 
@@ -46,9 +47,10 @@ class Symphony {
 	    static String mac;//the mac address
 	    static String nameWithMac;//the name of this device that includes the mac address
 	    static Product product;
+	    static String version;
 
 	    //public methods
-	    void setup(String theHostName);
+	    void setup(String theHostName, String ver);
 	    bool loop();
 	    //lets the instantiator if this Symphony object assign a callback handler
 	    void on(const char* uri, WebRequestMethodComposite method, ArRequestHandlerFunction handler);
