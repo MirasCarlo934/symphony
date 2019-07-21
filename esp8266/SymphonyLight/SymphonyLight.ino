@@ -11,20 +11,21 @@
 #endif
 
 #define DEBUG_PIXELS
-#define MY_VERSION 1.30
 
 String myName = "symphonyLight";
 Product product;
 
-ESPAsyncE131 e131;
+ESPAsyncE131 e131(10);//we allocate 10 buffers
 uint16_t countE131 = 0;  //count to be used to to determine if we are receiving any E131 packets
 long timerMilli = 0;
 
+/**
+ * START webrequest handlers
+ */
 void handleInit(AsyncWebServerRequest *request) {
 	request->send(200, "text/html", "Init of SymphonyLight E1.31 is called.");
 	Serial.println("handleInit");
 }
-
 void handleFire(AsyncWebServerRequest *request) {
 	int i = 0;
 	if(request->hasParam("value")) {
@@ -53,6 +54,10 @@ void handleToggle(AsyncWebServerRequest *request) {
 	request->send(200, "text/html", buff);
 	Serial.printf("handleToggle effect=%u\n",effect);
 }
+/**
+ * END webrequest handlers
+ */
+
 /*
  * Callback function for the websocket transactions
  * the following are the recognized commands
@@ -95,7 +100,7 @@ int wsHandlerJason(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& 
 				if (json.containsKey("data")) {
 #ifdef DEBUG_PIXELS
 					JsonArray& a = json["data"];
-					Serial.printf("\nnew universe:%i, strings:%i, pixels:%i\n", json["u"], json["s"], json["p"]);
+					Serial.printf("\nnew universe:%i, strings:%i, pixels:%i\n", json["u"].as<int>(), json["s"].as<int>(), json["p"].as<int>());
 					for (int i = 0; i < a.size(); i++) {
 						uint8_t pin = a[i]["pin"].as<int>();
 						Serial.printf("\nnew pin:%i\n", pin);
@@ -103,7 +108,12 @@ int wsHandlerJason(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& 
 #endif
 					json.remove("cfg");
 					json.remove("cmd");
-					myUniverse = json["u"];
+					myUniverse = json["u"].as<int>();
+
+//					added july 19 2019
+					if (e131.begin(E131_MULTICAST, myUniverse, 1))  //re-configure the E1.31 listener
+						Serial.printf("Listening to Universe:%u\n", myUniverse);
+
 					mirrored = json["m"];
 					int doReset = json["rst"].as<int>();
 					json.remove("rst");
@@ -198,11 +208,38 @@ int wsHandlerJason(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& 
 		if (cmd == 7) {//cycle
 			seq = CYCLE;
 		}
-		if (cmd == 8) {//reserved
+		if (cmd == 9) {
+			json["core"] = 7;
+			json["cmd"] = 2;
+			json["rcode"] = 1;
+			json["msg"] = "Get sequence successful.";
+			JsonArray& a = json.createNestedArray("seq");
+			for (int i = 0; i < 2; i++) {
+				JsonObject& o = a.createNestedObject();
+				o["color"] = sequenceArray[i].color;
+				o["ptrn"] = sequenceArray[i].pattern;
+				o["dur"] = sequenceArray[i].duration;
+			}
+//			client->text("{\"core\":7,\"rcode\":1,\"msg\":\"Get sequence successful.\"}");
+			size_t len = json.measureLength();
+			AsyncWebSocketMessageBuffer * buffer = ws.makeBuffer(len);
+			if (buffer) {
+				json.printTo((char *)buffer->get(), len + 1);
+				client->text(buffer);
+			}
+		}
+		if (cmd == 10) { //on-off command from the control page
+			Serial.println("command is 10");
+			if (json.containsKey("name")) {
+				Serial.printf("deviceName=%s, value=%i\n",json["name"].as<char *>(), json["val"].as<int>());
+			}
+		}
+		if (cmd == 11) {//Set Sequences
+			Serial.println("command is 11");
 //			data has this format
 //			{
 //				"core": 7,
-//				"cmd": 8,
+//				"cmd": 11,
 //				"seq": [
 //					{
 //						"ptrn": 0,
@@ -237,31 +274,54 @@ int wsHandlerJason(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& 
 
 			}
 		}
-		if (cmd == 9) {
-			json["core"] = 7;
-			json["cmd"] = 2;
-			json["rcode"] = 1;
-			json["msg"] = "Get sequence successful.";
-			JsonArray& a = json.createNestedArray("seq");
-			for (int i = 0; i < 2; i++) {
-				JsonObject& o = a.createNestedObject();
-				o["color"] = sequenceArray[i].color;
-				o["ptrn"] = sequenceArray[i].pattern;
-				o["dur"] = sequenceArray[i].duration;
-			}
-//			client->text("{\"core\":7,\"rcode\":1,\"msg\":\"Get sequence successful.\"}");
-			size_t len = json.measureLength();
-			AsyncWebSocketMessageBuffer * buffer = ws.makeBuffer(len);
-			if (buffer) {
-				json.printTo((char *)buffer->get(), len + 1);
-				client->text(buffer);
+		if (cmd == 12) { //2.2	Get Sequences
+			Serial.println("command is 12");
+		}
+		if (cmd == 13) { //2.3	Play Sequences
+			Serial.println("command is 13");
+		}
+		if (cmd == 14) { //2.4	Pause Sequences
+			Serial.println("command is 14");
+		}
+		if (cmd == 15) { //2.5	Stop Sequences
+			Serial.println("command is 15");
+		}
+		if (cmd == 16) { //2.6	Test Sequence
+			Serial.println("command is 16");
+		}
+		if (cmd == 17) { //2.7	Resume Normal Operation
+			Serial.println("command is 17");
+		}
+		if (cmd == 18) { //2.8	Set Static Sequence
+			Serial.println("command is 18");
+		}
+		if (cmd == 19) { //2.9	Set Static Color
+			Serial.println("command is 19");
+//			Serial.println("color picker");
+			seq = PICKER;
+//			isNormal = false;
+			if (json.containsKey("data")) {
+				JsonArray& a = json["data"];
+#ifdef DEBUG_PIXELS
+				a.printTo(Serial);
+				Serial.println(a.size());
+#endif
+				uint8_t r = a[0].as<int>();
+				uint8_t g = a[1].as<int>();
+				uint8_t b = a[2].as<int>();
+//				Serial.printf("color is (%i, %i, %i)",r,g,b);
+				for( int i = 0; i < NUM_PIXELS; i++) {
+					for(int j=0; j<LED_STRINGS;j++) {
+						theLeds[j][i].r = r;
+						theLeds[j][i].g = g;
+						theLeds[j][i].b = b;
+					}
+				}
+				FastLED.show();
 			}
 		}
-		if (cmd == 10) { //on-off command from the control page
-			Serial.println("command is 10");
-			if (json.containsKey("name")) {
-				Serial.printf("deviceName=%s, value=%i\n",json["name"].as<char *>(), json["val"].as<int>());
-			}
+		if (cmd == 20) { //2.10	Get Current Status
+			Serial.println("command is 20");
 		}
 	} else {
 		Serial.println("Not a valid command");
@@ -333,9 +393,11 @@ void setup()
 	palettes[10].name = "RedWhiteBlue";
 	palettes[11].name = "Cloud";
 	s.setWsCallback(wsHandlerJason);
-	s.setup(myName);
+	char ver[10];
+	sprintf(ver, "%u.%u", SYMPHONY_VERSION, LIGHT_VERSION);
+	s.setup(myName, ver);
 	initWeb();
-	product = Product(s.myName, "Bedroom", "Lights");
+	product = Product(s.nameWithMac, "Bedroom", "Lights");
 	Gui gui1 = Gui("Grp1", RADIO_CTL, "Red", 0, 1, 1);
 	product.addProperty("0001", false, gui1);
 	Gui gui2 = Gui("Grp1", RADIO_CTL, "Blue", 0, 1, 0);
@@ -346,7 +408,8 @@ void setup()
 	FastLED.setBrightness(  BRIGHTNESS );
 	if (WiFi.status() == WL_CONNECTED ) {
 		//we only enable e131 if we are connected to wifi as client
-		if (e131.begin(E131_MULTICAST, UNIVERSE_START, UNIVERSE_COUNT))   // Listen via Multicast
+//		if (e131.begin(E131_MULTICAST, UNIVERSE_START, UNIVERSE_COUNT))   // Listen via Multicast for 1-n channels
+		if (e131.begin(E131_MULTICAST, myUniverse, 1))   // July 19 2019 Listen via Multicast for 1 channel (myUniverse) only
 			Serial.println(F("Listening for data..."));
 		else
 			Serial.println(F("*** e131.begin failed ***"));
@@ -399,8 +462,44 @@ Serial.printf("light.json is %s\n",config.c_str());
 			FastLED.addLeds<LED_TYPE, LED_PIN1, COLOR_ORDER>(theLeds[i], pixelCount).setCorrection( TypicalLEDStrip );
 		}
 	}
-	Serial.printf("\n************END SymphonyLight Setup Version%.2f***************\n", MY_VERSION);
+	Serial.printf("\n************END SymphonyLight Setup Version%i***************\n", LIGHT_VERSION);
 }
+
+// The loop function is called in an endless loop
+//this is used to test the unexpected flashing
+void loopTest()
+{
+	///DO NOT PUT A delay() out side of if (s.loop()){} AS IT CAUSES ERROR DURING OTA
+	if (s.loop()) {
+
+		{
+//			Serial.println("is not normal");
+			if (!e131.isEmpty()) {
+				countE131++;
+				e131_packet_t packet;
+				e131.pull(&packet);     // Pull packet from ring buffer
+				//code below is for a string that has its own channel
+				if (myUniverse == htons(packet.universe)) {
+					for (int i=0; i<pixelCount;i++) {
+						for (int j=0; j<stringCount;j++){
+								theLeds[j][i] = getPixColorFromE131Stream(packet, 30, j, i);
+						}
+					}
+//					Serial.println();
+//					Serial.printf("\nListening to Universe%u: thisUniverse %u / %u Channels | Packet#: %u / Errors: %u / CH1: %u,%u,%u\n",
+//									myUniverse,
+//									htons(packet.universe),                 // The Universe for this packet
+//									htons(packet.property_value_count) - 1, // Start code is ignored, we're interested in dimmer data
+//									e131.stats.num_packets,                 // Packet counter
+//									e131.stats.packet_errors,               // Packet error counter
+//									packet.property_values[1],  packet.property_values[2], packet.property_values[3]);
+					FastLED.show();
+				}
+			}
+		}
+	}
+}
+
 // The loop function is called in an endless loop
 void loop()
 {
@@ -440,14 +539,14 @@ void loop()
 				break;
 			}
 		} else {
-//			Serial.println("is not normal");
+//			Serial.println("is E1.31 stream");
 			if (!e131.isEmpty()) {
 				countE131++;
 				e131_packet_t packet;
 				e131.pull(&packet);     // Pull packet from ring buffer
 #ifdef DEBUG_PIXELS
 				CRGB pixColor = getPixColorFromE131Stream(packet, 30, 0, 1);	//we get the first pixel's color
-				Serial.printf("Listening to Universe%u: thisUniverse %u / %u Channels | Packet#: %u / Errors: %u / CH1: %u,%u,%u --> CRGB(%u, %u, %u)\n",
+				Serial.printf("Listening for Universe%u: rcvUniverse %u / %u Channels | Packet#: %u / Errors: %u / CH1: %u,%u,%u --> CRGB(%u, %u, %u)\n",
 				myUniverse,
 				htons(packet.universe),                 // The Universe for this packet
 				htons(packet.property_value_count) - 1, // Start code is ignored, we're interested in dimmer data
