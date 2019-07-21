@@ -17,7 +17,7 @@ initWs();
 
 function initWs() {
 	if (typeof websocket === 'undefined' || websocket.readyState != 1) {
-		var wsUri = "ws://"+location.hostname+"/ws";
+		var wsUri = "ws://"+location.hostname+":8080/ws";
 		websocket = new WebSocket(wsUri);
 		wsHandler();
 	} else {
