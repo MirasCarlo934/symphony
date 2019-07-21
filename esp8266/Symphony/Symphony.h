@@ -25,6 +25,7 @@
 //#define SHOW_FLASH
 #define FW_VERSION 1252
 #define HTTP_PORT 80      /* Default web server port */
+#define WS_PORT 8080      /* Web socket server port */
 #define CONNECT_TIMEOUT 15000   /* 15 seconds */
 #define REBOOT_DELAY    500     /* Delay for rebooting once reboot flag is set */
 

@@ -37,6 +37,7 @@ Product Symphony::product;
 String Symphony::version = "0.0";
 
 AsyncWebServer		webServer(HTTP_PORT); // Web Server
+AsyncWebServer		wsServer(WS_PORT); // WebSocket Server
 AsyncWebSocket      ws("/ws");      // Web Socket Plugin
 WiFiEventHandler    wifiConnectHandler;     // WiFi connect handler
 WiFiEventHandler    wifiDisconnectHandler;  // WiFi disconnect handler
@@ -481,11 +482,12 @@ void Symphony::setup(String theHostName, String ver) {
 	Update.runAsync(true);
 	// Setup WebSockets
 	ws.onEvent(wsEvent);
-	webServer.addHandler(&ws);
+	wsServer.addHandler(&ws);
 	initWebServer();	//initialize the html pages
 
 	wifiDisconnectHandler = WiFi.onStationModeDisconnected(onWiFiDisconnect);
 	webServer.begin();
+	wsServer.begin();
 
 #ifdef WSCLIENT
 	startWebSocketClients();
