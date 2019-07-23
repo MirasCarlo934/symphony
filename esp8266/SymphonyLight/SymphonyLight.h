@@ -6,6 +6,7 @@
  */
 #include <FastLED.h>
 #include "Symphony.h"
+#include "version.h"
 
 #ifndef SYMPHONYLIGHT_H_
 #define SYMPHONYLIGHT_H_
