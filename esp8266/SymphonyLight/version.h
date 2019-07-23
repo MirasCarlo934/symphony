@@ -1,0 +1,1 @@
+#define LIGHT_VERSION 1
