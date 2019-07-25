@@ -19,7 +19,6 @@
 #include "html.h"
 #include "version.h"
 #include "Product.h"
-#include <WebSocketsClient.h>
 
 #define DEBUG_ONLY
 //#define SHOW_FLASH
