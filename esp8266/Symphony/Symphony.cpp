@@ -69,60 +69,6 @@ int discoveryTries = 0;
  */
 int (* WsCallback) (AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json);
 
-/**
- * webSocketClientEvent handles the transactions sent by websocketserver.
- * This device acts as a client to a websocket server
- */
-void webSocketClientEvent(WStype_t type, uint8_t * payload, size_t length) {
-
-	switch(type) {
-		case WStype_DISCONNECTED:
-			Serial.printf("[WSc] Disconnected!\n");
-			break;
-		case WStype_CONNECTED: {
-			Serial.printf("[WSc] Connected to url: %s\n", payload);
-			// send message to server when Connected
-//			webSocketClient.sendTXT("Connected");  July 13 2019 do we really need this device to be a ws client?
-		}
-			break;
-		case WStype_TEXT:
-			Serial.printf("[WSc] get text: %s\n", payload);
-
-			// send message to server
-			// webSocket.sendTXT("message here");
-			break;
-		case WStype_BIN:
-			Serial.printf("[WSc] get binary length: %u\n", length);
-			hexdump(payload, length);
-
-			// send data to server
-			// webSocket.sendBIN(payload, length);
-			break;
-	}
-
-}
-
-//July 13 2019 do we really need this device to be a ws client?
-///**
-// * Start connection to the Websocket
-// * June 15, 2019, this is just a test to show how we can connect as websocket client to another ESP vi websocket
-// */
-//int startWebSocketClients() {
-//	// server address, port and URL
-//	webSocketClient.begin("192.168.0.111", 80, "/ws");
-//
-//	// event handler
-//	webSocketClient.onEvent(webSocketClientEvent);
-//	// try ever 5000 again if connection has failed
-//	webSocketClient.setReconnectInterval(5000);
-//
-//	// start heartbeat (optional)
-//	// ping server every 15000 ms
-//	// expect pong from server within 3000 ms
-//	// consider connection disconnected if pong is not received 2 times
-//	webSocketClient.enableHeartbeat(15000, 3000, 2);
-//}
-
 /*
  *	wsEvent handles the transactions sent by client websockets.
  *	events can either be handled by the core, or the implementor.
