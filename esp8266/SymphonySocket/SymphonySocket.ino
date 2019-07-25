@@ -7,9 +7,9 @@
 #include "Arduino.h"
 #include <ESPAsyncE131.h>
 #include "Symphony.h"
+#include "version.h"
 
 //#define DEBUG_SOCKET
-#define MY_VERSION 2.21
 #define SOCKET_PIN     12
 #define UPDATES_PER_SECOND 100
 #define UNIVERSE_START 1
@@ -119,11 +119,13 @@ void setup()
 	digitalWrite(SOCKET_PIN, socketState);
 	Serial.println("\n\n************START Symphony Socket Setup***************");
 	s.setWsCallback(wsHandler);
-	s.setup(myName);
+	char ver[10];
+	sprintf(ver, "%u.%u", SYMPHONY_VERSION, SOCKET_VERSION);
+	s.setup(myName, ver);
 	s.on("/init", HTTP_GET, handleInit);
 	s.on("/toggle", HTTP_GET, handleToggle);
 	s.serveStatic("/socket.html", SPIFFS, "/socket.html");
-	product = Product(s.myName, "Bedroom", "Socket");
+	product = Product(s.nameWithMac, "Bedroom", "Socket");
 	Gui gui1 = Gui("Socket Control", BUTTON_CTL, "On/Off", 0, 1, socketState);
 	product.addProperty("0001", false, SOCKET_PIN, gui1);//add aproperty that has an attached pin
 	s.setProduct(product);
@@ -134,7 +136,7 @@ void setup()
 		Serial.println(F("*** e131.begin failed ***"));
 
 //	e131.begin(E131_MULTICAST, myUniverse, 1);
-	Serial.printf("\n************END Symphony Socket Setup Version%.2f***************", MY_VERSION);
+	Serial.printf("\n************END Symphony Socket Setup Version %u.%u***************", SYMPHONY_VERSION, SOCKET_VERSION);
 }
 
 // The loop function is called in an endless loop
