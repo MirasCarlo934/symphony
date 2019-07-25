@@ -462,7 +462,7 @@ Serial.printf("light.json is %s\n",config.c_str());
 			FastLED.addLeds<LED_TYPE, LED_PIN1, COLOR_ORDER>(theLeds[i], pixelCount).setCorrection( TypicalLEDStrip );
 		}
 	}
-	Serial.printf("\n************END SymphonyLight Setup Version%i***************\n", LIGHT_VERSION);
+	Serial.printf("\n************END SymphonyLight Setup Version %u.%u***************\n", SYMPHONY_VERSION, LIGHT_VERSION);
 }
 
 // The loop function is called in an endless loop
