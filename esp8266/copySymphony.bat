@@ -1,10 +1,13 @@
-for /f "tokens=3" %%v in (D:\git_symphony\esp8266\Symphony\version.h) do set version=%%v
+@echo %1 %2
+REM %1 is where the source files are, ex D:\git_symphony\esp8266\Symphony\version.h 
+REM %2 is where the arduino libraries are, ex D:\projects\arduinolibraries\Symphony\*
+for /f "tokens=3" %%v in (%1\version.h) do set version=%%v
 @echo version=%version%
 SET /A c = %version% + 1 
-echo #define SYMPHONY_VERSION %c% > D:\git_symphony\esp8266\Symphony\version.h
-copy D:\git_symphony\esp8266\Symphony\Symphony.* D:\projects\arduinolibraries\Symphony\*
-copy D:\git_symphony\esp8266\Symphony\FileManager.* D:\projects\arduinolibraries\Symphony\*
-copy D:\git_symphony\esp8266\Symphony\html.h D:\projects\arduinolibraries\Symphony\*
-copy D:\git_symphony\esp8266\Symphony\version.h D:\projects\arduinolibraries\Symphony\*
-copy D:\git_symphony\esp8266\Symphony\DeviceDiscovery.h D:\projects\arduinolibraries\Symphony\*
-copy D:\git_symphony\esp8266\Symphony\Product.* D:\projects\arduinolibraries\Symphony\*
+echo #define SYMPHONY_VERSION %c% > %1\version.h
+copy %1\Symphony.* %2\*
+copy %1\FileManager.* %2\*
+copy %1\html.h %2\*
+copy %1\version.h %2\*
+copy %1\DeviceDiscovery.h %2\*
+copy %1\Product.* %2\*
