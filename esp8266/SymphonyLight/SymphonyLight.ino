@@ -340,24 +340,11 @@ void initWeb() {
 	s.serveStatic("/config.html", SPIFFS, "/config.html");
 	s.serveStatic("/light.js", SPIFFS, "/light.js");
 }
-//The setup function is called once at startup of the sketch
-void setup()
-{
-	Serial.begin(115200);
-	delay(10);
-	Serial.println("\n\n************START SymphonyLight Setup***************");
+/**
+ * Fills the palette with default patterns
+ */
+void fillPalette() {
 	palettes[0].palette = RainbowColors_p;
-//	palettes[1].palette = SetupPalette(CRGB::Green);
-//	palettes[2].palette = SetupPalette(CRGB::Blue);
-//	palettes[3].palette = SetupPalette(CRGB::Red);
-//	palettes[4].palette = myRedGreenBluePalette_p;
-//	palettes[5].palette = SetupPalette(CRGB::Yellow);
-//	palettes[6].palette = RainbowColors_p;
-//	palettes[7].palette = SetupPalette(CRGB::Green);
-//	palettes[8].palette = SetupPalette(CRGB::Blue);
-//	palettes[9].palette = SetupPalette(CRGB::Red);
-//	palettes[10].palette = myRedGreenBluePalette_p;
-//	palettes[11].palette = SetupPalette(CRGB::Yellow);
 	palettes[1].palette = ForestColors_p;
 	palettes[2].palette = myRedGreenBluePalette_p;
 	palettes[3].palette = OceanColors_p;
@@ -370,17 +357,6 @@ void setup()
 	palettes[10].palette = myRedWhiteBluePalette_p;
 	palettes[11].palette = CloudColors_p;
 	palettes[0].name = "Rainbow";
-//	palettes[1].name = "Green";
-//	palettes[2].name = "Blue";
-//	palettes[3].name = "Red";
-//	palettes[4].name = "Orange";
-//	palettes[5].name = "Yellow";
-//	palettes[6].name = "Rainbow";
-//	palettes[7].name = "Green";
-//	palettes[8].name = "Blue";
-//	palettes[9].name = "red";
-//	palettes[10].name = "Orange";
-//	palettes[11].name = "Yellow";
 	palettes[1].name = "Forest";
 	palettes[2].name = "RedGreenBlue";
 	palettes[3].name = "Ocean";
@@ -392,6 +368,14 @@ void setup()
 	palettes[9].name = "Party";
 	palettes[10].name = "RedWhiteBlue";
 	palettes[11].name = "Cloud";
+}
+//The setup function is called once at startup of the sketch
+void setup()
+{
+	Serial.begin(115200);
+	delay(10);
+	Serial.println("\n\n************START SymphonyLight Setup***************");
+	fillPalette();
 	s.setWsCallback(wsHandlerJason);
 	char ver[10];
 	sprintf(ver, "%u.%u", SYMPHONY_VERSION, LIGHT_VERSION);
