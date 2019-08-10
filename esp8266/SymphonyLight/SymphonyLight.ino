@@ -10,7 +10,7 @@
 #include "Product.h"
 #endif
 
-#define DEBUG_PIXELS
+//#define DEBUG_PIXELS
 
 String myName = "symphonyLight";
 Product product;
