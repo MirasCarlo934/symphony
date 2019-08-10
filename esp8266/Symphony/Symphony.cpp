@@ -98,7 +98,6 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 			case WS_EVT_DATA: {
 				AwsFrameInfo *info = static_cast<AwsFrameInfo*>(arg);
 				if (info->opcode == WS_TEXT) {
-//					StaticJsonBuffer<300> jsonBuffer;
 					DynamicJsonBuffer jsonBuffer;
 					JsonObject& json = jsonBuffer.parseObject(data);
 					if (!json.success()) {
