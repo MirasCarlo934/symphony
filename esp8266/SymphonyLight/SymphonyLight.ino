@@ -340,10 +340,10 @@ void initWeb() {
 	s.serveStatic("/config.html", SPIFFS, "/config.html");
 	s.serveStatic("/light.js", SPIFFS, "/light.js");
 }
-/**
- * Fills the palette with default patterns
+/*
+ * Fills the palettes with default values
  */
-void fillPalette() {
+void fillPalettes() {
 	palettes[0].palette = RainbowColors_p;
 	palettes[1].palette = ForestColors_p;
 	palettes[2].palette = myRedGreenBluePalette_p;
@@ -375,7 +375,7 @@ void setup()
 	Serial.begin(115200);
 	delay(10);
 	Serial.println("\n\n************START SymphonyLight Setup***************");
-	fillPalette();
+	fillPalettes();
 	s.setWsCallback(wsHandlerJason);
 	char ver[10];
 	sprintf(ver, "%u.%u", SYMPHONY_VERSION, LIGHT_VERSION);
