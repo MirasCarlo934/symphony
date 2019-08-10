@@ -4,8 +4,8 @@
  *
  */
 
-#ifndef SYMPHONY_H_
-#define SYMPHONY_H_
+#ifndef SYMPHONY_H_OLD_
+#define SYMPHONY_H_OLD_
 
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
@@ -92,4 +92,4 @@ class WsData
 		String value;
 };
 
-#endif /* SYMPHONY_H_ */
+#endif /* SYMPHONY_H_OLD_ */
