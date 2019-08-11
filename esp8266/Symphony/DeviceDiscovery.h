@@ -79,6 +79,19 @@
 #define  NOTI_REQ 3
 #define  NOTI_RESP 13
 
+/**
+ * The object that holds the discovery device info
+ */
+struct deviceStruct {
+	IPAddress ip;		//the ip address of the device
+	String name;		//the name of this device
+	String mac;			//the mac address of the device
+	boolean active;		//indicator if the device is still active
+	long time;			//the time indicator in millis
+};
+deviceStruct *clientDevices = NULL;		//the array of clientDevices
+deviceStruct serverDevice;
+
 AsyncUDP udp;
 DynamicJsonBuffer gJsonBuffer;
 JsonObject& gJson = gJsonBuffer.createObject();
@@ -113,9 +126,11 @@ class DeviceInfo {
 		boolean exists(IPAddress findIP);
 	private:
 		long timeMs;
+		int size = 0;
 };
 DeviceInfo::DeviceInfo() {
 	timeMs = millis();
+	clientDevices = new deviceStruct[0];
 }
 /*
  * adds a device object to JsonArray& devices;
@@ -131,6 +146,29 @@ void DeviceInfo::add(String name, IPAddress ip, String mac) {
 	theIp.add(ip[1]);
 	theIp.add(ip[2]);
 	theIp.add(ip[3]);
+
+	size++;
+	deviceStruct ds;
+	ds.ip = ip;
+	ds.name = name;
+	ds.mac = mac;
+	ds.active = true;
+	ds.time = millis();
+	deviceStruct* temp = new deviceStruct[size];
+	Serial.println("*****start**** using struct for client devices");
+	for (int i=0; i<size; i++) {
+		Serial.printf("     ********* client devices i:%i size:%i\n", i, size);
+		if ( i == size-1) {
+			temp[i] = ds;
+			Serial.printf("        ****** client devices name:%s mac:%s IP:%u.%u.%u.%u\n", ds.name.c_str(), ds.mac.c_str(), ds.ip[0], ds.ip[1], ds.ip[2], ds.ip[3]);
+		} else {
+			temp[i] = clientDevices[i];
+			Serial.printf("        ****** client devices name:%s mac:%s IP:%u.%u.%u.%u\n", clientDevices[i].name.c_str(), clientDevices[i].mac.c_str(), clientDevices[i].ip[0], clientDevices[i].ip[1], clientDevices[i].ip[2], clientDevices[i].ip[3]);
+		}
+	}
+	delete [] clientDevices;
+	clientDevices = temp;
+	Serial.println("*****end****** using struct for client devices");
 }
 /*
  * This is called if no server is responding to sendIdentify requests (idCounter > MAX_ID_COUNT)
@@ -154,7 +192,15 @@ void DeviceInfo::selectServer() {
 				gServerIP[2].as<int>(),
 				gServerIP[3].as<int>()
 				);
+			Serial.printf("[(struct)selectServer]devices IP: %u.%u.%u.%u, i:%i, me:%s, serverIp: %u.%u.%u.%u\n",
+				clientDevices[i].ip[0], clientDevices[i].ip[1], clientDevices[i].ip[2],clientDevices[i].ip[3],
+				i, WiFi.localIP().toString().c_str(),
+				serverDevice.ip[0], serverDevice.ip[1], serverDevice.ip[2], serverDevice.ip[3]
+				);
 #endif
+			if (clientDevices[i].ip[3] <= lowest && clientDevices[i].ip[3] != serverDevice.ip[3] && clientDevices[i].active) {
+				lowest = clientDevices[i].ip[3];
+			}
 			if (devices[i]["ip"][3].as<int>() <= lowest && devices[i]["ip"][3].as<int>() != gServerIP[3].as<int>() && devices[i]["active"].as<bool>()) {
 				lowest = devices[i]["ip"][3].as<int>();
 			}
@@ -166,6 +212,10 @@ void DeviceInfo::selectServer() {
 			gServerIP[1] = WiFi.localIP()[1];
 			gServerIP[2] = WiFi.localIP()[2];
 			gServerIP[3] = WiFi.localIP()[3];
+			serverDevice.ip[0] = WiFi.localIP()[0];
+			serverDevice.ip[1] = WiFi.localIP()[1];
+			serverDevice.ip[2] = WiFi.localIP()[2];
+			serverDevice.ip[3] = WiFi.localIP()[3];
 		} else {
 			isDiscoveryServer = false;		//we might need to relinquish server mode, this happens if many devices start at almost the same time (within 30s)
 		}
@@ -187,6 +237,12 @@ void DeviceInfo::refresh() {
 		Serial.println("\n********************** DeviceInfo::refresh start");
 		devices.printTo(Serial);
 #endif
+		for (int i = 0; i < size; i++) {
+			//if time > 3* timerIntervalMillis & ip is not ip of this device, mark it as inactive
+			if (millis() - clientDevices[i].time > 3 * timerIntervalMillis && clientDevices[i].ip[3] != WiFi.localIP()[3]) {
+				clientDevices[i].active = false;
+			}
+		}
 		for (int i = 0; i < devices.size(); i++) {
 			//if time > 3* timerIntervalMillis & ip is not ip of this device, mark it as inactive
 			if (millis() - devices[i]["time"].as<long>() > 3 * timerIntervalMillis && devices[i]["ip"][3] != WiFi.localIP()[3]) {
@@ -215,9 +271,22 @@ boolean DeviceInfo::exists(IPAddress findIP) {
 		Serial.printf("\nDevice IP: %u.%u.%u.%u, find IP:%u.%u.%u.%u, i:%i\n",
 				iArray[0].as<int>(), iArray[1].as<int>(), iArray[2].as<int>(), iArray[3].as<int>(),
 //			devices[i]["ip"][0].as<int>(), devices[i]["ip"][1].as<int>(), devices[i]["ip"][2].as<int>(), devices[i]["ip"][3].as<int>(),
-			findIP[0],findIP[1], findIP[2], findIP[3],
-			i);
+			findIP[0],findIP[1], findIP[2], findIP[3], i);
+		char* s;
+		Serial.printf("************ client Device (IP:%u.%u.%u.%u, active:%u find IP:%u.%u.%u.%u, i:%i time:",
+			clientDevices[i].ip[0], clientDevices[i].ip[1], clientDevices[i].ip[2], clientDevices[i].ip[3],
+			clientDevices[i].active,
+			findIP[0],findIP[1], findIP[2], findIP[3], i);
+		Serial.println(clientDevices[i].time);
 #endif
+		//we evaluate the 4th ip digit since we assume that these devices belong to the same network
+		if (clientDevices[i].ip[3] == findIP[3]) {
+			Serial.printf("************ client Device found match IP:%u.%u.%u.%u, find IP:%u.%u.%u.%u, i:%i\n",
+				clientDevices[i].ip[0], clientDevices[i].ip[1], clientDevices[i].ip[2], clientDevices[i].ip[3],
+				findIP[0],findIP[1], findIP[2], findIP[3], i);
+			clientDevices[i].active = true;
+			clientDevices[i].time = millis();
+		}
 		if (devices[i]["ip"][3].as<int>() == findIP[3]) {
 			isFound = true;
 			devices[i]["active"] = true;
@@ -305,6 +374,12 @@ void packetArrived(AsyncUDPPacket packet) {
 				gServerIP[1] = packet.remoteIP()[1];
 				gServerIP[2] = packet.remoteIP()[2];
 				gServerIP[3] = packet.remoteIP()[3];
+
+				serverDevice.ip[0] = packet.remoteIP()[0];
+				serverDevice.ip[1] = packet.remoteIP()[1];
+				serverDevice.ip[2] = packet.remoteIP()[2];
+				serverDevice.ip[3] = packet.remoteIP()[3];
+
 			}
 #ifdef DEBUG_DISCOVERY
 			Serial.println("Got server response.");
@@ -319,11 +394,18 @@ void packetArrived(AsyncUDPPacket packet) {
 				reply["mode"] = NOTI_RESP;
 //				reply["info"] = gJson;
 				reply["info"] = devices;
+				JsonArray& serverIP = reply.createNestedArray("serverIp");
+				serverIP[0] = serverDevice.ip[0];
+				serverIP[1] = serverDevice.ip[1];
+				serverIP[2] = serverDevice.ip[2];
+				serverIP[3] = serverDevice.ip[3];
 				reply["server"] = gServerIP;
+				reply["serverNew"] = serverIP;
 				String replyStr;
 				reply.printTo(replyStr);
 				packet.printf(replyStr.c_str());
 #ifdef DEBUG_DISCOVERY
+				Serial.println("************* isDiscoveryServer");
 				reply.printTo(Serial);
 				Serial.println();
 #endif
@@ -412,6 +494,10 @@ void startDiscovery(String name, String mac_) {
 			gServerIP.add(0);
 			gServerIP.add(0);
 		}
+		serverDevice.ip[0] = 0;
+		serverDevice.ip[1] = 0;
+		serverDevice.ip[2] = 0;
+		serverDevice.ip[3] = 0;
 	}
 //#ifdef DEBUG_DISCOVERY
 //	Serial.println("\n[startDiscovery] end");
