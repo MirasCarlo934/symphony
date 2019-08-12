@@ -348,7 +348,7 @@ function wsHandler() {
  * {"cmd":1,"box":"status","msg":"message"}
  */
 function handleWsMessage(evt) {
-alert(evt.data)
+//alert(evt.data)
   	var jsonResponse = JSON.parse(evt.data);
   	var core = jsonResponse["core"];
   	var cmd = jsonResponse["cmd"];
