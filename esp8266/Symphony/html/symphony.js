@@ -348,6 +348,7 @@ function wsHandler() {
  * {"cmd":1,"box":"status","msg":"message"}
  */
 function handleWsMessage(evt) {
+alert(evt.data)
   	var jsonResponse = JSON.parse(evt.data);
   	var core = jsonResponse["core"];
   	var cmd = jsonResponse["cmd"];
@@ -370,16 +371,22 @@ function handleWsMessage(evt) {
   		  	 case CMD_VALUES:
   		   		//response from the VALUES
   		//alert(JSON.stringify(jsonResponse));
-				name = document.getElementById("theName").innerHTML;
+//				name = document.getElementById("theName").innerHTML;
+  		  		name = document.getElementById("hiddenName").value;
+//alert(" name " + name +" mac " +mac);
+//alert(" name_mac " + jsonResponse["name_mac"]);
   		   		if (jsonResponse["name_mac"] == name+'_'+mac) {
+//alert(" jsonResponse.data " + jsonResponse.data);
   		   			for (i in jsonResponse.data){
   						var input =  document.getElementById(jsonResponse.data[i].id);
+//alert(" id start " + jsonResponse.data[i].id);
   						if (input.type == "checkbox" || input.type == "radio") {
   			            	if (jsonResponse.data[i].val == 1)
   			    				input.checked=true;	
   			            	else
   			            		input.checked=false;
   			            }
+//alert(" id end " + jsonResponse.data[i].id);
   		   			}
   		   		}
   		  		 break;
@@ -410,7 +417,9 @@ function handleWsMessage(evt) {
   	 case CMD_INIT:
   	 	//response from the INIT
   		var header = document.getElementById("theName");
+  		var hiddenName = document.getElementById("hiddenName");  		
   		cid = jsonResponse["cid"];
+  		hiddenName.value = jsonResponse["name"];
   		header.innerHTML = jsonResponse["name"] + " v"+jsonResponse["ver"];
   		mac = jsonResponse["mac"];
   		var msg = document.getElementById("msg");
