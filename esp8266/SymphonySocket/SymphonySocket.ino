@@ -76,7 +76,7 @@ void sendTimerData(AsyncWebSocketClient *client, JsonObject& json) {
 int wsHandler(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json) {
 //int wsHandler(AsyncWebSocket ws, AsyncWebSocketClient *client, uint8_t * payload, size_t len) {
 	Serial.println("callback executed start");
-	json.prettyPrintTo(Serial);
+	json.prettyPrintTo(Serial);Serial.println();
 	if (json.containsKey("cmd")) {
 			uint8_t cmd = json["cmd"];
 			switch (cmd) {
