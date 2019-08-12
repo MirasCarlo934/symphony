@@ -54,4 +54,5 @@ gulp.task('watch', function() {
 });
 
 /* Default Task */
-gulp.task('default', ['clean', 'html', 'css', 'js']);
+//gulp.task('default', ['clean', 'html', 'css', 'js']);  old gulp version
+gulp.task('default', gulp.series('clean', 'html', 'css', 'js'));
