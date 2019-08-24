@@ -68,6 +68,7 @@ int discoveryTries = 0;
  * AsyncWebSocketClient *client is exposed to enable response to the calling client.
  */
 int (* WsCallback) (AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json);
+int (* MqttHandler) (JsonObject& json);
 
 /*
  *	wsEvent handles the transactions sent by client websockets.
@@ -491,6 +492,14 @@ void Symphony::serveStatic(const char* uri, fs::FS& fs, const char* path) {
  */
 void Symphony::setWsCallback(int (* Callback) (AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json)) {
 	WsCallback = Callback;
+}
+/*
+ *
+ * This is the handler for all MQTT transactions.
+ *
+ */
+void Symphony::setMqttHandler(int (* mqttHandler) (JsonObject& json)) {
+	MqttHandler = mqttHandler;
 }
 
 /**
