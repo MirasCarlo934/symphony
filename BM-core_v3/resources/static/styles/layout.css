@@ -1,0 +1,144 @@
+div.body, div.body_workpane {
+	/* display: table; */
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 60px;
+}
+
+div.body_overlay {
+    position:fixed;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    background-color:black;
+    opacity:0;
+    z-index:1000;
+}
+
+div.body_workpane {
+	top: 100px;
+}
+
+div.overlayPanel {
+	position: fixed;
+	top:900;
+	background-color: white;
+	z-index: 1001;
+}
+
+.staticTopCenterContainer {
+	position: absolute; 
+	margin-left: auto; 
+	margin-right: auto; 
+	left: 0; 
+	right: 0;
+	/* border: solid 1px black; */
+}
+
+div.central {
+	position: absolute;
+	top: calc(50% - 60px);
+	left: 50%;
+  	transform: translateY(-50%) translateX(-50%);
+	width: 100%;
+	/* border: solid 1px red; */
+}
+
+div.settings {
+	position: absolute;
+	top: 20%;
+	width: 100%;
+}
+
+ul.sortableHorizontal {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    float: left;
+    min-width: 165px;
+    min-height: 198px;
+   /*  border: solid 1px black; */
+}
+
+ul.sortableHorizontal li {
+	float: left;
+	/* border: solid 1px black; */
+}
+
+ul.sortableVertical {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    float: left;
+}
+
+ul.sortableVertical li {
+	border: solid 1px black;
+}
+
+/* Celso's
+div.central {
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 15%;
+	width: 50%;
+	border: 1px solid red;  //for testing only
+	padding: 10px;
+}*/
+
+/* START MaestroComposer styles */
+
+div.main {
+	position:absolute;	
+	width: 100%;
+	height: calc(100% - 90px);
+	//background-color: gray;
+	top: 85px;
+}
+div.workpane {
+	height: 95%;
+	background-color: gray;
+	margin: 5px;
+	//overflow-y: auto;
+}
+div.menu {
+	height: 31px;
+	width: 97%;
+	margin: 5px;
+	overflow-y: hidden;
+	transition: all 0.5s;	
+}
+
+/* END */
+
+div.containerLeftBorder {
+	margin-left:30px; 
+	padding-left:20px;
+	border-left: solid 2px black;
+	float: left;
+}
+
+div.drawer, div.drawerSettings {
+	width: 100%;
+	height: 0px;
+	overflow: hidden;
+}
+
+div.drawer td, div.drawerSettings td {
+	vertical-align: center;
+}
+
+div.drawerSettings {
+	background-color: darkgray;
+	/* background-color: #999999; */
+	color: white;
+	/* box-shadow: inset 0px 5px 5px #707070, inset 0px -5px 5px #707070; */
+	box-shadow: inset 0px 5px 5px gray, inset 0px -5px 5px gray;
+}
+
+td.listSideHeader {
+	padding-right: 10px;
+	text-align: right;
+}

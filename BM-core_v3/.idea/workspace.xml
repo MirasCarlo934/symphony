@@ -1,0 +1,579 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="7bdadd4a-a8b2-4822-9eda-abbd8ead1a0f" name="Default" comment="Aug 23 2019 commit.">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="MacBook Main DB" type="feb32156:DbDataSourceImpl" />
+      </path>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="MacBook Products DB" type="feb32156:DbDataSourceImpl" />
+      </path>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="RPI Main DB" type="feb32156:DbDataSourceImpl" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="DefaultGradleProjectSettings">
+    <option name="isMigrated" value="true" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>ad</find>
+      <find>createRoom</find>
+      <find>system</find>
+      <find>openRoomCreator</find>
+      <find>initi</find>
+      <find>device credentials</find>
+      <find>System</find>
+      <find>addprop</find>
+      <find>sys</find>
+      <find>add</find>
+      <find>getSymphonyObject().</find>
+      <find>reload</find>
+      <find>roomjsobj</find>
+      <find>update</find>
+      <find>send</find>
+      <find>loggerName</find>
+      <find>id.rid</find>
+      <find>topic</find>
+      <find>getLogger</find>
+      <find>fatal</find>
+      <find>updating de</find>
+      <find>iconimg</find>
+      <find>getIcon</find>
+      <find>getCommonName</find>
+      <find>invalid pid</find>
+      <find>getOH_ID</find>
+      <find>device</find>
+      <find>devices ret</find>
+      <find>prop_in</find>
+      <find>contains invalid pro</find>
+    </findStrings>
+    <replaceStrings>
+      <replace>LOG</replace>
+      <replace>getSSID</replace>
+    </replaceStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="Carlo" />
+      </list>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/src/main/java/bm/main/modules/POOPModule.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/bm/main/repositories/DeviceRepository.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/pom.xml" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/ui/webapp/AbstController.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/bm/main/Maestro.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/configuration/spring/main-config.xml" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="downloadDocsAutomatically" value="true" />
+        <option name="importAutomatically" value="true" />
+      </MavenImportingSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="1P8lHMrijJJdWekQzMsTkr96iDn" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="PropertiesComponent">
+    <property name="RequestMappingsPanelOrder0" value="0" />
+    <property name="RequestMappingsPanelOrder1" value="1" />
+    <property name="RequestMappingsPanelWidth0" value="75" />
+    <property name="RequestMappingsPanelWidth1" value="75" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1533569963739" />
+    <property name="com.intellij.database.dataSource.DataSourceTemplate" value="Derby (Remote)&#10;Derby (Embedded)" />
+    <property name="database.console.LAST_STATE" value="false" />
+    <property name="database.data.extractors.current.id" value="SQL Inserts" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/resources" />
+      <recent name="$PROJECT_DIR$/src/main/resources" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Spring Boot.Maestro">
+    <configuration default="true" type="Application" factoryName="Application">
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <option name="TEST_OBJECT" value="class" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType" factoryName="Kotlin">
+      <module name="BM-core (2)" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="WORKING_DIRECTORY" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Maestro Compile" type="MavenRunConfiguration" factoryName="Maven">
+      <MavenSettings>
+        <option name="myGeneralSettings" />
+        <option name="myRunnerSettings" />
+        <option name="myRunnerParameters">
+          <MavenRunnerParameters>
+            <option name="profiles">
+              <set />
+            </option>
+            <option name="goals">
+              <list>
+                <option value="install" />
+              </list>
+            </option>
+            <option name="pomFileName" />
+            <option name="profilesMap">
+              <map />
+            </option>
+            <option name="resolveToWorkspace" value="false" />
+            <option name="workingDirPath" value="$PROJECT_DIR$" />
+          </MavenRunnerParameters>
+        </option>
+      </MavenSettings>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Maestro" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="BM-core" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="bm.main.Maestro" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="TestNG">
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <properties />
+      <listeners />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Maven.Maestro Compile" />
+      <item itemvalue="Spring Boot.Maestro" />
+    </list>
+  </component>
+  <component name="SpringBeansView">
+    <option name="beanDetailsProportion" value="0.3" />
+  </component>
+  <component name="SpringConfigurationTabSettings">
+    <option name="sortAlpha" value="true" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="7bdadd4a-a8b2-4822-9eda-abbd8ead1a0f" name="Default" comment="" />
+      <created>1528011650448</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1528011650448</updated>
+      <workItem from="1528011652396" duration="5250000" />
+      <workItem from="1528026802991" duration="6154000" />
+      <workItem from="1528079585174" duration="136000" />
+      <workItem from="1528118451616" duration="5788000" />
+      <workItem from="1528169514938" duration="3252000" />
+      <workItem from="1528189594683" duration="6775000" />
+      <workItem from="1528201877167" duration="477000" />
+      <workItem from="1528207535620" duration="564000" />
+      <workItem from="1528242025903" duration="808000" />
+      <workItem from="1528346093261" duration="191000" />
+      <workItem from="1528346741517" duration="496000" />
+      <workItem from="1528349438850" duration="10355000" />
+      <workItem from="1528369081373" duration="9026000" />
+      <workItem from="1528383173356" duration="208000" />
+      <workItem from="1528383550469" duration="2437000" />
+      <workItem from="1528443567986" duration="216000" />
+      <workItem from="1528450402774" duration="8638000" />
+      <workItem from="1528470728846" duration="3214000" />
+      <workItem from="1528474873974" duration="1173000" />
+      <workItem from="1528507511329" duration="8763000" />
+      <workItem from="1528532019443" duration="27000" />
+      <workItem from="1528533756201" duration="245000" />
+      <workItem from="1528542157632" duration="5784000" />
+      <workItem from="1528552903614" duration="499000" />
+      <workItem from="1528679710611" duration="1027000" />
+      <workItem from="1528701967647" duration="2418000" />
+      <workItem from="1528719965662" duration="8888000" />
+      <workItem from="1528759545382" duration="8065000" />
+      <workItem from="1528804130517" duration="2669000" />
+      <workItem from="1528874019276" duration="2117000" />
+      <workItem from="1528890105556" duration="3374000" />
+      <workItem from="1528985130663" duration="8258000" />
+      <workItem from="1529031577785" duration="3131000" />
+      <workItem from="1529109245895" duration="2668000" />
+      <workItem from="1529233730505" duration="5554000" />
+      <workItem from="1529406439013" duration="484000" />
+      <workItem from="1529409855194" duration="1296000" />
+      <workItem from="1529412153101" duration="6362000" />
+      <workItem from="1529619065453" duration="606000" />
+      <workItem from="1531083550871" duration="439000" />
+      <workItem from="1531084051344" duration="4401000" />
+      <workItem from="1531238330173" duration="246000" />
+      <workItem from="1531489962846" duration="1832000" />
+      <workItem from="1531725287586" duration="2059000" />
+      <workItem from="1531727858649" duration="4000" />
+      <workItem from="1531727900742" duration="1868000" />
+      <workItem from="1531819563790" duration="7391000" />
+      <workItem from="1531898001089" duration="544000" />
+      <workItem from="1531898645272" duration="1145000" />
+      <workItem from="1531921176181" duration="1169000" />
+      <workItem from="1531923831357" duration="432000" />
+      <workItem from="1532100282601" duration="4452000" />
+      <workItem from="1532181763490" duration="5358000" />
+      <workItem from="1532262480933" duration="32000" />
+      <workItem from="1532262767023" duration="151000" />
+      <workItem from="1532329383131" duration="3784000" />
+      <workItem from="1532438532851" duration="1142000" />
+      <workItem from="1532440043302" duration="2779000" />
+      <workItem from="1532486739211" duration="5575000" />
+      <workItem from="1532589510247" duration="1327000" />
+      <workItem from="1532613810501" duration="3679000" />
+      <workItem from="1532787855759" duration="33000" />
+      <workItem from="1532791906573" duration="4460000" />
+      <workItem from="1532916338424" duration="1722000" />
+      <workItem from="1533025814826" duration="260000" />
+      <workItem from="1533133185462" duration="434000" />
+      <workItem from="1533166525858" duration="9000" />
+      <workItem from="1533167923222" duration="200000" />
+      <workItem from="1533339112593" duration="2399000" />
+      <workItem from="1533562108924" duration="5569000" />
+      <workItem from="1533626578975" duration="55000" />
+      <workItem from="1533691308370" duration="109000" />
+      <workItem from="1534498746529" duration="3229000" />
+      <workItem from="1534676552528" duration="272000" />
+      <workItem from="1535072097786" duration="353000" />
+      <workItem from="1535333284376" duration="1813000" />
+      <workItem from="1535347083260" duration="218000" />
+      <workItem from="1539261491767" duration="975000" />
+      <workItem from="1539604231623" duration="108000" />
+      <workItem from="1547559978071" duration="374000" />
+      <workItem from="1547638753426" duration="458000" />
+      <workItem from="1547639715709" duration="609000" />
+      <workItem from="1555736551915" duration="557000" />
+      <workItem from="1555739058405" duration="236000" />
+      <workItem from="1563104476212" duration="5000" />
+      <workItem from="1564314969217" duration="159000" />
+      <workItem from="1564315338518" duration="873000" />
+      <workItem from="1564364056410" duration="400000" />
+      <workItem from="1564364562129" duration="2543000" />
+      <workItem from="1565263518484" duration="2259000" />
+      <workItem from="1565268721353" duration="598000" />
+      <workItem from="1566564600878" duration="359000" />
+      <workItem from="1566653944081" duration="467000" />
+    </task>
+    <task id="LOCAL-00001" summary="Introduced AdaptorManager and streamlined context objects.">
+      <created>1528467532761</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1528467532762</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Fixed architecture for CIR. Introduced CIRManager and CIRAdaptor.">
+      <created>1528475345756</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1528475345757</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Added Protocol object.">
+      <created>1528533900756</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1528533900756</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Fixed AdaptorManager function &quot;getAdaptorsLinkedToProduct()&quot;.">
+      <created>1528542491472</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1528542491472</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Fixed adaptor injection during registration.">
+      <created>1528549057012</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1528549057012</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Added JEEPManager and CIRManager.">
+      <created>1529238184012</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1529238184013</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Request and response processing as well as JEEP message checking now throws exceptions instead of only returning true or false.">
+      <created>1531491769866</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1531491769866</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Core functions functional.">
+      <created>1531841385097</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1531841385097</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Added productless registration">
+      <created>1532262867525</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1532262867526</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Added javadoc (pt. 1)">
+      <created>1532796312593</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1532796312593</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Fixed startup phase">
+      <created>1533389823894</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1533389823895</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Fixed startup phase">
+      <created>1533390557153</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1533390557153</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Aug 23 2019 commit.">
+      <created>1566564778179</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1566564778179</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
+    <servers />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list />
+          </value>
+        </entry>
+        <entry key="User">
+          <value>
+            <list />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CHECK_NEW_TODO" value="false" />
+    <MESSAGE value="Extracted UI-related functions of SymphonyElements to UISymphonyObjects" />
+    <MESSAGE value="Introduced AdaptorManager and streamlined context objects." />
+    <MESSAGE value="Fixed architecture for CIR. Introduced CIRManager and CIRAdaptor." />
+    <MESSAGE value="Added Protocol object." />
+    <MESSAGE value="Fixed AdaptorManager function &quot;getAdaptorsLinkedToProduct()&quot;." />
+    <MESSAGE value="Fixed adaptor injection during registration." />
+    <MESSAGE value="Added JEEPManager and CIRManager." />
+    <MESSAGE value="Request and response processing as well as JEEP message checking now throws exceptions instead of only returning true or false." />
+    <MESSAGE value="Core functions functional." />
+    <MESSAGE value="Added productless registration" />
+    <MESSAGE value="Added javadoc (pt. 1)" />
+    <MESSAGE value="Fixed startup phase" />
+    <MESSAGE value="Aug 23 2019 commit." />
+    <option name="LAST_COMMIT_MESSAGE" value="Aug 23 2019 commit." />
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ArtifactsStructureConfigurable.UI">
+        <settings>
+          <artifact-editor />
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="FacetStructureConfigurable.UI">
+        <settings>
+          <last-edited>Spring</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="GlobalLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="JdkListConfigurable.UI">
+        <settings>
+          <last-edited>1.8</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ModuleStructureConfigurable.UI">
+        <settings>
+          <last-edited>BM-core</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+                <option value="0.6" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectJDKs.UI">
+        <settings>
+          <last-edited>1.8</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectLibrariesConfigurable.UI">
+        <settings>
+          <last-edited>Maven: ch.qos.logback:logback-classic:1.2.3</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>

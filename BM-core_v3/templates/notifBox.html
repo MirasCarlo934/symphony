@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8" />
+	<title>NOTIFICATION</title>
+	<link rel="stylesheet" type="text/css" href="../static/styles/theme.css" th:href="@{/styles/theme.css}"/>
+</head>
+<body>
+	<span style="text-align:center;" th:if="${msg} != null">
+		<div class="notifBox">
+			<div class="notifHeader" th:text="${header}"></div>
+			<div class="notifMsg" th:text="${msg}"></div>
+		</div>
+		<br />
+	</span>
+	<span style="text-align:center;" th:if="${msg} == null">
+		<div class="notifHeader" style="border-radius:10px; text-align:center; margin:auto; margin-top: 20px;" th:text="${header}"></div>
+		<br />
+	</span>
+</body>
+</html>

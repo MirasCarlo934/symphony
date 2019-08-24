@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<context:annotation-config/>
+	<!-- <import resource="modules-config.xml"/> -->
+	
+	<context:property-placeholder location="file:configuration/bm.properties" order="3" />
+	<context:property-placeholder location="file:configuration/ui.properties" order="2" ignore-unresolvable="true"/>
+	<context:property-placeholder location="file:configuration/user.properties" order="1" ignore-unresolvable="true"/>
+	
+	<!-- user properties manager -->
+	<bean id="UserPropertyManager" class="bm.main.UserPropertyManager">
+		<constructor-arg name="logDomain" value="${log.domain.main}"/>
+		<constructor-arg name="userPwdPropKey" value="${user.pwd.key}"/>
+		<constructor-arg name="cipher" ref="Cipher"/>
+		<constructor-arg name="sysTimer" ref="SystemTimer"/>
+	</bean>
+	
+	<!-- bm core functionalities -->
+	<bean id="Initializables" class="bm.main.Initializables">
+		<constructor-arg name="logDomain" value="${log.domain.main}"/>
+		<constructor-arg name="initializables">
+			<list>
+				<ref bean="IDGenerator"/>
+				<!--<ref bean="MQTTPublisher"/>-->
+				<ref bean="AdaptorManager"/>
+                <ref bean="CIRs"/>
+			</list>
+		</constructor-arg>
+	</bean>
+	
+	<!--<bean id="RawMessageQueue" class="java.util.LinkedList"/>-->
+	<!--<bean id="ModuleQueue" class="java.util.LinkedList"/>-->
+	<bean id="Controller" class="bm.main.controller.Controller">
+		<constructor-arg name="logDomain" value="${log.domain.main}"/>
+		<constructor-arg name="threadPool" ref="ThreadPool"/>
+	</bean>
+	<bean id="JEEPManager" class="bm.jeep.JEEPManager">
+		<constructor-arg name="logDomain" value="${log.domain.main}"/>
+		<constructor-arg name="idGenerator" ref="IDGenerator"/>
+		<constructor-arg name="msgParam" value="${detachment.request.param.msg}"/>
+		<constructor-arg name="detRTY" value="${rty.detachment}"/>
+		<constructor-arg name="regIdParam" value="${registration.response.param.id}"/>
+		<constructor-arg name="regTopicParam" value="${registration.response.param.topic}"/>
+		<constructor-arg name="regRTY" value="${rty.registration}"/>
+		<constructor-arg name="actRTY" value="${rty.deactivation}"/>
+		<constructor-arg name="poopRTY" value="${rty.poop}"/>
+		<constructor-arg name="poopPropIdParam" value="${poop.param.propertyID}"/>
+		<constructor-arg name="poopPropValParam" value="${poop.param.propertyValue}"/>
+	</bean>
+	<!--<bean id="ModuleDispatcher" class="bm.main.controller.ModuleDispatcher">-->
+		<!--<constructor-arg name="logDomain" value="${log.domain.main}"/>-->
+		<!--<constructor-arg name="moduleQueue" ref="ModuleQueue"/>-->
+		<!--<constructor-arg name="threadPool" ref="ThreadPool"/>-->
+	<!--</bean>-->
+	<bean id="CIRs" class="bm.cir.CIRManager">
+		<constructor-arg name="logDomain" value="${log.domain.cir}"/>
+		<constructor-arg name="deviceRepository" ref="Devices"/>
+		<constructor-arg name="fe" ref="CIR.FileEngine"/>
+		<constructor-arg name="idg" ref="IDGenerator"/>
+        <constructor-arg name="mqttPublisher" ref="MQTTPublisher"/>
+        <constructor-arg name="poopPropIDParam" value="${poop.param.propertyID}"/>
+        <constructor-arg name="poopPropValParam" value="${poop.param.propertyValue}"/>
+        <constructor-arg name="poopRTY" value="${rty.poop}"/>
+	</bean>
+	
+	<!-- For thread management -->
+	<bean id="ThreadPool" class="bm.main.controller.ThreadPool">
+		<constructor-arg name="corePoolSize" value="3"/>
+		<constructor-arg name="maximumPoolSize" value="10"/>
+		<constructor-arg name="keepAliveTime" value="10"/>
+		<constructor-arg name="threadFactory" ref="ThreadFactory"/>
+		<constructor-arg name="handler" ref="ThreadRejectionHandler"/>
+	</bean>
+	<bean id="ThreadFactory" class="bm.main.controller.ControllerThreadFactory">
+	</bean>
+	<bean id="ThreadRejectionHandler" class="bm.main.controller.ThreadRejectionHandler">
+		<!-- <constructor-arg name="mp" ref="MQTTPublisher"/> -->
+	</bean>
+</beans>

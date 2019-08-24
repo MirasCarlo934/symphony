@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rules>
+  <rule name="Rule0" condition="IF">
+    <arguments>
+      <component id="S281" name="TestSwitch1">
+        <property id="0001" index="1" value="1" label="Switch" operator="="/>
+      </component>
+    </arguments>
+    <execution>
+      <component id="N2NC" name="TestSwitch2">
+        <property id="0001" index="1" value="1" label="Switch"/>
+      </component>
+    </execution>
+  </rule>
+  <rule name="Rule12" condition="IF">
+      <arguments>
+        <component id="S281" name="TestSwitch1">
+          <property id="0001" index="1" value="0" label="Switch" operator="="/>
+        </component>
+      </arguments>
+      <execution>
+        <component id="N2NC" name="TestSwitch2">
+          <property id="0001" index="1" value="0" label="Switch"/>
+        </component>
+      </execution>
+    </rule>
+</rules>

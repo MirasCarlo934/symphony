@@ -1,0 +1,146 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>VirtualMaestro</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="../static/styles/theme.css" th:href="@{/styles/theme.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/pics.css" th:href="@{/styles/pics.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/navigation.css" th:href="@{/styles/navigation.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/input.css" th:href="@{/styles/input.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/layout.css" th:href="@{/styles/layout.css}"/>
+	<script src="../static/scripts/lib/jquery-3.2.1.min.js" th:src="@{/scripts/lib/jquery-3.2.1.min.js}"></script>
+	<script src="../static/scripts/animations.js" th:src="@{/scripts/animations.js}"></script>
+	<script src="../static/scripts/form_actions.js" th:src="@{/scripts/form_actions.js}"></script>
+</head>
+
+
+<body>
+	<div class="topbar">
+		<a href="/home"><img class="smallLink" style="float:left; margin-left:0px; background-color:black;" src="../static/pics/symbol_white.png" th:src="@{/pics/symbol_white.png}" /></a>
+		<div class="navbar">
+			<a href="/home">home</a>
+			<a href="/devices">devices &amp; rooms</a>
+			<a href="/help">help</a>
+		</div>
+		<a href="/settings"><img class="smallLink" style="float:right; margin-right:0px; background-color:black;" src="../static/pics/settings_white.png" th:src="@{/pics/settings_white.png}" /></a>
+	</div>
+	
+	<!-- notification -->
+	<div class="notifBoxContainer" id="notif"></div>
+	
+	<div class="central">
+		<table class="invisible" style="margin: auto;">
+			<tr>
+				<td>
+				<img class="regular" style="float:left;" src="../static/pics/VirtualMaestro.png" th:src="@{/pics/VirtualMaestro.png}" />
+				<div class="containerLeftBorder" style="display:table; height:200px;">
+					<div class="invisible" style="display:table-cell; vertical-align:middle;"> 
+					<table class="invisible">
+						<tr>
+							<td class="listSideHeader" style="text-align:left;"><span class="textNormalBold">ID</span></td>
+							<td><span class="textNormal">12345678</span></td>
+						</tr>
+						<tr>
+							<td class="listSideHeader" style="text-align:left;"><span class="textNormalBold">Version</span></td>
+							<td><span class="textNormal">1.0.0</span></td>
+						</tr>
+						<tr>
+							<td class="listSideHeader" style="text-align:left;"><span class="textNormalBold">Date Installed</span></td>
+							<td><span class="textNormal">July 18, 2017</span></td>
+						</tr>
+					</table>
+					</div>
+				</div>
+				</td>
+			</tr>
+		</table>
+		<br />
+		
+		<!-- Drawer Handles -->
+		<div class="invisible" style="margin:auto; overflow:hidden; width:215px;">
+			<button id="VMConfigDrawerHandle" class="boxBtn drawerHandle" style="float:left;" onclick="buksan('VMConfigDrawer', '50px', '30px')">Configure VM</button>
+			<button id="UserConfigDrawerHandle" class="boxBtn drawerHandle" style="float:left;" onclick="buksan('UserConfigDrawer', '50px', '30px')">User Settings</button>
+		</div>
+	
+		<!-- Drawers -->
+		<div class="drawer" id="VMConfigDrawer">
+			<form id="VMConfig" action="/VMConfig">
+				<table id="VMConfigDrawerContent" style="margin:auto;">
+					<!-- <tr>
+						<td colspan="2" id="VMConfigNotifContainer" style="overflow:hidden;">
+							<div class="invisible" style="margin:auto;" id="VMConfigNotif"></div>
+						</td>
+					</tr> -->
+					<tr>
+						<td class="listSideHeader textNormalBold">Plex Server URL</td>
+						<td><input class="regularTextBox" th:placeholder="${plexURL}" name="PlexServerURL"/></td>
+					</tr>
+					<tr>
+						<td class="listSideHeader textNormalBold">Plex Token</td>
+						<td><input class="regularTextBox" th:placeholder="${plexToken}" name="PlexToken"/></td>
+					</tr>
+					<tr>
+						<td><br/></td>
+					</tr>
+					<!-- <span th:if="${admin} == true">
+						<tr>
+							<td class="listSideHeader textNormalBold">DB URL</td>
+							<td><input class="regularTextBox" placeholder="Technical staff only!" name="DB_URL"/></td>
+						</tr>
+						<tr>
+							<td class="listSideHeader textNormalBold">MQTT URL</td>
+							<td><input class="regularTextBox" placeholder="Technical staff only!" name="MQTT_URL"/></td>
+						</tr>
+						<tr>
+							<td class="listSideHeader textNormalBold">OpenHAB URL</td>
+							<td><input class="regularTextBox" placeholder="Technical staff only!" name="OH_URL"/></td>
+						</tr>
+					</span> -->
+					<tr>
+						<td colspan="2">
+						<br/>
+						<button type="button" class="regularBtn" style="margin:auto;" onclick="submitForm_POST('VMConfig', 'notif')">Ok</button>
+						</td>
+					</tr>
+				</table>
+			</form>
+		</div>
+		
+		<div class="drawer" id="UserConfigDrawer">
+			<form id="UserConfig" action="/userConfig">
+				<table id="UserConfigDrawerContent" style="margin:auto;">
+					<!-- <tr>
+						<td colspan="2" id="VMConfigNotifContainer" style="overflow:hidden;">
+							<div class="invisible" style="margin:auto;" id="UserConfigNotif"></div>
+						</td>
+					</tr> -->
+					<tr>
+						<td class="listSideHeader textNormalBold">Old password</td>
+						<td><input type="password" class="regularTextBox" name="oldPWD"/></td>
+					</tr>
+					<tr>
+						<td class="listSideHeader textNormalBold">New password</td>
+						<td><input type="password" class="regularTextBox" name="newPWD"/></td>
+					</tr>
+					<tr>
+						<td class="listSideHeader textNormalBold">Confirm new password</td>
+						<td><input type="password" class="regularTextBox" name="checkNewPWD"/></td>
+					</tr>
+					<tr>
+						<td colspan="2" style="padding-top:30px;">
+						<button type="button" class="regularBtn" style="margin:auto;" onclick="submitForm_POST('UserConfig', 'notif')">Ok</button>
+						</td>
+					</tr>
+				</table>
+			</form>
+		</div>
+		
+		<br/>
+		<br/>
+		<div class="invisible" style="text-align:center;">
+			<span class="textCaption">© Symphony Inc., 2017</span>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Maestro Rules</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="../static/styles/theme.css" th:href="@{/styles/theme.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/pics.css" th:href="@{/styles/pics.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/navigation.css" th:href="@{/styles/navigation.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/input.css" th:href="@{/styles/input.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/layout.css" th:href="@{/styles/layout.css}"/>
+<script type="text/javascript" src="../static/js/maestro.js"></script>
+<script>
+var d1 = new Device("SMVX","Motion",[{id:"0006",label:"Detected"}]);
+var d2 = new Device("Dev2","Remote",[{id:"0001",label:"Start"},{id:"0002",label:"Stop"},{id:"0003",label:"Pause"},{id:"0003",label:"Resume"}]);
+var d3 = new Device("Dev3","RGBLight",[{id:"0008",label:"Red"},{id:"0009",label:"Green"}, {id:"0010",label:"Blue"}]);
+var d4 = new Device("Dev4","Presence",[{id:"0010",label:"Is Here"}]);
+var d5 = new Device("Dev5","Temperature",[{id:"0001",label:"Celsius"}]);
+var d6 = new Device("ABCD","Socket",[{id:"0006",label:"On"},{id:"0007",label:"Off"}]);
+var sensors = [d1,d2,d4,d5];
+var enablers = [d3,d6];
+</script>
+</head>
+<body onload="init()">
+	<div class="topbar">
+		<a href="/home"><img class="smallLink" style="float:left; margin-left:0px; background-color:black;" src="../static/pics/symbol_white.png" th:src="@{/pics/symbol_white.png}" /></a>
+		<div class="navbar">
+			<a href="/home">home</a>
+			<a href="/devices">devices & rooms</a>
+			<a href="/help">help</a>
+		</div>
+		<a href="/settings"><img class="smallLink" style="float:right; margin-right:0px; background-color:black;" src="../static/pics/settings_white.png" th:src="@{/pics/settings_white.png}" /></a>
+	</div>
+	<div class="topbar sub">
+		<div class="navbar sub">
+		   <a onclick="test1()">test1</a>
+		   <a onclick="test2()">test2</a>
+		   <a>test3</a>
+		</div>
+	</div>
+	<div class = "main">
+	<div class="workpane" id="rulePane" style="width:85%;	float:left;" ondragover="allowDrop(event)" ondrop="dropDevice(event)">
+		Drag Devices here to create the rules.
+	</div>
+	<div class="workpane" style="width:12%; float: right;">
+		<a>Devices</a>
+		<div class="menu" id="sensorsMenuId">
+			<a onmouseover="hoverSubMenu(this)">Sensors</a>
+		</div>
+		<div class="menu" id="enablersMenuId">
+			<a onmouseover="hoverSubMenu(this)">Enablers</a>
+		</div>
+	</div>
+	</div>	
+</body>
+</html>

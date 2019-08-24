@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>Products Management</title>
+	<link rel="stylesheet" type="text/css" href="../static/styles/theme.css" th:href="@{/styles/theme.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/pics.css" th:href="@{/styles/pics.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/navigation.css" th:href="@{/styles/navigation.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/input.css" th:href="@{/styles/input.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/layout.css" th:href="@{/styles/layout.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/smarthome.css" th:href="@{/styles/smarthome.css}"/>
+	<script src="../static/scripts/lib/jquery-3.2.1.min.js" th:src="@{/scripts/lib/jquery-3.2.1.min.js}"></script>
+	<script src="../static/scripts/lib/jquery-ui.min.js" th:src="@{/scripts/lib/jquery-ui.min.js}"></script>
+	<script src="../static/scripts/animations.js" th:src="@{/scripts/animations.js}"></script>
+	<script src="../static/scripts/form_actions.js" th:src="@{/scripts/form_actions.js}"></script>
+	<script src="../static/scripts/objects.js" th:src="@{/scripts/objects.js}"></script>
+	<script th:inline="javascript">
+		var products = [(${productsJS})]
+		var propertyTypes = [(${propertyTypesJS})]
+		var prods = new HashMap();
+		var ptypes = new HashMap();
+		var propsamt = 1;
+		
+		function Product(ssid, name, description, oh_icon, props) {
+			this.ssid = ssid;
+			this.name = name;
+			this.description = description;
+			this.oh_icon = oh_icon;
+			this.props = props; //array
+		}
+		
+		function PropertyType(ssid, name, description, oh_icon, min, max) {
+			this.ssid = ssid;
+			this.name = name;
+			this.description = description;
+			this.oh_icon = oh_icon;
+			this.min = min;
+			this.max = max;
+		}
+		
+		function Property(ptypeID, displayName, mode, value) {
+			this.ptypeID = ptypeID;
+			this.displayName = displayName;
+			this.mode = mode;
+			this.value = value;
+		}
+		
+		$(document).ready(function() {
+			for(var i = 0; i < products.length; i++) {
+				var prod = products[i];
+				prods.add(prod.ssid, prod);
+			}
+			for(var i = 0; i < propertyTypes.length; i++) {
+				var ptype = propertyTypes[i];
+				ptypes.add(ptype.ssid, ptype);
+			}
+			$("#productEditor").hide();
+			$("#propertyTypeEditor").hide();
+		});
+		
+		
+		var propfields = new HashMap();
+		function editProduct(ssid) {
+			alert("propsamt " + propsamt)
+			for(var i = 1; i <= propsamt; i++) {
+				alert($("#properties" + i).attr("id"))
+				$("#properties" + i).remove();
+				$(propfields.get("properties" + i)).remove();
+			}
+			propfields = new HashMap();
+			propsamt = 0;
+			$("#productEditor").hide();
+			$("#propertyTypeEditor").hide();
+			var prod = prods.get(ssid);
+			var props = prod.props;
+			$("#product").attr("action", "editProduct");
+			$("#prodSSID").val(ssid);
+			$("#prodName").text("Product (" + ssid + ")");
+			$("#newProdSSID").attr("placeholder", ssid);
+			$("#newProdName").attr("placeholder", prod.name);
+			$("#newProdDescription").attr("placeholder", prod.description);
+			$("#newProdOHIcon").attr("placeholder", prod.oh_icon);
+			for(var i = 0; i < props.length; i++) {
+				var prop = props[i];
+				addFilledPropertyField(prop.displayName, prop.ptypeID, prop.mode);
+			}
+			$("#productEditor").show();
+		}
+		function createProduct(ssid) {
+			alert("propsamt " + propsamt)
+			for(var i = 1; i <= propsamt; i++) {
+				alert($("#properties" + i).attr("id"))
+				$("#properties" + i).remove();
+				$(propfields.get("properties" + i)).remove();
+			}
+			propsamt = 0;
+			$("#productEditor").hide();
+			$("#propertyTypeEditor").hide();
+			var prod = prods.get(ssid);
+			$("#product").attr("action", "createProduct");
+			$("#prodSSID").val(ssid);
+			$("#prodName").text("Create New Product");
+			$("#newProdSSID").attr("placeholder", "0-4 digit numerical ID");
+			$("#newProdName").attr("placeholder", "Name");
+			$("#newProdDescription").attr("placeholder", "Description");
+			$("#newProdOHIcon").attr("placeholder", "OpenHAB icon name");
+			addPropertyField();
+			$("#productEditor").show();
+		}
+		function addPropertyField() {
+			propsamt += 1;
+			//var $proptypes = $("#productEditor").find("#proptypes1").clone().attr("name","proptype" + propsamt);
+			var proptypes = "<select id='proptypes" + propsamt + "' name='proptype" + propsamt + "'>";
+			for(var i = 0; i < propertyTypes.length; i++) {
+				var propType = propertyTypes[i];
+				proptypes += "<option value='" + propType.ssid + "'>" + propType.name + "</option>";
+			}
+			proptypes += "</select>";
+			var addORremoveBTN;
+			if(propsamt == 1) addORremoveBTN = "<input style='width:60px;' type='button' onclick='addPropertyField(\"" + propsamt + "\")' value='add'/>";
+			else addORremoveBTN = "<input style='width:60px;' type='button' onclick='removePropertyField(\"" + propsamt + "\")' value='remove'/>";
+			var $propfield = $(" \
+				<tr id='properties" + propsamt + "'/> \
+					<td class='colHeader'><input type='text' name='propname" + propsamt + "' placeholder='Property Name'/></td> \
+					<td style='text-align:left'> " + 
+						proptypes + "\
+						<select name='propmode" + propsamt + "'> \
+							<option value='I'>I</option> \
+							<option value='O'>O</option> \
+						</select>" + 
+						addORremoveBTN + " \
+					</td> \
+				</tr>");
+			$("#productEditor").find("#productSubmitter").before($propfield);
+			propfields.add("properties" + propsamt, $propfield);
+		}
+		function addFilledPropertyField(dispName, ptypeID, mode) {
+			propsamt += 1;
+			var proptypes = "<select id='proptypes" + propsamt + "' name='proptype" + propsamt + "'>";
+			for(var i = 0; i < propertyTypes.length; i++) {
+				var propType = propertyTypes[i];
+				if(propType.ssid == ptypeID) proptypes += "<option value='" + propType.ssid + "' selected>" + propType.name + "</option>";
+				else proptypes += "<option value='" + propType.ssid + "'>" + propType.name + "</option>";
+			}
+			proptypes += "</select>"
+			var modefield = "<select name='propmode" + propsamt + "'>";
+			if(mode == "I") {
+				modefield += "<option value='I' selected>I</option>";
+				modefield += "<option value='O'>O</option>";
+			}
+			else {
+				modefield += "<option value='I'>I</option>";
+				modefield += "<option value='O' selected>O</option>";
+			}
+			modefield += "</select> ";
+			var addORremoveBTN;
+			if(propsamt == 1) addORremoveBTN = "<input style='width:60px;' type='button' onclick='addPropertyField(\"" + propsamt + "\")' value='add'/>";
+			else addORremoveBTN = "<input style='width:60px;' type='button' onclick='removePropertyField(\"" + propsamt + "\")' value='remove'/>";
+			//var $proptypes = $("#productEditor").find("#proptypes").clone().attr("name","proptype" + propsamt);
+			var $propfield = $(" \
+				<tr id='properties" + propsamt + "'/> \
+					<td class='colHeader'><input type='text' name='propname" + propsamt + "' placeholder='Property Name' value='" + dispName + "'/></td> \
+					<td style='text-align:left'> " + 
+						proptypes + 
+						modefield +
+						addORremoveBTN + " \
+					</td> \
+				</tr>");
+			$("#productEditor").find("#productSubmitter").before($propfield);
+			//alert(modefield);
+			propfields.add("properties" + propsamt, $propfield);
+		}
+		function removePropertyField(num) {
+			propfields.get("properties" + num).remove();
+		}
+		function saveProduct() {
+			submitForm_GET("product", "notif", function(DATA) {
+				console.log($(DATA).filter("#status").val());
+				if($(DATA).filter("#status").val() != "false") {
+					setTimeout(function(){ window.location.reload(true); }, 1000);
+				}
+			});
+			/* var response = submitForm_GET("product", "notif");
+			var $response = $(response);
+			setTimeout(function(){ window.location.reload(true); }, 1000); */
+		}
+		
+		function editPropertyType(ssid) {
+			$("#productEditor").hide();
+			$("#propertyTypeEditor").hide();
+			var ptype = ptypes.get(ssid);
+			$("#propertyType").attr("action", "editPropertyType");
+			$("#ptypeSSID").val(ssid);
+			$("#ptypeSSID").attr("name", "ssid");
+			$("#ptypeName").text("Property Type (" + ssid + ")");
+			$("#newPtypeSSID").attr("placeholder", ssid);
+			$("#newPtypeSSID").attr("name", "newSSID");
+			$("#newPtypeName").attr("placeholder", ptype.name);
+			$("#newPtypeDescription").attr("placeholder", ptype.description);
+			$("#newPtypeOHIcon").attr("placeholder", ptype.oh_icon);
+			$("#newPtypeMinValue").attr("placeholder", ptype.min);
+			$("#newPtypeMaxValue").attr("placeholder", ptype.max);
+			$("#deletePtype").show();
+			$("#propertyTypeEditor").show();
+		}
+		function createPropertyType(ssid) {
+			$("#productEditor").hide();
+			$("#propertyTypeEditor").hide();
+			var ptype = ptypes.get(ssid);
+			$("#propertyType").attr("action", "createPropertyType");
+			$("#ptypeSSID").attr("name", "none");
+			$("#ptypeName").text("New Property Type");
+			$("#newPtypeSSID").attr("placeholder", "0-10 character alphanum ID");
+			$("#newPtypeSSID").attr("name", "ssid");
+			$("#newPtypeName").attr("placeholder", "Name");
+			$("#newPtypeDescription").attr("placeholder", "Description");
+			$("#newPtypeOHIcon").attr("placeholder", "OpenHAB icon name");
+			$("#newPtypeMinValue").attr("placeholder", "Minimum Value");
+			$("#newPtypeMaxValue").attr("placeholder", "Maximum Value");
+			$("#deletePtype").hide();
+			$("#propertyTypeEditor").show();
+		}
+		function savePropertyType() {
+			submitForm_GET("propertyType", "notif", function(DATA) {
+				console.log($(DATA).filter("#status").val());
+				if($(DATA).filter("#status").val() != "false") {
+					setTimeout(function(){ window.location.reload(true); }, 1000);
+				}
+			});
+		}
+		function deletePropertyType() {
+			$("#propertyType").attr("action", "deletePropertyType");
+			submitForm_GET("propertyType", "notif", function(DATA) {
+				console.log($(DATA).filter("#status").val());
+				if($(DATA).filter("#status").val() != "false") {
+					setTimeout(function(){ window.location.reload(true); }, 1000);
+				}
+			});
+		}
+	</script>
+	<style>
+		body {
+			margin-top: 60px;
+			overflow: auto;
+		}
+		div.editor {
+			text-align:center;
+			width: 100%;
+			margin-bottom: 20px;
+			display: flex;
+			justify-content: center;
+		}
+		table.invisible, table.invisible td, table.invisible th {
+			border: 1px solid black;
+		}
+		table, td, th {
+			border: 1px solid black;
+			padding-left: 5px;
+			padding-right: 5px;
+			border-collapse: collapse;
+		}
+		table {
+			margin-left: 10px;
+			margin-right: 10px;
+		}
+		th {
+			text-align: center;
+			font-weight: bold;
+			font-size: 20px;
+		}
+		td.header {
+			text-align: center;
+			font-weight: bold;
+		}
+		td.colHeader {
+			text-align: right;
+			vertical-align: top;
+		}
+		span.link {
+			text-decoration: underline;
+		    color: blue;
+		    cursor: pointer;
+		}
+		span.link:hover {
+			text-decoration: none;
+		}
+		span.link:active {
+			text-decoration: none;
+			color: purple;
+		}
+		input, textarea {
+			width: 150px;
+		}
+	</style>
+</head>
+<body>
+	<div th:replace="fragments/static-fragments :: topbar" class="topbar"></div>
+	<!-- notification -->
+	<div th:replace="fragments/static-fragments :: notifBox" class="notifBoxContainer" id="notif"></div>
+	<div class="body_workpane">
+		<div class="editor" id="productEditor">
+			<form id="product" action="editProduct">
+			<input type="hidden" id="prodSSID" name="ssid"/>
+			<table class="invisible">
+				<tr><th colspan="2" style="text-align:center;" id="prodName">Product</th></tr>
+				<tr>
+					<td class="colHeader">SSID</td><td><input type="text" id="newProdSSID" name="newSSID" placeholder=""/></td>
+				</tr>
+				<tr>
+					<td class="colHeader">Name</td><td><input type="text" id="newProdName" name="name" placeholder=""/></td>
+				</tr>
+				<tr>
+					<td class="colHeader">Description</td><td><textarea rows="3" id="newProdDescription" name="description" placeholder=""></textarea></td>
+				</tr>
+				<tr>
+					<td class="colHeader">OpenHAB Icon</td><td><input type="text" id="newProdOHIcon" name="oh_icon" placeholder=""/></td>
+				</tr>
+				<tr id="propertiesHeader">
+					<td colspan="2"><br/>Properties</td>
+				</tr>
+				<tr id="properties1">
+					<td class="colHeader"><input type="text" name="propname1" placeholder="Property Name"/></td>
+					<td id="proptypefield" style='text-align:left'>
+						<select id="proptypes1" name="proptype1">
+							<option th:each="ptype : ${propertyTypes}" th:value="${ptype.getSSID()}" 
+								th:text="${ptype.getName()}" th:id="${ptype.getSSID() + '_ptype'}"/>
+						</select>
+						<select name="propmode1">
+							<option value="I">I</option>
+							<option value="O">O</option>
+						</select>
+						<input style="width:60px;" type="button" onclick="addPropertyField()" value="add"/>
+					</td>
+				</tr>
+				<tr id="productSubmitter">
+					<td style="text-align:center;" colspan="2"><br/><input type="button" onclick="saveProduct()" value="save"></td>
+				</tr>
+			</table>
+			</form>
+		</div>
+		<div class="editor" id="propertyTypeEditor">
+			<form id="propertyType" action="editPropertyType">
+			<input type="hidden" id="ptypeSSID" name="ssid"/>
+			<table class="invisible">
+				<tr><th colspan="2" style="text-align:center;" id="ptypeName">Product</th></tr>
+				<tr>
+					<td class="colHeader">SSID</td><td><input type="text" id="newPtypeSSID" name="newSSID" placeholder=""/></td>
+				</tr>
+				<tr>
+					<td class="colHeader">Name</td><td><input type="text" id="newPtypeName" name="name" placeholder=""/></td>
+				</tr>
+				<tr>
+					<td class="colHeader">Description</td><td><textarea id="newPtypeDescription" rows="3" name="description" placeholder=""></textarea></td>
+				</tr>
+				<tr>
+					<td class="colHeader">OpenHAB Icon</td><td><input type="text" id="newPtypeOHIcon" name="oh_icon" placeholder=""/></td>
+				</tr>
+				<tr>
+					<td class="colHeader">Min Value</td><td><input type="number" id="newPtypeMinValue" name="min" placeholder=""/></td>
+				</tr>
+				<tr>
+					<td class="colHeader">Max Value</td><td><input type="number" id="newPtypeMaxValue" name="max" placeholder=""/></td>
+				</tr>
+				<tr>
+					<td style="text-align:center;" colspan="2"><br/><input type="button" id="deletePtype" onclick="deletePropertyType()" value="delete">  <input type="button" onclick="savePropertyType()" value="save"></td>
+				</tr>
+			</table>
+			</form>
+			<!-- <span>Name</span> <input type="text" id="newProdName" placeholder=""/> <br/>
+			<span>Description</span> <input type="text" id="newProdDescription" placeholder=""/> -->
+		</div>
+		<table style="border:0px;">
+			<tr style="border:0px;">
+			<td style="border:0px; vertical-align: top;">
+			<table>
+				<tr>
+					<th colspan="4" style="text-align:center;">PRODUCTS</th>
+				</tr>
+				<tr>
+					<td class="header">SSID</td>
+					<td class="header">Name</td>
+					<td class="header">Description</td>
+					<td class="header">OpenHAB Icon</td>
+				</tr>
+				<tr th:each="product : ${products}">
+					<td th:text="${product.getSSID()}">0000</td>
+					<td class="colHeader"><span class="link" th:onclick="${'editProduct(''' + product.getSSID() + ''')'}" th:text="${product.getName()}">Product Name</span></td>
+					<td th:text="${product.getDescription()}">Description Goes Here</td>
+					<td th:text="${product.getOHIcon()}">none</td>
+				</tr>
+				<tr>
+					<td style="text-align:center;" colspan="4"><span class="link" onclick="createProduct()">add</span></td>
+				</tr>
+			</table>
+			</td>
+			<td style="border:0px; vertical-align: top;">
+			<table>
+				<tr>
+					<th colspan="6" style="text-align:center;">PROPERTY TYPES</th>
+				</tr>
+				<tr>
+					<td class="header">SSID</td>
+					<td class="header">Name</td>
+					<td class="header">Description</td>
+					<td class="header">OpenHAB Icon</td>
+					<td class="header">Min Value</td>
+					<td class="header">Max Value</td>
+				</tr>
+				<tr th:each="ptype : ${propertyTypes}">
+					<td th:text="${ptype.getSSID()}">0000</td>
+					<td class="colHeader"><span class="link" th:onclick="${'editPropertyType(''' + ptype.getSSID() + ''')'}" th:text="${ptype.getName()}">Product Name</span></td>
+					<td th:text="${ptype.getDescription()}">Description Goes Here</td>
+					<td th:text="${ptype.getOHIcon()}">none</td>
+					<td th:text="${ptype.getMin()}">0</td>
+					<td th:text="${ptype.getMax()}">1</td>
+				</tr>
+				<tr>
+					<td style="text-align:center;" colspan="6"><span class="link" onclick="createPropertyType()">add</span></td>
+				</tr>
+			</table>
+			</td>
+			</tr>
+		</table>
+	</div>
+	<br/><br/>
+</body>
+</html>

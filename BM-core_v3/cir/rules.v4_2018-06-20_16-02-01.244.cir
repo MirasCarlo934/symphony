@@ -1,0 +1,50 @@
+<rules>
+  <rule name="Lights On 1" condition="IF">
+    <arguments>
+      <component id="J6L0" name="Device1">
+        <property id="0001" value="1" label="Switch" operator="="/>
+      </component>
+    </arguments>
+    <execution>
+      <component id="C3K3" name="Nightlight">
+        <property id="0001" value="1" label="Switch"/>
+      </component>
+    </execution>
+  </rule>
+  <rule name="Lights Off 1" condition="IF">
+    <arguments>
+      <component id="J6L0" name="Device1">
+        <property id="0001" value="0" label="Switch" operator="="/>
+      </component>
+    </arguments>
+    <execution>
+      <component id="C3K3" name="Nightlight">
+        <property id="0001" value="0" label="Switch"/>
+      </component>
+    </execution>
+  </rule>
+  <rule name="Test Rule 1 - ON" condition="IF">
+        <arguments>
+          <component id="I2M4" name="Aircon">
+            <property id="0006" value="1" label="Switch" operator="="/>
+          </component>
+        </arguments>
+        <execution>
+          <component id="C3K3" name="Nightlight">
+            <property id="0001" value="1" label="Switch"/>
+          </component>
+        </execution>
+  </rule>
+  <rule name="Test Rule 1 - OFF" condition="IF">
+      <arguments>
+        <component id="I2M4" name="Aircon">
+          <property id="0006" value="0" label="Switch" operator="="/>
+        </component>
+      </arguments>
+      <execution>
+        <component id="C3K3" name="Nightlight">
+          <property id="0001" value="0" label="Switch"/>
+        </component>
+      </execution>
+  </rule>
+</rules>

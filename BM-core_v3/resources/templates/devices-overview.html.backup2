@@ -1,0 +1,318 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Devices</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="../static/styles/theme.css" th:href="@{/styles/theme.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/pics.css" th:href="@{/styles/pics.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/navigation.css" th:href="@{/styles/navigation.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/input.css" th:href="@{/styles/input.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/layout.css" th:href="@{/styles/layout.css}"/>
+	<script src="../static/scripts/lib/jquery-3.2.1.min.js" th:src="@{/scripts/lib/jquery-3.2.1.min.js}"></script>
+	<script src="../static/scripts/lib/jquery-ui.min.js" th:src="@{/scripts/lib/jquery-ui.min.js}"></script>
+	<!-- <script src="../static/scripts/lib/jquery-sortable.js" th:src="@{/scripts/lib/jquery-sortable.js}"></script> -->
+	<script src="../static/scripts/animations.js" th:src="@{/scripts/animations.js}"></script>
+	<script src="../static/scripts/form_actions.js" th:src="@{/scripts/form_actions.js}"></script>
+	<script src="../static/scripts/objects.js" th:src="@{/scripts/objects.js}"></script>
+	<script th:inline="javascript">
+		var animationSpeed = 300;
+		var colors = ["black", "blue", "red", "green", "darkgray"];
+		
+		[(${devices})]
+		
+		[(${rooms})]
+		
+		[(${devArray})]
+		[(${roomArray})]
+		
+		var rooms = new HashMap();
+		
+		var nameInputHTML = "<input type='text' class='smallTextBox' style='width:80%; margin:auto;' placeholder='TestDevice1' name='name'/>";
+		var saveIconSrc = "/pics/save.png";
+		var origHTMLs = new HashMap();
+		
+		function DeviceHTML(devID) {
+			this.name = $("#" + devID + "_name").html();
+			this.icon = $("#" + devID + "_editBtn").attr("src");
+		}
+		
+		function Room(id, width, height) {
+			this.id = id;
+			this.width = width;
+			this.height = height;
+			this.minimized = false;
+		}
+		
+		function updateRoomDimensions() {
+			$("div.roomContainer").each(function() {
+				var $room = $(this);
+				var room = new Room($room.attr("id"), $room.width(), $room.height());
+				rooms.add($room.attr("id"), room);
+			});
+		}
+		
+		$(document).ready(function() {
+			
+			updateRoomDimensions();
+			
+			$("div.roomContainer").each(function() {
+				var color = colors[Math.floor((Math.random() * colors.length))];
+				
+				while($(this).parent().css("background-color") == color) {
+					color = colors[Math.floor((Math.random() * colors.length))];
+				}
+				
+				$(this).css({
+					"background-color": color
+				});
+			});
+			
+			$(".sortableHorizontal").css({
+				"min-height": $(".deviceContainer").height(),
+				"min-width": $(".deviceContainer").width(),
+				"padding-right": "15px"
+			});
+			
+			/* --INJECT--  */
+			$("#CRL0_sort, #U7YY_sort, #SALAS_sort")
+			.sortable({
+				connectWith: ".sortableHorizontal",
+				revert: animationSpeed,
+				receive: function(event, ui) {
+					/* alert(ui.item.attr("id"));
+					alert(ui.sender.attr("id")); */
+					/* var items = $(this).sortable("toArray");
+					var senderItems = ui.sender.attr("id");
+					alert(items);
+					alert(senderItems); */
+				}
+			})
+			.disableSelection();
+			
+			$("div.deviceContainer")
+				.hover(function() {
+					openDrawer($(this).attr("id") + "_infos", 0, 0, animationSpeed);
+					$(this).find($("img.overlay")).animate({
+						"filter": "opacity(100%) invert(100%)"
+					}, animationSpeed);
+				}, function() {
+					closeDrawer($(this).attr("id") + "_infos", animationSpeed);
+					$(this).find($("img.overlay")).animate({
+						"filter": "opacity(0%) invert(100%)"
+					}, animationSpeed);
+				})
+				.click(function() {
+					openDrawer($(this).attr("id") + "_infos", 0, 0, animationSpeed);
+				});
+			
+			$("div.roomContainer > div.header").click(function() {
+				var roomID = $(this).parent().attr("id");
+				if(rooms.get(roomID).minimized) {
+					openRoom(roomID);
+				} else {
+					closeRoom(roomID);
+				}
+			});
+		});
+		
+		function editDevice(devID) {
+			console.log("Editing device " + devID);
+			var origHTML = new DeviceHTML(devID);
+			$("#" + devID + "_nameContainer").height($("#" + devID + "_nameContainer").height());
+			$("#" + devID + "_name").html(nameInputHTML);
+			$("#" + devID + "_name").prop("iseditable", true);
+			$("#" + devID + "_editBtn").attr("src", saveIconSrc);
+			$("#" + devID + "_editBtn").attr("onclick", "saveDevice('" + devID + "')");
+			origHTMLs.add(devID, origHTML);
+		}
+		
+		function saveDevice(devID) {
+			console.log("Updating device " + devID + " credentials");
+			submitForm_GET(devID + "_form", "notif");
+			var origHTML = origHTMLs.get(devID);
+			$("#" + devID + "_name").html(origHTML.name);
+			/* $("#" + devID + "_name").prop("iseditable", false); */
+			$("#" + devID + "_editBtn").attr("src", origHTML.icon);
+			$("#" + devID + "_editBtn").attr("onclick", "editDevice('" + devID + "')");
+		}
+		
+		var roomHeights = new HashMap();
+		var roomWidths = new HashMap();
+		function openRoom(roomID) {
+			var $room = $("#" + roomID);
+			var $header = $("#" + roomID + "_header"); //this contains the $nameplate !
+			var $nameplate = $("#" + roomID + "_name");
+			var $children = $room.children().not($header);
+			console.log("Opening container for room " + roomID);
+			$room.animate({
+				"min-width": roomWidths.get(roomID),
+				"min-height": roomHeights.get(roomID),
+				"width": rooms.get(roomID).width,
+				"height": rooms.get(roomID).height
+			}, animationSpeed, function(){	
+				$room.css({ //resets width & height so they can resize dynamically
+					"width": "",
+					"height": "",
+					"min-width": "",
+					"min-height": ""
+				}) 
+				$children.css({
+					opacity: 100
+				});
+			});
+			$nameplate.animate({
+				"background-color": "white"
+			});
+			rooms.get(roomID).minimized = false;
+		}
+		function closeRoom(roomID) {
+			var $room = $("#" + roomID);
+			var $header = $("#" + roomID + "_header"); //this contains the $nameplate !
+			var $nameplate = $("#" + roomID + "_name");
+			var $children = $room.children().not($header);
+			console.log("Closing container for room " + roomID);
+			updateRoomDimensions();
+			roomHeights.add(roomID, $room.height());
+			roomWidths.add(roomID, $room.width());
+			$children.css({
+				opacity: 0
+			});
+			$room.animate({
+				"min-width": $nameplate.width(),
+				"min-height": $nameplate.height(),
+				"width": $nameplate.width(),
+				"height": $nameplate.height(),
+			}, animationSpeed);
+			$nameplate.animate({
+				"background-color": $room.css("background-color")
+			});
+			rooms.get(roomID).minimized = true;
+		}
+		
+		function colorize(roomID) {
+			var color = Math.floor((Math.random() * colors.length))
+		}
+	</script>
+</head>
+
+
+<body>
+	<div class="topbar">
+		<a href="/home"><img class="smallLink" style="float:left; margin-left:0px; background-color:black;" src="../static/pics/symbol_white.png" th:src="@{/pics/symbol_white.png}" /></a>
+		<div class="navbar">
+			<a href="/home">home</a>
+			<a href="/devices/overview">devices</a>
+			<a href="/devices/composer">composer</a>
+			<a href="/help">help</a>
+		</div>
+		<a href="/settings"><img class="smallLink" style="float:right; margin-right:0px; background-color:black;" src="../static/pics/settings_white.png" th:src="@{/pics/settings_white.png}" /></a>
+	</div>
+	
+	<!-- notification -->
+	<div class="notifBoxContainer" id="notif"></div>
+	
+	<div class="body" style="background-color:lightgray;">
+		<div id="SALAS" class="roomContainer" style="background-color:red;">
+			<div id="SALAS_header" class="unselectable header">
+				<span id="SALAS_name" class="unselectable textBigBold">2nd Floor</span>
+			</div>
+			<ul id="SALAS_sort" class="sortableHorizontal">
+				<li>
+				<div id="CRL0" class="roomContainer" style="background-color:green;">
+					<div id="CRL0_header" class="unselectable header" >
+						<span id="CRL0_name" class="textBigBold">Kuya's Bedroom</span>
+					</div>
+					
+					<ul id="CRL0_sort" class="sortableHorizontal">
+						<li id="d_ABCD">
+							<div id="ABCD" class="deviceContainer">
+							<form id="ABCD_form" action="/devices/editDevice">
+								<input type="hidden" name="devID" value="ABCD"/>
+								<div class="icon">
+									<img class="icon" src="../resources/static/pics/iconset/switch.png" th:src="@{/pics/iconset/switch.png}"/>
+									<img class="overlay" src="../resources/static/pics/move.png" th:src="@{/pics/move.png}"/>
+									<img id="ABCD_editBtn" class="edit" onclick="editDevice('ABCD')" src="../resources/static/pics/edit.svg" th:src="@{/pics/edit.svg}"/>
+								</div>
+								<h1 id="ABCD_nameContainer"><span id="ABCD_name">TestDevice1</span></h1>
+								<div id="ABCD_infos" class="drawer">
+									<div class="info">(Solosocket)</div>
+									<div class="statusGreen">Active</div>
+								</div>
+							</form>
+							</div>
+						</li>
+						<li id="d_ABCDa">
+							<div id="ABCDa" class="deviceContainer">
+							<form id="ABCDa_form" action="/devices/editDevice">
+								<input type="hidden" name="devID" value="ABCDa"/>
+								<div class="icon">
+									<img class="icon" src="../resources/static/pics/iconset/switch.png" th:src="@{/pics/iconset/switch.png}"/>
+									<img class="overlay" src="../resources/static/pics/move.png" th:src="@{/pics/move.png}"/>
+									<img id="ABCDa_editBtn" class="edit" onclick="editDevice('ABCDa')" src="../resources/static/pics/edit.svg" th:src="@{/pics/edit.svg}"/>
+								</div>
+								<h1 id="ABCDa_nameContainer"><span id="ABCDa_name">TestDevice2</span></h1>
+								<div id="ABCDa_infos" class="drawer">
+									<div class="info">(Solosocket)</div>
+									<div class="statusRed">Inactive</div>
+								</div>
+							</form>
+							</div>
+						</li>
+					</ul>
+				</div>
+				</li>
+				<li>
+				<div id="U7YY" class="roomContainer" style="background-color:blue;">
+					<div id="U7YY_header" class="unselectable header" >
+						<span id="U7YY_name" class="textBigBold">Salas</span>
+					</div>
+					
+					<ul id="U7YY_sort" class="sortableHorizontal">
+						<li>
+							<div id="ABCDb" class="deviceContainer">
+							<form id="ABCDb_form" action="/devices/editDevice">
+								<input type="hidden" name="devID" value="ABCDb"/>
+								<div class="icon">
+									<img class="icon" src="../resources/static/pics/iconset/switch.png" th:src="@{/pics/iconset/switch.png}"/>
+									<img class="overlay" src="../resources/static/pics/move.png" th:src="@{/pics/move.png}"/>
+									<img id="ABCDb_editBtn" class="edit" onclick="editDevice('ABCDb')" src="../resources/static/pics/edit.svg" th:src="@{/pics/edit.svg}"/>
+								</div>
+								<h1 id="ABCDb_nameContainer"><span id="ABCDb_name">TestDevice3</span></h1>
+								<div id="ABCDb_infos" class="drawer">
+									<div class="info">(Solosocket)</div>
+									<div class="statusGreen">Active</div>
+								</div>
+							</form>
+							</div>
+						</li>
+						<li>
+							<div id="ABCDc" class="deviceContainer">
+							<form id="ABCDc_form" action="/devices/editDevice">
+								<input type="hidden" name="devID" value="ABCDc"/>
+								<div class="icon">
+									<img class="icon" src="../resources/static/pics/iconset/switch.png" th:src="@{/pics/iconset/switch.png}"/>
+									<img class="overlay" src="../resources/static/pics/move.png" th:src="@{/pics/move.png}"/>
+									<img id="ABCDc_editBtn" class="edit" onclick="editDevice('ABCDc')" src="../resources/static/pics/edit.svg" th:src="@{/pics/edit.svg}"/>
+								</div>
+								<h1 id="ABCDc_nameContainer"><span id="ABCDc_name">TestDevice4</span></h1>
+								<div id="ABCDc_infos" class="drawer">
+									<div class="info">(Solosocket)</div>
+									<div class="statusRed">Inactive</div>
+								</div>
+							</form>
+							</div>
+						</li>
+					</ul> 
+				</div>
+			</li>
+			</ul>
+		</div>
+	</div>
+	
+	<div th:each="parent : ${parentRoomObjs}">
+		<div th:replace="fragments/devices-overview-fragments::roomBox(${parent})"> </div>		
+	</div>
+</body>
+</html>

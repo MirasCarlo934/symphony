@@ -1,0 +1,30 @@
+<!-- Resolves views selected for rendering by @Controllers to .jsp resources 
+    in the /WEB-INF/views directory -->
+<beans:bean
+    class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <beans:property name="prefix" value="/WEB-INF/views/" />
+    <beans:property name="suffix" value=".jsp" />
+    <beans:property name="viewNames" value="jsp/*"></beans:property>
+    <beans:property name="order" value="1"></beans:property>
+</beans:bean>
+
+<!-- Thymeleaf -->
+<beans:bean class="org.thymeleaf.spring4.view.ThymeleafViewResolver">
+    <beans:property name="templateEngine" ref="templateEngine" />
+    <!-- This narrows the scope of the resolver to the view names (returned 
+        by the controllers' methods) to those matching the pattern -->
+    <beans:property name="viewNames" value="templates/*"></beans:property>
+    <!-- places this resolver before the default InternalResourceViewResolver -->
+    <beans:property name="order" value="0"></beans:property>
+</beans:bean>
+
+<beans:bean id="templateResolver"
+    class="org.thymeleaf.templateresolver.ServletContextTemplateResolver">
+    <beans:property name="prefix" value="/WEB-INF/views/" />
+    <beans:property name="templateMode" value="HTML5" />
+    <beans:property name="suffix" value=".html" />
+</beans:bean>
+
+<beans:bean id="templateEngine" class="org.thymeleaf.spring4.SpringTemplateEngine">
+    <beans:property name="templateResolver" ref="templateResolver" />
+</beans:bean>

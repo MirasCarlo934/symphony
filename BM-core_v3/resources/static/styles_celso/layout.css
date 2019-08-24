@@ -1,0 +1,53 @@
+div.central {
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 15%;
+	width: 50%;
+	border: 1px solid red;  /*for testing only*/
+	padding: 10px;
+}
+div.topbar {
+	position: fixed;
+	width: 100%;
+	height: 60px;
+	background-color: black;
+	left:0px;
+	right:0px;
+	top:0px;
+	text-align: center;
+}
+div.topbar.sub {
+	height: 25px;
+	top:62px;
+	background-color: white;
+	cursor: pointer;
+}
+div.navbar {
+	height: 60px;
+	background-color: black;
+	display: inline-block;
+	//border: 1px solid red;  //for testing only
+}
+div.navbar.sub {
+	height: 25px;
+}
+div.main {
+	position:absolute;	
+	width: 100%;
+	height: calc(100% - 90px);
+	//background-color: gray;
+	top: 85px;
+}
+div.workpane {
+	height: 95%;
+	background-color: gray;
+	margin: 5px;
+	//overflow-y: auto;
+}
+div.menu {
+	height: 31px;
+	width: 97%;
+	margin: 5px;
+	overflow-y: hidden;
+	transition: all 0.5s;	
+}

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<context:annotation-config/>
+	
+	<!--<bean id="OH.Initializer" class="oh.main.initializables.OH_Initializer">-->
+		<!--<constructor-arg name="logDomain" value="${log.domain.oh}"/>-->
+		<!--&lt;!&ndash;<constructor-arg name="ohIP" value="${oh.ip}"/>&ndash;&gt;-->
+		<!--&lt;!&ndash;<constructor-arg name="sitemapName" value="${oh.sitemap_name}"/>&ndash;&gt;-->
+		<!--&lt;!&ndash;<constructor-arg name="sitemapFE" ref="OH.SitemapFileEngine"/>&ndash;&gt;-->
+		<!--&lt;!&ndash;<constructor-arg name="deviceRepository" ref="Components"/>&ndash;&gt;-->
+		<!--<constructor-arg name="uiDeviceRepository" ref="UIDevices"/>-->
+        <!--<constructor-arg name="uiRoomRepository" ref="UIRooms"/>-->
+		<!--<constructor-arg name="oha" ref="OHAdaptor"/>-->
+		<!--&lt;!&ndash;<constructor-arg name="httpSender" ref="HTTPSender"/>&ndash;&gt;-->
+		<!--&lt;!&ndash;<constructor-arg name="idg" ref="IDGenerator"/>&ndash;&gt;-->
+	<!--</bean>-->
+</beans>

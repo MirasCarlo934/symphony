@@ -1,0 +1,33 @@
+.navbar a {
+    float: left;
+    display: block;
+    background-color: black;
+    text-align: center;
+    padding: 18.5px 21px;
+    
+    text-decoration: none;
+    font-size: 18px;
+    font-family: Myriad Pro;
+    color: white;
+    
+    /* transition: background-color 0.3s, color 0.3s; */
+    transition: filter 0.3s;
+}
+
+.navbar.sub a {
+	font-size: 14px;
+	padding: 3.5px 21px;
+}
+
+.navbar a:hover,
+.navbar a.hover {
+    /* background-color: white;
+    color: black; */
+    filter: invert(100%)
+}
+
+.navbar a:active,
+.navbar a.active {
+    background-color: c1c1c1;
+    color: black;
+}

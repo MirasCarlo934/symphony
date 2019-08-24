@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Maestro Composer</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="../static/styles_celso/theme.css" th:href="@{/styles_celso/theme.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles_celso/pics.css" th:href="@{/styles_celsopics.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles_celso/navigation.css" th:href="@{/styles_celso/navigation.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles_celso/input.css" th:href="@{/styles_celso/input.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles_celso/layout.css" th:href="@{/styles_celso/layout.css}"/>
+<script src="../static/js/maestrocomposer_v2.js" th:src="@{/js/maestrocomposer_v2.js}"></script>
+<script src="../static/scripts/lib/jquery-3.2.1.min.js" th:src="@{/scripts/lib/jquery-3.2.1.min.js}"></script>
+<script>
+var d1 = new Device("SMVX","Motion",[{id:"0006",label:"Detected"}]);
+var d2 = new Device("Dev2","Remote",[{id:"0001",label:"Start"},{id:"0002",label:"Stop"},{id:"0003",label:"Pause"},{id:"0004",label:"Resume"}]);
+var d3 = new Device("Dev3","RGBLight",[{id:"0008",label:"Red"},{id:"0009",label:"Green"}, {id:"0010",label:"Blue"}]);
+var d4 = new Device("Dev4","Presence",[{id:"0010",label:"Is Here"}]);
+var d5 = new Device("Dev5","Temperature",[{id:"0001",label:"Celsius"}]);
+var d6 = new Device("ABCD","Socket",[{id:"0006",label:"On"},{id:"0007",label:"Off"}]);
+var d7 = new Device("EFGH","Light",[{id:"0001",label:"On"},{id:"0001",label:"Off"}]);
+var H7K5 = new Device("H7K5", "SoloSocket", 
+	[{id:"0035",label:"State",io:"O",min:"0",max:"1"},
+	{id:"0036",label:"Switch",io:"O",min:"0",max:"1"},
+	{id:"0011",label:"ToggleSwitch",io:"O",min:"0",max:"1"},
+	{id:"0034",label:"PushSwitch",io:"O",min:"0",max:"1"}
+	]);
+var sensors = [d1,d2,d4,d5];
+var controllers = [d3,d6,d7,H7K5];
+</script>
+</head>
+<body onload="init()" id="body">
+	<div class="topbar">
+		<a href="/home"><img class="smallLink" style="float:left; margin-left:0px; background-color:black;" src="../static/pics/symbol_white.png" th:src="@{/pics/symbol_white.png}" /></a>
+		<div class="navbar">
+			<a href="/home">home</a>
+			<a href="/devices">devices & rooms</a>
+			<a href="/help">help</a>
+		</div>
+		<a href="/settings"><img class="smallLink" style="float:right; margin-right:0px; background-color:black;" src="../static/pics/settings_white.png" th:src="@{/pics/settings_white.png}" /></a>
+	</div>
+	<div class="topbar sub">
+		<div class="navbar sub">
+		   <a onclick="compose()">Compose</a>
+		   <a onclick="test2()">test2</a>
+		   <a onclick="test3()">test3</a>
+		</div>
+	</div>
+	<div class = "main" id="main">
+	<div class="workpane" id="composer" category="CMPSR" style="width:85%;float:left;" ondragover="allowDrop(event)" ondrop="dropDevice(event)">
+		Drag Devices here to create the rules.
+	</div>
+	<div class="workpane" style="width:12%; float: right;">
+		<a>Devices</a>
+		<div class="menu" id="sensorsMenuId">
+			<a onmouseover="hoverSubMenu(this)">Sensors</a>
+		</div>
+		<div class="menu" id="ctrlsMenuId">
+			<a onmouseover="hoverSubMenu(this)">Controllers</a>
+		</div>
+		<textarea rows="5" cols="25" id="ta"></textarea>
+	</div>
+	</div>
+	<div id="optCond" style="display:none;position: absolute;">
+		<p class="opt" onclick="setOperator(this)">=</p>
+		<p class="opt" onclick="setOperator(this)"><</p>
+		<p class="opt" onclick="setOperator(this)">></p>
+ 	</div> 
+  	</div> 
+</body>
+</html>

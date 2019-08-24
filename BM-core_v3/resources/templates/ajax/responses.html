@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8" />
+	<title>RESPONSES</title>
+</head>
+<body>
+	<input type="hidden" th:each="response : ${responses}" th:id="${response.key}" th:value="${response.value}"/>
+</body>
+</html>

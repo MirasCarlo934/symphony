@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC  "-//SPRING//DTD BEAN//EN"
+ "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	<context:annotation-config/>
+  <description>
+  This is the core config file.
+  This only contains the other config files that the BM will use.
+  </description>
+   <bean id="config" class="main.ConfigLoader">
+    <property name="configFiles">
+      <list>
+      	<value>main-config.xml</value>
+      	<value>components-config.xml</value>
+      	<value>products-config.xml</value>
+      	<value>adaptors-config.xml</value>
+      	<value>engines-config.xml</value>
+        <value>mqtt-config.xml</value>
+        <value>modules-config.xml</value>
+        <value>tools-config.xml</value>
+      </list>
+    </property>
+   </bean> 
+</beans>

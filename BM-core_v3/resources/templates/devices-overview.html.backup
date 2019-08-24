@@ -1,0 +1,429 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Devices</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="../static/styles/theme.css" th:href="@{/styles/theme.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/pics.css" th:href="@{/styles/pics.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/navigation.css" th:href="@{/styles/navigation.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/input.css" th:href="@{/styles/input.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/layout.css" th:href="@{/styles/layout.css}"/>
+	<script src="../static/scripts/lib/jquery-3.2.1.min.js" th:src="@{/scripts/lib/jquery-3.2.1.min.js}"></script>
+	<script src="../static/scripts/lib/jquery-ui.min.js" th:src="@{/scripts/lib/jquery-ui.min.js}"></script>
+	<script src="../static/scripts/animations.js" th:src="@{/scripts/animations.js}"></script>
+	<script src="../static/scripts/form_actions.js" th:src="@{/scripts/form_actions.js}"></script>
+	<script src="../static/scripts/objects.js" th:src="@{/scripts/objects.js}"></script>
+	<script th:inline="javascript">
+		var animationSpeed = 300;
+		
+		[(${devices})]
+		
+		[(${rooms})]
+		
+		var devArray = [(${devArray})]
+		var roomArray = [(${roomArray})]
+		
+		var rooms = new HashMap();
+		
+		var nameInputHTML = "<input type='text' class='smallTextBox' style='width:80%; margin:auto;' placeholder='TestDevice1' name='name'/>";
+		var saveIconSrc = "pics/save.png";
+		var origHTMLs = new HashMap();
+		
+		function DeviceHTML(devID) {
+			this.name = $("#" + devID + "_name").html();
+			this.icon = $("#" + devID + "_editBtn").attr("src");
+		}
+		
+		function Room(id, width, height) {
+			this.id = id;
+			this.width = width;
+			this.height = height;
+			
+			/* var subroomIDs = new Array();
+			$("#" + id).filter("div.roomContainer").each()
+			this.subrooms = $("#" + id).children(); */
+		}
+		
+		function updateRoomDimensions() {
+			$("div.roomContainer").each(function() {
+				/* var room = new Room($(this).css("width"), $(this).css("height")); */
+				var $room = $(this);
+				rooms.add($(this).attr("id"), new Room($room.attr("id"), $room.width(), $room.height()));
+			});
+		}
+		
+		$(document).ready(function() {
+			
+			updateRoomDimensions();
+			
+			$("div.deviceContainer")
+				.draggable()
+				.hover(function() {
+					openDrawer($(this).attr("id") + "_infos", 0, 0, animationSpeed);
+					$(this).filter("img.overlay").animate({
+						"filter": "opacity(100%)"
+					}, animationSpeed);
+				}, function() {
+					closeDrawer($(this).attr("id") + "_infos", animationSpeed) ;
+					$(this).filter("img.overlay").animate({
+						"filter": "opacity(0%)"
+					});
+				})
+				.click(function() {
+					openDrawer($(this).attr("id") + "_infos", 0, 0, animationSpeed);
+				});
+			
+			/* $("div.deviceContainer").filter("div.icon")
+				.hover(function() {
+					$(this).children(".overlay").animate({
+						"opacity": "50%"
+					});
+				}, function() {
+					$(this).children(".overlay").animate({
+						"opacity": "0%"
+					});
+				})
+				.click(function() {
+					$overlay = $(this).children(".overlay");
+					openDrawer($(this).attr("id") + "_infos", 0, 0);
+				}); */
+		});
+		
+		function editDevice(devID) {
+			console.log("Editing device " + devID);
+			var origHTML = new DeviceHTML(devID);
+			$("#" + devID + "_nameContainer").height($("#" + devID + "_nameContainer").height());
+			$("#" + devID + "_name").html(nameInputHTML);
+			$("#" + devID + "_editBtn").attr("src", saveIconSrc);
+			$("#" + devID + "_editBtn").attr("onclick", "saveDevice('" + devID + "')");
+			origHTMLs.add(devID, origHTML);
+		}
+		
+		function saveDevice(devID) {
+			console.log("Updating device " + devID + " credentials");
+			submitForm_GET(devID + "_form", "notif");
+			var origHTML = origHTMLs.get(devID);
+			$("#" + devID + "_name").html(origHTML.name);
+			$("#" + devID + "_editBtn").attr("src", origHTML.icon);
+			$("#" + devID + "_editBtn").attr("onclick", "editDevice('" + devID + "')");
+		}
+		
+		var roomHeights = new HashMap();
+		var roomWidths = new HashMap();
+		function openRoom(roomID) {
+			var $room = $("#" + roomID);
+			var $nameplate = $("#" + roomID + "_name");
+			var $children = $room.children().not("#" + $nameplate.attr("id"));
+			console.log("Opening container for room " + roomID);
+			$room.animate({
+				"min-width": roomWidths.get(roomID),
+				"min-height": roomHeights.get(roomID),
+				"width": rooms.get(roomID).width,
+				"height": rooms.get(roomID).height
+			}, animationSpeed, function(){	
+				$room.css({
+					"width": "",
+					"height": "",
+				}) 
+				$children.css({
+					opacity: 100
+				});
+			});
+			$nameplate.children("span").animate({
+				"background-color": "white"
+			});
+			$nameplate.attr("onclick", "closeRoom('" + roomID + "')");
+		}
+		function closeRoom(roomID) {
+			var $room = $("#" + roomID);
+			var $nameplate = $("#" + roomID + "_name");
+			var $children = $room.children().not("#" + $nameplate.attr("id"));
+			console.log("Closing container for room " + roomID);
+			updateRoomDimensions();
+			roomHeights.add(roomID, $room.height());
+			roomWidths.add(roomID, $room.width());
+			$children.css({
+				opacity: 0
+			});
+			$room.animate({
+				"min-width": $nameplate.children("span").width(),
+				"min-height": $nameplate.children("span").height(),
+				"width": $nameplate.children("span").width(),
+				"height": $nameplate.children("span").height()
+			}, animationSpeed);
+			$nameplate.children("span").animate({
+				"background-color": $nameplate.css("background-color")
+			});
+			$nameplate.attr("onclick", "openRoom('" + roomID + "')");
+		}
+	</script>
+</head>
+
+
+<body>
+	<div class="topbar">
+		<a href="/home"><img class="smallLink" style="float:left; margin-left:0px; background-color:black;" src="../static/pics/symbol_white.png" th:src="@{/pics/symbol_white.png}" /></a>
+		<div class="navbar">
+			<a href="/home">home</a>
+			<a href="/devices">devices</a>
+			<a href="/help">help</a>
+		</div>
+		<a href="/settings"><img class="smallLink" style="float:right; margin-right:0px; background-color:black;" src="../static/pics/settings_white.png" th:src="@{/pics/settings_white.png}" /></a>
+	</div>
+	
+	<!-- notification -->
+	<div class="notifBoxContainer" id="notif"></div>
+	
+	<div class="body" style="background-color:#cccbcd;">
+		<div id="SALAS" class="roomContainer" style="background-color:red;">
+		<div id="SALAS_name" class="header" onclick="closeRoom('SALAS')"><span class="textBigBold">2nd Floor</span></div>
+			<div id="CRL0" class="roomContainer" style="background-color:green;">
+				<!-- <div id="CRL0_name" class="header" onclick="closeRoom('CRL0')"><span class="textBigBold">Room 1</span></div> -->
+				<div id="CRL0_name" class="header" onclick="closeRoom('CRL0')"><span class="textBigBold">Kuya's Bedroom</span></div>
+				<div id="ABCD" class="deviceContainer">
+				<form id="ABCD_form" action="/devices/editDevice">
+					<input type="hidden" name="devID" value="ABCD"/>
+					<div class="icon">
+						<img class="icon" src="../resources/static/pics/iconset/switch.png" th:src="@{pics/iconset/switch.png}"/>
+						<img class="overlay" src="../resources/static/pics/move.png" th:src="@{pics/move.png}"/>
+					</div>
+					<img id="ABCD_editBtn" class="edit" onclick="editDevice('ABCD')" src="../resources/static/pics/edit.svg" th:src="@{pics/edit.svg}"/>
+					<h1 id="ABCD_nameContainer"><span id="ABCD_name">TestDevice1</span></h1>
+					<div id="ABCD_infos" class="drawer">
+						<div class="info">(Solosocket)</div>
+						<div class="statusGreen">Active</div>
+					</div>
+				</form>
+				</div>
+				
+				<div id="ABCDa" class="deviceContainer">
+				<form id="ABCDa_form" action="/devices/editDevice">
+					<input type="hidden" name="devID" value="ABCDa"/>
+					<div class="icon">
+						<img class="icon" src="../resources/static/pics/iconset/switch.png" th:src="@{pics/iconset/switch.png}"/>
+					</div>
+					<img id="ABCDa_editBtn" class="edit" onclick="editDevice('ABCDa')" src="../resources/static/pics/edit.svg" th:src="@{pics/edit.svg}"/>
+					<h1 id="ABCDa_nameContainer"><span id="ABCDa_name">TestDevice1</span></h1>
+					<div id="ABCDa_infos" class="drawer">
+						<div class="info">(Solosocket)</div>
+						<div class="statusGreen">Active</div>
+					</div>
+				</form>
+				</div>
+				
+				<!-- <div id="ABCDb" class="deviceContainer">
+				<form id="ABCDb_form" action="/devices/editDevice">
+					<input type="hidden" name="devID" value="ABCDb"/>
+					<div class="icon">
+						<img class="icon" src="../resources/static/pics/iconset/switch.png" th:src="@{pics/iconset/switch.png}"/>
+					</div>
+					<img id="ABCDb_editBtn" class="edit" onclick="editDevice('ABCDa')" src="../resources/static/pics/edit.svg" th:src="@{pics/edit.svg}"/>
+					<h1 id="ABCDb_nameContainer"><span id="ABCDb_name">TestDevice1</span></h1>
+					<div id="ABCDb_infos" class="drawer">
+						<div class="info">(Solosocket)</div>
+						<div class="statusGreen">Active</div>
+					</div>
+				</form>
+				</div>
+				
+				<div id="ABCDa" class="deviceContainer">
+				<form id="ABCDa_form" action="/devices/editDevice">
+					<input type="hidden" name="devID" value="ABCDa"/>
+					<div class="icon">
+						<img class="icon" src="../resources/static/pics/iconset/switch.png" th:src="@{pics/iconset/switch.png}"/>
+					</div>
+					<img id="ABCDa_editBtn" class="edit" onclick="editDevice('ABCDa')" src="../resources/static/pics/edit.svg" th:src="@{pics/edit.svg}"/>
+					<h1 id="ABCDa_nameContainer"><span id="ABCDa_name">TestDevice1</span></h1>
+					<div id="ABCDa_infos" class="drawer">
+						<div class="info">(Solosocket)</div>
+						<div class="statusGreen">Active</div>
+					</div>
+				</form>
+				</div>
+				
+				<div id="ABCDa" class="deviceContainer">
+				<form id="ABCDa_form" action="/devices/editDevice">
+					<input type="hidden" name="devID" value="ABCDa"/>
+					<div class="icon">
+						<img class="icon" src="../resources/static/pics/iconset/switch.png" th:src="@{pics/iconset/switch.png}"/>
+					</div>
+					<img id="ABCDa_editBtn" class="edit" onclick="editDevice('ABCDa')" src="../resources/static/pics/edit.svg" th:src="@{pics/edit.svg}"/>
+					<h1 id="ABCDa_nameContainer"><span id="ABCDa_name">TestDevice1</span></h1>
+					<div id="ABCDa_infos" class="drawer">
+						<div class="info">(Solosocket)</div>
+						<div class="statusGreen">Active</div>
+					</div>
+				</form>
+				</div>
+				
+				<div id="ABCDa" class="deviceContainer">
+				<form id="ABCDa_form" action="/devices/editDevice">
+					<input type="hidden" name="devID" value="ABCDa"/>
+					<div class="icon">
+						<img class="icon" src="../resources/static/pics/iconset/switch.png" th:src="@{pics/iconset/switch.png}"/>
+					</div>
+					<img id="ABCDa_editBtn" class="edit" onclick="editDevice('ABCDa')" src="../resources/static/pics/edit.svg" th:src="@{pics/edit.svg}"/>
+					<h1 id="ABCDa_nameContainer"><span id="ABCDa_name">TestDevice1</span></h1>
+					<div id="ABCDa_infos" class="drawer">
+						<div class="info">(Solosocket)</div>
+						<div class="statusGreen">Active</div>
+					</div>
+				</form>
+				</div>
+				
+				<div id="ABCDa" class="deviceContainer">
+				<form id="ABCDa_form" action="/devices/editDevice">
+					<input type="hidden" name="devID" value="ABCDa"/>
+					<div class="icon">
+						<img class="icon" src="../resources/static/pics/iconset/switch.png" th:src="@{pics/iconset/switch.png}"/>
+					</div>
+					<img id="ABCDa_editBtn" class="edit" onclick="editDevice('ABCDa')" src="../resources/static/pics/edit.svg" th:src="@{pics/edit.svg}"/>
+					<h1 id="ABCDa_nameContainer"><span id="ABCDa_name">TestDevice1</span></h1>
+					<div id="ABCDa_infos" class="drawer">
+						<div class="info">(Solosocket)</div>
+						<div class="statusGreen">Active</div>
+					</div>
+				</form>
+				</div>
+				
+				<div id="ABCDa" class="deviceContainer">
+				<form id="ABCDa_form" action="/devices/editDevice">
+					<input type="hidden" name="devID" value="ABCDa"/>
+					<div class="icon">
+						<img class="icon" src="../resources/static/pics/iconset/switch.png" th:src="@{pics/iconset/switch.png}"/>
+					</div>
+					<img id="ABCDa_editBtn" class="edit" onclick="editDevice('ABCDa')" src="../resources/static/pics/edit.svg" th:src="@{pics/edit.svg}"/>
+					<h1 id="ABCDa_nameContainer"><span id="ABCDa_name">TestDevice1</span></h1>
+					<div id="ABCDa_infos" class="drawer">
+						<div class="info">(Solosocket)</div>
+						<div class="statusGreen">Active</div>
+					</div>
+				</form>
+				</div>
+				
+				<div id="ABCDa" class="deviceContainer">
+				<form id="ABCDa_form" action="/devices/editDevice">
+					<input type="hidden" name="devID" value="ABCDa"/>
+					<div class="icon">
+						<img class="icon" src="../resources/static/pics/iconset/switch.png" th:src="@{pics/iconset/switch.png}"/>
+					</div>
+					<img id="ABCDa_editBtn" class="edit" onclick="editDevice('ABCDa')" src="../resources/static/pics/edit.svg" th:src="@{pics/edit.svg}"/>
+					<h1 id="ABCDa_nameContainer"><span id="ABCDa_name">TestDevice1</span></h1>
+					<div id="ABCDa_infos" class="drawer">
+						<div class="info">(Solosocket)</div>
+						<div class="statusGreen">Active</div>
+					</div>
+				</form>
+				</div>
+				<!-- <div class="deviceContainer">
+				<form id="ABCD" action="/devices/editDevice">
+					<input type="hidden" name="devID" value="ABCD"/>
+					<h1>TestDevice1</h1>
+					<img class="icon" src="../resources/static/pics/iconset/switch.png" th:src="@{pics/iconset/switch.png}"/>
+					<table>
+						<tr>
+							<th id="ABCD_nameContainer" colspan="2">
+								<span id="ABCD_name">TestDevice1</span> 
+								<img id="ABCD_editBtn" class="edit" onclick="editDevice('ABCD')" src="../resources/static/pics/edit.svg" th:src="@{pics/edit.svg}"/>
+							</th>
+						</tr>
+						<tr>
+							<td colspan="2" style="text-align:center;"><span class="textNormalBold">(SoloSocket)</span></td>
+						</tr>
+						<tr>
+							<td style="text-align:right;"><span class="textNormalBold">Room</span></td>
+							<td id="ABCD_room"><span class="textNormal">Kuya's Bedroom</span>
+						</tr>
+						<tr>
+							<td style="text-align:right;"><span class="textNormalBold">State</span></td>
+							<td style="border-bottom-right-radius:10px;"><span class="textNormal">Active</span>
+						</tr>
+					</table>
+				</form>
+				</div> -->
+				
+				
+				<!-- <div class="deviceContainer">
+				<form id="ABCD" action="/devices/editDevice">
+					<input type="hidden" name="devID" value="ABCD"/>
+					<h1>TestDevice1</h1>
+					<img class="icon" src="../resources/static/pics/iconset/switch.png" th:src="@{pics/iconset/switch.png}"/>
+					<table>
+						<tr>
+							<th id="ABCD_nameContainer" colspan="2">
+								<span id="ABCD_name">TestDevice1</span> 
+								<img id="ABCD_editBtn" class="edit" onclick="editDevice('ABCD')" src="../resources/static/pics/edit.svg" th:src="@{pics/edit.svg}"/>
+							</th>
+						</tr>
+						<tr>
+							<td colspan="2" style="text-align:center;"><span class="textNormalBold">(SoloSocket)</span></td>
+						</tr>
+						<tr>
+							<td style="text-align:right;"><span class="textNormalBold">Room</span></td>
+							<td id="ABCD_room"><span class="textNormal">Kuya's Bedroom</span>
+						</tr>
+						<tr>
+							<td style="text-align:right;"><span class="textNormalBold">State</span></td>
+							<td style="border-bottom-right-radius:10px;"><span class="textNormal">Active</span>
+						</tr>
+					</table>
+				</form>
+				</div>
+				<div class="deviceContainer">
+				<form id="ABCD" action="/devices/editDevice">
+					<input type="hidden" name="devID" value="ABCD"/>
+					<h1>TestDevice1</h1>
+					<img class="icon" src="../resources/static/pics/iconset/switch.png" th:src="@{pics/iconset/switch.png}"/>
+					<table>
+						<tr>
+							<th id="ABCD_nameContainer" colspan="2">
+								<span id="ABCD_name">TestDevice1</span> 
+								<img id="ABCD_editBtn" class="edit" onclick="editDevice('ABCD')" src="../resources/static/pics/edit.svg" th:src="@{pics/edit.svg}"/>
+							</th>
+						</tr>
+						<tr>
+							<td colspan="2" style="text-align:center;"><span class="textNormalBold">(SoloSocket)</span></td>
+						</tr>
+						<tr>
+							<td style="text-align:right;"><span class="textNormalBold">Room</span></td>
+							<td id="ABCD_room"><span class="textNormal">Kuya's Bedroom</span>
+						</tr>
+						<tr>
+							<td style="text-align:right;"><span class="textNormalBold">State</span></td>
+							<td style="border-bottom-right-radius:10px;"><span class="textNormal">Active</span>
+						</tr>
+					</table>
+				</form>
+				</div>
+				<div class="deviceContainer">
+				<form id="ABCD" action="/devices/editDevice">
+					<input type="hidden" name="devID" value="ABCD"/>
+					<h1>TestDevice1</h1>
+					<img class="icon" src="../resources/static/pics/iconset/switch.png" th:src="@{pics/iconset/switch.png}"/>
+					<table>
+						<tr>
+							<th id="ABCD_nameContainer" colspan="2">
+								<span id="ABCD_name">TestDevice1</span> 
+								<img id="ABCD_editBtn" class="edit" onclick="editDevice('ABCD')" src="../resources/static/pics/edit.svg" th:src="@{pics/edit.svg}"/>
+							</th>
+						</tr>
+						<tr>
+							<td colspan="2" style="text-align:center;"><span class="textNormalBold">(SoloSocket)</span></td>
+						</tr>
+						<tr>
+							<td style="text-align:right;"><span class="textNormalBold">Room</span></td>
+							<td id="ABCD_room"><span class="textNormal">Kuya's Bedroom</span>
+						</tr>
+						<tr>
+							<td style="text-align:right;"><span class="textNormalBold">State</span></td>
+							<td style="border-bottom-right-radius:10px;"><span class="textNormal">Active</span>
+						</tr>
+					</table>
+				</form>
+				</div> -->
+			</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:util="http://www.springframework.org/schema/util"
+        xsi:schemaLocation="
+				http://www.springframework.org/schema/beans 
+				http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+				http://www.springframework.org/schema/context 
+				http://www.springframework.org/schema/context/spring-context-3.0.xsd
+				http://www.springframework.org/schema/util
+				http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+				
+	<context:annotation-config/>
+	
+	<!-- PUT ALL SENDERS HERE -->
+	<util:list id="Senders" value-type="bm.comms.Sender">
+		<ref bean="MQTTPublisher"/>
+		<ref bean="HTTPSender"/>
+	</util:list>
+
+	<util:list id="Protocols">
+		<ref bean="mqtt"/>
+	</util:list>
+	
+	<!-- HTTP -->
+	<bean id="HTTPSender" class="bm.comms.http.HTTPSender" scope="singleton">
+		<constructor-arg name="name" value="MainHTTPSender"/>
+   		<constructor-arg name="logDomain" value="${log.domain.main}"/>
+		<constructor-arg name="responseManager" ref="ResponseManager"/>
+   		<!-- <constructor-arg name="errorLogDomain" value="${log.domain.error}"/>
+   		<constructor-arg name="url" value="${oh.ip}"/> -->
+   	</bean>
+   	
+   	<!-- MQTT -->
+    <bean id="mqtt" class="bm.comms.Protocol">
+        <constructor-arg name="protocolName" value="mqtt"/>
+        <constructor-arg name="listener" ref="MQTTHandler"/>
+        <constructor-arg name="sender" ref="MQTTPublisher"/>
+    </bean>
+   	<bean id="MQTTClient" class="bm.comms.mqtt.MQTTClient">
+		<constructor-arg name="logDomain" value="${log.domain.mqtt}"/>
+		<constructor-arg name="serverURI" value="${mqtt.URL}"/>
+		<constructor-arg name="clientId" value="${mqtt.clientID}"/>
+		<constructor-arg name="callback" ref="MQTTHandler"/>
+		<constructor-arg name="publisher" ref="MQTTPublisher"/>
+		<constructor-arg name="BM_topic" value="${mqtt.topic.BM}"/>
+		<constructor-arg name="default_topic" value="${mqtt.topic.default}"/>
+		<constructor-arg name="sysTimer" ref="SystemTimer"/>
+		<constructor-arg name="reconnectPeriod" value="${mqtt.reconnectPeriod}"/>
+	</bean>
+	<bean id="MQTTHandler" class="bm.comms.mqtt.MQTTListener">
+		<constructor-arg name="name" value="MainMQTTListener"/>
+		<constructor-arg name="logDomain" value="${log.domain.mqtt}"/>
+		<constructor-arg name="default_topic" value="${mqtt.topic.default}"/>
+		<constructor-arg name="error_topic" value="${mqtt.topic.error}"/>
+        <constructor-arg name="inboundTrafficManager" ref="InboundTrafficManager"/>
+	</bean>
+	<bean id="MQTTPublisher" class="bm.comms.mqtt.MQTTPublisher">
+		<constructor-arg name="name" value="MainMQTTPublisher"/>
+		<constructor-arg name="logDomain" value="${log.domain.mqtt}"/>
+		<constructor-arg name="default_topic" value="${mqtt.topic.default}"/>
+		<constructor-arg name="error_topic" value="${mqtt.topic.error}"/>
+		<constructor-arg name="regRTY" value="${rty.registration}"/>
+		<constructor-arg name="deviceRepository" ref="Devices"/>
+		<constructor-arg name="responseManager" ref="ResponseManager"/>
+	</bean>
+
+    <!--CORE OBJECTS-->
+    <bean id="InboundTrafficManager" class="bm.comms.InboundTrafficManager">
+        <constructor-arg name="controller" ref="Controller"/>
+        <constructor-arg name="deviceRepository" ref="Devices"/>
+        <constructor-arg name="logDomain" value="${log.domain.main}"/>
+		<constructor-arg name="responseManager" ref="ResponseManager"/>
+    </bean>
+	<bean id="ResponseManager" class="bm.comms.ResponseManager">
+		<constructor-arg name="logDomain" value="${log.domain.main}"/>
+		<constructor-arg name="deviceRepository" ref="Devices"/>
+        <constructor-arg name="controller" ref="Controller"/>
+		<constructor-arg name="resendPeriod" value="${comms.resendTime}"/>
+		<constructor-arg name="timeout" value="${comms.resendTimeout}"/>
+        <constructor-arg name="isResending" value="false"/>
+		<constructor-arg name="jeepManager" ref="JEEPManager"/>
+	</bean>
+</beans>

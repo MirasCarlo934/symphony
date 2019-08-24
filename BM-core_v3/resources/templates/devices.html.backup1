@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Devices</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="../static/styles/theme.css" th:href="@{/styles/theme.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/pics.css" th:href="@{/styles/pics.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/navigation.css" th:href="@{/styles/navigation.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/input.css" th:href="@{/styles/input.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/layout.css" th:href="@{/styles/layout.css}"/>
+	<script src="../static/scripts/lib/jquery-3.2.1.min.js" th:src="@{/scripts/lib/jquery-3.2.1.min.js}"></script>
+	<script src="../static/scripts/lib/jquery-ui.min.js" th:src="@{/scripts/lib/jquery-ui.min.js}"></script>
+	<script src="../static/scripts/animations.js" th:src="@{/scripts/animations.js}"></script>
+	<script src="../static/scripts/form_actions.js" th:src="@{/scripts/form_actions.js}"></script>
+	<script src="../static/scripts/objects.js" th:src="@{/scripts/objects.js}"></script>
+	<script th:inline="javascript">
+	</script>
+</head>
+
+
+<body>
+	<div class="topbar">
+		<a href="/home"><img class="smallLink" style="float:left; margin-left:0px; background-color:black;" src="../static/pics/symbol_white.png" th:src="@{/pics/symbol_white.png}" /></a>
+		<div class="navbar">
+			<a href="/home">home</a>
+			<a href="/devices">devices</a>
+			<a href="/help">help</a>
+		</div>
+		<a href="/settings"><img class="smallLink" style="float:right; margin-right:0px; background-color:black;" src="../static/pics/settings_white.png" th:src="@{/pics/settings_white.png}" /></a>
+	</div>
+	
+	<!-- <div class="topbar sub">
+		<div class="navbar sub">
+		   <a onclick="/devices/overview">Overview</a>
+		   <a onclick="/devices/composer">Rule Composer</a>
+		</div>
+	</div> -->
+	
+	<!-- notification -->
+	<div class="notifBoxContainer" id="notif"></div>
+	
+	<div id="body" class="body" style="background-color:lightgray;">
+		
+	</div>
+</body>
+</html>

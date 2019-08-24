@@ -1,0 +1,26 @@
+<rules>
+  <rule name="Lights On 1" condition="IF">
+    <arguments>
+      <component id="J6L0" name="Device1">
+        <property id="0001" value="1" label="Switch" operator="="/>
+      </component>
+    </arguments>
+    <execution>
+      <component id="U8MM" name="Nightlight">
+        <property id="0001" value="1" label="Switch"/>
+      </component>
+    </execution>
+  </rule>
+  <rule name="Lights Off 1" condition="IF">
+    <arguments>
+      <component id="J6L0" name="Device1">
+        <property id="0001" value="0" label="Switch" operator="="/>
+      </component>
+    </arguments>
+    <execution>
+      <component id="U8MM" name="Nightlight">
+        <property id="0001" value="0" label="Switch"/>
+      </component>
+    </execution>
+  </rule>
+</rules>

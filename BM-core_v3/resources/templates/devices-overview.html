@@ -1,0 +1,721 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Devices</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="../static/styles/theme.css" th:href="@{/styles/theme.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/pics.css" th:href="@{/styles/pics.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/navigation.css" th:href="@{/styles/navigation.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/input.css" th:href="@{/styles/input.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/layout.css" th:href="@{/styles/layout.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/smarthome.css" th:href="@{/styles/smarthome.css}"/>
+	<script src="../static/scripts/lib/jquery-3.2.1.min.js" th:src="@{/scripts/lib/jquery-3.2.1.min.js}"></script>
+	<script src="../static/scripts/lib/jquery-ui.min.js" th:src="@{/scripts/lib/jquery-ui.min.js}"></script>
+	<script src="../static/scripts/lib/jquery.ui.sortable-animation.js" th:src="@{/scripts/lib/jquery.ui.sortable-animation.js}"></script>
+	<script src="../static/scripts/lib/masonry.pkgd.min.js" th:src="@{/scripts/lib/masonry.pkgd.min.js}"></script>
+	<script src="../static/scripts/lib/jscolor.js" th:src="@{/scripts/lib/jscolor.js}"></script>
+	<script src="../static/scripts/animations.js" th:src="@{/scripts/animations.js}"></script>
+	<script src="../static/scripts/form_actions.js" th:src="@{/scripts/form_actions.js}"></script>
+	<script src="../static/scripts/objects.js" th:src="@{/scripts/objects.js}"></script>
+	<script th:inline="javascript">
+		var animationSpeed = 300;
+		/* var colors = ["blue", "red", "green", "darkgray"]; */
+		
+		[(${devices})]
+		
+		[(${rooms})]
+		
+		[(${devArray})]
+		[(${roomArray})]
+		//[(${roomIDArray})]
+		
+		var r = new HashMap(); //Value-Objects from BM
+		var d = new HashMap(); //Value-Objects from BM
+		var rooms = new HashMap(); //JSObjects
+		var devices = new HashMap(); //JSObjects
+		
+		var nameInputHTML = "<input type='text' class='smallTextBox' style='width:80%; margin:auto;' placeholder='new name' name='name'/>";
+		var saveIconSrc = "/pics/save.png";
+		var origHTMLs = new HashMap();
+
+		function RoomJSObj(id, width, height) {
+			this.id = id;
+			this.width = width;
+			this.height = height;
+		}
+
+		function DeviceJSObj(id, clicked, isEditing) {
+			this.id = id;
+			this.clicked = clicked;
+		}
+		
+		function updateDevices() {
+			$("div.deviceContainer").each(function() {
+				var $device = $(this);
+				var device = new DeviceJSObj($device.attr("id"), false, false);
+				devices.add($device.attr("id"), device);
+				//console.log($device.attr("id"));
+			});
+		}
+		
+		function updateRoomDimensions() {
+			var tallest = 0; //including margins
+			$("div.roomContainer").each(function() {
+				var $room = $(this);
+				if($room.outerHeight(true) > tallest) {
+					tallest = $room.outerHeight(true);
+				}
+				if(rooms.containsKey($room.attr("id"))) {
+					var room = rooms.get($room.attr("id"));
+					room.width = $room.width();
+				} else {
+					var room = new RoomJSObj($room.attr("id"), $room.width(), $room.height());
+					rooms.add($room.attr("id"), room);
+				}
+			});
+			
+			$("div.roomContainerContainer").each(function() { //resize roomContainerContainers in root_sort!
+				var $box = $(this);
+				if($box.parent().parent().parent().hasClass("root_sort")) {
+					$box.height(tallest + "px");
+				} else {
+					$box.height($box.children().outerHeight(true));
+				}
+			});
+			
+			//alert($("#r_J444").outerHeight(true) + "__" + tallest);
+		}
+		
+		function setupRoomsAndDevices() {
+			$("div.roomContainer > div.roomHeader").hover(function(){
+				$(this).children(".overlay").show();
+				$(this).children(".overlay").animate({
+					opacity: 0.8,
+				}, 100);
+			}, function() {
+				$(this).children(".overlay").animate({
+					opacity: 0
+				}, 200, function() {
+					$(this).children(".overlay").hide();
+				});
+			});
+			
+			$("div.deviceContainer")
+			.hover(function() {
+				//openDrawer($(this).attr("id") + "_infos", 0, 0, animationSpeed);
+				$(this).find($("img.overlay")).animate({
+					"filter": "opacity(100%) invert(100%)"
+				}, animationSpeed);
+			}/* , function() {
+				var dev = devices.get($(this).attr("id"));
+				console.log(dev.isEditing);
+				if(dev.isEditing === false) {
+					console.log("test");
+					$(this).find($("img.overlay")).animate({
+						"filter": "opacity(0%) invert(100%)"
+					}, animationSpeed);
+				}
+			} */)
+			.click(function() {
+				//openDrawer($(this).attr("id") + "_infos", 0, 0, animationSpeed);
+				console.log($(this).attr("id") + " clicked!")
+				var clicked = devices.get($(this).attr("id")).clicked;
+				if(clicked) { //hide overlay
+					$(this).find($("img.overlay")).animate({
+						"filter": "opacity(0%) invert(0%)"
+					}, animationSpeed);
+					devices.get($(this).attr("id")).clicked = false;
+				} else { //show overlay						
+					$(this).find($("img.overlay")).animate({
+						"filter": "opacity(100%) invert(100%)"
+					}, animationSpeed);
+					devices.get($(this).attr("id")).clicked = true;
+				}
+			});
+		}
+		
+		function setupSortables() {
+			/* alert($("#r_abcd_name").html());
+			var i = 0;
+			$(".sortableHorizontal").each(function() {
+				$(this).attr("id");
+				console.log($(this).attr("id"));
+				i++;
+			}); */
+			
+			$(".sortableHorizontal")
+			.sortable({
+				connectWith: ".sortableHorizontal",
+				cancel: ".unsortable",
+				revert: animationSpeed,
+				/* "placeholder": 'sortPlaceholder', */  
+				"opacity": 0.5,
+	        		"start": function (event, ui) {
+	        			var $item = ui.item;
+	        			/* $(".sortPlaceholder").css({
+	        				"margin-top": $(".deviceContainer").css("margin-top"),
+	        				"margin-left": $(".deviceContainer").css("margin-left"),
+	        				"height": $(".deviceContainer").height() - ($(".sortPlaceholder").css("border-width").replace(/[^-\d\.]/g, '') * 2) + "px",
+	        			}); */
+	        		},  
+	        	    "stop": function(event, ui) {
+	        	    		//alert(ui.item.parent().attr("id"));
+	        	        updateRoomDimensions();
+	        	        relocateSmarthomeObject(ui.item);
+	        	    }
+			})
+			.disableSelection()
+			.css({
+				"min-height": $(".deviceContainer").outerHeight(true),
+				"min-width": $(".deviceContainer").outerWidth(true),
+				"padding-right": "15px"
+			});
+		}
+		
+		$(document).ready(function() {
+			
+			/*
+				INITIALIZATION
+			*/			
+			
+			//setting up info boxes
+			$("#responses").hide();
+			$("div.body_overlay").hide();
+			$("div.roomContainer > div.overlay").hide();
+			$("div.overlayPanel").css({
+				bottom: -($(window).height() / 2 - $("div.overlayPanel").height() / 2),
+				left: ($(window).width() / 2) - ($("div.overlayPanel").width() / 2)
+			});
+			$('input').on('keydown', function(event) {
+				var x = event.which;
+				if (x === 13) { //prevents enter key trigger for forms
+					event.preventDefault();
+			    	}
+			});
+			
+			//setting up HashMaps for devices and rooms
+			for(var i = 0; i < deviceArray.length; i++) {
+				d.add(deviceArray[i].id, deviceArray[i]);
+			}
+			for(var i = 0; i < roomArray.length; i++) {
+				r.add(roomArray[i].id, roomArray[i]);
+			}
+			
+			//retrieves devices credentials from BM
+			function getDevicesCredentials() {
+				$.get("/devices/getDevicesCredentials", "", function(data, response) {
+					for(var i = 0; i < deviceArray.length; i++) {
+						var devID = deviceArray[i].id;
+						$("#responses").html(data);
+						var state = ($("#responses").find("#" + devID + "_state").val() == "true");
+						var room = $("#responses").find("#" + devID + "_room").val();
+						var name = $("#responses").find("#" + devID + "_name").val();
+						var devcolor = "black";
+						if(state == false) {devcolor = "red";}
+						$("#" + devID).find("div.icon").css({"background-color": devcolor});
+						$("#d_" + devID + "_name").text(name);
+						// if(room != deviceArray[i].room) {window.location.reload(true)};
+						deviceArray[i].state = state;
+						deviceArray[i].name = name;
+					}
+				});
+			}
+			setTimeout(getDevicesCredentials(), 0);
+			setInterval(function() {getDevicesCredentials()}, 3000);
+			
+			//setting up rooms and devices interactivity (ie. hovering, etc)
+			setupRoomsAndDevices();
+			
+			//setting up rooms and devices sortability
+			setupSortables();
+			
+			//setting up rooms and devices dimensions
+			updateDevices();
+			updateRoomDimensions();
+			
+			//setting up toolbars
+			var toolbarIsOpen = false;
+			$("#toolbar")
+				.click(function() {
+					if(toolbarIsOpen) {
+						closeRibbon("toolbar", "left", $("#toolbar").innerWidth() - $("#toolbar > a.static").width() * 2.5);
+						toolbarIsOpen = false;
+					} else {
+						openRibbon("toolbar", "left", $("#toolbar").innerWidth() - $("#toolbar > a.static").width() * 2.5);
+						toolbarIsOpen = true;
+					}
+				});
+			
+			//closes toolbar upon startup
+			closeRibbon("toolbar", "left", $("#toolbar").width() - $("#toolbar > a.static").width() * 2.5);
+		});
+		
+		function blurPage() {
+			$("div.body_overlay").show();
+			$("div.body_overlay").animate({
+				"opacity":0.8
+			});
+		}
+		function unblurPage() {
+			$("div.body_overlay").animate({
+				"opacity":0
+			}, function() {
+				$("div.body_overlay").hide();
+			});
+		}
+		
+		function relocateSmarthomeObject(item) {
+			console.log("Relocating item " + item.attr("id") + " to room " + item.parent().attr("id"));
+			var element = item.attr("id");
+			var room = item.parent().attr("id");
+			if(room == "root_sort") {
+			    room = "root";
+			}
+			var room_children_arr = item.parent().children().toArray();
+			var room_children = "";
+			for(var i = 0; i < room_children_arr.length; i++) {
+				room_children += $(room_children_arr[i]).attr("id") + ";;;";
+			}
+			
+			$.get("/devices/relocate", {
+		        "element": element,
+		        "siblings": room_children,
+		        "room": room
+		    }, function(data, status) {
+				$("#notif").html(data);
+			});
+		}
+		
+		var roomHeights = new HashMap();
+		var roomWidths = new HashMap();
+		function openRoom(roomID) {
+			var $room = $("#" + roomID);
+			var $header = $("#" + roomID + "_header"); //this contains the $nameplate !
+			var $nameplate = $("#" + roomID + "_name");
+			var $children = $room.children().not($header);
+			
+			console.log("Opening container for room " + roomID);
+			$room.animate({
+				"min-width": roomWidths.get(roomID),
+				"min-height": roomHeights.get(roomID),
+				"width": rooms.get(roomID).width,
+				"height": rooms.get(roomID).height
+			}, animationSpeed, function() {	
+				$room.css({ //resets width & height so they can resize dynamically
+					"width": "",
+					"height": "",
+					"min-width": "",
+					"min-height": ""
+				}) 
+				$children.css({
+					opacity: 100
+				});
+			});
+			$nameplate.animate({
+				"background-color": "white"
+			});
+			rooms.get(roomID).minimized = false;
+		}
+		function closeRoom(roomID) {
+			var $room = $("#" + roomID);
+			var $header = $("#" + roomID + "_header"); //this contains the $nameplate !
+			var $nameplate = $("#" + roomID + "_name");
+			var $children = $room.children().not($header);
+			
+			console.log("Closing container for room " + roomID);
+			updateRoomDimensions();
+			roomHeights.add(roomID, $room.height());
+			roomWidths.add(roomID, $room.width());
+			$children.css({
+				opacity: 0
+			});
+			$room.animate({
+				"min-width": $nameplate.width(),
+				"min-height": $nameplate.height(),
+				"width": $nameplate.width(),
+				"height": $nameplate.height()
+			}, animationSpeed);
+			$nameplate.animate({
+				"background-color": $room.css("background-color")
+			});
+			rooms.get(roomID).minimized = true;
+		}
+		
+		function openRoomEditor(roomID) {
+			console.log("Opening room editor...");
+			/* $(".overlayPanel").css({
+				top: 0
+			}) */
+			blurPage();
+			$("#roomEditor").find("#name").val("");
+			$("#roomEditor").find("#roomID").val(roomID);
+			$("#roomEditor").find(".name").html(r.get(roomID).name);
+			$("#roomEditor").find("#roomSSID").html(roomID);
+			$("#roomEditor").find("#name").attr("placeholder", r.get(roomID).name);
+			$("#roomEditor").find("#color").text(rgb2hex($("#r_" + roomID).css('background-color')));
+			openRibbon("roomEditorPanel", "bottom", ($(window).height() / 2) /* + ($("div#roomEditor").height() * 1.5 )*/);
+		}
+		function closeRoomEditor() {
+			console.log("Closing room editor...");
+			unblurPage();
+			closeRibbon("roomEditorPanel", "bottom", (($(window).height() / 2) + ($("div#roomEditor").height() * 1.5)));
+		}
+		function saveRoom() {
+			console.log("Saving room...")
+			var roomID = $("#roomEditor").find("#roomID").val();
+			var roomName = $("#roomEditor").find("#name").val();
+			var roomColor = $("#roomEditor").find("#color").text();
+			$.get("/devices/editRoom", {
+		        "roomID": roomID,
+		        "name": roomName,
+		        "color": roomColor
+		    }, function(data, status) {
+				$("#notif").html(data);
+			});
+			if(roomName != "") {			
+				$("#r_" + roomID + "_name").text(roomName);
+			}
+			$("#r_" + roomID).css({
+				'background-color': roomColor	
+			});
+			closeRoomEditor();
+		}
+		function deleteRoom() {
+			var roomID = $("#roomEditor").find("#roomID").val();
+			$.get("/devices/deleteRoom", {
+		        "roomID": roomID
+		    }, function(data, status) {
+				$("#notif").html(data);
+				/* $("#responses").html(data); */
+				if($("#notif").find("#status").val() == "true") {
+					$("#r_" + roomID).remove();
+				}
+			});
+			closeRoomEditor();
+		}
+		
+		function openRoomCreator() {
+			console.log("Opening room creator...");
+			setupSortables();
+			blurPage();
+			openRibbon("roomCreatorPanel", "bottom", ($(window).height() / 2) + ($("div#roomEditor").height() * 1.5));
+		}
+		function closeRoomCreator() {
+			console.log("Closing room creator...");
+			unblurPage();
+			closeRibbon("roomCreatorPanel", "bottom", (($(window).height() / 2) + ($("div#roomEditor").height() * 1.5)));
+		}
+		function createRoom() {
+			closeRoomCreator();
+			var roomName = $("#roomCreator").find("#name").val();
+			var roomColor = $("#roomCreator").find("#color").text();
+			$.get("/devices/createRoom", {
+		        "name": roomName,
+		        "color": roomColor
+		    }, function(data, status) {
+				$("#notif").html(data);
+				$("#responses").html(data);
+				
+				var ssid = $("#responses").find("#SSID").val();
+				if(ssid.length == 4) {
+					setTimeout(function() {window.location.reload(true)}, 1000);
+				}
+				/*var html = "\
+						<li id='" + ssid + "' class='root_sortItem'> \
+							<div class='invisible'> \
+								<div class='invisible roomContainerContainer'> \
+									<div id='r_" + ssid + "' class='roomContainer' style='background-color:" + roomColor + ";'> \
+										<div id='r_" + ssid + "_nameContainer' class='textBigBold roomHeader'> \
+											<span id='r_" + ssid + "_name'>" + roomName + "</span> \
+											<div class='overlay'> \
+												<img class='move'/> \
+												<img class='edit'/> \
+											</div> \
+										</div> \
+										<ul id='ul_" + ssid + "' class='sortableHorizontal room_sort' style='width:165px; height:198px; border:solid 1px blue;'> \
+										</ul> \
+									</div> \
+								</div> \
+							</div> \
+						</li> ";
+					var $html = $(html);
+					$("#root_sort").append($html);
+					setupSortable(html);
+					/* $(document).ready(function() {
+						setupSortables();
+					});
+				} */
+			});
+			//closeRoomCreator();
+
+			/*<img class='move' src='../resources/static/pics/move.png' src='@{/pics/move.png}'/> \
+			<img class='edit' id='r_" + ssid + "_editBtn' onclick='openRoomEditor(" + ssid + ")' src='../resources/static/pics/info2.png' th:src='@{/pics/info.png}'/> \
+			*/
+		}
+		
+		function editDevice(devID) {
+			console.log("Opening device editor...");
+			var dev = d.get(devID);
+			$("#deviceEditor").find("#name").val("");
+			$("#deviceEditor").find("#devID").val(devID);
+			$("#deviceEditor").find(".name").html(dev.name);
+			$("#deviceEditor").find("#devSSID").html(devID);
+			$("#deviceEditor").find("#devType").html(dev.type);
+			$("#deviceEditor").find("#form").attr("id", "d_" + devID + "_form");
+			$("#deviceEditor").find("#saveDev").attr("onclick", "saveDevice('" + dev.id + "')");
+			$("#deviceEditor").find("#deleteDev").attr("onclick", "deleteDevice('" + dev.id + "')");
+			$("#deviceEditor").find("#name").attr("placeholder", dev.name);
+			if(dev.state == true) {
+				$("#deviceEditor").find("#devState").text("ACTIVE");
+				$("#deviceEditor").find("#devState").css({"color": "green"});
+			} else {
+				$("#deviceEditor").find("#devState").text("INACTIVE");
+				$("#deviceEditor").find("#devState").css({"color": "red"});
+			}
+			blurPage();
+			openRibbon("deviceEditorPanel", "bottom", ($(window).height() / 2) + ($("div#deviceEditor").height() * 1.5));
+			/* dev.isEditing = true;
+			console.log("Editing device " + devID);
+			var origHTML = new DeviceHTML(devID);
+			$("#d_" + devID + "_nameContainer").height($("#d_" + devID + "_nameContainer").height());
+			$("#d_" + devID + "_name").html(nameInputHTML);
+			$("#d_" + devID + "_name").prop("iseditable", true);
+			$("#d_" + devID + "_editBtn").attr("src", saveIconSrc);
+			$("#d_" + devID + "_editBtn").attr("onclick", "saveDevice('" + devID + "')");
+			origHTMLs.add(devID, origHTML); */
+		}
+		function closeDeviceEditor() {
+			unblurPage();
+			closeRibbon("deviceEditorPanel", "bottom", (($(window).height() / 2) + ($("div#deviceEditor").height() * 1.5)));
+		}
+		function saveDevice(devSSID) {
+			console.log("Updating device " + devSSID + " credentials");
+			submitForm_GET("d_" + devSSID + "_form", "notif", function(data, status) {
+				if($(data).filter("#status").val() != "false") {
+					$("#d_" + devSSID + "_name").text($("#d_" + devSSID + "_form").find("#name").val());
+					d.get(devSSID).name = $("#d_" + devSSID + "_form").find("#name").val();
+				}
+			});
+			closeDeviceEditor();
+		}
+		function openDeviceCreator() {
+			console.log("Opening device creator...");
+			/* $(".overlayPanel").css({
+				top: 0
+			}) */
+			blurPage();
+			openRibbon("deviceCreatorPanel", "bottom", ($(window).height() / 2) + ($("div#roomEditor").height() * 1.5));
+		}
+		function closeDeviceCreator() {
+			console.log("Closing device creator...");
+			unblurPage();
+			closeRibbon("deviceCreatorPanel", "bottom", (($(window).height() / 2) + ($("div#roomEditor").height() * 1.5)));
+		}
+		function createDevice() {
+			var deviceName = $("#deviceCreator").find("#name").val();
+			var deviceType = $("#deviceCreator").find("#type").text();
+			$.get("/devices/createDevice", {
+		        "name": deviceName,
+		        "type": deviceType
+		    }, function(data, status) {
+				$("#notif").html(data);
+				$("#responses").html(data);
+				//alert($("#responses").find("#SSID").val());
+			});
+			
+			$("#root_sort").append("<li id='test1' class='root_sortItem'> \
+				<div class='invisible'> \
+					<div style='border: solid 2px black'> \
+						<div th:replace='fragments/devices-overview-fragments :: roomBox(null)'> </div> \
+					</div></div></li> \
+			");
+			closeRoomCreator();
+		}
+		
+		function rgb2hex(rgb) {
+			rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+			return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
+		}
+		function hex(x) {
+			var hexDigits = new Array
+	        		("0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"); 
+			return isNaN(x) ? "00" : hexDigits[(x - x % 16) / 16] + hexDigits[x % 16];
+		}
+	</script>
+</head>
+
+
+<body style="background-color:lightgray">
+	<div th:replace="fragments/static-fragments :: bodyOverlay" class="body_overlay"></div>
+	
+	<div class="overlayPanel" id="roomEditorPanel">
+		<img class="close" th:src="${'/pics//close.ico'}" onclick="closeRoomEditor()" />
+		<div class="roomEditor" id="roomEditor">
+			<span class="name textHeaderBold">Room Name</span>
+			<div class="fields">
+				<input type="hidden" id="roomID" />
+				<table>
+					<tr>
+						<td style="padding-right: 10px; text-align:right"><span class="textNormal">ID:</span></td>
+						<td><span id="roomSSID" class="textNormalGray"></span></td>
+					</tr>
+					<tr>
+						<td style="padding-right: 10px; text-align:right"><span class="textNormal">Name:</span></td>
+						<td><input type="text" id="name" class="regularTextBox" /></td>
+					</tr>
+					<tr>
+						<td style="padding-right: 10px; text-align:right"><span class="textNormal">Color:</span></td>
+						<td><button class="jscolor {hash:true}" id="color" 
+							style="width:70px; height:20px"></button></td>
+					</tr>
+				</table>
+				<br/><br/>
+			</div>
+			<table>
+				<tr>
+					<td><input type="button" class="regularBtn" value="Save" onclick="saveRoom()"></td>
+					<td><input type="button" class="regularRedBtn" value="Delete" onclick="deleteRoom()"></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	
+	<div class="overlayPanel" id="roomCreatorPanel">
+		<img class="close" th:src="${'/pics//close.ico'}" onclick="closeRoomCreator()" />
+		<div class="roomEditor" id="roomCreator">
+			<span class="name textHeaderBold">Create New Room</span>
+			<div class="fields">
+				<table>
+					<tr>
+						<td style="padding-right: 10px; text-align:right"><span class="textNormal">Name:</span></td>
+						<td><input type="text" id="name" class="regularTextBox" placeholder="Required" /></td>
+					</tr>
+					<tr>
+						<td style="padding-right: 10px; text-align:right"><span class="textNormal">Color:</span></td>
+						<td><button class="jscolor {hash:true}" id="color" 
+							style="width:70px; height:20px"></button></td>
+					</tr>
+				</table>
+				<br/><br/>
+			</div>
+			<table>
+				<tr>
+					<td><input type="button" class="regularBtn" value="Create Room" onclick="createRoom()"></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	
+	<div class="overlayPanel" id="deviceEditorPanel">
+		<img class="close" th:src="${'/pics//close.ico'}" onclick="closeDeviceEditor()" />
+		<div class="roomEditor" id="deviceEditor">
+			<form id="form" action="/devices/editDevice">
+				<input type="hidden" id="devID" name="devID">
+				<span class="name textHeaderBold">Device Name</span><br/>
+				<span id="devState" class="textCaption">Active</span>
+				<div class="fields">
+					<table>
+						<tr>
+							<td style="padding-right: 10px; text-align:right"><span class="textNormal">ID:</span></td>
+							<td><span id="devSSID" class="textNormalGray">SSID</span></td>
+						</tr>
+						<tr>
+							<td style="padding-right: 10px; text-align:right"><span class="textNormal">Product:</span></td>
+							<td><span id="devType" class="textNormalGray"></span></td>
+						</tr>
+						<tr>
+							<td style="padding-right: 10px; text-align:right"><span class="textNormal">Name:</span></td>
+							<td><input type="text" id="name" class="regularTextBox" name="name"/></td>
+						</tr>
+					</table>
+					<br/><br/>
+				</div>
+				<table>
+						<tr>
+							<td><input type="button" id="saveDev" class="regularBtn" value="Save" onclick="saveDevice()"></td>
+							<!-- <td><input type="button" id="deleteDev" class="regularRedBtn" value="Delete" onclick="deleteDevice()"></td> -->
+						</tr>
+				</table>
+			</form>
+		</div>
+	</div>
+	
+	<!-- <div class="overlayPanel" id="deviceCreatorPanel">
+		<img class="close" th:src="${'/pics//close.ico'}" onclick="closeDeviceCreator()" />
+		<div class="roomEditor" id="deviceCreator">
+			<span class="name textHeaderBold">Create New Virtual Device</span>
+			<div class="fields">
+				<table>
+					<tr>
+						<td style="padding-right: 10px"><span class="textNormal">Device Type:</span></td>
+						<td>
+							<select id="type">
+								<option value="" disabled selected>--Select Device Type--</option>
+								<option value="0012">Switch</option>
+								<option value="0013">Slider</option>
+							</select>
+					</tr>
+					<tr>
+						<td style="padding-right: 10px"><span class="textNormal">Name:</span></td>
+						<td><input type="text" id="name" class="regularTextBox" placeholder="Required" /></td>
+					</tr>
+				</table>
+				<br/><br/>
+				<table>
+					<tr>
+						<td><input type="button" class="regularBtn" value="Create Room" onclick="createBasicRoom()"></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div> -->
+	
+	<!-- navbar -->
+	<div th:replace="fragments/static-fragments :: topbar" class="topbar">
+		<a href="/home"><img class="smallLink" style="float:left; margin-left:0px; background-color:black;" src="../static/pics/symbol_white.png" th:src="@{/pics/symbol_white.png}" /></a>
+		<div class="navbar">
+			<a href="/home">home</a>
+			<a href="/devices/overview">devices</a>
+			<a href="/devices/composer">composer</a>
+			<a href="/help">help</a>
+		</div>
+		<a href="/settings"><img class="smallLink" style="float:right; margin-right:0px; background-color:black;" src="../static/pics/settings_white.png" th:src="@{/pics/settings_white.png}" /></a>
+	</div>
+	
+	<!-- toolbar -->
+	<div id="toolbar" class="navbar sub">
+	   <a onclick="openRoomCreator()">Add room</a>
+	   <!-- <a onclick="openDeviceCreator()">Add virtual device</a> -->
+	   <a class="static" style="cursor:pointer;">+</a>
+	</div>
+	
+	<!-- notification -->
+	<div th:replace="fragments/static-fragments :: notifBox" class="notifBoxContainer" id="notif"></div>
+	
+	<div class="body_workpane" style="display:inline-block;">
+	
+		<ul id="root_sort" class="sortableHorizontal root_sort">
+			<!-- <li>
+				<div class="invisible roomContainerContainer" style="display:block; margin:auto; text-align:center; width:200px;">
+					<img class="unsortable" th:src="@{/pics/add_btn.png}" style="width:100px"/>
+				</div>
+			</li> -->
+			<li th:each="rootObj : ${rootObjs}" th:id="${rootObj.getSSID()}" class="root_sortItem">
+				<div class="invisible"> <!-- DONT REMOVE: To match hierarchy levels from parent as in fragments -->
+					<div th:if="${rootObj instanceof T(bm.context.rooms.Room)}" class="invisible roomContainerContainer">
+						<div th:replace="fragments/devices-overview-fragments :: roomBox(${rootObj})"> </div>
+					</div>
+					<div th:if="${rootObj instanceof T(bm.context.devices.Device)}" class="invisible roomContainerContainer">
+						<div th:replace="fragments/devices-overview-fragments :: deviceBox(${rootObj})"> </div>	
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+	
+	<span id="responses"></span>
+<p>hello</p>
+</body>
+</html>

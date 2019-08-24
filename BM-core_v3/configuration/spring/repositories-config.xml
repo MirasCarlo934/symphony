@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<context:annotation-config/>
+	
+	<!-- CORE REPOSITORIES -->
+	<bean id="Devices" class="bm.main.repositories.DeviceRepository">
+		<constructor-arg name="deviceQuery" value="${devices.queryString}"/>
+		<constructor-arg name="dbm" ref="DBManager"/>
+		<!-- <constructor-arg name="uiDBE" ref="OH.DBEngine"/> -->
+		<constructor-arg name="logDomain" value="${log.domain.main}"/>
+		<constructor-arg name="pr" ref="Products"/>
+		<constructor-arg name="rr" ref="Rooms"/>
+		<constructor-arg name="idGenerator" ref="IDGenerator"/>
+		<property name="protocols" ref="Protocols"/>
+	</bean>
+	<bean id="Rooms" class="bm.main.repositories.RoomRepository">
+		<constructor-arg name="dbe" ref="DBManager"/>
+		<constructor-arg name="idg" ref="IDGenerator"/>
+		<constructor-arg name="logDomain" value="${log.domain.main}"/>
+		<constructor-arg name="getRoomsQuery" value="${rooms.queryString}"/>
+	</bean>
+	<bean id="Products" class="bm.main.repositories.ProductRepository">
+		<constructor-arg name="dbe" ref="DBManager"/>
+		<constructor-arg name="idg" ref="IDGenerator"/>
+		<constructor-arg name="logDomain" value="${log.domain.main}"/>
+		<constructor-arg name="getProductsQuery" value="${product.queryString}"/>
+		<constructor-arg name="getPropertyTypesQuery" value="${propertyType.queryString}"/>
+		<constructor-arg name="productFactory" ref="ProductFactory"/>
+	</bean>
+</beans>

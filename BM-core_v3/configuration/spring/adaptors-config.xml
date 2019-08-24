@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:util="http://www.springframework.org/schema/util"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<context:annotation-config/>
+	<util:list id="CoreAdaptors">
+		<ref bean="DBAdaptor"/>
+        <ref bean="CIRAdaptor"/>
+        <ref bean="OHAdaptor"/>
+	</util:list>
+
+	<bean id="AdaptorManager" class="bm.context.adaptors.AdaptorManager">
+		<constructor-arg name="adaptorDBE" ref="Products.DBEngine"/>
+        <constructor-arg name="adaptorLinkCol" value="${products.table.adaptor_links.adaptor_id}"/>
+        <constructor-arg name="adaptorLinksTable" value="${products.table.adaptor_links}"/>
+        <constructor-arg name="adaptors" ref="CoreAdaptors"/>
+        <constructor-arg name="idGenerator" ref="IDGenerator"/>
+        <constructor-arg name="logDomain" value="${log.domain.main}"/>
+        <constructor-arg name="prodIDcol" value="${products.table.adaptor_links.prod_id}"/>
+	</bean>
+	
+	<!-- CORE ADAPTORS -->
+	<bean id="DBAdaptor" class="bm.context.adaptors.DBAdaptor">
+        <constructor-arg name="logDomain" value="${log.domain.db}"/>
+        <constructor-arg name="adaptorID" value="0000000000"/>
+        <constructor-arg name="adaptorName" value="DBAdaptor"/>
+		<constructor-arg name="dbe" ref="DBManager"/>
+		<constructor-arg name="comsTable" value="${table.comstable}"/>
+		<constructor-arg name="propsTable" value="${table.propstable}"/>
+		<constructor-arg name="roomsTable" value="${table.roomstable}"/>
+	</bean>
+    <bean id="CIRAdaptor" class="bm.cir.CIRAdaptor">
+        <constructor-arg name="logDomain" value="${log.domain.main}"/>
+        <constructor-arg name="adaptorID" value="0000000001"/>
+        <constructor-arg name="adaptorName" value="CIRAdaptor"/>
+        <constructor-arg name="cir" ref="CIRs"/>
+    </bean>
+    <bean id="OHAdaptor" class="oh.context.adaptors.OHAdaptor">
+		<constructor-arg name="logDomain" value="${log.domain.oh}"/>
+        <constructor-arg name="adaptorID" value="0000000002"/>
+        <constructor-arg name="adaptorName" value="OHAdaptor"/>
+		<constructor-arg name="ohIP" value="${oh.ip}"/>
+		<constructor-arg name="ohSitemapName" value="${oh.sitemap_name}"/>
+		<constructor-arg name="he" ref="HTTPSender"/>
+		<constructor-arg name="sitemapFE" ref="OH.SitemapFileEngine"/>
+	</bean>
+
+	<!-- UI ADAPTORS -->
+	<!--<bean id="UIAdaptor" class="ui.context.adaptors.UIAdaptor" scope="singleton">-->
+		<!--<constructor-arg name="logDomain" value="${log.domain.ui}"/>-->
+		<!--<constructor-arg name="adaptorID" value="0000000002"/>-->
+		<!--<constructor-arg name="adaptorName" value="UIAdaptor"/>-->
+		<!--<constructor-arg name="idg" ref="IDGenerator"/>-->
+		<!--<constructor-arg name="ui_roomstable" value="${ui.table.rooms}"/>-->
+		<!--<constructor-arg name="ui_roomstable_ssid" value="${ui.table.rooms.ssid}"/>-->
+		<!--<constructor-arg name="ui_roomstable_color" value="${ui.table.rooms.color}"/>-->
+		<!--<constructor-arg name="uidbe" ref="UI.DBEngine"/>-->
+	<!--</bean>-->
+</beans>

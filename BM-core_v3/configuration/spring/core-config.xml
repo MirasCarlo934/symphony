@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+<context:annotation-config/>
+	<!-- 
+	This is the core config file.
+	This only contains the other config files that the BM will use.
+	-->
+	<!-- <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<value>..\..\..\configuration\bm.properties</value>
+			<value>file:configuration/bm.properties</value>
+		</property>
+	</bean>
+	
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<value>..\..\..\configuration\bm.properties</value>
+			<value>file:configuration/ui.properties</value>
+		</property>
+	</bean> -->
+	<!-- <bean name="properties" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>..\..\..\configuration\bm.properties</value>
+				<value>file:configuration/bm.properties</value>
+				<value>file:configuration/ui.properties</value>
+				<value>file:configuration/user.properties</value>
+			</list>
+		</property>
+	</bean> -->
+	
+	<context:property-placeholder location="file:configuration/bm.properties" order="3" />
+	<context:property-placeholder location="file:configuration/ui.properties" order="2" ignore-unresolvable="true"/>
+	<context:property-placeholder location="file:configuration/user.properties" order="1" ignore-unresolvable="true"/>
+	
+	<import resource="file:configuration/spring/adaptors-config.xml"/>
+	<import resource="file:configuration/spring/comms-config.xml"/>
+	<import resource="file:configuration/spring/engines-config.xml"/>
+	<import resource="file:configuration/spring/main-config.xml"/>
+	<import resource="file:configuration/spring/modules-config.xml"/>
+	<import resource="file:configuration/spring/openhab-config.xml"/>
+	<import resource="file:configuration/spring/product-config.xml"/>
+	<import resource="file:configuration/spring/repositories-config.xml"/>
+	<import resource="file:configuration/spring/tools-config.xml"/>
+
+</beans>

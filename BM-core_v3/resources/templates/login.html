@@ -1,0 +1,71 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="../static/styles/theme.css" th:href="@{/styles/theme.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/pics.css" th:href="@{/styles/pics.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/input.css" th:href="@{/styles/input.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/navigation.css" th:href="@{/styles/navigation.css}"/>
+	<link rel="stylesheet" type="text/css" href="../static/styles/layout.css" th:href="@{/styles/layout.css}"/>
+	<script src="../static/scripts/lib/jquery-3.2.1.min.js" th:src="@{/scripts/lib/jquery-3.2.1.min.js}"></script>
+	<script src="../static/scripts/animations.js" th:src="@{/scripts/animations.js}"></script>
+	<script src="../static/scripts/form_actions.js" th:src="@{/scripts/form_actions.js}"></script>
+	<script>	
+	$(document).ready(function() {
+		$("#pwd").focus(function() {
+			$("#submitBtnContainer").animate({
+				width: $("#submitBtn").outerWidth(true) + 14 + "px"
+			})
+		});
+		$("#pwd").focusout(function() {
+			$("#submitBtnContainer").animate({
+				width: "0px"
+			})
+		});
+		
+		$('#pwd').keypress(function(e) {
+			var keyCode = e.keyCode || e.which;
+			if (keyCode === 13) { 
+				e.preventDefault();
+				submitForm_POST('login', 'notifBox');
+			}
+		});
+	});
+	</script>
+</head>
+<body>
+	<div class="topbar"><span class="topbar">symphony.</span></div>
+	
+	<div class="notifBoxContainer" id="notifBox">
+		<div class="notifBox" th:if="${error} != null">
+			<div class="notifHeader">error</div>
+			<div class="notifMsg" th:text="${error}"></div>
+		</div>
+	</div>
+	<br />
+	<!-- <div class="notifBox" style="top:60px;">
+		<div class="notifHeader" th:text="${header}">DEDE</div>
+		<div class="notifMsg" th:text="${msg}">DRDR</div>
+	</div>
+	<br /> -->
+	
+	<div class="body">
+		<img class="central" src="../static/pics/VirtualMaestro.png" th:src="@{/pics/VirtualMaestro.png}"/>
+		<br/>
+		<form action="/login" id="login" method="post">
+			<table style="margin:auto">
+				<tr>
+					<td><input class="regularTextBox" type="password" placeholder="Password" name="pwd" id="pwd"/></td>
+	    				<td>
+	    				<div id="submitBtnContainer" class="invisible" style="width:0; overflow:hidden;">
+	    					<!-- <input id="submitBtn" class="regularBtn" style="margin-left:5px; width:50px;" type="submit" value="Go" /> -->
+	    					<input id="submitBtn" class="regularBtn" style="margin-left:5px; width:50px;" type="button" onclick="submitForm_POST('login', 'notifBox')" value="Go" />
+    					</div>
+    					</td>
+	    			</tr>
+	    		</table>
+    		</form>
+    </div>
+</body>
+</html>

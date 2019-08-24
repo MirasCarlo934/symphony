@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="RPI UI DB">
+  <database-model serializer="dbm" dbms="DERBY" family-id="DERBY" format-version="4.15">
+    <root id="1">
+      <ServerVersion>10.14</ServerVersion>
+    </root>
+    <schema id="2" parent="1" name="APP">
+      <Current>1</Current>
+      <Visible>1</Visible>
+    </schema>
+    <schema id="3" parent="1" name="NULLID"/>
+    <schema id="4" parent="1" name="SQLJ"/>
+    <schema id="5" parent="1" name="SYS">
+      <Substituted>1</Substituted>
+    </schema>
+    <schema id="6" parent="1" name="SYSCAT"/>
+    <schema id="7" parent="1" name="SYSCS_DIAG"/>
+    <schema id="8" parent="1" name="SYSCS_UTIL">
+      <Substituted>1</Substituted>
+    </schema>
+    <schema id="9" parent="1" name="SYSFUN"/>
+    <schema id="10" parent="1" name="SYSIBM">
+      <Substituted>1</Substituted>
+    </schema>
+    <schema id="11" parent="1" name="SYSPROC"/>
+    <schema id="12" parent="1" name="SYSSTAT"/>
+    <table id="13" parent="2" name="PRODUCTS"/>
+    <table id="14" parent="2" name="ROOMS"/>
+    <column id="15" parent="13" name="SSID">
+      <Position>1</Position>
+      <DataType>VARCHAR(10)|12s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="16" parent="13" name="ICON">
+      <Position>2</Position>
+      <DataType>VARCHAR(20)|12s</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>&apos;wallswitch&apos;</DefaultExpression>
+    </column>
+    <index id="17" parent="13" name="SQL180605103338630">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>SSID</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <key id="18" parent="13" name="SQL180605103338630">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>SSID</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="19" parent="14" name="SSID">
+      <Position>1</Position>
+      <DataType>VARCHAR(10)|12s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="20" parent="14" name="COLOR">
+      <Position>2</Position>
+      <DataType>VARCHAR(25)|12s</DataType>
+      <NotNull>1</NotNull>
+      <DefaultExpression>&apos;black&apos;</DefaultExpression>
+    </column>
+    <index id="21" parent="14" name="SQL180605103403610">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>SSID</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <key id="22" parent="14" name="SQL180605103403610">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>SSID</ColNames>
+      <Primary>1</Primary>
+    </key>
+  </database-model>
+</dataSource>

@@ -1,0 +1,66 @@
+2019-07-29 10:37:00,670 INFO  [restartedMain] (MQTT.MQTTClient) Connected to MQTT!
+2019-07-29 10:37:00,673 DEBUG [restartedMain] (MQTT.MQTTClient) Subscribed to BM topic!
+2019-07-29 10:37:00,673 DEBUG [restartedMain] (MQTT.MQTTClient) Listener set!
+2019-07-29 10:37:00,673 DEBUG [restartedMain] (MQTT.MQTTClient) Publisher set!
+2019-07-29 10:37:48,216 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message arrived at topic BM
+2019-07-29 10:37:48,218 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message is: 
+{RID:'OH-POOP', CID:'N2NC',RTY:'poop',property:'1',value:'0'}
+2019-07-29 10:37:48,333 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message published!
+2019-07-29 10:37:48,932 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message arrived at topic BM
+2019-07-29 10:37:48,932 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message is: 
+{RID:'OH-POOP', CID:'N2NC',RTY:'poop',property:'1',value:'1'}
+2019-07-29 10:37:49,046 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message published!
+2019-07-29 10:37:58,422 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message arrived at topic BM
+2019-07-29 10:37:58,423 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message is: 
+{RID:'OH-POOP', CID:'S281',RTY:'poop',property:'1',value:'1'}
+2019-07-29 10:37:58,477 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message published!
+2019-07-29 10:37:59,094 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message arrived at topic BM
+2019-07-29 10:37:59,094 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message is: 
+{RID:'OH-POOP', CID:'S281',RTY:'poop',property:'1',value:'0'}
+2019-07-29 10:37:59,112 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message published!
+2019-07-29 10:38:00,729 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message published!
+2019-07-29 10:38:00,852 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message arrived at topic BM
+2019-07-29 10:38:00,852 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message is: 
+{RID:'OH-POOP', CID:'S281',RTY:'poop',property:'1',value:'1'}
+2019-07-29 10:38:00,927 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message published!
+2019-07-29 10:38:00,928 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message published!
+2019-07-29 10:38:32,163 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message arrived at topic BM
+2019-07-29 10:38:32,164 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message is: 
+{RID:'OH-POOP', CID:'S281',RTY:'poop',property:'1',value:'0'}
+2019-07-29 10:38:32,236 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message published!
+2019-07-29 10:38:32,285 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message published!
+2019-07-29 10:38:42,267 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message arrived at topic BM
+2019-07-29 10:38:42,267 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message is: 
+{RID:'OH-POOP', CID:'S281',RTY:'poop',property:'1',value:'1'}
+2019-07-29 10:38:42,332 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message published!
+2019-07-29 10:38:42,333 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message published!
+2019-07-29 10:39:00,801 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message arrived at topic BM
+2019-07-29 10:39:00,801 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message is: 
+{RID:'OH-POOP', CID:'S281',RTY:'poop',property:'1',value:'0'}
+2019-07-29 10:39:00,837 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message published!
+2019-07-29 10:39:00,893 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message published!
+2019-07-29 10:39:03,723 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message arrived at topic BM
+2019-07-29 10:39:03,723 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message is: 
+{RID:'OH-POOP', CID:'S281',RTY:'poop',property:'1',value:'1'}
+2019-07-29 10:39:03,735 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message published!
+2019-07-29 10:39:03,768 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message published!
+2019-07-29 10:39:47,646 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message arrived at topic BM
+2019-07-29 10:39:47,647 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message is: 
+{RID:'OH-POOP', CID:'S281',RTY:'poop',property:'1',value:'0'}
+2019-07-29 10:39:47,756 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message published!
+2019-07-29 10:39:48,098 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message published!
+2019-07-29 10:40:21,640 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message arrived at topic BM
+2019-07-29 10:40:21,641 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message is: 
+{RID:'OH-POOP', CID:'S281',RTY:'poop',property:'1',value:'1'}
+2019-07-29 10:40:21,719 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message published!
+2019-07-29 10:40:21,835 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message published!
+2019-07-29 10:40:27,775 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message arrived at topic BM
+2019-07-29 10:40:27,775 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message is: 
+{RID:'OH-POOP', CID:'S281',RTY:'poop',property:'1',value:'0'}
+2019-07-29 10:40:27,928 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message published!
+2019-07-29 10:40:27,975 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message published!
+2019-07-29 10:40:32,366 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message arrived at topic BM
+2019-07-29 10:40:32,366 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message is: 
+{RID:'OH-POOP', CID:'S281',RTY:'poop',property:'1',value:'1'}
+2019-07-29 10:40:32,440 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message published!
+2019-07-29 10:40:32,596 DEBUG [MQTT Call: VM_12345678] (MQTT.MainMQTTListener) Message published!

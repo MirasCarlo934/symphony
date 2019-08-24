@@ -1,0 +1,42 @@
+<div th:each="room : ${roomObjs}" th:id="${room.getSSID()}" class="roomContainer" style="background-color:green;">
+	<div id="CRL0_header" class="unselectable header" >
+		<span id="CRL0_name" class="textBigBold">Kuya's Bedroom</span>
+	</div>
+		
+	<ul id="CRL0_sort" class="sortableHorizontal">
+		<li id="d_ABCD">
+			<div id="ABCD" class="deviceContainer">
+				<form id="ABCD_form" action="/devices/editDevice">
+					<input type="hidden" name="devID" value="ABCD"/>
+					<div class="icon">
+						<img class="icon" src="../resources/static/pics/iconset/switch.png" th:src="@{/pics/iconset/switch.png}"/>
+						<img class="overlay" src="../resources/static/pics/move.png" th:src="@{/pics/move.png}"/>
+						<img id="ABCD_editBtn" class="edit" onclick="editDevice('ABCD')" src="../resources/static/pics/edit.svg" th:src="@{/pics/edit.svg}"/>
+					</div>
+					<h1 id="ABCD_nameContainer"><span id="ABCD_name">TestDevice1</span></h1>
+					<div id="ABCD_infos" class="drawer">
+						<div class="info">(Solosocket)</div>
+						<div class="statusGreen">Active</div>
+					</div>
+				</form>
+			</div>
+		</li>
+		<li id="d_ABCDa">
+			<div id="ABCDa" class="deviceContainer">
+				<form id="ABCDa_form" action="/devices/editDevice">
+					<input type="hidden" name="devID" value="ABCDa"/>
+					<div class="icon">
+						<img class="icon" src="../resources/static/pics/iconset/switch.png" th:src="@{/pics/iconset/switch.png}"/>
+						<img class="overlay" src="../resources/static/pics/move.png" th:src="@{/pics/move.png}"/>
+						<img id="ABCDa_editBtn" class="edit" onclick="editDevice('ABCDa')" src="../resources/static/pics/edit.svg" th:src="@{/pics/edit.svg}"/>
+					</div>
+					<h1 id="ABCDa_nameContainer"><span id="ABCDa_name">TestDevice2</span></h1>
+					<div id="ABCDa_infos" class="drawer">
+						<div class="info">(Solosocket)</div>
+						<div class="statusRed">Inactive</div>
+					</div>
+				</form>
+			</div>
+		</li>
+	</ul>
+</div>

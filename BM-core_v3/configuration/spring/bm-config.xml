@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<!-- A CONFIG FILE FOR NON-CORE SYSTEM BEANS -->
+	<context:annotation-config/>
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<!-- <value>..\..\..\configuration\bm.properties</value> -->
+			<value>file:configuration/bm.properties</value>
+		</property>
+	</bean>
+	<!-- <import resource="modules-config.xml"/> -->
+	
+	<!-- NON-CORE BEANS -->
+	<bean id="VersionController" class="main.VersionController">
+		<constructor-arg name="coreLogDomain" value="${log.domain.core}"/>
+		<constructor-arg name="version" value="${bm.version}"/>
+		<constructor-arg name="buildDate" value="${bm.buildDate}"/>
+	</bean>
+</beans>

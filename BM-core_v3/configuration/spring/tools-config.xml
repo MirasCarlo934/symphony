@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<context:annotation-config/>
+	
+	<bean id="SystemTimer" class="bm.tools.SystemTimer">
+		<constructor-arg name="logDomain" value="${log.domain.main}"/>
+		<constructor-arg name="refreshRate" value="${bm.system.timerRefresh}"/>
+	</bean>
+	<bean id="IDGenerator" class="bm.tools.IDGenerator">
+		<constructor-arg name="ridLength" value="${id.rid.length}"/>
+		<constructor-arg name="cidLength" value="${id.cid.length}"/>
+		<constructor-arg name="engineRequestIDLength" value="${id.erqs_request.length}"/>
+		<property name="deviceRepository" ref="Devices"/>
+		<property name="roomRepository" ref="Rooms"/>
+	</bean>
+	<bean id="Cipher" class="bm.tools.Cipher">
+		<constructor-arg name="logDomain" value="${log.domain.main}"/>
+		<constructor-arg name="VM_ID" value="${bm.id}"/>
+	</bean>
+</beans>

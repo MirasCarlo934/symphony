@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8" />
+	<title>NOTIFICATION</title>
+	<link rel="stylesheet" type="text/css" href="../static/styles/theme.css" th:href="@{/styles/theme.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/pics.css" th:href="@{/styles/pics.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/navigation.css" th:href="@{/styles/navigation.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/input.css" th:href="@{/styles/input.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/layout.css" th:href="@{/styles/layout.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/smarthome.css" th:href="@{/styles/smarthome.css}"/>
+	<script src="../static/scripts/lib/jquery-3.2.1.min.js" th:src="@{/scripts/lib/jquery-3.2.1.min.js}"></script>
+	<script src="../static/scripts/animations.js" th:src="@{/scripts/animations.js}"></script>
+	<script>
+	var notifBoxTopMargin;
+	var notifBoxTotalHeight;
+	
+	$(document).ready(function() {
+		console.log("Showing notification");
+		notifBoxTopMargin = $(".notifBox").css("margin-top");
+		notifBoxTotalHeight = parseInt($(".notifBox").height()) + parseInt(notifBoxTopMargin);
+		$(".notifBox").css("top", -notifBoxTotalHeight);
+		$(".notifBox").stop().animate({
+			top: "0px"
+		}, setTimeout(exitNotif, 3000));
+		
+		$(".notifBox").click(function() {
+			exitNotif();
+		});
+	});
+	
+	function exitNotif() {
+		console.log("Exiting notification");
+		$(".notifBox").stop().animate({
+			top: -(notifBoxTotalHeight + 20)
+		});
+	}
+	</script>
+</head>
+<body>
+
+	<input type="hidden" id="status" th:value="${status}"/>
+	<input type="hidden" th:each="response : ${responses}" th:id="${response.key}" th:value="${response.value}"/>
+	
+	<!-- <span style="text-align:center;" > -->
+	<div class="notifBox" style="top:-1000px;" th:if="${msg} != null">
+		<div class="notifHeader" th:text="${header}"></div>
+		<div class="notifMsg" th:text="${msg}"></div>
+	</div>
+	<br />
+	<!-- </span> -->
+	<!-- <span style="text-align:center;" th:if="${msg} == null">
+		<div class="notifHeader" style="border-radius:10px; text-align:center; margin:auto; margin-top: 20px;" th:text="${header}"></div>
+		<br />
+	</span> -->
+</body>
+</html>

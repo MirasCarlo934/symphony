@@ -1,0 +1,28 @@
+<rules>
+  <!--
+  <rule name="Rule0" condition="IF">
+    <arguments>
+      <component id="C3K3" name="TestComponent1">
+        <property id="0001" value="1" label="Switch" operator="="/>
+      </component>
+    </arguments>
+    <execution>
+      <component id="J6L0" name="teastdate">
+        <property id="0001" value="1" label="Switch"/>
+      </component>
+    </execution>
+  </rule>
+  <rule name="Rule1" condition="IF">
+    <arguments>
+      <component id="C3K3" name="TestComponent1">
+        <property id="0001" value="0" label="Switch" operator="="/>
+      </component>
+    </arguments>
+    <execution>
+      <component id="J6L0" name="teastdate">
+        <property id="0001" value="0" label="Switch"/>
+      </component>
+    </execution>
+  </rule>
+  -->
+</rules>
