@@ -11,3 +11,4 @@ copy %1\html.h %2\*
 copy %1\version.h %2\*
 copy %1\DeviceDiscovery.h %2\*
 copy %1\Product.* %2\*
+copy %1\MqttUtil.* %2\*
