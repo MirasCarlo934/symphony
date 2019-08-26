@@ -19,6 +19,7 @@
 #include "html.h"
 #include "version.h"
 #include "Product.h"
+#include "MqttHandler.h"
 
 #define DEBUG_ONLY
 //#define SHOW_FLASH

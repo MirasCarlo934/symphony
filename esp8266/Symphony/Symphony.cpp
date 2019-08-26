@@ -41,6 +41,7 @@ AsyncWebServer		wsServer(WS_PORT); // WebSocket Server
 AsyncWebSocket      ws("/ws");      // Web Socket Plugin
 WiFiEventHandler    wifiConnectHandler;     // WiFi connect handler
 WiFiEventHandler    wifiDisconnectHandler;  // WiFi disconnect handler
+MqttHandler 		mqttHandler;	//Mqtt Handler
 
 String homeHtml;
 
@@ -279,6 +280,9 @@ void onWifiConnect(const WiFiEventStationModeGotIP &event) {
     } else {
         Serial.println(F("*** Error setting up mDNS responder ***"));
     }
+    Serial.println(F("*** onWifiConnect connecting to mqtt ***"));
+    mqttHandler.connect("mqttId", "192.168.0.109", 1883);
+
 #ifdef DISCOVERABLE
 	 startDiscovery(Symphony::hostName, Symphony::mac);
 	 discoveryTries = 0;
