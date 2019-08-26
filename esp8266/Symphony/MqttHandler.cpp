@@ -19,15 +19,15 @@ void onMqttConnect(bool sessionPresent) {
   Serial.println("\t\t[MqttHandler] ************** Connected to MQTT.");
   Serial.print("Session present: ");
   Serial.println(sessionPresent);
-  uint16_t packetIdSub = mqttClient.subscribe("test/lol", 2);
+  uint16_t packetIdSub = mqttClient.subscribe("control", 0);
   Serial.print("Subscribing at QoS 2, packetId: ");
   Serial.println(packetIdSub);
-  mqttClient.publish("test/lol", 0, true, "test 1");
+  mqttClient.publish("BM", 0, true, "test 1");
   Serial.println("\t\t[MqttHandler] ************** Publishing at QoS 0");
-  uint16_t packetIdPub1 = mqttClient.publish("test/lol", 1, true, "test 2");
+  uint16_t packetIdPub1 = mqttClient.publish("BM", 1, true, "test 2");
   Serial.print("Publishing at QoS 1, packetId: ");
   Serial.println(packetIdPub1);
-  uint16_t packetIdPub2 = mqttClient.publish("test/lol", 2, true, "test 3");
+  uint16_t packetIdPub2 = mqttClient.publish("BM", 2, true, "test 3");
   Serial.print("Publishing at QoS 2, packetId: ");
   Serial.println(packetIdPub2);
 }
@@ -51,7 +51,7 @@ void onMqttUnsubscribe(uint16_t packetId) {
 }
 
 void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total) {
-  Serial.println("\t\t[MqttHandler] ************** Publish received.");
+  Serial.println("\t\t[MqttHandler] ************** Messsage received.");
   Serial.println("\t\t[MqttHandler] **************   topic: ");
   Serial.println(topic);
   Serial.print("  qos: ");
@@ -66,6 +66,8 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
   Serial.println(index);
   Serial.print("  total: ");
   Serial.println(total);
+  Serial.print("  payload: ");
+  Serial.println(payload);
 }
 
 void onMqttPublish(uint16_t packetId) {
