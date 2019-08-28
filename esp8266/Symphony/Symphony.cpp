@@ -422,7 +422,7 @@ void Symphony::setup(String theHostName, String ver) {
 	// Setup WiFi Handler
 	wifiConnectHandler = WiFi.onStationModeGotIP(onWifiConnect);
 	delay(100);
-	connectToWifi(theHostName);		//we are connecting to the wifi AP
+	connectToWifi();		//we are connecting to the wifi AP
 	createMyName(theHostName);		//create this device's name
 	homeHtml = CONTROL_HTML1;
 	homeHtml.replace("$AAA$", hostName);
@@ -548,7 +548,7 @@ void Symphony::setupAP() {
  * Connect to the AP using the passkey
  * If unable to connect, setup its own AP
  */
-void Symphony::connectToWifi(String theHostName) {
+void Symphony::connectToWifi() {
 	// Switch to station mode and disconnect just in case
 	WiFi.mode(WIFI_STA);
 	WiFi.disconnect();
@@ -609,6 +609,7 @@ void Symphony::createMyName(String theHostName) {
  */
 void Symphony::setProduct(Product p) {
 	product = p;
+	theMqttHandler.setProduct(p);
 	setRootProperties(product.stringify());
 }
 /**

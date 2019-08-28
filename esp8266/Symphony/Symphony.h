@@ -73,7 +73,7 @@ class Symphony {
 	    long restartTimer = 0;  //the restart timer in millis.  this will restart every maxrestartTimer if wifi is not connected.
 	    const long maxRestartTimer = 120000; //the max millis before restart.  2 mins
 //	    String hostName = "Symphony";
-	    void connectToWifi(String theHostName);
+	    void connectToWifi();
 	    void createMyName(String theHostName);
 	    void setupAP();
 };
