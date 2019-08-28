@@ -113,7 +113,7 @@ void MqttHandler::setId(const char *id) {
  * Sets the Product definition of this device.
  * This will be used to communicate with other devices
  */
-void setProduct(Product p) {
+void MqttHandler::setProduct(Product p) {
 	thisProduct = p;
 }
 /**
