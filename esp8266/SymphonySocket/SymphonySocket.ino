@@ -124,14 +124,14 @@ void setup()
 	s.setMqttHandler("mqttId", "192.168.0.109", 1883);
 	char ver[10];
 	sprintf(ver, "%u.%u", SYMPHONY_VERSION, SOCKET_VERSION);
-	product = Product(s.nameWithMac, "Bedroom", "Socket");
-	Gui gui1 = Gui("Socket Control", BUTTON_CTL, "On/Off", 0, 1, socketState);
-	product.addProperty("0001", false, SOCKET_PIN, gui1);//add aproperty that has an attached pin
-	s.setProduct(product);
 	s.setup(myName, ver);
 	s.on("/init", HTTP_GET, handleInit);
 	s.on("/toggle", HTTP_GET, handleToggle);
 	s.serveStatic("/socket.html", SPIFFS, "/socket.html");
+	product = Product(s.nameWithMac, "Bedroom", "Socket");
+	Gui gui1 = Gui("Socket Control", BUTTON_CTL, "On/Off", 0, 1, socketState);
+	product.addProperty("0001", false, SOCKET_PIN, gui1);//add aproperty that has an attached pin
+	s.setProduct(product);
 
 	if (e131.begin(E131_MULTICAST, UNIVERSE_START, UNIVERSE_COUNT))   // Listen via Multicast
 		Serial.println(F("Listening for data..."));
