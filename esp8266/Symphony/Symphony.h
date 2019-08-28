@@ -53,12 +53,12 @@ class Symphony {
 	    //public methods
 	    void setup(String theHostName, String ver);
 	    bool loop();
-	    //lets the instantiator if this Symphony object assign a callback handler
+	    //lets the instantiator of this Symphony object assign a callback handler
 	    void on(const char* uri, WebRequestMethodComposite method, ArRequestHandlerFunction handler);
 	    void serveStatic(const char* uri, fs::FS& fs, const char* path);
 	    void setWsCallback(int (* WsCallback) (AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json));
 	    void textAll(JsonObject& message);  //for sending to WsClients
-	    void setMqttHandler(int (* MqttHandler) (JsonObject& json));
+	    void setMqttHandler(const char *id, const char *url, int port);
 	    static void setRootProperties(String s);
 	    void setProduct(Product p);
 	    void doReboot();
@@ -79,7 +79,7 @@ class Symphony {
 };
 
 /**
- * utility class to parse the data sent during control transactions
+ * utility class to parse the websocket data sent during control transactions
  */
 class WsData
 {

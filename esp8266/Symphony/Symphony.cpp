@@ -41,7 +41,7 @@ AsyncWebServer		wsServer(WS_PORT); // WebSocket Server
 AsyncWebSocket      ws("/ws");      // Web Socket Plugin
 WiFiEventHandler    wifiConnectHandler;     // WiFi connect handler
 WiFiEventHandler    wifiDisconnectHandler;  // WiFi disconnect handler
-MqttHandler 		mqttHandler;	//Mqtt Handler
+MqttHandler 		theMqttHandler;	//Mqtt Handler
 
 String homeHtml;
 
@@ -69,7 +69,6 @@ int discoveryTries = 0;
  * AsyncWebSocketClient *client is exposed to enable response to the calling client.
  */
 int (* WsCallback) (AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json);
-int (* MqttHandler) (JsonObject& json);
 
 /*
  *	wsEvent handles the transactions sent by client websockets.
@@ -280,8 +279,8 @@ void onWifiConnect(const WiFiEventStationModeGotIP &event) {
     } else {
         Serial.println(F("*** Error setting up mDNS responder ***"));
     }
-    Serial.println(F("*** onWifiConnect connecting to mqtt ***"));
-    mqttHandler.connect("mqttId", "192.168.0.109", 1883);
+    theMqttHandler.connect();
+
 
 #ifdef DISCOVERABLE
 	 startDiscovery(Symphony::hostName, Symphony::mac);
@@ -502,8 +501,10 @@ void Symphony::setWsCallback(int (* Callback) (AsyncWebSocket ws, AsyncWebSocket
  * This is the handler for all MQTT transactions.
  *
  */
-void Symphony::setMqttHandler(int (* mqttHandler) (JsonObject& json)) {
-	MqttHandler = mqttHandler;
+void Symphony::setMqttHandler(const char *id, const char *url, int port) {
+	theMqttHandler.setId(id);
+	theMqttHandler.setUrl(url);
+	theMqttHandler.setPort(port);
 }
 
 /**
