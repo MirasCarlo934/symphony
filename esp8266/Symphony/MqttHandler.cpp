@@ -10,9 +10,12 @@
  */
 #include "MqttHandler.h"
 
+AsyncMqttClient mqttClient;
+const char* myId = "myMqttID";
 const char* mqttServer = "192.168.1.5";
 int mqttPort = 1883;
-AsyncMqttClient mqttClient;
+Product thisProduct;
+
 boolean isConnected = false;
 
 void onMqttConnect(bool sessionPresent) {
@@ -30,6 +33,9 @@ void onMqttConnect(bool sessionPresent) {
   uint16_t packetIdPub2 = mqttClient.publish("BM", 2, true, "test 3");
   Serial.print("Publishing at QoS 2, packetId: ");
   Serial.println(packetIdPub2);
+  uint16_t packetIdPub3 = mqttClient.publish("BM", 2, true, thisProduct.stringify().c_str());
+  isConnected = true;
+
 }
 
 void onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
@@ -67,7 +73,9 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
   Serial.print("  total: ");
   Serial.println(total);
   Serial.print("  payload: ");
-  Serial.println(payload);
+  char str2[len];
+  strncpy ( str2, payload, len );
+  Serial.println(str2);
 }
 
 void onMqttPublish(uint16_t packetId) {
@@ -82,18 +90,37 @@ void onMqttPublish(uint16_t packetId) {
 MqttHandler::MqttHandler() {
 
 }
+
+/**
+ * sets the URL, can be uised if MqttHandler was instantiated using the default constructor
+ */
+void MqttHandler::setUrl(const char *url) {
+	mqttServer = url;
+}
+/**
+ * sets the port, can be uised if MqttHandler was instantiated using the default constructor
+ */
+void MqttHandler::setPort(int port) {
+	mqttPort = port;
+}
+/**
+ * sets the id, can be uised if MqttHandler was instantiated using the default constructor
+ */
+void MqttHandler::setId(const char *id) {
+	myId = id;
+}
+/**
+ * Sets the Product definition of this device.
+ * This will be used to communicate with other devices
+ */
+void setProduct(Product p) {
+	thisProduct = p;
+}
 /**
  * Connect to the MQTT server
- *  id = the identifier for this device (can use the MAC address)
- *  url = the server address
- *  port = the port of the mqtt server
- *  wc = WifiClient for the handling of events
  */
-void MqttHandler::connect(const char *id, const char *url, int port) { //to connect to MQTT server
+void MqttHandler::connect() { //to connect to MQTT server
 	Serial.println("\t\t[MqttHandler] ************** Connecting.");
-	//copy the parameters to the global variables
-	mqttServer = url;
-	mqttPort = port;
 	mqttClient.onConnect(onMqttConnect);
 	mqttClient.onDisconnect(onMqttDisconnect);
 	mqttClient.onSubscribe(onMqttSubscribe);
@@ -105,3 +132,10 @@ void MqttHandler::connect(const char *id, const char *url, int port) { //to conn
 	mqttClient.connect();
 }
 
+/**
+ * Publish data to the mqtt server
+ */
+void MqttHandler::publish(const char* payload, uint8_t qos) {
+	mqttClient.publish("BM", qos, true, payload);
+	Serial.printf("\t\t[MqttHandler] ************** Publishing at QoS %i", qos);
+}
