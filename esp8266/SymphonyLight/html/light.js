@@ -312,10 +312,11 @@ function sendConfig(){
 	var s = e.options[e.selectedIndex].value;
 	var p = document.getElementById("txtPix").value;
 	var u = parseInt(document.getElementById("txtU").value, 10);
+	var rgb = document.getElementById("rgb").value;
 	var mirror = 0;
 	if (document.getElementById("chkM").checked)
 		mirror = 1;
-	var obj = { core:7, cmd: 2, cfg: 1, s:s, p:p, u:u, m:mirror, rst:doReset};//cfg = 1; send config data
+	var obj = { core:7, cmd: 2, cfg: 1, s:s, p:p, u:u, m:mirror, rst:doReset, rgb:rgb};//cfg = 1; send config data
 	var arr = [];
 	for (i = 0; i<s; i++) {
 		var pin = parseInt(document.getElementById("pin"+i).value, 10);
