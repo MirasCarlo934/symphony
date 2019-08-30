@@ -44,6 +44,9 @@
 uint16_t myUniverse = 1;
 //CRGB theLeds[LED_STRINGS][NUM_PIXELS];
 CRGB **theLeds = NULL;		//the led matrix
+uint8_t colorOrder = 1;	//this is the color order
+uint8_t R=0, G=2, B=1;
+uint8_t cOrder[3] = {R, G, B};	//array of the color order
 
 struct lightStruct {
 	uint8_t pin;
@@ -562,9 +565,12 @@ void doNormalRoutine() {
  */
 CRGB getPixColorFromE131Stream(e131_packet_t packet, uint8_t pixCount, uint8_t stringIndex, uint8_t ledIndex) {
 	uint8_t stringStartChannel = 3*stringIndex*pixCount + 1;
-	uint8_t r = packet.property_values[stringStartChannel + ledIndex*3 + 0];
-	uint8_t g = packet.property_values[stringStartChannel + ledIndex*3 + 2];
-	uint8_t b = packet.property_values[stringStartChannel + ledIndex*3 + 1];
+//	uint8_t r = packet.property_values[stringStartChannel + ledIndex*3 + 0];
+//	uint8_t g = packet.property_values[stringStartChannel + ledIndex*3 + 2];
+//	uint8_t b = packet.property_values[stringStartChannel + ledIndex*3 + 1];
+	uint8_t r = packet.property_values[stringStartChannel + ledIndex*3 + cOrder[0]];
+	uint8_t g = packet.property_values[stringStartChannel + ledIndex*3 + cOrder[1]];
+	uint8_t b = packet.property_values[stringStartChannel + ledIndex*3 + cOrder[2]];
 	CRGB rgb = CRGB(r, g, b);
 	return rgb;
 }

@@ -10,7 +10,7 @@
 #include "Product.h"
 #endif
 
-//#define DEBUG_PIXELS
+#define DEBUG_PIXELS
 
 String myName = "symphonyLight";
 Product product;
@@ -109,6 +109,14 @@ int wsHandlerJason(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& 
 					json.remove("cfg");
 					json.remove("cmd");
 					myUniverse = json["u"].as<int>();
+					colorOrder = json["rgb"].as<int>();
+					if (colorOrder == 1) { cOrder[0] = R; cOrder[1] = G; cOrder[2] = B;}		//RBG
+					if (colorOrder == 2) { cOrder[0] = R; cOrder[1] = B; cOrder[2] = G;}		//RBG
+					if (colorOrder == 3) { cOrder[0] = G; cOrder[1] = B; cOrder[2] = R;}		//GBR
+					if (colorOrder == 4) { cOrder[0] = G; cOrder[1] = R; cOrder[2] = B;}		//GRB
+					if (colorOrder == 5) { cOrder[0] = B; cOrder[1] = R; cOrder[2] = G;}		//BRG
+					if (colorOrder == 6) { cOrder[0] = B; cOrder[1] = G; cOrder[2] = R;}		//BGR
+					Serial.printf("Color Order is:%u\n", colorOrder);
 
 //					added july 19 2019
 					if (e131.begin(E131_MULTICAST, myUniverse, 1))  //re-configure the E1.31 listener
