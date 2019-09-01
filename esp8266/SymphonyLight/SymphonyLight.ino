@@ -10,7 +10,7 @@
 #include "Product.h"
 #endif
 
-#define DEBUG_PIXELS
+//#define DEBUG_PIXELS
 
 String myName = "symphonyLight";
 Product product;
@@ -398,17 +398,9 @@ void setup()
 	product.addProperty("0003", false, gui3);
 	s.setProduct(product);
 	FastLED.setBrightness(  BRIGHTNESS );
-	if (WiFi.status() == WL_CONNECTED ) {
-		//we only enable e131 if we are connected to wifi as client
-//		if (e131.begin(E131_MULTICAST, UNIVERSE_START, UNIVERSE_COUNT))   // Listen via Multicast for 1-n channels
-		if (e131.begin(E131_MULTICAST, myUniverse, 1))   // July 19 2019 Listen via Multicast for 1 channel (myUniverse) only
-			Serial.println(F("Listening for data..."));
-		else
-			Serial.println(F("*** e131.begin failed ***"));
-	}
 
 	String config = file.readFrSPIFFS(lightConfigFile.c_str());
-Serial.printf("light.json is %s\n",config.c_str());
+Serial.printf("%s is %s\n",lightConfigFile.c_str(), config.c_str());
 	DynamicJsonBuffer jsonBuffer;
 	JsonObject& jsonObj = jsonBuffer.parseObject(config);
 	if (jsonObj.success()) {
@@ -453,6 +445,14 @@ Serial.printf("light.json is %s\n",config.c_str());
 #endif
 			FastLED.addLeds<LED_TYPE, LED_PIN1, COLOR_ORDER>(theLeds[i], pixelCount).setCorrection( TypicalLEDStrip );
 		}
+	}
+	if (WiFi.status() == WL_CONNECTED ) {
+		//we only enable e131 if we are connected to wifi as client
+//		if (e131.begin(E131_MULTICAST, UNIVERSE_START, UNIVERSE_COUNT))   // Listen via Multicast for 1-n channels
+		if (e131.begin(E131_MULTICAST, myUniverse, 1))   // July 19 2019 Listen via Multicast for 1 channel (myUniverse) only
+			Serial.println(F("Listening for data..."));
+		else
+			Serial.println(F("*** e131.begin failed ***"));
 	}
 	Serial.printf("\n************END SymphonyLight Setup Version %u.%u***************\n", SYMPHONY_VERSION, LIGHT_VERSION);
 }

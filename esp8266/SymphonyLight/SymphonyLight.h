@@ -82,7 +82,7 @@ bool isShow = true;
 long start = millis();
 
 Filemanager	file = 	Filemanager();
-String lightConfigFile = "/light.json";
+String lightConfigFile = "/light.cfg";
 Symphony s = Symphony();
 bool isNormal = true;
 enum sequences : uint8_t { CYCLE, FIRE, PICKER, TWINKLE, SPARKLE};
