@@ -163,30 +163,6 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 										client->text(Symphony::product.stringifyValues());
 									break;
 								}
-								case CORE_GETDEVICEINFO://GET DEVICE INFO command from the WS client
-								{
-									//this is used by the admin client to display the current device info like Device name, SSID, passkey
-									Serial.println("********************* Get device Info.");
-//									DynamicJsonBuffer jsonBuffer;
-//									JsonObject& jsonObj = jsonBuffer.createObject();
-//
-//									jsonObj["ssid"] = ssid;
-//									jsonObj["pwd"] = pwd;
-//									jsonObj["name"] = name;
-									DynamicJsonBuffer jsonBuffer;
-									JsonObject& jsonObj = jsonBuffer.parseObject(fManager.readConfig());
-									if (jsonObj.success()) {
-#ifdef DEBUG_ONLY
-										Serial.println("********************** Get device Info.");
-										jsonObj.prettyPrintTo(Serial);
-#endif
-										jsonObj["core"] = CORE_GETDEVICEINFO;
-										String deviceInfo;
-										jsonObj.printTo(deviceInfo);
-										client->text(deviceInfo);
-									}
-									break;
-								}
 								case CORE_CONTROL://transactions from client to control the device
 								{
 									int cmd = json["cmd"].as<int>();
@@ -323,7 +299,7 @@ void showFileUpload(AsyncWebServerRequest *request) {
 	request->send(200, "text/html", UPLOAD_HTML);//shows file upload html from the PROGMEM defined in html.h, we are doing this because initial loading of firmware does not have the SPIFFS files
 }
 /*
- * handles the upload of upload File
+ * handles the upload of File
  */
 void handleFileUpload(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final) { // upload a new file to the SPIFFS
 	Serial.printf("handleFileUpload filename=%s\n", filename.c_str());
@@ -338,7 +314,22 @@ void handleGetFiles(AsyncWebServerRequest *request) {
 	String str = fManager.getFiles();
 	request->send(200, "text/html", str);
 }
-
+/**
+ * sends the device information
+ */
+void handleDevInfo(AsyncWebServerRequest *request) {
+	DynamicJsonBuffer jsonBuffer;
+	JsonObject& jsonObj = jsonBuffer.parseObject(fManager.readConfig());
+	if (jsonObj.success()) {
+#ifdef DEBUG_ONLY
+		Serial.println("********************** AJAXGet device Info.");
+		jsonObj.prettyPrintTo(Serial);
+#endif
+		String devInfo;
+		jsonObj.printTo(devInfo);
+		request->send(200, "text/html", devInfo);
+	}
+}
 /**
  * Firmware update Section
  */
@@ -375,6 +366,7 @@ void initWebServer() {
 	webServer.on("/files", HTTP_GET, showFileUpload);  //show the file upload page
 	webServer.on("/uploadFile", HTTP_POST, doneFileUpload, handleFileUpload); //handle the file update request
 	webServer.on("/getFiles", HTTP_GET, handleGetFiles);  //show the Files in SPIFFS
+	webServer.on("/devInfo", HTTP_GET, handleDevInfo);  //show the Files in SPIFFS
 	webServer.on("/properties.html", showProperties);
 	webServer.serveStatic("/files.html", SPIFFS, "/files.html");
 	webServer.serveStatic("/test.html", SPIFFS, "/test.html");
