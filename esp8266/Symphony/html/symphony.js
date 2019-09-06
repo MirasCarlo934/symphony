@@ -88,6 +88,14 @@ function commitConfig() {
 	websocket.send(JSON.stringify(obj));
 }
 
+/**
+ * Sends AJAX request to the server
+ * 
+ * @param method = 'POST', 'GET'
+ * @param url = the url for the request 
+ * @param responseHandler = the function that will be called onreadystatechange.  This should handle the response of the server.
+ * @returns
+ */
 function sendToServer(method, url, responseHandler){
   var xhttp;
   xhttp=new XMLHttpRequest();
@@ -121,9 +129,6 @@ function sendToServer(method, url, responseHandler){
 //		document.getElementById("btn").disabled = false;
 //	}
 //}
-function fetchHandler(xhttp) {
-	document.getElementById("msg").innerHTML = xhttp.responseText;
-}
 
 function uploadFile() {
   document.getElementById("status").innerHTML = "";
@@ -344,9 +349,44 @@ function wsHandler() {
        console.log("ERROR: " + evt.data);
      };
 } 
+/**
+ * Function that handles control trannsactions from directly connected WS Clients.
+ * @param evt
+ * @returns
+ */
+function handleControl(evt) {
+	var jsonResponse = JSON.parse(evt.data);
+  	var core = jsonResponse["core"];
+	if (core == CMD_VALUES) //device VALUES changed
+	{
+//alert(JSON.stringify(jsonResponse));
+		name = document.getElementById("hiddenName").value;
+//alert(" name " + name +" mac " +mac);
+//alert(" name_mac " + jsonResponse["name_mac"]);
+ 		if (jsonResponse["name_mac"] == name+'_'+mac) {
+//alert(" jsonResponse.data " + jsonResponse.data);
+ 			for (i in jsonResponse.data){
+				var input =  document.getElementById(jsonResponse.data[i].id);
+//alert(" id start " + jsonResponse.data[i].id);
+				if (input.type == "checkbox" || input.type == "radio") {
+	            	if (jsonResponse.data[i].val == 1)
+	    				input.checked=true;	
+	            	else
+	            		input.checked=false;
+	            }
+//alert(" id end " + jsonResponse.data[i].id);
+ 			}
+ 		}
+	}
+}
 /*
  * evt.data is of the form
  * {"cmd":1,"box":"status","msg":"message"}
+ * 
+ * WE WILL DEPRECATE THIS!!! - Sep 06 2019
+ * Websocket should only be used for handling control transactions from directly connected WS clients (function handleControl).
+ * Handling for admin and config transactions should be via Ajax.
+ * 
  */
 function handleWsMessage(evt) {
 //alert(evt.data)
@@ -356,9 +396,6 @@ function handleWsMessage(evt) {
   	var box = jsonResponse["box"];
   	var status = document.getElementById(box);
   	switch(core) {
-  		case CORE_GETDEVICEINFO:
-  			populateDeviceInfo(jsonResponse);
-  			break;
   		case CORE_TOCHILD://data from server to the child javascript
   			var msg = document.getElementById("msg");//comment this out later
   			msg.innerHTML = JSON.stringify(jsonResponse);//comment this out later
@@ -438,14 +475,34 @@ function handleWsMessage(evt) {
 		}
    }
 };
-function getDeviceInfo() {
-	websocket.send('{"core":4,"data":"INF"}');//we send an INIT command to get the deviceName and mac	
-}
-function populateDeviceInfo(jsonResponse) {
+
+/**
+ * handles the device info response
+ * @param xhttp - the response xhttp object
+ * @returns
+ */
+function getDeviceInfoHandler(xhttp) {
+	document.getElementById("msg").innerHTML = xhttp.responseText;
+	var jsonResponse = JSON.parse(xhttp.responseText);
 	document.getElementById("pName").value = jsonResponse.name;
 	document.getElementById("pSSID").value = jsonResponse.ssid;
 	document.getElementById("pPass").value = jsonResponse.pwd;
 }
+
+/**
+ * Gets the info of the device
+ * 		- Device Name
+ * 		- Wifi AP
+ * 		- Passkey
+ * 		
+ * @returns
+ */
+function getDeviceInfo() {
+	//we send an INIT command to get the deviceName and mac
+//	websocket.send('{"core":4,"data":"INF"}'); deperecated, we should use AJAX
+	sendToServer('GET', '/devInfo', getDeviceInfoHandler);
+}
+
 function closeIt(){
   document.getElementById("popup").remove();
 }
