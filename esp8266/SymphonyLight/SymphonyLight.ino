@@ -54,6 +54,31 @@ void handleToggle(AsyncWebServerRequest *request) {
 	request->send(200, "text/html", buff);
 	Serial.printf("handleToggle effect=%u\n",effect);
 }
+
+void handleGetConfig(AsyncWebServerRequest *request) {
+	DynamicJsonBuffer jsonBuffer;
+	JsonObject& json = jsonBuffer.createObject();
+	json["core"] = 7;
+	json["cmd"] = 4;//the task, 4=showConfig;
+	json["p"] = pixelCount;
+	json["s"] = stringCount;
+	json["u"] = myUniverse;
+	json["m"] = mirrored;
+	JsonArray& a = json.createNestedArray("data");
+	for(int i = 0; i < stringCount; i++) {
+		JsonObject& o = a.createNestedObject();
+		o["pin"] = lights[i].pin;;
+		if (lights[i].fwdDirection)
+			o["fwd"] = 1;
+		else
+			o["fwd"] = 0;
+	}
+Serial.println("********************** AJAXGet Config.");
+json.prettyPrintTo(Serial);
+	String lightConfig;
+	json.printTo(lightConfig);
+	request->send(200, "text/html", lightConfig);
+}
 /**
  * END webrequest handlers
  */
@@ -110,7 +135,7 @@ int wsHandlerJason(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& 
 					json.remove("cmd");
 					myUniverse = json["u"].as<int>();
 					colorOrder = json["rgb"].as<int>();
-					if (colorOrder == 1) { cOrder[0] = R; cOrder[1] = G; cOrder[2] = B;}		//RBG
+					if (colorOrder == 1) { cOrder[0] = R; cOrder[1] = G; cOrder[2] = B;}		//RGB
 					if (colorOrder == 2) { cOrder[0] = R; cOrder[1] = B; cOrder[2] = G;}		//RBG
 					if (colorOrder == 3) { cOrder[0] = G; cOrder[1] = B; cOrder[2] = R;}		//GBR
 					if (colorOrder == 4) { cOrder[0] = G; cOrder[1] = R; cOrder[2] = B;}		//GRB
@@ -137,35 +162,31 @@ int wsHandlerJason(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& 
 				} else {
 					Serial.println("WARN  No config data sent.");
 				}
-			} else {
-				//show config
-				json["core"] = 7;
-				json["cmd"] = 4;//the task, 4=showConfig;
-				json["p"] = pixelCount;
-				json["s"] = stringCount;
-				json["u"] = myUniverse;
-				json["m"] = mirrored;
-				JsonArray& a = json.createNestedArray("data");
-				for(int i = 0; i < stringCount; i++) {
-					JsonObject& o = a.createNestedObject();
-					o["pin"] = lights[i].pin;;
-					if (lights[i].fwdDirection)
-						o["fwd"] = 1;
-					else
-						o["fwd"] = 0;
-//					char lineData[50];
-//					sprintf(lineData, "{'u':%i,'s':%i,'p':%i,'fwd':%i}",lights[i].universe,
-//							stringCount,
-//							lights[i].pixCount,
-//							lights[i].fwdDirection);
-//					a.add(lineData);
-				}
-				s.textAll(json);
-#ifdef DEBUG_PIXELS
-				Serial.println("show config");
-				json.prettyPrintTo(Serial);
-#endif
 			}
+//			DEPRECATED Sep 08 2019, show config is done via AJAX
+//			else {
+//				//show config
+//				json["core"] = 7;
+//				json["cmd"] = 4;//the task, 4=showConfig;
+//				json["p"] = pixelCount;
+//				json["s"] = stringCount;
+//				json["u"] = myUniverse;
+//				json["m"] = mirrored;
+//				JsonArray& a = json.createNestedArray("data");
+//				for(int i = 0; i < stringCount; i++) {
+//					JsonObject& o = a.createNestedObject();
+//					o["pin"] = lights[i].pin;;
+//					if (lights[i].fwdDirection)
+//						o["fwd"] = 1;
+//					else
+//						o["fwd"] = 0;
+//				}
+//				s.textAll(json);
+//#ifdef DEBUG_PIXELS
+//				Serial.println("show config");
+//				json.prettyPrintTo(Serial);
+//#endif
+//			}
 		}
 		if (cmd == 3) {//fire commands
 			seq = FIRE;
@@ -346,6 +367,7 @@ void initWeb() {
 	s.serveStatic("/fire.html", SPIFFS, "/fire.html");
 	s.serveStatic("/picker.html", SPIFFS, "/picker.html");
 	s.serveStatic("/config.html", SPIFFS, "/config.html");
+	s.on("/devConfig", HTTP_GET, handleGetConfig);
 	s.serveStatic("/light.js", SPIFFS, "/light.js");
 }
 /*

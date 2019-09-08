@@ -15,9 +15,6 @@
   <button class="tablinks" onclick='openTab(event, "fire");sendFireData();'>Fire</button>
   <button class="tablinks" onclick='openTab(event, "sparkle");sendSparkleData();'>Sparkle</button>  
   <button class="tablinks" onclick="window.location.pathname = '/picker.html';">Picker</button>
-  <button class="tablinks" onclick="openTab(event, 'config');getConfig();">Configure</button>
-  <button class="tablinks" onclick="openTab(event, 'setSeq');setSequence();">Set Seq</button>
-  <button class="tablinks" onclick="openTab(event, 'getSeq');getSequence();">Get Seq</button>
 </div>
 <div class="footer" id="status"></div>
 <div class="blurred"></div>
@@ -56,63 +53,6 @@
 	</center>
 </div>
 <input type="button" onclick="sendSparkleData()" value="Submit">
-</fieldset></center>
-</div>
-<div id="config" class="tabcontent">
-<h3>Configure Lights</h3>
-<center><fieldset style="width:95%"><legend><b>Configure</b></legend>
-<div class="workpane" id="composer" category="CMPSR" style="width:55%;float:left;">
-<fieldset><legend>no reset</legend>
-<label>Universe:</label>
-<select id="txtU" style="width:5em" onchange="handleChange(this)">
-  <option value="1">1</option>
-  <option value="2">2</option>
-  <option value="3">3</option>
-  <option value="4">4</option>
-  <option value="5">5</option>
-  <option value="6">6</option>
-  <option value="7">7</option>
-</select><br>
-<label>Mirrored:</label><input type='checkbox' id="chkM"><br>
-</fieldset>
-<fieldset><legend>change below will reset device</legend>
-<label>Strings:</label>
-<select id="txtS" style="width:5em" onchange="refreshPins();handleChange(this)">
-  <option value="1">1</option>
-  <option value="2">2</option>
-  <option value="3">3</option>
-  <option value="4">4</option>
-</select><br>
-<label>Pix/String:</label><input type='text' id='txtPix' style="width:3em" value="30" onchange="handleChange(this)"><br>
-</fieldset>
-<input type='button' value='Submit' onclick='sendConfig()'>
-</div>
-<div class="workpane" id="pins" style="width:40%; float: right;">
-</div>
-<select id="rgb" style="width:15em"">
-  <option value=1>RGB</option>
-  <option value=2>RBG</option>
-  <option value=3>GBR</option>
-  <option value=4>GRB</option>
-  <option value=5>BRG</option>
-  <option value=6>BGR</option>
-</select><br>
-</fieldset></center>
-</div>
-<div id="setSeq" class="tabcontent">
-<h3>Set Sequence</h3>
-<center><fieldset style="width:95%;text-align:center;"><legend><label  id="legend">Fire</label></legend>
-<label>pattern1</label><input type="text" style="width:5em" name="ptrn1"><input type="text" style="width:5em" name="color1"><input type="text" style="width:5em" name="dur1"><br>
-<label>pattern2</label><input type="text" style="width:5em" name="ptrn2"><input type="text" style="width:5em" name="color2"><input type="text" style="width:5em" name="dur2"><br>
-<input type="button" onclick="sendSetSequence()" value="Submit">
-</fieldset></center>
-</div>
-<div id="getSeq" class="tabcontent">
-<h3>Get Sequence</h3>
-<center><fieldset style="width:95%;text-align:center;"><legend><label  id="legend">Fire</label></legend>
-<label>pattern1</label><input type="text" style="width:5em" name="ptrn1"><input type="text" style="width:5em" name="color1"><input type="text" style="width:5em" name="dur1"><br>
-<label>pattern2</label><input type="text" style="width:5em" name="ptrn2"><input type="text" style="width:5em" name="color2"><input type="text" style="width:5em" name="dur2"><br>
-<input type="button" onclick="sendGetSequence()" value="Submit">
 </fieldset></center>
 </div>
 </body>

@@ -4,6 +4,7 @@
  *  Created on: Oct 24, 2018
  *      Author: cels
  */
+#define DISCOVERABLE
 #include <FastLED.h>
 #include "Symphony.h"
 #include "version.h"

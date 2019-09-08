@@ -155,13 +155,14 @@ function handleClick(ito) {
  * Handles change events
  */
 function handleChange(ito) {
+	alert("changed")
 	doReset = 1;
 }
 /**
  * Loads the patterns page where user can select the different light effects 
  * @returns
  */
-function loadPatterns(){
+function loadPatterns1(){
 	var mainDiv = document.getElementById("main");
 	mainDiv.innerHTML = "";
 	var table = document.createElement('table');
@@ -216,7 +217,8 @@ function loadPatterns(){
 	}
 	p.appendChild(table);
 	mainDiv.appendChild(p);
-	websocket.send('{"core":7,"cmd":7}');
+//	websocket.send('{"core":7,"cmd":7}');	//deprecated, we should use AJAX
+	//TODO ajax here
 }
 /////////////////////// for the config
 var stringToChange = 1;
@@ -297,12 +299,24 @@ function drawPixels(table, strings, numPixels, lightStyle) {
 	  	}
 	}
 }
+/**
+ * Handles the Light Config response.
+ * Response should contain the 
+ *  pixelCount, universe, mirrored flag
+ * @param xhttp - the response xhttp object
+ * @returns
+ */
+function getConfigHandler(xhttp) {
+	var cfgJson = JSON.parse(xhttp.responseText);
+	showPins(cfgJson, false);
+}
 /*
  * Read the config data from the ESP
  */
 function getConfig(){
-	var obj = {core:7, cmd: 2, cfg: 0};//cfg = 0; read config data
-	websocket.send(JSON.stringify(obj));
+//	var obj = {core:7, cmd: 2, cfg: 0};//cfg = 0; read config data?	//DEPRECATED sep 08 2019, we will use ajax
+//	websocket.send(JSON.stringify(obj));
+	sendToServer('GET', '/devConfig', getConfigHandler);
 }
 /*
  * Send the config data to the ESP
