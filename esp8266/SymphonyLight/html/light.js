@@ -162,7 +162,7 @@ function handleChange(ito) {
  * Loads the patterns page where user can select the different light effects 
  * @returns
  */
-function loadPatterns1(){
+function loadPatterns(){
 	var mainDiv = document.getElementById("main");
 	mainDiv.innerHTML = "";
 	var table = document.createElement('table');
