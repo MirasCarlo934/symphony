@@ -22,7 +22,7 @@ gulp.task('html', function() {
 });
 /* JavaScript Task */
 gulp.task('js', function() {
-    return gulp.src(['html/light.js', 'html/iro.js'])
+    return gulp.src(['html/light.js')
         .pipe(plumber())
         .pipe(concat('light.js'))
         .pipe(uglifyjs())
