@@ -17,6 +17,9 @@
 
 String myName = "symphonySocket";
 
+Filemanager	file = 	Filemanager();
+String socketConfigFile = "/socket.cfg";
+
 uint16_t myUniverse = 2;
 uint16_t countE131 = 0;  //count to be used to to determine if we are receiving any E131 packets
 long timerMilli = 0;
@@ -24,6 +27,7 @@ ESPAsyncE131 e131;
 bool prevSocketState;
 bool socketState = 1;
 bool isNormal = true;
+uint8_t isE131Enabled = 0;
 
 struct timerStruct {
 	bool enabled = false;
@@ -58,6 +62,19 @@ void handleToggle(AsyncWebServerRequest *request) {
 	Serial.printf("handleToggle state=%u\n",socketState);
 }
 
+/**
+ * reads the socket.cfg file then sends back to the client.
+ */
+void handleGetConfig(AsyncWebServerRequest *request) {
+	DynamicJsonBuffer jsonBuffer;
+	JsonObject& jsonObj = jsonBuffer.createObject();
+	jsonObj["e131"] = isE131Enabled;
+	String socketConfig;
+	jsonObj.printTo(socketConfig);
+	request->send(200, "text/html", socketConfig.c_str());
+	Serial.println("handleGetConfig");
+}
+
 void sendTimerData(AsyncWebSocketClient *client, JsonObject& json) {
 	json["core"] = CORE_CONTROL;
 	json["cmd"] = 1;
@@ -86,6 +103,7 @@ int wsHandler(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json)
 				sendTimerData(client, json);
 				break;
 			case 3://set timer command
+			{
 				timerData.enabled = true;
 				timerData.startMillis = millis();
 				timerData.hour = json["hrs"].as<int>();
@@ -104,6 +122,17 @@ int wsHandler(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json)
 				Serial.println(millis());
 #endif
 				break;
+			}
+			case 7://set config command
+			{
+				json.remove("core");
+				json.remove("cmd");
+				isE131Enabled = json["e131"].as<int>();
+				String confData;
+				json.printTo(confData);
+				file.saveToSPIFFS(socketConfigFile.c_str(), confData.c_str());
+				break;
+			}
 			case 10://on-off command
 				socketState = json["val"].as<int>();
 				product.setValue("0001", socketState);
@@ -120,6 +149,11 @@ void setup()
 	pinMode(SOCKET_PIN, OUTPUT);
 	digitalWrite(SOCKET_PIN, socketState);
 	Serial.println("\n\n************START Symphony Socket Setup***************");
+	String config = file.readFrSPIFFS(socketConfigFile.c_str());
+	Serial.printf("%s is %s\n",socketConfigFile.c_str(), config.c_str());
+	DynamicJsonBuffer jsonBuffer;
+	JsonObject& jsonObj = jsonBuffer.parseObject(config);
+	isE131Enabled = jsonObj["e131"].as<int>();
 	s.setWsCallback(wsHandler);
 	s.setMqttHandler("mqttId", "192.168.0.109", 1883);
 	char ver[10];
@@ -128,6 +162,9 @@ void setup()
 	s.on("/init", HTTP_GET, handleInit);
 	s.on("/toggle", HTTP_GET, handleToggle);
 	s.serveStatic("/socket.html", SPIFFS, "/socket.html");
+
+	s.on("/getConfig", HTTP_GET, handleGetConfig);
+
 	product = Product(s.nameWithMac, "Bedroom", "Socket");
 	Gui gui1 = Gui("Socket Control", BUTTON_CTL, "On/Off", 0, 1, socketState);
 	product.addProperty("0001", false, SOCKET_PIN, gui1);//add aproperty that has an attached pin
@@ -185,7 +222,7 @@ void loop() {
 					s.textAll(json);
 				}
 			}
-		} else {
+		} else if (isE131Enabled) {
 			if (!e131.isEmpty()) {
 				countE131++;
 				e131_packet_t packet;
