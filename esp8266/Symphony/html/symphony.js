@@ -48,6 +48,7 @@ function initialize() {
  * We are using ajax here.
  */
 function updateFirmware() {
+	var start = new Date();
 	  document.getElementById("status").innerHTML = "Updating firmware...";
 	  var xhttp = new XMLHttpRequest();
 	  xhttp.onreadystatechange = function() {
@@ -58,7 +59,9 @@ function updateFirmware() {
 	    }
 	  }
 	  xhttp.upload.addEventListener('progress', function(e){
-		  document.getElementById("status").innerHTML = 'Uploaded: '+Math.ceil(e.loaded/e.total * 100) + '%' ;
+		  var elapsed = (new Date() - start ) / 1000;
+//		  document.getElementById("status").innerHTML = 'Uploaded: '+Math.ceil(e.loaded/e.total * 100) + '%' ;
+		  document.getElementById("status").innerHTML = 'Elapsed: '+ Math.ceil(elapsed) + 's' ;
 		  document.getElementById("pct").innerHTML = Math.ceil(e.loaded/e.total * 100)+ '%'  ;
 		  document.getElementById("pct_bar").style.width = Math.ceil(e.loaded/e.total * 100) + '%';
 	  }, false);
@@ -294,12 +297,13 @@ function getRange(e) {
 }
 /**
  * Generic function to send data to server using websocket
+ * @param is the command to be sent to the server
  * @param formId is the id of the container form
  * @returns
  */
-function sendWSRequestToServer(formId) {
+function sendWSRequestToServer(cmd, formId) {
 	var count = document.getElementById(formId).elements.length;
-	var jsonRequest = {"core":7, "cmd":3};//we are sending a cmd to the device
+	var jsonRequest = {"core":7, "cmd":cmd};//we are sending a cmd to the device
 	for (i=0;i<count;i++) {
 		var id = document.getElementById(formId).elements[i].id;
 		var typ = document.getElementById(formId).elements[i].type;
