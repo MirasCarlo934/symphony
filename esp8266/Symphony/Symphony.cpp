@@ -208,18 +208,19 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 			case WS_EVT_CONNECT: {
 				Serial.print(F("WS Connect - "));
 				Serial.println(client->id());
-//				client->text("{\"box\":\"status\",\"msg\":\"Connected\"}");
-				DynamicJsonBuffer connReplyBuffer;
-				JsonObject& connReply = connReplyBuffer.createObject();
-				connReply["name"] = Symphony::hostName;
-				connReply["msg"] = "Connected";
-				connReply["mac"] = Symphony::mac;
-				connReply["box"] = "status";	//the element to show the message
-				connReply["cid"] = client->id();	//the client id
-				connReply.prettyPrintTo(Serial);
-				String strConnReply;
-				connReply.printTo(strConnReply);
-				client->text(strConnReply);
+// sep 06 2019, removed sending of data during connect, this should be handled via AJAX call
+////				client->text("{\"box\":\"status\",\"msg\":\"Connected\"}");
+//				DynamicJsonBuffer connReplyBuffer;
+//				JsonObject& connReply = connReplyBuffer.createObject();
+//				connReply["name"] = Symphony::hostName;
+//				connReply["msg"] = "Connected";
+//				connReply["mac"] = Symphony::mac;
+//				connReply["box"] = "status";	//the element to show the message
+//				connReply["cid"] = client->id();	//the client id
+//				connReply.prettyPrintTo(Serial);
+//				String strConnReply;
+//				connReply.printTo(strConnReply);
+//				client->text(strConnReply);
 				break;
 			}
 			case WS_EVT_DISCONNECT: {
@@ -241,6 +242,43 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 	}
 }
 
+/**
+* Handler tha displays Captive portal during softAP mode
+*/
+class CaptivePortalRequestHandler : public AsyncWebHandler {
+public:
+	CaptivePortalRequestHandler() {}
+	virtual ~CaptivePortalRequestHandler() {}
+	int ctr = 0;
+	bool canHandle(AsyncWebServerRequest *request){
+		//request->addInterestingHeader("ANY");
+		return true;
+	}
+
+	void handleRequest(AsyncWebServerRequest *request) {
+		AsyncClient *client = request->client();
+		ctr++;
+		Serial.printf("CaptivePortalRequestHandler Address:%i Port:%i, counter:%i\n", client->getRemoteAddress(), client->getRemotePort(), ctr);
+		AsyncResponseStream *response = request->beginResponseStream("text/html");
+		response->print("<meta http-equiv='Refresh' content='0; url=http://192.168.7.1/admin' />");  //this works in iPhone but not in ASUS android.
+																									//But in iPhone, if you repeatedly do captive portal login, this does not work anymore.
+																									//Need to forget and relogin again
+		request->send(response);
+	}
+};
+
+/**
+ * This is for the apple devices
+ * Sep 12 2019, but it does not seem to work
+ */
+void handleAppleCaptivePortal(AsyncWebServerRequest *request) {
+    String Page = F("<HTML><HEAD><TITLE>Success</TITLE></HEAD><BODY>Success</BODY></HTML>");
+    AsyncWebServerResponse *response = request->beginResponse(200, "text/plain");
+    response->addHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    response->addHeader("Pragma", "no-cache");
+    response->addHeader("Expires", "-1");
+    request->send(response);
+}
 void onWifiConnect(const WiFiEventStationModeGotIP &event) {
     Serial.print(F("*** Connected with IP: "));
     Serial.print(WiFi.localIP());
@@ -315,7 +353,7 @@ void handleGetFiles(AsyncWebServerRequest *request) {
 	request->send(200, "text/html", str);
 }
 /**
- * sends the device information
+ * sends response to the get device information request
  */
 void handleDevInfo(AsyncWebServerRequest *request) {
 	DynamicJsonBuffer jsonBuffer;
@@ -350,12 +388,34 @@ void handleFirmWareUpload(AsyncWebServerRequest *request, String filename, size_
 	fwResult = fManager.updateFirmware(filename, index, data, len, final);
 //	Serial.printf("**************************** handleFirmWareUpload %i\n", fwResult);
 }
+/**
+ * Handles the commit config command
+ */
+void handleDeviceConfig(AsyncWebServerRequest *request) {
+#ifdef DEBUG_ONLY
+	Serial.printf("\nhandleDeviceConfig start\n");
+#endif
+	AsyncWebParameter* pName = request->getParam("pName");
+	AsyncWebParameter* pSSID = request->getParam("pSSID");
+	AsyncWebParameter* pPass = request->getParam("pPass");
+	String configStr = "data:{name:$name, ssid:$ssid, pwd:$pwd}";
+	configStr.replace("$name", pName->value().c_str());
+	configStr.replace("$ssid", pSSID->value().c_str());
+	configStr.replace("$pwd", pPass->value().c_str());
+#ifdef DEBUG_ONLY
+	Serial.printf("\handleDeviceConfig will save config %s\n", configStr.c_str());
+#endif
+	fManager.saveConfig(configStr.c_str());
+	reboot = true;
+}
+
 /****
  * Initialize the webserver
  */
 void initWebServer() {
 
 	webServer.on("/control", showControl);		//shows the properties of the device for control functions
+	webServer.on("/config", HTTP_GET, handleDeviceConfig);		//handles the commit config
 	webServer.serveStatic("/admin", SPIFFS, "/admin.html");
 	webServer.serveStatic("/img.jpg", SPIFFS, "/img.jpg");
 	webServer.serveStatic("/symphony.css", SPIFFS, "/symphony.css");
@@ -370,6 +430,7 @@ void initWebServer() {
 	webServer.on("/properties.html", showProperties);
 	webServer.serveStatic("/files.html", SPIFFS, "/files.html");
 	webServer.serveStatic("/test.html", SPIFFS, "/test.html");
+//	webServer.on("/hotspot-detect.html", handleAppleCaptivePortal);//for apple devices
 	webServer.onNotFound([](AsyncWebServerRequest *request) {
 		request->send(404, "text/plain", "Page not found");
 	});
@@ -414,8 +475,13 @@ void Symphony::setup(String theHostName, String ver) {
 	// Setup WiFi Handler
 	wifiConnectHandler = WiFi.onStationModeGotIP(onWifiConnect);
 	delay(100);
+	initWebServer();	//initialize the html pages
 	connectToWifi();		//we are connecting to the wifi AP
 	createMyName(theHostName);		//create this device's name
+	if (WiFi.status() != WL_CONNECTED) {
+		//setup the AP for this device since we cannot connect to wifi as station
+		setupAP();
+	}
 	homeHtml = CONTROL_HTML1;
 	homeHtml.replace("$AAA$", hostName);
 	Serial.printf("Hostname is %s.local version is %s\n", hostName.c_str(), Symphony::version.c_str());
@@ -424,7 +490,7 @@ void Symphony::setup(String theHostName, String ver) {
 	// Setup WebSockets
 	ws.onEvent(wsEvent);
 	wsServer.addHandler(&ws);
-	initWebServer();	//initialize the html pages
+	webServer.begin();
 
 	wifiDisconnectHandler = WiFi.onStationModeDisconnected(onWiFiDisconnect);
 	webServer.begin();
@@ -517,24 +583,16 @@ void Symphony::setupAP() {
     /* Setup the DNS server redirecting all the domains to the apIP */
 	dnsServer.setErrorReplyCode(DNSReplyCode::NoError);
 	dnsServer.start(DNS_PORT, "*", apIP);
-	webServer.serveStatic("/generate_204", SPIFFS, "/admin.html");
-	webServer.serveStatic("/fwlink", SPIFFS, "/admin.html");
-
-	webServer.serveStatic("/", SPIFFS, "/admin.html");
-	webServer.serveStatic("/wifi", SPIFFS, "/admin.html");
-	webServer.serveStatic("/0wifi", SPIFFS, "/admin.html");
-	webServer.serveStatic("/wifisave", SPIFFS, "/admin.html");
-	webServer.serveStatic("/i", SPIFFS, "/admin.html");
-	webServer.serveStatic("/r", SPIFFS, "/admin.html");
-	webServer.onNotFound([](AsyncWebServerRequest *request) {
-		request->send(200, "text/html", "Captive Portal");
-		});
-//	webServer.on("/generate_204", HTTP_ANY, [](AsyncWebServerRequest *request) {
-//		request->send(200, "text/html", "Captive Portal");
-//		});
-//	webServer.on("/fwlink", HTTP_ANY, [](AsyncWebServerRequest *request) {
-//		request->send(200, "text/html", "Captive Portal");
-//		});
+	webServer.addHandler(new CaptivePortalRequestHandler()).setFilter(ON_AP_FILTER);//only when requested from AP
+//	webServer.serveStatic("/generate_204", SPIFFS, "/admin.html");
+//	webServer.serveStatic("/fwlink", SPIFFS, "/admin.html");
+//
+//	webServer.serveStatic("/", SPIFFS, "/admin.html");
+//	webServer.serveStatic("/wifi", SPIFFS, "/admin.html");
+//	webServer.serveStatic("/0wifi", SPIFFS, "/admin.html");
+//	webServer.serveStatic("/wifisave", SPIFFS, "/admin.html");
+//	webServer.serveStatic("/i", SPIFFS, "/admin.html");
+//	webServer.serveStatic("/r", SPIFFS, "/admin.html");
 }
 /**
  * Connect to the AP using the passkey
@@ -569,11 +627,6 @@ void Symphony::connectToWifi() {
 		i++;
 		delay(200);
 	    Serial.print(".");
-	}
-	if (WiFi.status() != WL_CONNECTED) {
-		setupAP();
-	} else {
-
 	}
 }
 /*
@@ -633,7 +686,7 @@ void Symphony::sendToWsServer(String replyStr){
 /***********************************************************************
 *					Utility classes
 ************************************************************************/
-/*
+/**
  * This is the class for the holder of data received by Websocket
  * Data is of the format <ssid>=<value>
  *    ex 0006=1
@@ -653,3 +706,4 @@ String WsData::getSSID() {
 String WsData::getValue() {
 	return value;
 }
+
