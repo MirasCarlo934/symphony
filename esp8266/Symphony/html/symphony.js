@@ -183,7 +183,7 @@ function renderPage(xhttp) {
     jsonResponse = JSON.parse(xhttp.responseText);
 //    alert(xhttp.responseText)
     itm = jsonResponse["data"];
-    name = jsonResponse["name"];
+    name = jsonResponse["name_mac"];
 	//we will create a new array within an array grouped according to temp[i].grp
 	//[ 
 	//    [{typ:1,lbl:'RED',val:'0007'},{typ:'Rad',lbl:'GREEN',val:'0007'}],
@@ -244,8 +244,10 @@ function renderPage(xhttp) {
     		} else if (p.typ == 30 || p.typ == 70) { //SLIDER_CTL = 30 , SLIDER_SNSR = 70
         		input.setAttribute('type',"text");
         		input.setAttribute('onclick',"getRange(this)");
+        		input.value = p.val;
         		div2.setAttribute('class', "txt btntxt");
-        		div2.setAttribute('id', "lbl_"+name+":"+p.val);
+        		div2.setAttribute('id', "lbl_"+p.id+":rng");
+        		div2.innerHTML = p.val;
     		} else {  //BUTTON_CTL = 20, BUTTON_SNSR = 60, UNDEF = 99
     			lbl.setAttribute('class', "bar barchkbox");
     			input.setAttribute('type',"checkbox");
@@ -275,7 +277,7 @@ function groups() {
 	}
 }
 function getRange(e) {
-  var tdiv = document.getElementById("lbl_"+e.id);
+  var tdiv = document.getElementById("lbl_"+e.id+":rng");
   var rangeVal = 0;
   if (tdiv.textContent.length>0) {
     rangeVal = tdiv.textContent;
@@ -293,7 +295,6 @@ function getRange(e) {
     "rng' parent='"+e.id+"' min='"+e.getAttribute("min")+"' max='"+e.getAttribute("max")+
     "' onchange='sendRangeWs(this)' value="+rangeVal+"></div></label><br>";
   document.body.appendChild(divRange);
-
 }
 /**
  * Generic function to send data to server using websocket
@@ -329,10 +330,15 @@ function sendOnOffWs(e) {
 function sendRangeWs(e) {
 //  var txt = document.getElementById("txt1");
 //  txt.value="range " +e.id+ "=" +e.value;
-  document.getElementById("popup").remove();
-  var tdiv = document.getElementById("lbl_"+e.getAttribute("parent"));
-  tdiv.textContent = e.value;
-  websocket.send(e.getAttribute("parent")+ "=" +e.value);       
+	document.getElementById("popup").remove();
+  	var tdiv = document.getElementById("lbl_"+e.getAttribute("parent")+":rng");
+  	tdiv.textContent = e.value;
+  	var jsonResponse = {"core":7, "cmd":10};// core:7 - this transaction is to control the device
+	jsonResponse["mac"] = mac;
+	jsonResponse["ssid"] = e.getAttribute("parent");
+	jsonResponse["cid"] = cid;
+	jsonResponse["val"] =  e.value;
+	websocket.send(JSON.stringify(jsonResponse));
 }
 
 function wsHandler() {	 
