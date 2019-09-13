@@ -259,6 +259,10 @@ int wsHandlerJason(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& 
 		}
 		if (cmd == 10) { //on-off command from the control page
 			Serial.println("command is 10");
+			if (json["ssid"] == "0004") {
+				Serial.printf("slider value is %s\n", json["val"].as<char *>());
+				FastLED.setBrightness(  json["val"].as<int>() );
+			}
 			if (json.containsKey("name")) {
 				Serial.printf("deviceName=%s, value=%i\n",json["name"].as<char *>(), json["val"].as<int>());
 			}
@@ -418,6 +422,8 @@ void setup()
 	product.addProperty("0002", false, gui2);
 	Gui gui3 = Gui("Grp1", RADIO_CTL, "Green", 0, 1, 0);
 	product.addProperty("0003", false, gui3);
+	Gui gui4 = Gui("Grp2", SLIDER_CTL, "Brightness", 0, 255, BRIGHTNESS);
+	product.addProperty("0004", false, gui4);
 	s.setProduct(product);
 	FastLED.setBrightness(  BRIGHTNESS );
 
