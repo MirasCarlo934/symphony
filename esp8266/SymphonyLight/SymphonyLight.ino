@@ -580,7 +580,7 @@ void loop()
 					if (myUniverse == htons(packet.universe)) {
 						for (int i=0; i<pixelCount;i++) {
 							for (int j=0; j<stringCount;j++){
-								CRGB theColor = getPixColorFromE131Stream(packet, 30, 0, j);
+								CRGB theColor = getPixColorFromE131Stream(packet, pixelCount, 0, j);
 								theLeds[j][i] = theColor;
 							}
 						}
@@ -591,7 +591,7 @@ void loop()
 						//code below is for the mirrored string
 						if (myUniverse == htons(packet.universe)) {
 							for (int i=0; i<pixelCount;i++) {
-								CRGB theColor = getPixColorFromE131Stream(packet, 30, 0, i);
+								CRGB theColor = getPixColorFromE131Stream(packet, pixelCount, 0, i);
 								for (int j=0; j<stringCount;j++){
 									theLeds[j][i] = theColor;
 								}
@@ -604,7 +604,7 @@ void loop()
 							for (int i=0; i<pixelCount;i++) {
 								for (int j=0; j<stringCount;j++){
 //									if (lights[j].fwdDirection)
-										theLeds[j][i] = getPixColorFromE131Stream(packet, 30, j, i);
+										theLeds[j][i] = getPixColorFromE131Stream(packet, pixelCount, j, i);
 //									else
 //										theLeds[j][pixelCount-1-i] = getPixColorFromE131Stream(packet, 30, j, i);
 								}
