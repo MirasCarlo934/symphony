@@ -243,6 +243,8 @@ function renderPage(xhttp) {
     				input.checked=true;
     		} else if (p.typ == 30 || p.typ == 70) { //SLIDER_CTL = 30 , SLIDER_SNSR = 70
         		input.setAttribute('type',"text");
+        		input.setAttribute('min',p.min);
+        		input.setAttribute('max',p.max);
         		input.setAttribute('onclick',"getRange(this)");
         		input.value = p.val;
         		div2.setAttribute('class', "txt btntxt");
