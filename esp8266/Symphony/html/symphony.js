@@ -184,6 +184,10 @@ function renderPage(xhttp) {
 //    alert(xhttp.responseText)
     itm = jsonResponse["data"];
     name = jsonResponse["name_mac"];
+    var splitStr = name.split("_");
+    var hiddenName = document.getElementById("hiddenName");
+	hiddenName.value = splitStr[0];
+	mac = splitStr[1];
 	//we will create a new array within an array grouped according to temp[i].grp
 	//[ 
 	//    [{typ:1,lbl:'RED',val:'0007'},{typ:'Rad',lbl:'GREEN',val:'0007'}],
@@ -423,8 +427,7 @@ function handleWsMessage(evt) {
   		//alert(JSON.stringify(jsonResponse));
 //				name = document.getElementById("theName").innerHTML;
   		  		name = document.getElementById("hiddenName").value;
-//alert(" name " + name +" mac " +mac);
-//alert(" name_mac " + jsonResponse["name_mac"]);
+//alert("element: name " + name +" mac " +mac +" from json: name_mac " + jsonResponse["name_mac"]);
   		   		if (jsonResponse["name_mac"] == name+'_'+mac) {
 //alert(" jsonResponse.data " + jsonResponse.data);
   		   			for (i in jsonResponse.data){
