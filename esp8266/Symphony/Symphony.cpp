@@ -27,7 +27,7 @@
 #include "Symphony.h"
 #include "DeviceDiscovery.h"
 
-#define DISCOVERABLE
+//#define DISCOVERABLE
 
 String Symphony::rootProperties = "";
 String Symphony::hostName = "hostName";
@@ -35,6 +35,7 @@ String Symphony::mac = "";
 String Symphony::nameWithMac = "myName";
 Product Symphony::product;
 String Symphony::version = "0.0";
+bool Symphony::hasMqttHandler = false;
 
 AsyncWebServer		webServer(HTTP_PORT); // Web Server
 AsyncWebServer		wsServer(WS_PORT); // WebSocket Server
@@ -293,7 +294,8 @@ void onWifiConnect(const WiFiEventStationModeGotIP &event) {
     } else {
         Serial.println(F("*** Error setting up mDNS responder ***"));
     }
-    theMqttHandler.connect();
+    if (Symphony::hasMqttHandler)
+    	theMqttHandler.connect();
 
 
 #ifdef DISCOVERABLE
@@ -521,6 +523,7 @@ bool Symphony::loop() {
 		//we process other items if it is not reboot mode
 		dnsServer.processNextRequest();
 //		webSocketClient.loop();July 13 2019 do we really need this device to be a ws client?
+		registerProduct();//register this product to BM
 	}
 	if (!isUpdateFw) {
 #ifdef DISCOVERABLE
@@ -563,6 +566,7 @@ void Symphony::setMqttHandler(const char *id, const char *url, int port) {
 	theMqttHandler.setId(id);
 	theMqttHandler.setUrl(url);
 	theMqttHandler.setPort(port);
+	hasMqttHandler = true;
 }
 
 /**
@@ -654,8 +658,8 @@ void Symphony::createMyName(String theHostName) {
  */
 void Symphony::setProduct(Product p) {
 	product = p;
-	theMqttHandler.setProduct(p);
 	setRootProperties(product.stringify());
+	isProductSet = true;
 }
 /**
  * sends broadcast message to all connected websocket clients
@@ -679,6 +683,36 @@ void Symphony::doReboot() {
  */
 void Symphony::setRootProperties(String s) {
 	Symphony::rootProperties = s;
+}
+/**
+ * /should be called after mqttHandler has been set and product has been set
+ */
+bool Symphony::registerProduct() {
+	if (!isRegistered) {
+		if (isProductSet) {
+			if ( hasMqttHandler && theMqttHandler.isConnected()) {
+				//register to the BM if not yet registered and if product is set and if mqtt is connected
+				isRegistered = true;
+				theMqttHandler.setProduct(product);
+				Serial.println("************** registerProduct start 1");
+				/*	Registration format is:
+					"{RID:5ccf7f15a492,CID:0000,RTY:register,name:Ngalan,roomID:J444,product:0000}";
+				*/
+				DynamicJsonBuffer jsonBuffer;
+				JsonObject& regJson = jsonBuffer.createObject();
+				regJson["RID"] = Symphony::mac;
+				regJson["CID"] = "0000";
+				regJson["RTY"] = "register";
+				regJson["name"] = nameWithMac;
+				regJson["roomID"] = "J444";
+				regJson["product"] = "0000";
+				String strReg;
+				regJson.printTo(strReg);
+				theMqttHandler.publish(strReg.c_str(), 0);
+				Serial.printf("************** registerProduct end payload len=%i\n", strReg.length());
+			}
+		}
+	}
 }
 void Symphony::sendToWsServer(String replyStr){
 //	webSocketClient.sendTXT(replyStr);July 13 2019 do we really need this device to be a ws client?

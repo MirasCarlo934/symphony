@@ -16,25 +16,25 @@ const char* mqttServer = "192.168.1.5";
 int mqttPort = 1883;
 Product thisProduct;
 
-boolean isConnected = false;
+boolean connected = false;
 
 void onMqttConnect(bool sessionPresent) {
-  Serial.println("\t\t[MqttHandler] ************** Connected to MQTT.");
-  Serial.print("Session present: ");
-  Serial.println(sessionPresent);
-  uint16_t packetIdSub = mqttClient.subscribe("control", 0);
-  Serial.print("Subscribing at QoS 2, packetId: ");
-  Serial.println(packetIdSub);
-  mqttClient.publish("BM", 0, true, "test 1");
-  Serial.println("\t\t[MqttHandler] ************** Publishing at QoS 0");
-  uint16_t packetIdPub1 = mqttClient.publish("BM", 1, true, "test 2");
-  Serial.print("Publishing at QoS 1, packetId: ");
-  Serial.println(packetIdPub1);
-  uint16_t packetIdPub2 = mqttClient.publish("BM", 2, true, "test 3");
-  Serial.print("Publishing at QoS 2, packetId: ");
-  Serial.println(packetIdPub2);
-  uint16_t packetIdPub3 = mqttClient.publish("BM", 2, true, thisProduct.stringify().c_str());
-  isConnected = true;
+//  Serial.println("\t\t[MqttHandler] ************** Connected to MQTT.");
+//  Serial.print("Session present: ");
+//  Serial.println(sessionPresent);
+//  uint16_t packetIdSub = mqttClient.subscribe("control", 0);
+//  Serial.print("Subscribing at QoS 2, packetId: ");
+//  Serial.println(packetIdSub);
+//  mqttClient.publish("BM", 0, true, "test 1");
+//  Serial.println("\t\t[MqttHandler] ************** Publishing at QoS 0");
+//  uint16_t packetIdPub1 = mqttClient.publish("BM", 1, true, "test 2");
+//  Serial.print("Publishing at QoS 1, packetId: ");
+//  Serial.println(packetIdPub1);
+//  uint16_t packetIdPub2 = mqttClient.publish("BM", 2, true, "test 3");
+//  Serial.print("Publishing at QoS 2, packetId: ");
+//  Serial.println(packetIdPub2);
+//  uint16_t packetIdPub3 = mqttClient.publish("BM", 2, true, thisProduct.stringify().c_str());
+  connected = true;
 
 }
 
@@ -136,6 +136,13 @@ void MqttHandler::connect() { //to connect to MQTT server
  * Publish data to the mqtt server
  */
 void MqttHandler::publish(const char* payload, uint8_t qos) {
+	Serial.printf("\t\t[MqttHandler] ************** Publishing at QoS %i\n", qos);
 	mqttClient.publish("BM", qos, true, payload);
-	Serial.printf("\t\t[MqttHandler] ************** Publishing at QoS %i", qos);
+}
+
+/**
+ * Return the value of connection status
+ */
+bool  MqttHandler::isConnected() {
+	return connected;
 }

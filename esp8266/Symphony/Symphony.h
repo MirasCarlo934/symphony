@@ -49,6 +49,7 @@ class Symphony {
 	    static String nameWithMac;//the name of this device that includes the mac address
 	    static Product product;
 	    static String version;
+	    static bool hasMqttHandler;
 
 	    //public methods
 	    void setup(String theHostName, String ver);
@@ -68,6 +69,7 @@ class Symphony {
 	    String ap_ssid, ap_passphrase = "12345678";
 	    IPAddress apIP = IPAddress (192, 168, 7, 1);
 	    String ssid = "bahay", pwd = "carlopiadredcels";
+	    bool isProductSet = false, isRegistered = false;
 
 	    int wifiMaxConnCount=50;  //max counter when connecting to wifi AP, corresponds to 10secs
 	    long restartTimer = 0;  //the restart timer in millis.  this will restart every maxrestartTimer if wifi is not connected.
@@ -76,6 +78,7 @@ class Symphony {
 	    void connectToWifi();
 	    void createMyName(String theHostName);
 	    void setupAP();
+	    bool registerProduct();	//should be called after mqttHandler has been set and product has been set
 };
 
 /**
