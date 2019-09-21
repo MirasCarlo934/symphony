@@ -17,8 +17,8 @@
  *TODO
  *
  *
- * Enables the Symphony core to do simple device discovery.  Uses multicast to manage the ip addresses.
- * multicast ip is 239.1.2.3 port is 1234
+ * Enables the Symphony core to do simple device discovery.  Uses UDP multicast to manage the ip addresses.
+ * UDP multicast ip is 239.1.2.3 port is 1234
  *
  *	json format
  *	{"mode":<int>, "name":<String>, "ip":<String>, "data":<array>}
