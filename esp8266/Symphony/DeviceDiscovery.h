@@ -281,9 +281,11 @@ boolean DeviceInfo::exists(IPAddress findIP) {
 #endif
 		//we evaluate the 4th ip digit since we assume that these devices belong to the same network
 		if (clientDevices[i].ip[3] == findIP[3]) {
+#ifdef DEBUG_DISCOVERY
 			Serial.printf("************ client Device found match IP:%u.%u.%u.%u, find IP:%u.%u.%u.%u, i:%i\n",
 				clientDevices[i].ip[0], clientDevices[i].ip[1], clientDevices[i].ip[2], clientDevices[i].ip[3],
 				findIP[0],findIP[1], findIP[2], findIP[3], i);
+#endif
 			clientDevices[i].active = true;
 			clientDevices[i].time = millis();
 		}
