@@ -176,7 +176,7 @@ void setup()
 		Serial.println(F("*** e131.begin failed ***"));
 
 //	e131.begin(E131_MULTICAST, myUniverse, 1);
-	Serial.printf("\n************END Symphony Socket Setup Version %u.%u***************", SYMPHONY_VERSION, SOCKET_VERSION);
+	Serial.printf("\n************END Symphony Socket Setup Version %u.%u***************\n", SYMPHONY_VERSION, SOCKET_VERSION);
 }
 
 // The loop function is called in an endless loop
