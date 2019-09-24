@@ -58,13 +58,26 @@ function updateFirmware() {
 	      isUpdateFW = true;
 	    }
 	  }
-	  xhttp.upload.addEventListener('progress', function(e){
+	  xhttp.upload.addEventListener('progress', 
+		function(e){
 		  var elapsed = (new Date() - start ) / 1000;
 //		  document.getElementById("status").innerHTML = 'Uploaded: '+Math.ceil(e.loaded/e.total * 100) + '%' ;
 		  document.getElementById("status").innerHTML = 'Elapsed: '+ Math.ceil(elapsed) + 's' ;
 		  document.getElementById("pct").innerHTML = Math.ceil(e.loaded/e.total * 100)+ '%'  ;
 		  document.getElementById("pct_bar").style.width = Math.ceil(e.loaded/e.total * 100) + '%';
-	  }, false);
+	  	}, false);
+	  xhttp.upload.addEventListener("error", 
+		function(e){
+		  alert("firmware load error");
+	  	}, false);
+	  xhttp.upload.addEventListener("abort", 
+		function(e){
+		  alert("firmware load aborted");
+	  	}, false);
+	  xhttp.upload.addEventListener("load", 
+		function(e){
+		  alert("firmware successfully loaded");
+	  	}, false);
 	  if( document.getElementById('bin').files.length === 0){
 		  document.getElementById("status").innerHTML = "Please choose bin file.";
 	  } else {
