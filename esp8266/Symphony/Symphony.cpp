@@ -260,11 +260,12 @@ public:
 		AsyncClient *client = request->client();
 		ctr++;
 		Serial.printf("CaptivePortalRequestHandler Address:%i Port:%i, counter:%i\n", client->getRemoteAddress(), client->getRemotePort(), ctr);
-		AsyncResponseStream *response = request->beginResponseStream("text/html");
-		response->print("<meta http-equiv='Refresh' content='0; url=http://192.168.7.1/admin' />");  //this works in iPhone but not in ASUS android.
-																									//But in iPhone, if you repeatedly do captive portal login, this does not work anymore.
-																									//Need to forget and relogin again
-		request->send(response);
+//		AsyncResponseStream *response = request->beginResponseStream("text/html");
+//		response->print("<meta http-equiv='Refresh' content='0; url=http://192.168.7.1/admin' />");  //this works in iPhone but not in ASUS android.
+//																									//But in iPhone, if you repeatedly do captive portal login, this does not work anymore.
+//																									//Need to forget and relogin again
+//		request->send(response);
+		request->redirect("/admin");		//this works in android but not in iphone
 	}
 };
 
@@ -364,6 +365,7 @@ void handleDevInfo(AsyncWebServerRequest *request) {
 #ifdef DEBUG_ONLY
 		Serial.println("********************** AJAXGet device Info.");
 		jsonObj.prettyPrintTo(Serial);
+		Serial.println();
 #endif
 		String devInfo;
 		jsonObj.printTo(devInfo);
@@ -388,6 +390,9 @@ void handleFirmWareUpload(AsyncWebServerRequest *request, String filename, size_
 	isUpdateFw = true;
 	delay(50);	//this is to enable the update to do SPIFF write before getting another data to write
 	fwResult = fManager.updateFirmware(filename, index, data, len, final);
+//	if (fwResult < 0) {
+//		request->send(404, "text/html", "Firmware Update Error.");
+//	}
 //	Serial.printf("**************************** handleFirmWareUpload %i\n", fwResult);
 }
 /**
