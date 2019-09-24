@@ -27,7 +27,7 @@
 #include "Symphony.h"
 #include "DeviceDiscovery.h"
 
-//#define DISCOVERABLE
+#define DISCOVERABLE
 
 String Symphony::rootProperties = "";
 String Symphony::hostName = "hostName";
@@ -289,12 +289,6 @@ void onWifiConnect(const WiFiEventStationModeGotIP &event) {
     // Setup mDNS / DNS-SD
     char chipId[7] = { 0 };
     snprintf(chipId, sizeof(chipId), "%06x", ESP.getChipId());
-    MDNS.setInstanceName("staticHostname");
-    if (MDNS.begin("static.Hostname")) {
-        MDNS.addService("http", "tcp", HTTP_PORT);
-    } else {
-        Serial.println(F("*** Error setting up mDNS responder ***"));
-    }
     if (Symphony::hasMqttHandler)
     	theMqttHandler.connect();
 
@@ -492,6 +486,13 @@ void Symphony::setup(String theHostName, String ver) {
 	homeHtml = CONTROL_HTML1;
 	homeHtml.replace("$AAA$", hostName);
 	Serial.printf("Hostname is %s.local version is %s\n", hostName.c_str(), Symphony::version.c_str());
+	MDNS.setInstanceName("staticHostname");
+	if (MDNS.begin(Symphony::hostName.c_str())) {
+		//setup the mDNS responder
+		MDNS.addService("http", "tcp", HTTP_PORT);
+	} else {
+		Serial.println(F("*** Error setting up mDNS responder ***"));
+	}
 	// Handle OTA update from asynchronous callbacks
 	Update.runAsync(true);
 	// Setup WebSockets
