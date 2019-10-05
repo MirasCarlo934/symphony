@@ -1,0 +1,17 @@
+{
+  "symphony" : {
+    "bahay" : {
+      "dining" : {
+        "SoloSocket" : {
+          "id" : "id1",
+          "properties" : {
+            "state" : {
+              "isGoogle" : "true",
+              "value" : "1"
+            }
+          }
+        }
+      }
+    }
+  }
+}
