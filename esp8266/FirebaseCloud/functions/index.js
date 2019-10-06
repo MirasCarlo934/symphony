@@ -203,6 +203,7 @@ function processV1Request (request, response) {
     }
   }
 }
+/*
 // Construct rich response for Google Assistant (v1 requests only)
 const app = new DialogflowApp();
 const googleRichResponse = app.buildRichResponse()
@@ -265,6 +266,7 @@ const richResponsesV1 = {
     }
   }
 };
+*/
 /*
 * Function to handle v2 webhook requests from Dialogflow
 */
