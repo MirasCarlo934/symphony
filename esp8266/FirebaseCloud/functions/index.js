@@ -11,6 +11,7 @@ admin.initializeApp(functions.config().firebase)
 exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, response) => {
   console.log('Dialogflow Request headers: ' + JSON.stringify(request.headers));
   console.log('Dialogflow Request body: ' + JSON.stringify(request.body));
+
   if (request.body.queryResult) {
     processRequest(request, response);
   } else {
@@ -32,11 +33,16 @@ function processRequest (request, response) {
   // Get the session ID to differentiate calls from different users
   let session = (request.body.session) ? request.body.session : undefined;
   // Create handlers for Dialogflow actions as well as a 'default' handler
-  
-  console.log('SYMPHONY: 1');
+  const app = dialogflow({request: request, response: response});  
   const googleAssistantRequest = 'google'; // Constant to identify Google Assistant requests
-  console.log('SYMPHONY: 2');
-  const app = dialogflow({request: request, response: response});
+  const rslt = request.body.queryResult;
+  console.log(`SYMPHONY: request is ${rslt.queryText}`);
+  
+  const device = rslt.parameters.devices;
+  const status = rslt.parameters.status;
+  const room = rslt.parameters.room; 
+  const property = rslt.parameters.property;
+  console.log(`SYMPHONY getting /symphony/bahay/${room}/${device}/properties/${property}`);
   
   const actionHandlers = {
     // The default welcome intent has been matched, welcome the user (https://dialogflow.com/docs/events#default_welcome_intent)
@@ -50,18 +56,118 @@ function processRequest (request, response) {
     },
     // Default handler for unknown or undefined actions
     'default': () => {
-		  const device = `${devices}` ;
-		  const status = '${status}' ;
-		  const room = '${room}'; 
-		  const property = '${property}' ;
-		  console.log('SYMPHONY: 3');
-		  console.log('SYMPHONY_LOG getting /symphony/bahay/'+room+'/'+device+'/properties/'+property);
+    	/** for quick testing of parameters
+    	console.log('SYMPHONY: 3');
+		  const device = rslt.parameters.devices;
+		  const status = rslt.parameters.status;
+		  const room = rslt.parameters.room; 
+		  const property = rslt.parameters.property;
+		  console.log(`SYMPHONY getting /symphony/bahay/${room}/${device}/properties/${property}`);
       let responseToUser = {
         //fulfillmentMessages: richResponsesV2, // Optional, uncomment to enable
         //outputContexts: [{ 'name': `${session}/contexts/weather`, 'lifespanCount': 2, 'parameters': {'city': 'Rome'} }], // Optional, uncomment to enable
-        fulfillmentText: 'This is from Dialogflow\'s Cloud Functions for Firebase editor!' // displayed response
+        fulfillmentText: 'This is from Dialogflow\'s Cloud Functions for Firebase editor! test2' // displayed response
       };
       sendResponse(responseToUser);
+      */
+    	if (requestSource === googleAssistantRequest) {
+            //query the tree of the room to find the device
+            console.log('SYMPHONY_LOG 1 getting /symphony/bahay/'+room+'/'+device+'/properties/'+property);
+            admin.database().ref('/symphony/bahay/'+room+'/'+device+'/properties').once('value')
+              .then(function(snapshot) {
+            	var retVal =  snapshot.val();
+            	if (retVal == null) {//device not found
+            		console.log('SYMPHONY_LOG 2 query once retVal is null. No Device found.');
+            		let responseToUser = {
+                            //googleRichResponse: googleRichResponse, // Optional, uncomment to enable
+                            //googleOutputContexts: ['weather', 2, { ['city']: 'rome' }], // Optional, uncomment to enable
+                            speech: 'There is no ' + device +' in '+ room +'.' , // spoken response
+                            text: 'This is from Symphony\'s Cloud Default Functions for Firebase editor! :-) \nThere is no ' + device +' in '+ room +'.', // displayed response
+                            fulfillmentText: 'There is no ' + device +' in '+ room +'.' , // displayed response
+                    }; 	
+            		sendResponse(responseToUser);
+            	} else {//device found
+                    if (property.length == 0) {//property not found, we will assume the default property 'state'
+                    	console.log('SYMPHONY_LOG 3 property is null');
+                    	if (status == 'on' || status == 'off') {//we will be setting the state property of the device
+//                    		if (status == 'on' ) {//we will be setting the state property of the device
+                        		//let us check if device has state property
+                        		admin.database().ref('/symphony/bahay/'+room+'/'+device+'/properties/state').once('value')
+                  			  	.then(function(snpsht) {
+                  			  		if (snpsht.val() == null) {//property not found
+                  			  			console.log('SYMPHONY_LOG 4 device has no state property.');
+                  			  		} else {//property found, let us update the value
+                  			  			console.log('SYMPHONY_LOG 5 device has state property. id='+snpsht.val().id+' value='+snpsht.val().value);
+                  			  			console.log('SYMPHONY_LOG 6 will update /symphony/bahay/'+room+'/'+device+'/properties/state/value to '+status + ' retVal=' + retVal);
+                  			  			if (status == 'on')
+                  			  				admin.database().ref('/symphony/bahay/'+room+'/'+device+'/properties/state').update({"/value":"1" , "/isGoogle":"true"});
+                  			  			else
+                  			  				admin.database().ref('/symphony/bahay/'+room+'/'+device+'/properties/state').update({"/value":"0" , "/isGoogle":"true"});
+                  			  		}      			  		
+                  			  	});
+                    		} else {//we will set the other properties of the device
+                    			console.log('SYMPHONY_LOG 7 will set other properties');
+                    			for (var key in retVal) {//loop on all properties of the device to find the specific property
+                        			console.log('SYMPHONY_LOG 8 key='+key+' will find the property');
+                        			admin.database().ref('/symphony/bahay/'+room+'/'+device+'/properties/'+key).once('value')
+                        			  .then(function(snpsht) {
+                        				  console.log('SYMPHONY_LOG 9 snpsht='+snpsht.val()+' id='+snpsht.val().id+' value='+snpsht.val().value);
+//                        				  admin.database().ref('/symphony/bahay/'+room+'/'+device+'/properties/state/value').update(status);
+                        			  });        			
+                        		}
+                    		}
+                    } else {
+                    	console.log('SYMPHONY_LOG 10 property is ' + property);
+                    	//let us check if device has state property
+                		admin.database().ref('/symphony/bahay/'+room+'/'+device+'/properties/'+property).once('value')
+          			  	.then(function(snpsht) {
+          			  		if (snpsht.val() == null) {//property not found
+          			  			console.log('SYMPHONY_LOG 11 device has no '+property+' property.');
+          			  		} else {//property found, let us update the value
+          			  			console.log('SYMPHONY_LOG 12 device has '+property+' property. id='+snpsht.val().id+' value='+snpsht.val().value);
+          			  			console.log('SYMPHONY_LOG 13 will update /symphony/bahay/'+room+'/'+device+'/properties/'+property+'/value to '+status + ' retVal=' + retVal);
+          			  			if (status == 'on')
+          			  				admin.database().ref('/symphony/bahay/'+room+'/'+device+'/properties/'+property).update({"/value":"1" , "/isGoogle":"true"});
+          			  			else
+          			  				admin.database().ref('/symphony/bahay/'+room+'/'+device+'/properties/'+property).update({"/value":"0" , "/isGoogle":"true"});
+          			  		}      			  		
+          			  	});
+                    }
+
+            		//device exists, update the tree for the device
+                    if (property.length == 0) {
+                    	console.log('SYMPHONY_LOG 14 device has no '+property+' property.');
+                    	let responseToUser = {
+                                //googleRichResponse: googleRichResponse, // Optional, uncomment to enable
+                                //googleOutputContexts: ['weather', 2, { ['city']: 'rome' }], // Optional, uncomment to enable
+                                speech: 'Turning ' + device +' ' + status +' in '+ room +'.' , // spoken response
+                                text: 'This is from Symphony\'s Cloud Default Functions for Firebase editor! :-) \nTurning ' + device +' ' + status+'.', // displayed response
+                                fulfillmentText: 'Turning ' + device +' ' + status +' in '+ room +'.', // displayed response
+                        }; 	
+                    	sendResponse(responseToUser);
+                    } else {
+                    	console.log('SYMPHONY_LOG 15 property is ' + property);
+                    	let responseToUser = {
+                                //googleRichResponse: googleRichResponse, // Optional, uncomment to enable
+                                //googleOutputContexts: ['weather', 2, { ['city']: 'rome' }], // Optional, uncomment to enable
+                    			speech: 'Turning ' + device +' ' + property + ' ' + status +' in '+ room +'.' , // spoken response
+                                text: 'This is from Symphony\'s Cloud Default Functions for Firebase editor! :-) \nTurning ' + device +' ' + status+'.', // displayed response
+                                fulfillmentText: 'Turning ' + device +' ' + property + ' ' + status +' in '+ room +'.', // displayed response
+                        };
+                    	sendResponse(responseToUser);
+                    }
+            	}
+            });             
+          } else {
+            let responseToUser = {
+              //data: richResponsesV1, // Optional, uncomment to enable
+              //outputContexts: [{'name': 'weather', 'lifespan': 2, 'parameters': {'city': 'Rome'}}], // Optional, uncomment to enable
+              speech: 'This message is from Dialogflow\'s Cloud Functions for Firebase editor!', // spoken response
+              text: 'This is from Dialogflow\'s Cloud Functions for Firebase editor! :-)', // displayed response
+              fulfillmentText: 'This message is from Dialogflow\'s Cloud Functions for Firebase editor!', // displayed response
+            };
+            sendResponse(responseToUser);
+          }
     }
   };
   // If undefined or unknown action use the default handler
@@ -95,6 +201,7 @@ function processRequest (request, response) {
     }
   }
 }
+
 const richResponseV2Card = {
   'title': 'Title: this is a title',
   'subtitle': 'This is an subtitle.  Text can include unicode characters including emoji 📱.',
