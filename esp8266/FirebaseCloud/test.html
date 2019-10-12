@@ -1,0 +1,120 @@
+<header>
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-database.js"></script>
+<!-- cript src="fb-db.js"></script -->
+
+<!-- This is a test for direct ws connection to firebase -->
+
+<script>
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyBiJmdwS5A7f95VCkiIZ5UNbnv8NHhdWjY",
+    authDomain: "symphony-dcc4c.firebaseapp.com",
+    databaseURL: "https://symphony-dcc4c.firebaseio.com",
+    projectId: "symphony-dcc4c",
+    storageBucket: "symphony-dcc4c.appspot.com",
+    messagingSenderId: "790527709114",
+    appId: "1:790527709114:web:ce13a2eb7f5cf36591d783"
+  };
+  // Initialize Firebase
+  //firebase.initializeApp(firebaseConfig);
+  function testWs() {
+	  websocket = new WebSocket("wss://s-usc1c-nss-231.firebaseio.com/.ws?v=5&ns=symphony-dcc4c");
+	  wsHandler();
+  }
+    function wsHandler() {	 
+	     websocket.onopen = function(evt) {
+//alert("onopen: " +  evt.data);
+	    	 
+	     };
+	     websocket.onclose = function(evt) {
+//alert("onclose: " +  evt.data);
+	     };
+	     websocket.onmessage = function(evt) {
+	    	 /*
+	    	   We will receive data of these forms
+	    	 	form1. data: "{"t":"c","d":{"t":"h","d":{"ts":1570898661383,"v":"5","h":"s-usc1c-nss-231.firebaseio.com","s":"f6RW480tyjkw24zajm2KeNOIUYb42H5R"}}}"
+	    	 	form2. data: "{"t":"d","d":{"r":2,"b":{"s":"ok","d":{}}}}"
+	    	 	form3. data: "{"t":"d","d":{"b":{"p":"text","d":"Hello World! 32"},"a":"d"}}"
+			   
+	    	 	form1 is response to connection (as indicated by "t":"c")
+	    	 	form2 is response from send message (notice "s":"ok"), it indicates message succesfully received
+	    	 	form3 is message when node being listened to has a change (notice "p":"text"), it indicates datatype
+	    	 	
+	    	 */
+//alert("onmessage: " +  JSON.stringify(evt.data));
+	    	var jsonResponse = JSON.parse(evt.data);
+	    	var respType = jsonResponse["t"];
+	    	var data1 = jsonResponse["d"];
+	    	
+	    	if (respType == "c") {	//connection response
+		    	var dataSegs1 = {"t":"d","d":{"r":1,"a":"s","b":{"c":{"sdk.js.7-1-0":1}}}}
+		    	var s1 = JSON.stringify(dataSegs1);
+//alert("sending 1 \n" + s1);
+		    	websocket.send(s1);
+		    	var dataSegs2 = {"t":"d","d":{"r":2,"a":"q","b":{"p":"/text","h":""}}};
+		    	var s2 = JSON.stringify(dataSegs2);
+//alert("sending 2 \n" + s2);
+		    	websocket.send(s2);	    		
+	    	} else if (respType == "d") {	//data response
+//alert("message from firebase\n"+JSON.stringify(data1.b))	    		
+	    		if (data1.b.p!=null) {
+	    			//this is a change in data message
+	    			document.getElementById('bigOne').innerText = data1.b.d; 
+	    		}
+	    	}
+	    	//websocket2 = new WebSocket("wss://s-usc1c-nss-231.firebase.io.com/.ws?v=5&s="+data1.d.s+"&ns=symphony-dcc4c");
+	  	    //wsHandler2();
+	     }
+	     websocket.onerror = function(evt) {
+	       console.log("ERROR: " + evt.data);
+	     };
+	}
+  
+  function wsHandler2() {	 
+	     websocket2.onopen = function(evt) {
+	    	 alert("onopen2: " +  evt.data);
+	    	 
+	     };
+	     websocket2.onclose = function(evt) {
+	    	 alert("onclose2: " +  evt.data);
+	     };
+	     websocket2.onmessage = function(evt) {
+	    	alert("onmessage2: " +  evt.data);
+	     }
+	     websocket2.onerror = function(evt) {
+	       console.log("ERROR2: " + evt.data);
+	     };
+	}
+function loadBody() {
+  alert("loading body")
+  // getting the text value from the database
+  var bigOne = document.getElementById('bigOne');
+  
+  //read data from database
+  var dbReadRef = firebase.database().ref().child('text');
+  dbReadRef.on('value', snap => bigOne.innerText = snap.val());
+  //insert data in database
+  var dbRef = firebase.database().ref().child('test');
+  dbRef.child("users").set({name: 'celso'}).then().catch();
+}
+
+function sendMsg() {
+  alert("Sending " + document.getElementById("msg").value);
+  //update data in database
+  var dbRef = firebase.database().ref().child('test');
+  dbRef.child("users").update({name: document.getElementById("msg").value});  
+}
+</script>
+</header>
+<body onload="testWs()">
+<!-- body onload="loadBody()" -->
+
+    <p>Getting started with Firebase</p>
+    <h1 id="bigOne"></h1>
+    <label>Input Text</label>
+    <input type="text" id="msg"><br>
+    <input type="button" value="Send" onclick="sendMsg()">
+
+</body>

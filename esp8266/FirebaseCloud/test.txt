@@ -1,0 +1,24 @@
+This is a manual debug of firebase.js so that we can get how to connect to firebase via websocket
+
+Connect:
+	websocket = new WebSocket("wss://s-usc1c-nss-231.firebaseio.com/.ws?v=5&ns=symphony-dcc4c");
+Response:
+	data: "{"t":"c","d":{"t":"h","d":{"ts":1570898661383,"v":"5","h":"s-usc1c-nss-231.firebaseio.com","s":"f6RW480tyjkw24zajm2KeNOIUYb42H5R"}}}"
+
+Then send this:
+	var dataSegs1 = {"t":"d","d":{"r":1,"a":"s","b":{"c":{"sdk.js.7-1-0":1}}}}
+	var s1 = JSON.stringify(dataSegs1);
+	websocket.send(s1);
+response:
+	data: "{"t":"d","d":{"r":1,"b":{"s":"ok","d":""}}}"
+
+Send again to listen to "/text" node
+	var dataSegs2 = {"t":"d","d":{"r":2,"a":"q","b":{"p":"/text","h":""}}};
+	var s2 = JSON.stringify(dataSegs2);
+	websocket.send(s2);
+response:
+	data: "{"t":"d","d":{"r":2,"b":{"s":"ok","d":{}}}}"
+	
+Will receive this on data change in "/text"
+	data: "{"t":"d","d":{"b":{"p":"text","d":"Hello World! 32"},"a":"d"}}"
+	
