@@ -1,0 +1,89 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Maestro Composer</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="../static/styles/theme.css" th:href="@{/styles/theme.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/pics.css" th:href="@{/styles/pics.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/navigation.css" th:href="@{/styles/navigation.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/input.css" th:href="@{/styles/input.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/styles/layout.css" th:href="@{/styles/layout.css}"/>
+	<link rel="stylesheet" type="text/css" href="../static/styles/smarthome.css" th:href="@{/styles/smarthome.css}"/>
+	<script src="../static/scripts/maestrocomposer_v2.5.js" th:src="@{/scripts/maestrocomposer_v2.5.js}"></script>
+	<script src="../static/scripts/lib/jquery-3.2.1.min.js" th:src="@{/scripts/lib/jquery-3.2.1.min.js}"></script>
+<script>
+[(${devices})]
+[(${deviceList})]
+[(${rules})]
+[(${rulesList})]
+
+/*
+var d_TX8J = new Device("TX8J", "TestSwtich1", "U7YY", [{id:"0001",label:"Switch",io:"O",min:0,max:1}]); 
+var d_CYL4 = new Device("CYL4", "Light1", "CRL0", [{id:"0029",label:"Off",io:"O",min:0,max:1},{id:"0002",label:"Orange",io:"O",min:0,max:1},{id:"0024",label:"Timer(Mins)",io:"O",min:0,max:1},{id:"0003",label:"brightness",io:"O",min:0,max:100},{id:"0022",label:"Blue",io:"O",min:0,max:1},{id:"0023",label:"StartTimer",io:"O",min:0,max:1023},{id:"0020",label:"Red",io:"O",min:0,max:1},{id:"0021",label:"Green",io:"O",min:0,max:1},{id:"0019",label:"Warm White",io:"O",min:0,max:1}]); 
+
+var deviceList = [ d_TX8J,d_CYL4];
+var rule_0_arg_CYL4_0003 = new Component('CYL4', [{id:'0003', value:'1', operator:'='}]); 
+var rule_0_exec_TX8J_0001 = new Component('TX8J', [{id:'0001', value:'1', operator:'='}]); 
+
+var args0 = [ rule_0_arg_CYL4_0003];
+var execs0 = [ rule_0_exec_TX8J_0001];
+var rule0 = new CIRRule("Light Switch", args0, execs0);
+
+var rule_1_arg_TX8J_0001 = new Component('TX8J', [{id:'0001', value:'1', operator:'='}]); 
+var rule_1_arg_CYL4_0029 = new Component('CYL4', [{id:'0029', value:'1', operator:'='}]); 
+var rule_1_arg_CYL4_0003 = new Component('CYL4', [{id:'0003', value:'1', operator:'='}]); 
+var rule_1_exec_CYL4_0029 = new Component('CYL4', [{id:'0029', value:'1', operator:'='}]); 
+
+var args1 = [ rule_1_arg_CYL4_0029,rule_1_arg_CYL4_0003];
+var execs1 = [ rule_1_exec_CYL4_0029];
+var rule1 = new CIRRule("Rule1", args1, execs1);
+var rules = [ rule1];
+*/
+</script>
+</head>
+<body onload="init()" id="body">
+	<!-- navbar -->
+	<div th:replace="fragments/static-fragments :: topbar" class="topbar">
+		<a href="/home"><img class="smallLink" style="float:left; margin-left:0px; background-color:black;" src="../static/pics/symbol_white.png" th:src="@{/pics/symbol_white.png}" /></a>
+		<div class="navbar">
+			<a href="/home">home</a>
+			<a href="/devices/overview">devices</a>
+			<a href="/devices/composer">composer</a>
+			<a href="/help">help</a>
+		</div>
+		<a href="/settings"><img class="smallLink" style="float:right; margin-right:0px; background-color:black;" src="../static/pics/settings_white.png" th:src="@{/pics/settings_white.png}" /></a>
+	</div>
+
+	<div class="notifBoxContainer" id="notif"></div>
+	<div class="topbar sub">
+		<div class="navbar sub">
+		   <a onclick="compose()">Compose</a>
+		   <a onclick="test2()">test2</a>
+		   <a onclick="test3()">test3</a>
+		</div>
+	</div>
+	<div class = "main" id="main">	
+	<div class="workpane" id="composer" category="CMPSR" style="width:85%;float:left;" ondragover="allowDrop(event)" ondrop="dropDevice(event)">
+		Drag Devices here to create the rules.
+	</div>
+	<div class="workpane" style="width:12%; float: right;">
+		<a>Devices</a>
+		<div class="menu" id="sensorsMenuId">
+			<a onmouseover="hoverSubMenu(this)">Triggers</a>
+		</div>
+		<div class="menu" id="ctrlsMenuId">
+			<a onmouseover="hoverSubMenu(this)">Actions</a>
+		</div>		
+		<form id="taForm">
+		<textarea rows="5" cols="25" id="ta" name="cir"></textarea>
+		</form>
+	</div>
+	</div>
+	<div id="optCond" style="display:none;position: absolute;">
+		<p class="opt" onclick="setOperator(this)">=</p>
+		<p class="opt" onclick="setOperator(this)"><</p>
+		<p class="opt" onclick="setOperator(this)">></p>
+ 	</div> 
+  	</div> 
+</body>
+</html>
