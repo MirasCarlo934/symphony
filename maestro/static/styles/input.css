@@ -1,0 +1,113 @@
+button {
+	cursor: pointer;
+}
+
+/*
+	Input naming nomenclature
+	
+	input.[size][input type]
+*/
+input.regularTextBox, input.smallTextBox {
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	border: solid 1px black; 
+	padding-top: 2px;
+	padding-bottom: 0px;
+	padding-left: 5px;
+	padding-right: 5px;
+	
+	text-align: center;
+	
+	display: block;
+	margin: 0;
+	/* margin-left: auto;
+	margin-right: auto; */
+	
+	/* float: left; */
+	
+	transition: box-shadow 0.3s, border 0.3s;
+	/* box-shadow: inset 2px 2px 2px 0px #707070; */
+}
+
+input.regularTextBox {
+	/* height: 20px; */
+	font-size: 18px;
+	font-family: Myriad Pro;
+}
+
+input.smallTextBox {
+	font-size: 15px;
+	font-family: Myriad Pro;
+}
+
+input.regularTextBox:focus, input.smallTextBox:focus {
+	outline: none;
+	border: solid 1px darkgray;
+	box-shadow: 2px darkgray;
+	/* border: solid 1px #969696;
+	box-shadow: 2px #c9c9c9; */
+}
+
+.regularBtn, .boxBtn {
+	display: block;
+	background: black;
+	border: 1px solid black;
+	padding-top: 4px;
+	padding-bottom: 1px;
+	
+	font-family: Myriad Pro;
+	font-size: 16px;
+	color: white;
+	vertical-align: middle;
+	text-align: center;
+	
+	/* transition: filter 0.3s; */
+	/* transition: background 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s; */
+	transition: background 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.regularBtn {
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+}
+
+.drawerHandle {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+/* button.circleBtn {
+	-webkit-border-radius: 50%;
+	-moz-border-radius: 50%;
+	border-radius: 50%;
+} */
+
+.regularBtn:hover, .boxBtn:hover {
+	/* filter: invert(100%); */
+	background: white;
+	color: black;
+	border-color: gray;
+	/* border-color: #707070; */
+	/* box-shadow: 2px #c9c9c9; */
+}
+
+.regularBtn:active/* , .boxBtn:active */ {
+	box-shadow: inset 2px 2px 2px 1px #707070;
+}
+
+.selected {
+	background: gray;
+	border-color: gray;
+	/* background: #707070;
+	border-color: #707070; */
+}
+
+.selected:hover {
+	background: gray;
+	border-color: gray;
+	/* background: #707070;
+	border-color: #707070; */
+	color: white;
+}
