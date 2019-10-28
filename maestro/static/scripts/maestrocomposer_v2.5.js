@@ -1165,5 +1165,7 @@ function compose() {
 //	});
 	
 	ajax.open('POST', '/devices/composeCIR');
-	ajax.send('cir='+str);
+	ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	var postData = 'cir='+str; 
+	ajax.send(postData);
 }
