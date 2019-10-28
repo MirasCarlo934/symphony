@@ -105,7 +105,8 @@ public class DevicesController extends AbstController {
 			} else {
 				roomIDArray = "[]";
 			}
-			
+			LOG.debug("***********cels****** devAray " + devArray);
+			LOG.debug("***********cels****** roomAray " + roomArray);
 			model.addAttribute("devices", devices);
 			model.addAttribute("rooms", rooms);
 			model.addAttribute("devArray", devArray);
@@ -385,6 +386,7 @@ public class DevicesController extends AbstController {
 		Device[] devices = dr.getAllDevices();
 		for(int i = 0; i < devices.length; i++) {
 			Device dev = devices[i];
+			LOG.debug("*****cels***** ssid="+dev.getSSID() + " name=" + dev.getName());
 			responses.put(dev.getSSID() + "_state", String.valueOf(dev.isActive()));
 			responses.put(dev.getSSID() + "_name", dev.getName());
 			responses.put(dev.getSSID() + "_room", dev.getParentRoom().getSSID());
@@ -440,7 +442,8 @@ public class DevicesController extends AbstController {
 			rulesArray += "rule" + r.getIndex() + ",";
 		}
 		rulesArray = rulesArray.substring(0, rulesArray.length() - 1) + "];";
-		
+
+		LOG.debug("*****cels***** devices = " +devices);
 		model.addAttribute("devices", devices);
 		model.addAttribute("deviceList", devList);
 		model.addAttribute("rules", rulesStr);

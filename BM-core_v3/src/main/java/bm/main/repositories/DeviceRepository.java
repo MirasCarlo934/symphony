@@ -312,6 +312,14 @@ public class DeviceRepository /*extends AbstRepository*/ implements Initializabl
 	 * @return an array containing all the device objects in the repository
 	 */
 	public Device[] getAllDevices() {
+		LOG.info(" ====test==== ");
+//		devices.forEach((key,value) -> LOG.info(" ====test==== "+key + " = " + value));
+        devices.forEach((key,value) -> {
+            LOG.info(" ====test==== "+key + " = " + value);
+            Device d = (Device)value;
+            LOG.info(" ====test cels==== device name=" +d.getName());
+        });
+        LOG.info(" ====test cels==== devices.values()=" +devices.values());
 		return devices.values().toArray(new Device[devices.size()]);
 	}
 	

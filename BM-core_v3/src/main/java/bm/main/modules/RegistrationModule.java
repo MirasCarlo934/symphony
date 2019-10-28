@@ -255,6 +255,10 @@ public class RegistrationModule extends Module {
 			throw new SecondaryMessageCheckingException("Request contains invalid product ID! (" + reg.getCID() + ")");
 		} else if(reg.isProductless()) {
 			List<String> params = Arrays.asList((reg.getParameters()));
+			LOG.debug("============ proplistParam=" + proplistParam + " iconParam="+iconParam);
+			for(int i = 0; i < params.size(); i++) {
+				LOG.debug("============ params["+i+"]="+params.get(i));
+			}
 			if(params.contains(proplistParam) && params.contains(iconParam)) {
 				//check if proplist parameter is valid
 				JSONArray proplist = (JSONArray) reg.getParameter(proplistParam);

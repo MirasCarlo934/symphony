@@ -289,10 +289,11 @@ public class Device extends SymphonyObject {
 
 	@Override
 	public String convertToJavascript() {
-		String s = "var d_" + SSID + " = new Device(\"" + SSID + "\", \"" + name + "\", \""
-				+ name + "\", ";
+//		String s = "var d_" + SSID + " = new Device(\"" + SSID + "\", \"" + name + "\", \""
+//				+ name + "\", ";		modified by cels due to duplicate name parameter Oct 24 2019
+		String s = "var d_" + SSID + " = new Device(\"" + SSID + "\", \"" + name + "\", ";
 		if(parentRoom != null) {
-			s += "\"" + parentRoom + "\", ";
+			s += "\"" + parentRoom.getName() + "\", ";
 		}
 		s += "[";
 		Iterator<Property> props = properties.values().iterator();
@@ -371,8 +372,11 @@ public class Device extends SymphonyObject {
 	 * @return The property, <b><i>null</i></b> if the property does not exist
 	 */
 	public Property getProperty(String ssid) {
+		properties.forEach((key,value) -> LOG.info(" ====test==== key="+key + " SSID " + value.getSSID()+" finding:"+ssid));
 		for(Property prop : properties.values()) {
+			LOG.info(" ====test====  prop.getSSID=" + prop.getSSID()+" finding:"+ssid);
 			if(prop.getSSID().equals(ssid)) {
+				LOG.info(" ====test==== found SSID=" + prop.getSSID()+" finding:"+ssid);
 				return prop;
 			}
 		}

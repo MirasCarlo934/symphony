@@ -101,6 +101,7 @@ public class BaseController extends AbstController {
 			HttpServletResponse httpResponse) {
 		LOG.debug("Login requested!");
 		String userPwd = userPropManager.getUserPwd();
+		LOG.debug("******** cels userPwd=" + userPwd);
 		if(userPwd.equals(pwd)) {
 			if(model.containsAttribute("redirect")) { //if logged in from a specific request mapping
 				return redirect(model, model.asMap().get("redirect").toString());

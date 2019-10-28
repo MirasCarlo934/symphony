@@ -124,6 +124,7 @@ public class InboundTrafficManager implements Runnable {
 
         //#5 Checks if RTY exists
         boolean b = false;
+
         if(appContext.containsBean(json.getString("RTY"))) {
             b = true;
         }

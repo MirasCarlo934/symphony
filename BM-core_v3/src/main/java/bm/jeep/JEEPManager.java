@@ -46,6 +46,7 @@ public class JEEPManager {
         this.poopRTY = poopRTY;
         this.poopPropIdParam = poopPropIdParam;
         this.poopPropValParam = poopPropValParam;
+        LOG.info("================ cels ==================");
     }
 
     public void sendRegistrationRequest(Device device) {
