@@ -9,8 +9,8 @@ var rulesForEdit = new Object();  //a vector object where the key is the ruleId.
 var ajax = new XMLHttpRequest();
 ajax.onreadystatechange = function() {
     if (ajax.readyState == 4) {
-    	alert(ajax.responseText);
-        document.getElementById('response').innerHTML = ajax.responseText;        
+    	alert("response from server\n\n"+ajax.responseText);
+//        document.getElementById('response').innerHTML = ajax.responseText;
     }
 }
 
@@ -434,6 +434,8 @@ function Device(id, name, room, properties) {
 		  //or when the io="O"
 		  var property = new Object();
 		  property.id = prop[i].id;
+		  var split = prop[i].id.split("_"); //we are splitting the id since it is of the form NAME_0, to get the index (needed by CIRManager of BM)
+		  property.index = split[1];
 		  property.label = prop[i].label;
 		  property.min = prop[i].min;
 		  property.io = prop[i].io;
@@ -702,7 +704,7 @@ function  propGetter() {
 	var str = "";
 	if (this.included) {
 		var container = this.component.split("|");
-		str = str + '\n        <property id="' + this.id + '" value="' + this.value + '" label="' + this.label;
+		str = str + '\n        <property id="' + this.id + '" value="' + this.value + '" label="' + this.label + '" index="' + this.index;
 		if (container[1]=="arg") {
 			str = str + '" operator="' + this.operator;
 			str = str.replace(/&gt;/g, '>');
