@@ -292,13 +292,14 @@ public class CIRManager implements Initializable, Runnable {
 				String rule_name = raw_rule.getAttributeValue("name");
 //				Conditional rule_condition = Conditional.parseConditional(raw_rule.getAttributeValue("condition"));
 				
-				LOG.trace("Parsing rule \"" + rule_name + "\"...");
+				LOG.debug("Parsing rule \"" + rule_name + "\"...");
 				
 				//for parsing arguments block
-				LOG.trace("Parsing arguments block of rule \"" + rule_name + "\"...");
+				LOG.debug("Parsing arguments block of rule \"" + rule_name + "\"...");
 				for(int j = 0; j < raw_args_coms.size(); j++) { //for each component argument
 					Element raw_args_com = raw_args_coms.get(j);
 					String cid = raw_args_com.getAttributeValue("id");
+                    LOG.debug("*****cels***** cid=" + cid);
 					Device dev;
 					if(dr.containsDevice(cid)) { //checks if cid exists
 						dev = dr.getDevice(cid);

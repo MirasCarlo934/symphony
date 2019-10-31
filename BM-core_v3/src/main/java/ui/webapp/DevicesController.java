@@ -446,7 +446,9 @@ public class DevicesController extends AbstController {
 		LOG.debug("*****cels***** devices = " +devices);
 		model.addAttribute("devices", devices);
 		model.addAttribute("deviceList", devList);
+		LOG.debug("*****cels***** rulesStr = " +rulesStr);
 		model.addAttribute("rules", rulesStr);
+		LOG.debug("*****cels***** rulesArray = " +rulesArray);
 		model.addAttribute("rulesList", rulesArray);
 		return dispatchView("devices-composer");
 	}
@@ -465,6 +467,7 @@ public class DevicesController extends AbstController {
 		Document cirXML = null;
 		try {
 			cirXML = DocumentHelper.parseText(cir);
+            LOG.debug("*****cels***** cir="+cir);
 		} catch (DocumentException e) {
 			LOG.error("CIR XML not propertly constructed!", e);
 			return notifyError("Cannot update rules! (CIR XML improper construction)", model);
@@ -475,6 +478,8 @@ public class DevicesController extends AbstController {
 		} catch (EngineException e) {
 			LOG.error("Cannot update CIRManager!", e);
 			return notifyError("Cannot update rules! Restart BM!", model);
+		} catch(Exception e) {
+			LOG.debug("*****cels***** Unknown exception!", e);
 		}
 		LOG.info("CIR updated!");
 		return notify(null, "Home rules composed!", model);
