@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Iterator;
 import java.util.stream.Collectors;
 
@@ -45,9 +47,31 @@ public class Application {
     @RequestMapping(value = "/mqtt", params = "msg", method = GET)
     @ResponseBody
     public String mqtt(@RequestParam String msg) {
-        testMqtt.send(msg);
-        LOG.info("MQTT message published!!!");
-        return "message:" + msg + " sent to MQTT topic /BM";
+        int respCode = testMqtt.send(msg);
+        if (respCode == 7) {
+            LOG.info("MQTT message published!!!");
+            return "message:" + msg + " sent to MQTT topic /BM";
+        } else {
+            LOG.info("MQTT sending failed.");
+            return "message:" + msg + " sending to MQTT topic /BM failed";
+        }
+
+    }
+    @GetMapping("/ip")
+    public String getIp() {
+        InetAddress ip;
+        String hostname;
+        try {
+            ip = InetAddress.getLocalHost();
+            hostname = ip.getHostName();
+            System.out.println("Your current IP address : " + ip);
+            System.out.println("Your current Hostname : " + hostname);
+            return ("Your current IP address : " + ip +"<br>Your current Hostname : " + hostname);
+
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            return ("Error");
+        }
     }
     @GetMapping("/")
     public ResponseEntity<String> multiValue(
