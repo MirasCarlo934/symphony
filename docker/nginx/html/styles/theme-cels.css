@@ -1,0 +1,474 @@
+body {
+	margin:0;
+}
+
+.unselectable {
+	-moz-user-select: none; 
+	-webkit-user-select: none; 
+	-ms-user-select:none; 
+	user-select:none;
+	-o-user-select:none;
+}
+
+/*
+	Font class nomenclature
+	
+	.[font family ('text' if Myriad Pro)][font size][font color][font weight]
+*/
+.textNormal, .textNormalWhite, .textNormalBold, .textNormalWhiteBold, 
+.textBig, .textBigBold, .textBigWhite, .textBigWhiteBold {
+	font-family: Myriad Pro;
+}
+
+.textNormal, .textNormalWhite, .textNormalBold, .textNormalWhiteBold {
+	font-size: 18px;
+}
+
+.textBig, .textBigBold, .textBigWhite, .textBigWhiteBold {
+	font-size: 25px;
+}
+
+.textNormalBold, .textBigBold {
+	font-weight: bold;
+}
+
+.textNormalWhite, textBigWhite {
+	color: white;
+}
+
+.textCaption {
+	font-size: 12px;
+	font-family: Myriad Pro;
+	color: #999999;
+}
+
+.sortPlaceholder {
+	border: solid 1px black;
+}
+
+div.rounded, div.notifBox, div.roomContainer {
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	border: solid 1px black;
+	text-align: left;
+}
+
+div.roomContainer {
+	position: relative;
+	/* display: block; */
+	float: left; 
+	
+	margin-left: 30px;
+	/* margin-right: 30px; */
+	margin-top: 15px;
+	padding: 10px;
+	padding-left: 10px;
+	padding-right: 10px;
+	border: 0;
+}
+
+div.roomContainer::AFTER {
+    content: "";
+    clear: both;
+    /* display: table; */
+}
+
+/* div.roomContainer .header {
+	position: absolute;
+	background-color: inherit;
+	height: 30px;
+	top: -20px;
+	left: 0px;
+	padding: 5px;
+	cursor: pointer;
+	
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+} */
+
+div.roomContainer .header {
+	height: 30px;
+	width: 100%;
+	text-align: left;
+}
+
+div.roomContainer .header span {
+	cursor: pointer;
+	padding: 3px;
+	
+	background-color: white;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+}
+
+div.deviceContainer {
+	position: relative;
+	display: inline-block;
+	vertical-align: top;
+	width: 150px;
+	background-color: white;
+	cursor: pointer;
+	
+	padding: 0px;
+	margin-left: 15px;
+	margin-top: 15px;
+	
+	-webkit-border-radius: 10px 10px 20px 20px;
+	-moz-border-radius: 10px 10px 20px 20px;
+	border-radius: 10px 10px 20px 20px;
+}
+
+div.deviceContainer h1 {
+	position: relative;
+	background-color: inherit;
+	font-family: Myriad Pro;
+	font-weight: bold;
+	font-size: 16px;
+	text-align: center;
+	color: black;
+	
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	padding-left: 10px;
+	padding-right: 10px;
+	/* width: 100%; */
+	
+	/* border: solid 1px blue;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px; */
+}
+
+div.deviceContainer .info, div.deviceContainer .statusRed, div.deviceContainer .statusGreen {
+	position: relative;
+	background-color: inherit;
+	font-family: Myriad Pro;
+	font-size: 14px;
+	text-align: center;
+	/* color: #999999; */
+	color: black;
+	
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-bottom: 5px;
+	
+	width: 100%;
+	/* border: solid 1px; */
+}
+
+div.deviceContainer .statusRed {
+	font-weight: bold;
+	color: red;
+}
+
+div.deviceContainer .statusGreen {
+	font-weight: bold;
+	color: green;
+}
+
+div.deviceContainer div.icon {
+	position: relative;
+	width: 100%;
+	background-color: black;
+	cursor: pointer;
+	
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+}
+
+div.deviceContainer div.icon img.icon {
+	width: 100%;
+	
+	transition: all 0.2s;
+}
+
+div.deviceContainer div.icon img.overlay {
+	position: absolute;
+	left: 40%; /*50% - width/2 */
+	top: 40%; /*50% - width/2  */
+	width: 20%;
+	filter: opacity(0%) invert(100%);
+	
+	transition: all 0.3s;
+}
+
+div.deviceContainer div.icon img.edit {
+	position: absolute;
+	right: 5px;
+	top: 5px;
+	width: 20px;
+	filter: opacity(0%) invert(100%);
+	transition: all 0.3s;
+}
+
+div.deviceContainer div.icon:hover img.overlay {
+	filter: opacity(100%) invert(100%);
+}
+
+div.deviceContainer div.icon:hover img.icon {
+	filter: blur(5px);
+}
+
+div.deviceContainer div.icon:hover img.edit {
+	filter: opacity(100%) invert(100%);
+}
+
+div.deviceContainer div.icon img.overlay:hover {
+	filter: opacity(100%) invert(50%);
+}
+
+div.deviceContainer div.icon img.edit:hover {
+	filter: opacity(100%) invert(50%);
+}
+
+div.notifBox {	
+	width: 300px;
+	left: 50%;
+	margin-left: -150px;
+	margin-top: 20px;
+	background-color: white;
+	position: absolute;
+	z-index: 1;
+	transition: all 0.3s;
+}
+
+div.notifBox:hover {
+	opacity: 0.3;
+	cursor: pointer;
+}
+
+.notifBoxContainer {
+	position: absolute; 
+	width: 100%;
+	margin-left: auto; 
+	margin-right: auto; 
+	left: 0; 
+	right: 0;
+	/* border: solid 1px black; */
+}
+
+.notifBoxContainer {
+	top: 60px; 
+}
+
+.notifHeader {
+	font-family: Myriad Pro;
+	/* font-weight: bold; */
+	font-size: 20px;
+	width: 280px;
+	margin-top:0px;
+	padding-left: 20px;
+	
+	/* -webkit-border-top-right-radius: 10px;
+	-webkit-border-top-left-radius: 10px;
+	-moz-border-top-right-radius: 10px;
+	-moz-border-top-left-radius: 10px; */
+	border-top-right-radius: 10px;
+	border-top-left-radius: 10px;
+	/* border: solid 1px black;  */
+	
+	color: white;
+	background-color: black;
+}
+
+.notifMsg {
+	font-family: Myriad Pro;
+	font-size: 18px;
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	text-align: center;
+}
+
+span.topbar {
+	/* margin-top: 10px; 
+	margin-left: auto;
+	margin-right: auto;*/
+	font-family: Myriad Pro;
+	font-size: 60px;
+	color: white;
+	z-index: 100;
+}
+
+.invisible {
+	background-color: inherit;
+	color: inherit;
+}
+
+MAESTRO COMPOSER STYLES {}
+
+/*START MaestroComposer styles */
+.workpane a {
+	position: relative;
+	float: right;
+    //display: block;
+    width:100%;
+	height: 25px;
+    background-color: black;
+    text-align: center;
+    padding-top: 7px;
+    text-decoration: none;
+    font-size: 15px;
+    font-family: Myriad Pro;
+    color: white;
+    border: 1px solid white;
+	outline: 1px solid gray;
+	transition: all 0.5s;
+}
+.menu a {
+	top:1px;
+	left:5px;
+	float: left;
+    width:calc(100% - 13px);
+	height: 20px;
+    background-color: darkgray;
+    cursor: pointer;
+}
+.menu a.submenu {
+	top:2px;
+	left:20px;
+    width:calc(100% - 28px);
+    background-color: lightgray;
+    color: black;
+    border-radius: 10px;
+}
+.menu a.submenu:hover {
+	filter: invert(100%);
+}
+.device {
+	width: 140px;
+	height: 31px;
+	position: relative;
+	background-color:gray;
+	border: 1px solid white;
+	border-radius: 10px;
+	overflow-y: hidden;
+	transition: height 0.5s;
+}
+.pHeader {
+	height: 23px; 
+	background-color: lightgray;
+	border: 1px solid black;
+	border-radius: 10px;
+	margin:auto;
+	color: black;
+	font-weight: bold;
+	padding:2px;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:85%;
+}
+.pCommon {
+	position: absolute;
+	height: 32px;
+	border: 1px solid black;
+	border-radius: 15px;
+	margin:auto;
+	color:black;
+	text-align: center;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:85%;
+	font-weight: bold;
+	transition: all 0.3s;
+}
+.pInner {
+	height: 20px; 
+	border: 1px solid black;
+	margin:auto;
+	color:black;
+	text-align: center;
+	font-size:80%;
+	background-color: red;
+}
+.pBkGrnd {
+	background-color: lightyellow;
+	
+}
+.pHover {
+	background-color: lightyellow;
+}
+.pHover:hover {
+	filter: invert(100%);
+}
+.rule { 
+	position: absolute;
+	width: 450px; 
+	height: 250px; 
+	border: 1px solid white;
+	border-radius: 10px;	
+}
+.innerArg {
+	position: relative;
+	top: 1px;
+//	width: 49%;
+	height: calc(100% - 35px);
+	border: 1px solid white;
+	border-radius: 10px;
+	background-color: black;
+	color: white;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 80%;
+}
+.btn {
+	background-color: lightgray;
+	border-radius: 21px;
+	width:21px;
+	height:21px;
+	font-weight: bold;
+	cursor: pointer;
+}
+.minmax {
+	float: right;
+	background-color: lightgray;
+	text-align: center;
+	width:17px; 
+	height:17px; 
+	color: black;
+}
+.td {
+	background-color: lightyellow;
+}
+
+.pInput {
+	width: 200px;
+	height: 20px;
+	position: relative;
+	background-color:gray;
+	border: 1px solid white;
+	border-radius: 10px;
+	overflow-y: hidden;
+	transition: width 0.5s;
+}
+.inputTheme {
+	//height: 20px;
+	border: 1px solid black;
+	background-color:lightgray;
+}
+.inputTheme:hover {
+	filter: invert(100%);
+}
+p.opt {
+	float:left;
+	background-color:lightgray;
+	border-bottom: 2px solid white;
+	border-right: 2px solid white;
+	border-left: 2px solid darkgray;
+	border-top: 2px solid darkgray;
+	outline: 1px solid black;
+	color:black;
+	text-align: center;
+	width:1em;
+	cursor:pointer;
+	transition: width 0.3s;
+}
+p.opt:hover {
+	filter: invert(100%);
+}
+
+/* END */

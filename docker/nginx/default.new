@@ -1,0 +1,12 @@
+    upstream bm {
+        server symphony2-container:8181;
+        server symphony2-container2:8182;
+    }
+    
+    server {
+        listen 80;
+
+        location /proxy {
+            proxy_pass http://bm;
+        }
+    }

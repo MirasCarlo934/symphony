@@ -1,0 +1,7 @@
+Dockerfile.hello - creates an image that runs hello.Application
+buildHello.sh - builds an image symhpony2
+runHello.sh - runs and creates a container symphony2-container based on symphony2 image.  This container is removed after execution 
+
+Dockerfile.BM - creates an image that runs bm.main.Maestro
+buildBM.sh - builds an image symhpony
+runBM.sh - runs and creates a container symphony-container based on symphony image.  This container is removed after execution 

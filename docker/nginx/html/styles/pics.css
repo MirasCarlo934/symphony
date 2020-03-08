@@ -1,0 +1,25 @@
+img.central {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 10%;
+	width: 300px;
+}
+
+img.small, img.smallLink {
+	display: block;
+	height: 60px;
+}
+
+img.smallLink {
+	transition: filter 0.3s;
+}
+
+img.smallLink:hover {
+	filter: invert(100%);
+}
+
+img.regular {
+	display: block;
+	height: 200px;
+}
