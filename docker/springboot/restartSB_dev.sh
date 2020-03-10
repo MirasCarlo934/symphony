@@ -1,0 +1,1 @@
+sudo docker restart spring-boot1
