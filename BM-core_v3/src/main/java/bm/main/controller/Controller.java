@@ -8,7 +8,8 @@ import bm.jeep.vo.JEEPMessage;
 import bm.jeep.vo.JEEPRequest;
 import bm.jeep.vo.JEEPResponse;
 import bm.main.modules.Module;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 
 import bm.main.Maestro;
@@ -21,7 +22,7 @@ public class Controller implements Runnable {
 	private int rn = 1;
 
 	public Controller(String logDomain, ThreadPool threadPool) {
-		LOG = Logger.getLogger(logDomain + ".Controller");
+		LOG = LogManager.getLogger(logDomain + ".Controller");
 		this.threadPool = threadPool;
 		LOG.info("Controller started!");
 	}

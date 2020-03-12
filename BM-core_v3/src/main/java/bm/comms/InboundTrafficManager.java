@@ -7,7 +7,8 @@ import bm.jeep.vo.device.ReqRequest;
 import bm.main.Maestro;
 import bm.main.controller.Controller;
 import bm.main.repositories.DeviceRepository;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.context.ApplicationContext;
@@ -23,7 +24,7 @@ public class InboundTrafficManager implements Runnable {
 
     public InboundTrafficManager(String logDomain, Controller controller, DeviceRepository deviceRepository,
                                  ResponseManager responseManager) {
-        LOG = Logger.getLogger(logDomain + "." + InboundTrafficManager.class.getSimpleName());
+        LOG = LogManager.getLogger(logDomain + "." + InboundTrafficManager.class.getSimpleName());
         this.controller = controller;
         this.dr = deviceRepository;
         this.rm = responseManager;

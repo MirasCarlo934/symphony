@@ -9,7 +9,8 @@ import bm.main.engines.AbstEngine;
 import bm.main.repositories.DeviceRepository;
 import bm.main.repositories.ProductRepository;
 import bm.main.repositories.RoomRepository;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
@@ -28,7 +29,7 @@ import java.util.List;
 public class Maestro {
 	private static ApplicationContext applicationContext;
 	private static final int build = 1;
-	private static final Logger LOG = Logger.getLogger("MAIN.Maestro");
+	private static final Logger LOG = LogManager.getLogger("MAIN.Maestro");
 	private Initializables inits;
 	private DeviceRepository dr;
 	private RoomRepository rr;

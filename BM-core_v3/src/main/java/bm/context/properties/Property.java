@@ -1,8 +1,8 @@
 package bm.context.properties;
 
 import bm.jeep.JEEPManager;
-import bm.jeep.vo.device.ReqPOOP;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import bm.context.HTMLTransformable;
@@ -352,6 +352,6 @@ public class Property extends SymphonyElement implements OHItemmable, HTMLTransf
 	}
 	
 	protected Logger getLogger(String parentLogDomain) {
-		return Logger.getLogger(parentLogDomain + "." + loggerName);
+		return LogManager.getLogger(parentLogDomain + "." + loggerName);
 	}
 }

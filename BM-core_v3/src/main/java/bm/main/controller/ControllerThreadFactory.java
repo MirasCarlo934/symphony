@@ -3,10 +3,11 @@ package bm.main.controller;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ControllerThreadFactory implements ThreadFactory {
-	private static final Logger LOG = Logger.getLogger("controller.ThreadFactory");
+	private static final Logger LOG = LogManager.getLogger("controller.ThreadFactory");
 	private AtomicInteger threads = new AtomicInteger(1);
 	
 	/*public ControllerThreadFactory() {

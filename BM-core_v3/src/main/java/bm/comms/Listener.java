@@ -1,9 +1,9 @@
 package bm.comms;
 
-import org.apache.log4j.Logger;
-
 import bm.jeep.vo.RawMessage;
 import bm.main.controller.Controller;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class Listener {
 	protected Logger LOG;
@@ -13,7 +13,7 @@ public abstract class Listener {
 	
 	public Listener(String name, String logDomain, InboundTrafficManager inboundTrafficManager) {
 		this.itm = inboundTrafficManager;
-		LOG = Logger.getLogger(logDomain + "." + name);
+		LOG = LogManager.getLogger(logDomain + "." + name);
 	}
 	
 	/**

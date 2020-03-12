@@ -6,7 +6,8 @@ import bm.jeep.JEEPManager;
 import bm.jeep.vo.JEEPRequest;
 import bm.main.controller.Controller;
 import bm.main.repositories.DeviceRepository;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Timer;
@@ -34,7 +35,7 @@ public class ResponseManager extends TimerTask {
      */
     public ResponseManager(String logDomain, int resendPeriod, int timeout, DeviceRepository deviceRepository,
                            Controller controller, JEEPManager jeepManager, boolean isResending) {
-        LOG = Logger.getLogger(logDomain + "." + ResponseManager.class.getSimpleName());
+        LOG = LogManager.getLogger(logDomain + "." + ResponseManager.class.getSimpleName());
         this.dr = deviceRepository;
         this.logDomain = logDomain;
         this.timeout = timeout;
@@ -62,7 +63,6 @@ public class ResponseManager extends TimerTask {
                         + " in time. Setting device to inactive.");
                 Device d = dr.getDevice(request.getCID());
                 d.setActive(false);
-//                d.sendDeactivationMessage("Deactivated due to nonresponsiveness to request " + request.getRID());
                 jm.sendDeactivationRequest(d, "Deactivated due to nonresponsiveness to request "
                         + request.getRID());
                 try {

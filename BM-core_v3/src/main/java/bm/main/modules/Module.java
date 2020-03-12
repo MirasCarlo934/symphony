@@ -5,7 +5,8 @@ import bm.jeep.exceptions.SecondaryMessageCheckingException;
 import bm.jeep.vo.JEEPResponse;
 import bm.main.modules.exceptions.RequestProcessingException;
 import bm.main.modules.exceptions.ResponseProcessingException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import bm.jeep.vo.JEEPRequest;
 import bm.jeep.vo.device.JEEPErrorResponse;
@@ -53,8 +54,8 @@ public abstract class Module implements Runnable {
 	 */
 	public Module(String logDomain, String errorLogDomain, String name, String RTY, String[]
 			requestParams, String[] responseParams, /*MQTTPublisher mp, */DeviceRepository deviceRepository) {
-		LOG = Logger.getLogger(logDomain + "." + name);
-		errorLOG = Logger.getLogger(errorLogDomain + "." + name);
+		LOG = LogManager.getLogger(logDomain + "." + name);
+		errorLOG = LogManager.getLogger(errorLogDomain + "." + name);
 		this.logDomain = logDomain;
 		this.name = name;
 		if(requestParams == null) {

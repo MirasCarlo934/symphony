@@ -1,7 +1,8 @@
 package bm.main.modules;
 
 import bm.comms.Protocol;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import bm.jeep.vo.JEEPRequest;
 import bm.jeep.vo.device.JEEPErrorResponse;
@@ -16,8 +17,8 @@ public abstract class AbstModuleExtension {
 
 	public AbstModuleExtension(String logDomain, String errorLogDomain, String name, String[] params
 			/*MQTTPublisher mp*/) {
-		mainLOG = Logger.getLogger(logDomain + "." + name);
-		errorLOG = Logger.getLogger(errorLogDomain + "." + name);
+		mainLOG = LogManager.getLogger(logDomain + "." + name);
+		errorLOG = LogManager.getLogger(errorLogDomain + "." + name);
 		this.name = name;
 		if(params == null) {
 			params = new String[0];

@@ -18,8 +18,6 @@ import java.util.Arrays;
 import java.util.Properties;
 import java.util.Vector;
 
-import org.apache.log4j.Logger;
-
 import bm.main.engines.exceptions.EngineException;
 import bm.main.engines.requests.EngineRequest;
 import bm.main.engines.requests.FileEngine.DeleteStringFEReq;

@@ -7,10 +7,11 @@ import java.util.HashMap;
 import bm.context.properties.Property;
 import bm.context.properties.PropertyMode;
 import bm.jeep.JEEPManager;
-import org.apache.log4j.Logger;
 
 import bm.context.properties.PropertyType;
 import bm.tools.IDGenerator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * The ProductFactory <i>constructs</i> the products in the Symphony environment by retrieving their individual
@@ -25,7 +26,7 @@ public class ProductFactory {
 	private IDGenerator idg;
 
 	public ProductFactory(String logDomain, JEEPManager jeepManager, IDGenerator idGenerator) {
-		this.LOG = Logger.getLogger(logDomain + "." + ProductFactory.class.getSimpleName());
+		this.LOG = LogManager.getLogger(logDomain + "." + ProductFactory.class.getSimpleName());
 		this.logDomain = logDomain;
 		this.jm = jeepManager;
 		this.idg = idGenerator;

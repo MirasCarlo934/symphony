@@ -9,7 +9,8 @@ import bm.main.repositories.DeviceRepository;
 import bm.main.repositories.ProductRepository;
 import bm.main.repositories.RoomRepository;
 import bm.tools.IDGenerator;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.ResultSet;
 import java.util.HashMap;
@@ -33,7 +34,7 @@ public class AdaptorManager implements Initializable {
 
     public AdaptorManager(String logDomain, AbstAdaptor[] adaptors, DBEngine adaptorDBE, String adaptorLinksTable,
                           String prodIDcol, String adaptorLinkCol, IDGenerator idGenerator) {
-        LOG = Logger.getLogger(logDomain + "." + AdaptorManager.class.getSimpleName());
+        LOG = LogManager.getLogger(logDomain + "." + AdaptorManager.class.getSimpleName());
         this.adaptorDBE = adaptorDBE;
         this.adaptorLinksTable = adaptorLinksTable;
         this.prodIDcol = prodIDcol;

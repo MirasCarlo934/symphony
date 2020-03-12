@@ -9,13 +9,13 @@ import bm.comms.Protocol;
 import bm.context.HTMLTransformable;
 import bm.context.properties.Property;
 import bm.jeep.JEEPManager;
-import org.apache.log4j.Logger;
 
 import bm.context.devices.Device;
-import bm.context.properties.PropertyMode;
 import bm.context.properties.PropertyType;
 import bm.context.rooms.Room;
 import bm.tools.IDGenerator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Product implements HTMLTransformable {
 	protected String logDomain;
@@ -35,7 +35,7 @@ public class Product implements HTMLTransformable {
 	public Product(String mainLogDomain, String SSID, String name, String description,
                    String iconImg, HashMap<String, PropertyType> propertyTypes, JEEPManager jeepManager,
 				   IDGenerator idGenerator) {
-		LOG = Logger.getLogger(mainLogDomain + "." + Product.class.getSimpleName());
+		LOG = LogManager.getLogger(mainLogDomain + "." + Product.class.getSimpleName());
 		this.logDomain = mainLogDomain;
 		this.SSID = SSID;
 		this.name = name;
@@ -85,7 +85,7 @@ public class Product implements HTMLTransformable {
 	 */
 	public Product(String mainLogDomain, String SSID, String name, String description, String iconImg,
 				   IDGenerator idGenerator) {
-		LOG = Logger.getLogger(mainLogDomain + "." + Product.class.getSimpleName());
+		LOG = LogManager.getLogger(mainLogDomain + "." + Product.class.getSimpleName());
 		this.logDomain = mainLogDomain;
 		this.SSID = SSID;
 		this.name = name;

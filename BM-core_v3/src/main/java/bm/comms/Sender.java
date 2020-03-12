@@ -6,12 +6,12 @@ import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.apache.log4j.Logger;
-
 import bm.jeep.vo.JEEPMessage;
 import bm.jeep.vo.JEEPRequest;
 import bm.jeep.vo.device.JEEPErrorResponse;
 import bm.main.modules.Module;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class Sender implements Runnable {
 	protected Logger LOG;
@@ -26,7 +26,7 @@ public abstract class Sender implements Runnable {
 	 * @param logDomain
 	 */
 	public Sender(String name, String logDomain, ResponseManager responseManager) {
-		LOG = Logger.getLogger(logDomain + "." + name);
+		LOG = LogManager.getLogger(logDomain + "." + name);
 		LOG.info("Starting " + name + " Sender...");
 		this.name = name;
 		this.rm = responseManager;

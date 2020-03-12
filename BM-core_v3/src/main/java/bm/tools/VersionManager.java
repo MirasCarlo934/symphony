@@ -16,7 +16,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Vector;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 
 public class VersionManager implements Serializable {

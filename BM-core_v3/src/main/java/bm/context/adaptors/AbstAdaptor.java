@@ -1,11 +1,12 @@
 package bm.context.adaptors;
 
 import bm.context.properties.Property;
-import org.apache.log4j.Logger;
 
 import bm.context.adaptors.exceptions.AdaptorException;
 import bm.context.devices.Device;
 import bm.context.rooms.Room;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class AbstAdaptor {
 	private String id;
@@ -21,7 +22,7 @@ public abstract class AbstAdaptor {
 	public AbstAdaptor(String logDomain, String adaptorID, String adaptorName/*, String serviceName*/) {
 		this.id = adaptorID;
 		this.name = adaptorName;
-		LOG = Logger.getLogger(logDomain + "." + adaptorName);
+		LOG = LogManager.getLogger(logDomain + "." + adaptorName);
 	}
 	
 	/*

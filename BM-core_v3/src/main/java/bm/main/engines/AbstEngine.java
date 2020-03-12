@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Timer;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import bm.main.engines.exceptions.EngineException;
 import bm.main.engines.requests.EngineRequest;
@@ -30,8 +31,8 @@ public abstract class AbstEngine implements Runnable {
 		this.logDomain = logDomain;
 		this.name = name;
 		this.className = className;
-		LOG = Logger.getLogger(logDomain + "." + name);
-		errorLOG = Logger.getLogger(errorLogDomain + "." + name);
+		LOG = LogManager.getLogger(logDomain + "." + name);
+		errorLOG = LogManager.getLogger(errorLogDomain + "." + name);
 	}
 	
 	/**

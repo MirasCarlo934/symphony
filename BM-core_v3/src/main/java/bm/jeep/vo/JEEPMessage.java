@@ -10,7 +10,6 @@ public class JEEPMessage {
 	protected String rid;
 	protected String cid;
 	protected String rty;
-//	protected String topic;
 	protected Protocol protocol;
 	protected JSONObject json = new JSONObject();
 

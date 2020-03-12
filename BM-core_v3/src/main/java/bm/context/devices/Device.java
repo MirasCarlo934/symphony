@@ -6,12 +6,10 @@ import java.util.Iterator;
 import bm.comms.Protocol;
 import bm.context.properties.Property;
 import bm.jeep.JEEPManager;
-import bm.jeep.vo.JEEPRequest;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
-import bm.context.HTMLTransformable;
-import bm.context.OHItemmable;
 import bm.context.SymphonyObject;
 import bm.context.adaptors.AbstAdaptor;
 import bm.context.adaptors.exceptions.AdaptorException;
@@ -39,7 +37,7 @@ public class Device extends SymphonyObject {
 	public Device(String logDomain, String SSID, String MAC, String name, String topic, Protocol protocol, Room room,
                   boolean active, Product product, int index, JEEPManager jeepManager) {
 		super(SSID, room, index);
-		LOG = Logger.getLogger(logDomain + ".DEV:" + SSID);
+		LOG = LogManager.getLogger(logDomain + ".DEV:" + SSID);
 		this.setMAC((MAC));
 		this.setName((name));
 		this.setTopic((topic));

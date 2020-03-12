@@ -4,7 +4,8 @@ import java.util.LinkedList;
 import java.util.concurrent.RejectedExecutionException;
 
 import bm.main.modules.Module;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ModuleDispatcher implements Runnable {
 	private Logger LOG;
@@ -13,7 +14,7 @@ public class ModuleDispatcher implements Runnable {
 	private int processCounter = 1;
 
 	public ModuleDispatcher(String logDomain, LinkedList<Module> moduleQueue, ThreadPool threadPool) {
-		LOG = Logger.getLogger(logDomain + "." + ModuleDispatcher.class.getSimpleName());
+		LOG = LogManager.getLogger(logDomain + "." + ModuleDispatcher.class.getSimpleName());
 		this.moduleQueue = moduleQueue;
 		this.threadPool = threadPool;
 		LOG.info("ModuleDispatcher started!");

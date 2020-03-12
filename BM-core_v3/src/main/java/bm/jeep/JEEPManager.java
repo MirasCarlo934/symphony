@@ -7,7 +7,8 @@ import bm.jeep.vo.JEEPRequest;
 import bm.jeep.vo.JEEPResponse;
 import bm.jeep.vo.device.*;
 import bm.tools.IDGenerator;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class JEEPManager {
     private final Logger LOG;
@@ -35,7 +36,7 @@ public class JEEPManager {
                        String detRTY, String msgParam,
                        String actRTY,
                        String poopRTY, String poopPropIdParam, String poopPropValParam) {
-        LOG = Logger.getLogger(logDomain + "." + JEEPManager.class.getSimpleName());
+        LOG = LogManager.getLogger(logDomain + "." + JEEPManager.class.getSimpleName());
         this.idg = idGenerator;
         this.regRTY = regRTY;
         this.regIdParam = regIdParam;
