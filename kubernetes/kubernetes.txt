@@ -1,0 +1,8 @@
+1. download and install virtualbox in windows
+	https://www.virtualbox.org/wiki/Downloads
+2. create VM, install ubuntu
+	https://itsfoss.com/install-linux-in-virtualbox/
+(already included in 3 below 2. install Docker in ubuntu
+	https://phoenixnap.com/kb/how-to-install-docker-on-ubuntu-18-04)
+3. install kubernetes in ubuntu
+	https://vitux.com/install-and-deploy-kubernetes-on-ubuntu/

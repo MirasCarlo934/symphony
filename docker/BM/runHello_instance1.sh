@@ -1,0 +1,1 @@
+sudo docker run --rm --net test-network  -p 8181:8181 --name symphony2-container symphony2
