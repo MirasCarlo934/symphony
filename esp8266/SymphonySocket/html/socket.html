@@ -33,6 +33,7 @@ function countDownTimer() {
  * serverResponseHandler(json) is called by symphony.js
  */
 function serverResponseHandler(json) {
+//alert("socket.html serverResponseHandler   " + JSON.stringify(json));
 	var cmd = json.cmd;
 	switch(cmd) {
 		case CMD_TIMER_INFO:
@@ -64,6 +65,9 @@ function serverResponseHandler(json) {
 			break;
 	}
 }
+/**
+ * 
+ */
 function initTimerForm() {
 	var jsonRequest = {"core":7,"cmd":CMD_TIMER_INFO};//we are sending fetch timer cmd to the device 	
 	websocket.send(JSON.stringify(jsonRequest));
