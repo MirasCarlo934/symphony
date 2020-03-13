@@ -103,7 +103,20 @@ function commitConfig() {
 		};
 	websocket.send(JSON.stringify(obj));
 }
-
+/*
+ * Function that commits the ip and port of mqtt broker
+ */
+function commitMqtt() {
+	var mqttIp = document.getElementById("mqttIp").value;
+	var mqttPort = document.getElementById("mqttPort").value;
+	var obj = { core: 5, 
+			data: {
+				mqttIp: mqttIp, 
+				mqttPort: mqttPort
+			}
+		};
+	websocket.send(JSON.stringify(obj));
+}
 /**
  * Sends AJAX request to the server
  * 
@@ -112,16 +125,23 @@ function commitConfig() {
  * @param responseHandler = the function that will be called onreadystatechange.  This should handle the response of the server.
  * @returns
  */
-function sendToServer(method, url, responseHandler){
+function sendToServer(method, url, responseHandler, formId){
   var xhttp;
   xhttp=new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
     	responseHandler(this);
     }
-  };
+  };  
   xhttp.open(method, url, true);
-  xhttp.send();
+  if (method == "GET") {
+	  xhttp.send();  
+  } 
+  if (method == "POST") {  
+	  var form = document.getElementById(formId);
+	  var formData = new FormData(form);
+	  xhttp.send(formData);
+  }
 }
 /*
  * cels TODO, may not be needed, we could have this handled in wsHandler
@@ -202,6 +222,7 @@ function renderPage(xhttp) {
 	hiddenName.value = splitStr[0];
 	mac = splitStr[1];
 	document.getElementById("theName").innerHTML = jsonResponse["name_mac"];
+    getFirmwareVersion();	//we get the firmware version and show it in the header
 	//we will create a new array within an array grouped according to temp[i].grp
 	//[ 
 	//    [{typ:1,lbl:'RED',val:'0007'},{typ:'Rad',lbl:'GREEN',val:'0007'}],
@@ -285,7 +306,6 @@ function renderPage(xhttp) {
     }
     openTab(event, 'control');
     websocket.send('{"core":20,"data":"VALUES"}');//we send a VALUES command to get the values for the displayed elements
-    getFirmwareVersion();	//we get the firmware version and show it in the header
 }
 
 function groups() {
@@ -525,6 +545,7 @@ function getDeviceInfoHandler(xhttp) {
 	document.getElementById("pName").value = jsonResponse.name;
 	document.getElementById("pSSID").value = jsonResponse.ssid;
 	document.getElementById("pPass").value = jsonResponse.pwd;
+//	getFirmwareVersion();	//we get the firmware version and show it in the header
 }
 
 /**
@@ -541,7 +562,7 @@ function getDeviceInfo() {
 	sendToServer('GET', '/devInfo', getDeviceInfoHandler);
 }
 /**
- * handles the firmware version response from the device and displays in the theName element
+ * handles the firmware version response
  * @param xhttp - the response xhttp object
  * @returns
  */
@@ -558,7 +579,14 @@ function getFirmwareVersion() {
 //alert("getFirmwareVersion")
 	sendToServer('GET', '/fwVersion', getFirmwareVersionHandler);
 }
-
+/**
+ * handles the response of device for the /setMqttConfig url
+ * @param xhttp - the response xhttp object
+ * @returns
+ */
+function setMqttHandler(xhttp) {
+	alert (xhttp.responseText)
+}
 
 function closeIt(){
   document.getElementById("popup").remove();
