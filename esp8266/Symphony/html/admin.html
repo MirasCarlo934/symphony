@@ -10,7 +10,7 @@
 <h2>Device Setup</h2>
 <div class="header" id="msg"></div>
 <div class="tab">
-  <button class="tablinks" onclick="openTab(event, 'device');getDeviceInfo();" id="defaultOpen">Device</button>
+  <button class="tablinks" onclick="openTab(event, 'device');loadControlPage();getDeviceInfo();" id="defaultOpen">Device</button>
   <button class="tablinks" onclick="openTab(event, 'mqtt')">MQTT</button>
   <button class="tablinks" onclick="openTab(event, 'upload');">Files</button>
   <button class="tablinks" onclick="openTab(event, 'firmware')">Firmware</button>
@@ -21,11 +21,11 @@
 
 <div id="mqtt" class="tabcontent">
 <h3>Configure Mqtt Settings</h3>
-<form action='/handleMqttConfig' method='get' id='form'>
+<form action='/setMqttConfig' method='get' id='mqttForm'>
 <center><fieldset style="width:300px"><legend><b>Mqtt Details</b></legend>
-<label>IP:</label><input type='text' name='ip'><br>
-<label>Port:</label><input type='text' name='port' value="1883"><br>
-<input type='submit' value='Submit'>
+<label>IP:</label><input type='text' id='mqttIp'><br>
+<label>Port:</label><input type='text' id='mqttPort' value="1883"><br>
+<input type='button' value='Submit' onclick='commitMqtt()'>
 </fieldset></center>
 </form>
 </div>
