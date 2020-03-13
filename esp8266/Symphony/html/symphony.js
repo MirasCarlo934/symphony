@@ -194,13 +194,14 @@ function renderPage(xhttp) {
 	//RADIO_CTL = 10, BUTTON_CTL = 20, SLIDER_CTL = 30 , RADIO_SNSR = 50, BUTTON_SNSR = 60, SLIDER_SNSR = 70, UNDEF = 99
 	//this is the temp array of object {typ:1,lbl:'RED',val:'0007', grp:'g2'}
     jsonResponse = JSON.parse(xhttp.responseText);
-//    alert(xhttp.responseText)
+//alert(xhttp.responseText)
     itm = jsonResponse["data"];
     name = jsonResponse["name_mac"];
     var splitStr = name.split("_");
     var hiddenName = document.getElementById("hiddenName");
 	hiddenName.value = splitStr[0];
 	mac = splitStr[1];
+	document.getElementById("theName").innerHTML = jsonResponse["name_mac"];
 	//we will create a new array within an array grouped according to temp[i].grp
 	//[ 
 	//    [{typ:1,lbl:'RED',val:'0007'},{typ:'Rad',lbl:'GREEN',val:'0007'}],
@@ -284,6 +285,7 @@ function renderPage(xhttp) {
     }
     openTab(event, 'control');
     websocket.send('{"core":20,"data":"VALUES"}');//we send a VALUES command to get the values for the displayed elements
+    getFirmwareVersion();	//we get the firmware version and show it in the header
 }
 
 function groups() {
@@ -477,21 +479,29 @@ function handleWsMessage(evt) {
   		if (jsonResponse.msg!=null)
   			status.innerHTML = jsonResponse.msg;
   	}
+  	
+  /**
+   * 
+   * code below is deprecated	
    if (jsonResponse["msg"] != "Connected") {
-  	 //evt.data is of the form: {"cmd":1,"data",{data}}
-  	 switch(cmd) {
-  	 case CMD_INIT:
-  	 	//response from the INIT
-  		var header = document.getElementById("theName");
-  		var hiddenName = document.getElementById("hiddenName");  		
-  		cid = jsonResponse["cid"];
-  		hiddenName.value = jsonResponse["name"];
-  		header.innerHTML = jsonResponse["name"] + " v"+jsonResponse["ver"];
-  		mac = jsonResponse["mac"];
-  		var msg = document.getElementById("msg");
-  		msg.innerHTML = "Synchronized";
-  	 	break;
-  	 default:
+	   if ( core != CORE_TOCHILD ) {
+		  	 //evt.data is of the form: {"cmd":1,"data",{data}}
+		  	 switch(cmd) {
+		  	 case CMD_INIT:
+		  	 	//response from the INIT
+		//alert("symphony.js response from the INIT   " + JSON.stringify(jsonResponse));
+		  		var hiddenName = document.getElementById("hiddenName");		
+		  		cid = jsonResponse["cid"];
+		  		hiddenName.value = jsonResponse["name"];
+		  		
+		  		var header = document.getElementById("theName");  		
+		  		header.innerHTML = jsonResponse["name"] + " v"+jsonResponse["ver"];
+		  		mac = jsonResponse["mac"];
+		  		var msg = document.getElementById("msg");
+		  		msg.innerHTML = "Synchronized";
+		  	 	break;
+		  	 default:   
+	   }
   	 }
    } else {
 		clearInterval(updateDone);
@@ -501,7 +511,7 @@ function handleWsMessage(evt) {
 			status.innerHTML= "Reboot successful.";
 			isUpdateFW = false;
 		}
-   }
+   }*/
 };
 
 /**
@@ -530,6 +540,25 @@ function getDeviceInfo() {
 //	websocket.send('{"core":4,"data":"INF"}'); deperecated, we should use AJAX
 	sendToServer('GET', '/devInfo', getDeviceInfoHandler);
 }
+/**
+ * handles the firmware version response from the device and displays in the theName element
+ * @param xhttp - the response xhttp object
+ * @returns
+ */
+function getFirmwareVersionHandler(xhttp) {
+	document.getElementById("theName").innerHTML = document.getElementById("theName").innerHTML + "v" + xhttp.responseText
+}
+
+/**
+ * Gets the firmware version
+ * 		
+ * @returns
+ */
+function getFirmwareVersion() {
+//alert("getFirmwareVersion")
+	sendToServer('GET', '/fwVersion', getFirmwareVersionHandler);
+}
+
 
 function closeIt(){
   document.getElementById("popup").remove();
