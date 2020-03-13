@@ -137,17 +137,38 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 											client->text("PING Successful");
 									}
 									break;
-								case CORE_COMMIT://this is the commit AP, Passkey and Device Name, then reboot is done
+								case CORE_COMMIT_DEVICE_SETTINGS://this is the commit AP, Passkey and Device Name, then reboot is done
 									//this is from the admin WS client
 									if (json.containsKey("data")) {
 										String cfg = json["data"].as<String>();
+
 #ifdef DEBUG_ONLY
-										Serial.printf("\nwill save config %s\n", cfg.c_str());
+											Serial.printf("\nCORE_COMMIT_DEVICE_SETTINGS will save config %s\n", cfg.c_str());
 #endif
 										fManager.saveConfig(cfg.c_str());
 										reboot = true;
 									}
 									break;
+								case CORE_COMMIT_MQTT_SETTINGS://this is the commit mqtt ip and port
+										//this is from the admin WS client
+										if (json.containsKey("data")) {
+											String cfg = json["data"].as<String>();
+											DynamicJsonBuffer jsonBuffer;
+											JsonObject& jsonCfg = jsonBuffer.parseObject(fManager.readConfig());
+											if (jsonCfg.success()) {
+												jsonCfg["mqttIp"] = json["data"]["mqttIp"].as<String>();
+												jsonCfg["mqttPort"] = json["data"]["mqttPort"].as<int>();
+#ifdef DEBUG_ONLY
+												jsonCfg.prettyPrintTo(Serial);
+												Serial.printf("\nCORE_COMMIT_MQTT_SETTINGS will save config %s\n", cfg.c_str());
+#endif
+												String newConfig;
+												jsonCfg.printTo(newConfig);
+												Serial.printf("New config is %s\n", newConfig.c_str());
+												fManager.saveConfig(newConfig.c_str());
+											}
+										}
+										break;
 								case CORE_DELETE://this is the delete file command from the WS admin client
 									//delete path fr SPIFFS
 									if (json.containsKey("data")) {
@@ -331,7 +352,7 @@ void showProperties(AsyncWebServerRequest *request) {
  */
 void showVersion(AsyncWebServerRequest *request) {
 	request->send(200, "text/html", Symphony::version);
-	Serial.println("**************************** showProperties");
+	Serial.println("**************************** showVersion");
 }
 /**
  * File upload Section
@@ -416,6 +437,21 @@ void handleDeviceConfig(AsyncWebServerRequest *request) {
 	fManager.saveConfig(configStr.c_str());
 	reboot = true;
 }
+/*
+ * Handles the mqqt settings sent by the client
+ */
+void handleMqttConfig (AsyncWebServerRequest *request) {
+	Serial.println("handleMqttConfig START");
+	DynamicJsonBuffer jsonBuffer;
+	JsonObject& json = jsonBuffer.parseObject(fManager.readConfig());
+	json.prettyPrintTo(Serial);
+//	AsyncWebParameter* pIP = request->getParam("mqttIp");
+//	AsyncWebParameter* pPort = request->getParam("mqttPort");
+	String mqttConfigStr = "data:{ip:$ip, port:$port}";
+//	mqttConfigStr.replace("$ip", pIP->value().c_str());
+//	mqttConfigStr.replace("$port", pPort->value().c_str());
+	Serial.printf("\nhandleMqttConfig will save %s\n", mqttConfigStr.c_str());
+}
 
 /****
  * Initialize the webserver
@@ -437,6 +473,7 @@ void initWebServer() {
 	webServer.on("/devInfo", HTTP_GET, handleDevInfo);  //show the Files in SPIFFS
 	webServer.on("/properties.html", showProperties);
 	webServer.on("/fwVersion", showVersion);	//show the firmware version to the client
+	webServer.on("/setMqttConfig", handleMqttConfig);	//handles the mqtt settings from the client
 	webServer.serveStatic("/files.html", SPIFFS, "/files.html");
 	webServer.serveStatic("/test.html", SPIFFS, "/test.html");
 //	webServer.on("/hotspot-detect.html", handleAppleCaptivePortal);//for apple devices
