@@ -76,7 +76,7 @@ function updateFirmware() {
 	  	}, false);
 	  xhttp.upload.addEventListener("load", 
 		function(e){
-		  alert("firmware successfully loaded");
+		  //alert("firmware successfully loaded");
 	  	}, false);
 	  if( document.getElementById('bin').files.length === 0){
 		  document.getElementById("status").innerHTML = "Please choose bin file.";
