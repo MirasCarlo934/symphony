@@ -12,7 +12,7 @@
 
 AsyncMqttClient mqttClient;
 const char* myId = "myMqttID";
-const char* mqttServer = "192.168.1.5";
+const char* mqttServer = "localhost";
 int mqttPort = 1883;
 Product thisProduct;
 
@@ -95,6 +95,7 @@ MqttHandler::MqttHandler() {
  * sets the URL, can be uised if MqttHandler was instantiated using the default constructor
  */
 void MqttHandler::setUrl(const char *url) {
+	Serial.printf("\t\t[MqttHandler] ************** url=%s\n", url);
 	mqttServer = url;
 }
 /**
@@ -127,6 +128,7 @@ void MqttHandler::connect() { //to connect to MQTT server
 	mqttClient.onUnsubscribe(onMqttUnsubscribe);
 	mqttClient.onMessage(onMqttMessage);
 	mqttClient.onPublish(onMqttPublish);
+	Serial.printf("\t\t[MqttHandler] ************** url=%s port=%i\n", mqttServer, mqttPort);
 	mqttClient.setServer(mqttServer, mqttPort);
 
 	mqttClient.connect();
