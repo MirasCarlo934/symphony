@@ -27,7 +27,7 @@ void onMqttConnect(bool sessionPresent) {
   Serial.println("\t\t[MqttHandler] ************** Connected to MQTT.");
 //  Serial.print("Session present: ");
 //  Serial.println(sessionPresent);
-  uint16_t packetIdSub = mqttClient.subscribe("control", 0);
+  uint16_t packetIdSub = mqttClient.subscribe("BM", 0);
 //  Serial.print("Subscribing at QoS 2, packetId: ");
 //  Serial.println(packetIdSub);
 //  mqttClient.publish("BM", 0, true, "test 1");

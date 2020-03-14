@@ -65,7 +65,7 @@ class Symphony {
 	    void setProduct(Product p);
 	    void doReboot();
 	    void sendToWsServer(String replyStr);
-	    void mqttPublish(const char* payload, uint8_t qos);
+	    void transmit(const char* payload);
 
 	private:
 	    String ap_ssid, ap_passphrase = "12345678";

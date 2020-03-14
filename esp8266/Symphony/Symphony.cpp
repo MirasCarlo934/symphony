@@ -496,7 +496,7 @@ void mqttMsgHandler(char* topic, char* payload, size_t len) {
   char str2[len];
   strncpy ( str2, payload, len );
   Serial.println(str2);
-  if (strcmp(topic, "control") == 0) {
+  if (strcmp(topic, "BM") == 0) {
 	  DynamicJsonBuffer jsonBuffer;
 	  JsonObject& jsonMsg = jsonBuffer.parseObject(str2);
 	  Serial.printf("RID=%s\n", jsonMsg["RID"].as<String>().c_str());
@@ -826,11 +826,18 @@ bool Symphony::registerProduct() {
 	}
 }
 /**
- * publishes msg to mqtt broker
+ * Transmits data to the BM
+ * 	this could be via MQTT or any other protocol
  */
-void Symphony::mqttPublish(const char* payload, uint8_t qos){
-	theMqttHandler.publish(payload, qos);
+void Symphony::transmit(const char* payload) {
+	//for now, we are using mqtt
+	if (theMqttHandler.isConnected()) {
+		theMqttHandler.publish(payload, 2);
+	} else {
+		Serial.println("********* FAILED, not connected to MQTT. Unable to transmit data.");
+	}
 }
+
 void Symphony::sendToWsServer(String replyStr){
 //	webSocketClient.sendTXT(replyStr);July 13 2019 do we really need this device to be a ws client?
 }
