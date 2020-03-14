@@ -553,7 +553,9 @@ void Symphony::setup(String theHostName, String ver) {
 	}
 	homeHtml = CONTROL_HTML1;
 	homeHtml.replace("$AAA$", hostName);
-	Serial.printf("Hostname is %s.local version is %s\n", hostName.c_str(), Symphony::version.c_str());
+#ifdef DEBUG_ONLY
+	Serial.printf("Hostname=%s.local nameWithMac=%s version=%s\n", hostName.c_str(), Symphony::version.c_str());
+#endif
 	MDNS.setInstanceName("staticHostname");
 	if (MDNS.begin(Symphony::hostName.c_str())) {
 		//setup the mDNS responder
