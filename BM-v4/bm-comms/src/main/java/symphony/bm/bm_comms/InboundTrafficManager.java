@@ -1,9 +1,9 @@
 package symphony.bm.bm_comms;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import symphony.bm.bm_comms.jeep.exceptions.PrimaryMessageCheckingException;
 import symphony.bm.bm_comms.jeep.vo.*;
 import symphony.bm.bm_comms.rest.RestMicroserviceCommunicator;
@@ -13,14 +13,15 @@ import java.util.LinkedList;
 public class InboundTrafficManager implements Runnable {
     private final Logger LOG;
     private LinkedList<RawMessage> rawMsgQueue = new LinkedList<RawMessage>();
-    private ResponseManager rm;
+//    private ResponseManager rm;
     private RestMicroserviceCommunicator rest;
 
-    public InboundTrafficManager(String logDomain, RestMicroserviceCommunicator rest,
-                                 ResponseManager responseManager) {
-        LOG = LogManager.getLogger(logDomain + "." + InboundTrafficManager.class.getSimpleName());
-        this.rm = responseManager;
+    public InboundTrafficManager(String logDomain, String name, RestMicroserviceCommunicator rest/*,
+                                 ResponseManager responseManager*/) {
+        LOG = LoggerFactory.getLogger(logDomain + "." + name);
+//        this.rm = responseManager;
         this.rest = rest;
+        LOG.info(InboundTrafficManager.class.getSimpleName() + " started!");
     }
 
     public void addInboundRawMessage(RawMessage rawMsg) {
@@ -41,7 +42,7 @@ public class InboundTrafficManager implements Runnable {
                     } else if (checkPrimaryMessageValidity(rawMsg) == JeepMessageType.RESPONSE) {
                         JeepResponse response = new JeepResponse(new JSONObject(rawMsg.getMessageStr()),
                                 rawMsg.getProtocol());
-                        rm.removeActiveRequest(response.getRID());
+//                        rm.removeActiveRequest(response.getRID());
                         rest.forwardJeepMessage(response);
                     }
                 } catch(PrimaryMessageCheckingException e) {

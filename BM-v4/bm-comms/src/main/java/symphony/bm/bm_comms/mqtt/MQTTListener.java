@@ -1,5 +1,5 @@
 package symphony.bm.bm_comms.mqtt;
-;
+
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -31,7 +31,7 @@ public class MQTTListener extends Listener implements MqttCallback {
 	}
 
 	public void connectionLost(Throwable arg0) {
-		LOG.fatal("Connection lost with MQTT server!", arg0);
+		LOG.error("Connection lost with MQTT server!", arg0);
 	}
 
 	public void deliveryComplete(IMqttDeliveryToken arg0) {

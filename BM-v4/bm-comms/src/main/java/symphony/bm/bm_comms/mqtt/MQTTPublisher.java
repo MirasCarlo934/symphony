@@ -3,7 +3,7 @@ package symphony.bm.bm_comms.mqtt;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
-import symphony.bm.bm_comms.ResponseManager;
+import org.springframework.stereotype.Component;
 import symphony.bm.bm_comms.Sender;
 import symphony.bm.bm_comms.jeep.vo.JeepErrorResponse;
 import symphony.bm.bm_comms.jeep.vo.JeepMessage;
@@ -17,15 +17,14 @@ public class MQTTPublisher extends Sender {
 	private String default_topic;
 	private String error_topic;
 	private LinkedList<MQTTMessage> queue = new LinkedList<MQTTMessage>();
-//	private Vector<String> deviceTopics;
 	private String regRTY;
 
-	public MQTTPublisher(String name, String logDomain, String default_topic, String error_topic, String regRTY,
-						 ResponseManager responseManager) {
-		super(logDomain, name, responseManager);
+	public MQTTPublisher(String name, String logDomain, String default_topic, String error_topic, String regRTY) {
+		super(name, logDomain);
 		this.regRTY = regRTY;
 		this.default_topic = default_topic;
 		this.error_topic = error_topic;
+		run();
 	}
 	
 	public void setClient(MQTTClient client) {
@@ -54,26 +53,12 @@ public class MQTTPublisher extends Sender {
 		}
 	}
 
-//	private void getDevices() {
-//		for(Device device : dr.getAllDevices()) {
-//			if(deviceTopics.isEmpty()) {
-//				deviceTopics.add(device.getTopic());
-//			} else {
-//				if (device.isActive()) {
-//					deviceTopics.add(device.getTopic());
-//				} else {
-//					deviceTopics.remove(device.getTopic());
-//				}
-//			}
-//		}
-//	}
-
 	@Override
 	public void sendJeepMessage(JeepMessage message) {
 		if(message.getRTY().equals(regRTY)) {
 			publishToDefaultTopic(message);
 		} else {
-			publish(message);
+			publishToDefaultTopic(message); // TODO update to MQTT topic implementation
 		}
 	}
 	
@@ -84,7 +69,7 @@ public class MQTTPublisher extends Sender {
 	}
 
 	public void sendErrorResponse(String topic, JeepErrorResponse error) {
-		publish(topic, error);
+		publish(topic, error.getJSON().toString());
 		sendErrorResponse(error);
 	}
 	

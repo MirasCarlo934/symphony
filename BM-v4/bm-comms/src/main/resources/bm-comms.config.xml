@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="MQTT.client" class="symphony.bm.bm_comms.mqtt.MQTTClient">
+        <constructor-arg name="logDomain" value="${log.mqtt}"/>
+        <constructor-arg name="name" value="client"/>
+        <constructor-arg name="serverURI" value="${mqtt.serverURI}"/>
+        <constructor-arg name="clientId" value="${mqtt.clientID}"/>
+        <constructor-arg name="BM_topic" value="${mqtt.topic.bm}"/>
+        <constructor-arg name="default_topic" value="${mqtt.topic.default}"/>
+        <constructor-arg name="listener" ref="MQTT.listener"/>
+        <constructor-arg name="publisher" ref="MQTT.publisher"/>
+        <constructor-arg name="reconnectPeriod" value="${mqtt.reconnect.timeout}"/>
+    </bean>
+
+    <bean id="MQTT.client.test" class="symphony.bm.bm_comms.mqtt.MQTTClient_test">
+        <constructor-arg name="client" ref="MQTT.client"/>
+    </bean>
+
+    <bean id="MQTT.publisher" class="symphony.bm.bm_comms.mqtt.MQTTPublisher">
+        <constructor-arg name="logDomain" value="${log.mqtt}"/>
+        <constructor-arg name="name" value="sender"/>
+        <constructor-arg name="default_topic" value="${mqtt.topic.default}"/>
+        <constructor-arg name="error_topic" value="${mqtt.topic.error}"/>
+        <constructor-arg name="regRTY" value="${request.reg.rty}"/>
+    </bean>
+
+    <bean id="MQTT.listener" class="symphony.bm.bm_comms.mqtt.MQTTListener">
+        <constructor-arg name="logDomain" value="${log.mqtt}"/>
+        <constructor-arg name="name" value="listener"/>
+        <constructor-arg name="default_topic" value="${mqtt.topic.default}"/>
+        <constructor-arg name="error_topic" value="${mqtt.topic.error}"/>
+        <constructor-arg name="inboundTrafficManager" ref="CORE.inboundTrafficManager"/>
+    </bean>
+
+    <bean id="CORE.inboundTrafficManager" class="symphony.bm.bm_comms.InboundTrafficManager">
+        <constructor-arg name="logDomain" value="${log.comms}"/>
+        <constructor-arg name="name" value="inboundTrafficManager"/>
+        <constructor-arg name="rest" ref="restMicroserviceCommunicator"/>
+    </bean>
+
+</beans>

@@ -1,7 +1,7 @@
 package symphony.bm.bm_comms;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import symphony.bm.bm_comms.jeep.vo.RawMessage;
 
 public abstract class Listener {
@@ -11,7 +11,8 @@ public abstract class Listener {
 	
 	public Listener(String name, String logDomain, InboundTrafficManager inboundTrafficManager) {
 		this.itm = inboundTrafficManager;
-		LOG = LogManager.getLogger(logDomain + "." + name);
+		LOG = LoggerFactory.getLogger(logDomain + "." + name);
+		LOG.info("Listener started!");
 	}
 	
 	/**

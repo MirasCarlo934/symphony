@@ -1,33 +1,34 @@
 package symphony.bm.bm_comms.mqtt;
 
-import org.apache.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttSecurityException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class MQTTClient extends MqttClient {
-	private Logger logger;
+	private Logger LOG;
 	private MQTTListener callback;
 	private MQTTPublisher publisher;
 	private String BM_topic;
 	private String default_topic;
-	
-//	private MemoryPersistence persistence = new MemoryPersistence();
 
-	public MQTTClient(String serverURI, String clientId, String logDomain, String BM_topic, String default_topic, 
-			MQTTListener callback, MQTTPublisher publisher, int reconnectPeriod)
+	public MQTTClient(String serverURI, String clientId, String logDomain, String name, String BM_topic,
+					  String default_topic, MQTTListener listener, MQTTPublisher publisher, int reconnectPeriod)
 					throws MqttException {
 		super(serverURI, clientId, new MemoryPersistence());
-		logger = Logger.getLogger(logDomain + "." + MQTTClient.class.getSimpleName());
+		LOG = LoggerFactory.getLogger(logDomain + "." + name);
+		LOG.error("LOOOG");
+		System.out.println("HEHEHEHE");
 		this.BM_topic = BM_topic;
 		this.default_topic = default_topic;
-		this.callback = callback;
+		this.callback = listener;
 		this.publisher = publisher;
 		connectToMQTT();
 
@@ -40,8 +41,9 @@ public class MQTTClient extends MqttClient {
 	 * 
 	 * @return <b>True</b> if the MQTTHandler has successfully connected, <b>false</b> otherwise.
 	 */
-	public boolean connectToMQTT() {
+	private boolean connectToMQTT() {
 		try {
+			LOG.info("Connecting to MQTT...");
 			JSONObject lastWill = new JSONObject();
 			lastWill.put("RID", "BM-exit");
 			lastWill.put("RTY", "exit");
@@ -50,22 +52,22 @@ public class MQTTClient extends MqttClient {
 			connOpts.setWill(default_topic, lastWill.toString().getBytes(), 2, false);
 			connOpts.setCleanSession(true);
 			connect(connOpts);
-			logger.info("Connected to MQTT!");
+			LOG.info("Connected to MQTT!");
 			subscribe(BM_topic);
-			logger.debug("Subscribed to BM topic!");
+			LOG.debug("Subscribed to BM topic!");
 			setCallback(callback);
-			logger.debug("Listener set!");
+			LOG.debug("Listener set!");
 			publisher.setClient(this);
-			logger.debug("Publisher set!");
+			LOG.debug("Publisher set!");
 			return true;
 		} catch (MqttSecurityException e) {
-			logger.fatal("Cannot connect to MQTT server due to MqttSecurityException!", e);
-			logger.info("Attempting to reconnect...");
+			LOG.error("Cannot connect to MQTT server due to MqttSecurityException!", e);
+			LOG.info("Attempting to reconnect...");
 			connectToMQTT();
 			return false;
 		} catch (MqttException e) {
-			logger.fatal("Cannot connect to MQTT due to MqttException!", e);
-			logger.info("Attempting to reconnect...");
+			LOG.error("Cannot connect to MQTT due to MqttException!", e);
+			LOG.info("Attempting to reconnect...");
 			connectToMQTT();
 			return false;
 		}
@@ -74,19 +76,19 @@ public class MQTTClient extends MqttClient {
 	private class MQTTClientReconnector extends TimerTask {
 		private MQTTClient client;
 		
-		protected MQTTClientReconnector(MQTTClient client) {
+		MQTTClientReconnector(MQTTClient client) {
 			this.client = client;
 		}
 
 		@Override
 		public void run() {
 			if(!client.isConnected()) {
-				logger.info("Reconnecting...");
+				LOG.info("Reconnecting...");
 				try {
 					client.reconnect();
-					logger.info("Connected to MQTT!");
+					LOG.info("Connected to MQTT!");
 				} catch (MqttException e) {
-					logger.fatal("Error reconnecting!", e);
+					LOG.error("Error reconnecting!", e);
 				}
 			}
 		}
