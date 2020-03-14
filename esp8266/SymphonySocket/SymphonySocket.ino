@@ -94,7 +94,7 @@ void sendTimerData(AsyncWebSocketClient *client, JsonObject& json) {
  */
 int wsHandler(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json) {
 //int wsHandler(AsyncWebSocket ws, AsyncWebSocketClient *client, uint8_t * payload, size_t len) {
-	Serial.println("callback executed start");
+	Serial.println("SymphonySocket callback executed start");
 	json.prettyPrintTo(Serial);Serial.println();
 	if (json.containsKey("cmd")) {
 			uint8_t cmd = json["cmd"];
@@ -136,6 +136,17 @@ int wsHandler(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json)
 			case 10://on-off command
 				socketState = json["val"].as<int>();
 				product.setValue("0001", socketState);
+				DynamicJsonBuffer jsonBuffer;
+				JsonObject& poopJson = jsonBuffer.createObject();
+				poopJson["RID"] = Symphony::mac;
+				poopJson["CID"] = "0000";
+				poopJson["RTY"] = "poop";
+				poopJson["property"] = "0001";
+				poopJson["value"] = socketState;
+				String strReg;
+				poopJson.printTo(strReg);
+				s.mqttPublish(strReg.c_str(), 0);
+				Serial.printf("wsHandler Pin%i set to %i\n",SOCKET_PIN, socketState);
 				break;
 			}
 	}
@@ -155,19 +166,21 @@ void setup()
 	JsonObject& jsonObj = jsonBuffer.parseObject(config);
 	isE131Enabled = jsonObj["e131"].as<int>();
 	s.setWsCallback(wsHandler);
-	s.setMqttHandler("mqttId", "192.168.0.109", 1883);
+//	s.setMqttHandler("mqttId", "192.168.0.109", 1883);		//not yet fully tested, so we are commenting out first  jan 05 2020
 	char ver[10];
-	sprintf(ver, "%u.%u", SYMPHONY_VERSION, SOCKET_VERSION);
-	s.setup(myName, ver);
+	sprintf(ver, "%u.%u", SYMPHONY_VERSION, MY_VERSION);
+	s.setup(myName, ver, true);
 	s.on("/init", HTTP_GET, handleInit);
 	s.on("/toggle", HTTP_GET, handleToggle);
 	s.serveStatic("/socket.html", SPIFFS, "/socket.html");
 
 	s.on("/getConfig", HTTP_GET, handleGetConfig);
 
-	product = Product(s.nameWithMac, "Bedroom", "Socket");
+	product = Product(s.nameWithMac, "J444", "Socket");
 	Gui gui1 = Gui("Socket Control", BUTTON_CTL, "On/Off", 0, 1, socketState);
 	product.addProperty("0001", false, SOCKET_PIN, gui1);//add aproperty that has an attached pin
+	Gui gui2 = Gui("Socket Control", BUTTON_SNSR, "Indicator", 0, 1, socketState);
+	product.addProperty("0002", false, gui2);//add aproperty that has an attached pin
 	s.setProduct(product);
 
 	if (e131.begin(E131_MULTICAST, UNIVERSE_START, UNIVERSE_COUNT))   // Listen via Multicast
@@ -176,7 +189,7 @@ void setup()
 		Serial.println(F("*** e131.begin failed ***"));
 
 //	e131.begin(E131_MULTICAST, myUniverse, 1);
-	Serial.printf("\n************END Symphony Socket Setup Version %u.%u***************\n", SYMPHONY_VERSION, SOCKET_VERSION);
+	Serial.printf("\n************END Symphony Socket Setup Version %u.%u***************\n", SYMPHONY_VERSION, MY_VERSION);
 }
 
 // The loop function is called in an endless loop
@@ -201,6 +214,7 @@ void loop() {
 			if (socketState != prevSocketState) {
 				digitalWrite(SOCKET_PIN, socketState);
 				prevSocketState = socketState;
+				Serial.printf("loop Pin%i set to %i\n",SOCKET_PIN, socketState);
 			}
 			//let us look at the timer
 			if (timerData.enabled) {
