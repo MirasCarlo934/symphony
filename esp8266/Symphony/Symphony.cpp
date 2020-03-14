@@ -482,6 +482,27 @@ void initWebServer() {
 		request->send(404, "text/plain", "Page not found");
 	});
 }
+
+/**
+ *  This is the MQTT callback handler that is called when a message from mqtt broker arrives
+ */
+void mqttMsgHandler(char* topic, char* payload, size_t len) {
+  Serial.println("\t[mqttMsgHandler] ************** Messsage received.");
+  Serial.print("\t[mqttMsgHandler] **************   topic:");
+  Serial.print(topic);
+  Serial.print(", len: ");
+  Serial.println(len);
+  Serial.println("\t[mqttMsgHandler]   payload: ");
+  char str2[len];
+  strncpy ( str2, payload, len );
+  Serial.println(str2);
+  if (strcmp(topic, "control") == 0) {
+	  DynamicJsonBuffer jsonBuffer;
+	  JsonObject& jsonMsg = jsonBuffer.parseObject(str2);
+	  Serial.printf("RID=%s\n", jsonMsg["RID"].as<String>().c_str());
+  }
+}
+
 /*
  * Constructor
  */
@@ -631,6 +652,7 @@ void Symphony::enableMqttHandler() {
 	theMqttHandler.setId(nameWithMac.c_str());
 	theMqttHandler.setUrl(mqttIp.c_str());
 	theMqttHandler.setPort(mqttPort);
+	theMqttHandler.setMsgCallback(mqttMsgHandler);
 	theMqttHandler.connect();
 	hasMqttHandler = true;
 }
