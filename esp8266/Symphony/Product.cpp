@@ -127,6 +127,24 @@ attribStruct Product::getProperty(String ssid) {
   return ps;
 }
 
+/*
+ * returns the property specified by the ndex
+ * returns null if not found
+ */
+attribStruct Product::getKeyVal(int index) {
+	if (index < size) {
+		return attributes[index];
+	} else {
+		//index is not correct
+		attribStruct ps;
+		ps.pin = -1;
+		ps.gui.pinType = BUTTON_CTL;
+		ps.corePin = false;
+		ps.ssid = "NULL";
+		return ps;
+	}
+}
+
 
 /*
  * Sets the value of the product property with the given ssid
