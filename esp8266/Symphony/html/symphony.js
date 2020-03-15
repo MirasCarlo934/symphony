@@ -1,9 +1,11 @@
 const CMD_INIT = 1
 const CMD_VALUES = 2
 const CMD_CLIENT = 10
-const CORE_VALUERESPONSE = 20
 const CORE_GETDEVICEINFO = 4;
 const CORE_TOCHILD = 7;
+const CORE_START_HEARTBEAT = 8;
+const CORE_VALUERESPONSE = 20
+
 
 var itm;
 var updateDone;
@@ -11,6 +13,7 @@ var counter = 0;
 var isUpdateFW = false;
 var mac;		//the identity of the device server
 var cid;		//the identity of this client
+var hb;			//the variable for the heartbeat timeout timer
 
 
 initWs();
@@ -54,7 +57,7 @@ function updateFirmware() {
 	  xhttp.onreadystatechange = function() {
 	    if (this.readyState==4 && this.status==200) {
 	      document.getElementById("status").innerHTML = this.responseText;
-	      document.getElementById("msg").innerHTML = "Please refresh browser or wait for ready status.";
+//	      document.getElementById("msg").innerHTML = "Please refresh page or wait for READY status.";
 	      isUpdateFW = true;
 	    }
 	  }
@@ -371,13 +374,33 @@ function sendRangeWs(e) {
 	jsonResponse["val"] =  e.value;
 	websocket.send(JSON.stringify(jsonResponse));
 }
-
+/**
+ * The websocket keep alive
+ * Will only be executed during transactions where device is doing reboot
+ * 		1. commitConfig()
+ * 		2. updateFirmware() 
+ */
+function wsHeartbeat() {
+  if (typeof websocket === 'undefined' || websocket.readyState != 1) {
+	  //do nothing, there is no websocket connection
+  } else {
+	  websocket.send('{"core":5}');//send a ping core command
+	  hb = setTimeout(wsHeartbeat, 10000);	//interval is 10s
+  }
+}
+/**
+ * The websocket handler
+ * @returns
+ */
 function wsHandler() {	 
      websocket.onopen = function(evt) {
 //       for (i=1;i<=2;i++) {
 //         var hover = document.getElementById("tmp"+i);
 //         hover.parentNode.removeChild(hover);
 //       }
+    	 var status = document.getElementById("status");
+         status.innerHTML="READY";
+         clearTimeout(hb);
      };
      websocket.onclose = function(evt) {
        //alert("DISCONNECTED");
@@ -430,7 +453,6 @@ function handleControl(evt) {
  * 
  */
 function handleWsMessage(evt) {
-//alert(evt.data)
   	var jsonResponse = JSON.parse(evt.data);
   	var core = jsonResponse["core"];
   	var cmd = jsonResponse["cmd"];
@@ -438,12 +460,21 @@ function handleWsMessage(evt) {
   	var status = document.getElementById(box);
   	switch(core) {
   		case CORE_TOCHILD://data from server to the child javascript
-  			var msg = document.getElementById("msg");//comment this out later
-  			msg.innerHTML = JSON.stringify(jsonResponse);//comment this out later
-			if (serverResponseHandler!=null) {//serverResponseHandler method can be defined in the child's javascript
-				serverResponseHandler(jsonResponse);//pass the jsonResponse to the child's javascript
-			}
-  			break;
+  			{
+	  			var msg = document.getElementById("msg");//comment this out later
+	  			msg.innerHTML = JSON.stringify(jsonResponse);//comment this out later
+				if (serverResponseHandler!=null) {//serverResponseHandler method can be defined in the child's javascript
+					serverResponseHandler(jsonResponse);//pass the jsonResponse to the child's javascript
+				}
+	  			break;
+  			}
+  		case CORE_START_HEARTBEAT: 
+  			{
+	  			wsHeartbeat();
+//	  			document.getElementById("msg").innerHTML = "Please refresh page or wait for READY status.";
+	  	        document.getElementById("status").innerHTML = "Device Reboot";
+	  			break;
+	  		}
   		case CORE_VALUERESPONSE://value response from server
   			{
   			switch(cmd) {
@@ -481,9 +512,9 @@ function handleWsMessage(evt) {
   				}
   		  		 break;
   		  	 default:
-  		  	 }		
-  			}
+  		  	 }
   			break;
+  		}
   	}
   	if (status!=null) {
   		if (jsonResponse.msg!=null)

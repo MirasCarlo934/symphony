@@ -94,7 +94,7 @@ int (* WsCallback) (AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject&
 void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void * arg, uint8_t *data, size_t len) {
 	if (!isUpdateFw) {
 #ifdef DEBUG_ONLY
-		Serial.printf("Symphony websocket called len=%i\n",len);
+		Serial.printf("Symphony websocket called len=%i id=%i\n",len, client->id());
 #endif
 		switch (type) {
 			case WS_EVT_DATA: {
@@ -106,7 +106,8 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 						Serial.println("core parseObject() failed");
 					} else {
 #ifdef DEBUG_ONLY
-						json.prettyPrintTo(Serial);Serial.println();
+						Serial.printf("id=%i ",client->id());
+						json.printTo(Serial);Serial.println();
 #endif
 						if (json.containsKey("do")) {
 							//this is for both the core and implementor
@@ -148,6 +149,12 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 										reboot = true;
 									}
 									break;
+								case CORE_PING: {
+#ifdef DEBUG_ONLY
+											Serial.println("CORE_PING received");
+#endif
+									break;
+								}
 //							No need for this code as all config data are sent via CORE_COMMIT_DEVICE_SETTINGS
 //							we are just leaving this code here for reference on adding config to an existing config from file
 //								case CORE_COMMIT_MQTT_SETTINGS://this is the commit mqtt ip and port
@@ -605,6 +612,12 @@ bool Symphony::loop() {
 	//DO NOT PUT A delay() AS IT CAUSES ERROR DURING OTA
 	// Reboot handler
 	if (reboot) {
+		DynamicJsonBuffer jsonBuffer;
+		JsonObject& hbMsg = jsonBuffer.createObject();
+		hbMsg["core"] = 8;
+		String strHbMsg;
+		hbMsg.printTo(strHbMsg);
+		ws.textAll(strHbMsg);//send a start heartbeat timer to all the clients
 		Serial.println("Rebooting...");
 		delay(REBOOT_DELAY);
 		ESP.restart();

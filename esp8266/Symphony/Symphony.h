@@ -27,12 +27,13 @@
 #define HTTP_PORT 80      /* Default web server port */
 #define WS_PORT 8080      /* Web socket server port */
 #define CONNECT_TIMEOUT 15000   /* 15 seconds */
-#define REBOOT_DELAY    500     /* Delay for rebooting once reboot flag is set */
+#define REBOOT_DELAY    3500     /* Delay for rebooting once reboot flag is set */
 
 #define  CORE_INIT 1
 #define  CORE_COMMIT_DEVICE_SETTINGS 2
 #define  CORE_DELETE 3
 #define  CORE_GETDEVICEINFO 4
+#define  CORE_PING 5
 #define  CORE_VALUES 20
 #define  CORE_CONTROL 7
 
