@@ -12,17 +12,22 @@
 
 AsyncMqttClient mqttClient;
 const char* myId = "myMqttID";
-const char* mqttServer = "192.168.1.5";
+const char* mqttServer = "localhost";
 int mqttPort = 1883;
 Product thisProduct;
 
 boolean connected = false;
 
+/*
+ * This is the callback handler in Symphony.cpp that will be called when a message arrives.
+ */
+void (* msgCallback) (char* topic, char* payload, size_t len);
+
 void onMqttConnect(bool sessionPresent) {
-//  Serial.println("\t\t[MqttHandler] ************** Connected to MQTT.");
+  Serial.println("\t\t[MqttHandler] ************** Connected to MQTT.");
 //  Serial.print("Session present: ");
 //  Serial.println(sessionPresent);
-//  uint16_t packetIdSub = mqttClient.subscribe("control", 0);
+  uint16_t packetIdSub = mqttClient.subscribe("BM", 0);
 //  Serial.print("Subscribing at QoS 2, packetId: ");
 //  Serial.println(packetIdSub);
 //  mqttClient.publish("BM", 0, true, "test 1");
@@ -58,24 +63,25 @@ void onMqttUnsubscribe(uint16_t packetId) {
 
 void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total) {
   Serial.println("\t\t[MqttHandler] ************** Messsage received.");
-  Serial.println("\t\t[MqttHandler] **************   topic: ");
-  Serial.println(topic);
-  Serial.print("  qos: ");
-  Serial.println(properties.qos);
-  Serial.print("  dup: ");
-  Serial.println(properties.dup);
-  Serial.print("  retain: ");
-  Serial.println(properties.retain);
-  Serial.print("  len: ");
-  Serial.println(len);
-  Serial.print("  index: ");
-  Serial.println(index);
-  Serial.print("  total: ");
-  Serial.println(total);
-  Serial.print("  payload: ");
-  char str2[len];
-  strncpy ( str2, payload, len );
-  Serial.println(str2);
+//  Serial.print("\t\t[MqttHandler] **************   topic: ");
+//  Serial.println(topic);
+//  Serial.print("\t\t[MqttHandler]   qos: ");
+//  Serial.print(properties.qos);
+//  Serial.print(",  dup: ");
+//  Serial.print(properties.dup);
+//  Serial.print(",  retain: ");
+//  Serial.print(properties.retain);
+//  Serial.print(",  len: ");
+//  Serial.print(len);
+//  Serial.print(",  index: ");
+//  Serial.print(index);
+//  Serial.print(",  total: ");
+//  Serial.println(total);
+//  Serial.print("\t\t[MqttHandler]   payload: ");
+//  char str2[len];
+//  strncpy ( str2, payload, len );
+//  Serial.println(str2);
+  msgCallback(topic, payload,len);
 }
 
 void onMqttPublish(uint16_t packetId) {
@@ -90,11 +96,20 @@ void onMqttPublish(uint16_t packetId) {
 MqttHandler::MqttHandler() {
 
 }
-
+/*
+ *
+ * Sets the callback that will do the parsing of the mqtt message
+ * This will be from Symphony.cpp
+ *
+ */
+void MqttHandler::setMsgCallback(void (* Callback) (char* topic, char* payload, size_t len)) {
+	msgCallback= Callback;
+}
 /**
  * sets the URL, can be uised if MqttHandler was instantiated using the default constructor
  */
 void MqttHandler::setUrl(const char *url) {
+	Serial.printf("\t\t[MqttHandler] ************** url=%s\n", url);
 	mqttServer = url;
 }
 /**
@@ -127,6 +142,7 @@ void MqttHandler::connect() { //to connect to MQTT server
 	mqttClient.onUnsubscribe(onMqttUnsubscribe);
 	mqttClient.onMessage(onMqttMessage);
 	mqttClient.onPublish(onMqttPublish);
+	Serial.printf("\t\t[MqttHandler] ************** url=%s port=%i\n", mqttServer, mqttPort);
 	mqttClient.setServer(mqttServer, mqttPort);
 
 	mqttClient.connect();

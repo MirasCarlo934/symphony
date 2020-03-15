@@ -94,7 +94,7 @@ int (* WsCallback) (AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject&
 void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void * arg, uint8_t *data, size_t len) {
 	if (!isUpdateFw) {
 #ifdef DEBUG_ONLY
-		Serial.printf("websocket called len=%i\n",len);
+		Serial.printf("Symphony websocket called len=%i\n",len);
 #endif
 		switch (type) {
 			case WS_EVT_DATA: {
@@ -166,6 +166,7 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 												jsonCfg.printTo(newConfig);
 												Serial.printf("New config is %s\n", newConfig.c_str());
 												fManager.saveConfig(newConfig.c_str());
+												reboot = true;
 											}
 										}
 										break;
@@ -310,8 +311,6 @@ void onWifiConnect(const WiFiEventStationModeGotIP &event) {
     // Setup mDNS / DNS-SD
     char chipId[7] = { 0 };
     snprintf(chipId, sizeof(chipId), "%06x", ESP.getChipId());
-    if (Symphony::hasMqttHandler)
-    	theMqttHandler.connect();
 
 
 #ifdef DISCOVERABLE
@@ -378,22 +377,23 @@ void handleGetFiles(AsyncWebServerRequest *request) {
 	request->send(200, "text/html", str);
 }
 /**
- * sends response to the get device information request
+ * gets the device and mqtt information from SPIFFS then sends response to the client
  */
-void handleDevInfo(AsyncWebServerRequest *request) {
+void handleConfigInfo(AsyncWebServerRequest *request) {
 	DynamicJsonBuffer jsonBuffer;
 	JsonObject& jsonObj = jsonBuffer.parseObject(fManager.readConfig());
 	if (jsonObj.success()) {
 #ifdef DEBUG_ONLY
-		Serial.println("********************** AJAXGet device Info.");
+		Serial.println("********************** AJAX Get device Info.");
 		jsonObj.prettyPrintTo(Serial);
 		Serial.println();
 #endif
-		String devInfo;
-		jsonObj.printTo(devInfo);
-		request->send(200, "text/html", devInfo);
+		String cfgInfo;
+		jsonObj.printTo(cfgInfo);
+		request->send(200, "text/html", cfgInfo);
 	}
 }
+
 /**
  * Firmware update Section
  */
@@ -470,7 +470,8 @@ void initWebServer() {
 	webServer.on("/files", HTTP_GET, showFileUpload);  //show the file upload page
 	webServer.on("/uploadFile", HTTP_POST, doneFileUpload, handleFileUpload); //handle the file update request
 	webServer.on("/getFiles", HTTP_GET, handleGetFiles);  //show the Files in SPIFFS
-	webServer.on("/devInfo", HTTP_GET, handleDevInfo);  //show the Files in SPIFFS
+	webServer.on("/devInfo", HTTP_GET, handleConfigInfo);  //get device info from SPIFFS and return to client
+	webServer.on("/mqttInfo", HTTP_GET, handleConfigInfo);  //get mqtt info from SPIFFS and return to client
 	webServer.on("/properties.html", showProperties);
 	webServer.on("/fwVersion", showVersion);	//show the firmware version to the client
 	webServer.on("/setMqttConfig", handleMqttConfig);	//handles the mqtt settings from the client
@@ -481,6 +482,27 @@ void initWebServer() {
 		request->send(404, "text/plain", "Page not found");
 	});
 }
+
+/**
+ *  This is the MQTT callback handler that is called when a message from mqtt broker arrives
+ */
+void mqttMsgHandler(char* topic, char* payload, size_t len) {
+  Serial.println("\t[mqttMsgHandler] ************** Messsage received.");
+  Serial.print("\t[mqttMsgHandler] **************   topic:");
+  Serial.print(topic);
+  Serial.print(", len: ");
+  Serial.println(len);
+  Serial.println("\t[mqttMsgHandler]   payload: ");
+  char str2[len];
+  strncpy ( str2, payload, len );
+  Serial.println(str2);
+  if (strcmp(topic, "BM") == 0) {
+	  DynamicJsonBuffer jsonBuffer;
+	  JsonObject& jsonMsg = jsonBuffer.parseObject(str2);
+	  Serial.printf("RID=%s\n", jsonMsg["RID"].as<String>().c_str());
+  }
+}
+
 /*
  * Constructor
  */
@@ -492,6 +514,7 @@ Symphony::Symphony(){
  * Initiates the Symphony module
  * theHostName is passed by the child
  * ver is passed by the child and should be composed of SYMPHONY_VERSION.CHILD_VERSION
+ * mqtt is not enabled
  *
  */
 void Symphony::setup(String theHostName, String ver) {
@@ -530,7 +553,9 @@ void Symphony::setup(String theHostName, String ver) {
 	}
 	homeHtml = CONTROL_HTML1;
 	homeHtml.replace("$AAA$", hostName);
-	Serial.printf("Hostname is %s.local version is %s\n", hostName.c_str(), Symphony::version.c_str());
+#ifdef DEBUG_ONLY
+	Serial.printf("Hostname=%s.local nameWithMac=%s version=%s\n", hostName.c_str(), Symphony::version.c_str());
+#endif
 	MDNS.setInstanceName("staticHostname");
 	if (MDNS.begin(Symphony::hostName.c_str())) {
 		//setup the mDNS responder
@@ -558,6 +583,18 @@ void Symphony::setup(String theHostName, String ver) {
 	Serial.printf("\n************[Symphony] Setup Version %i,  boot:%i***************\n", SYMPHONY_VERSION, reboot);
 }
 
+
+/*
+ * Initiates the Symphony module
+ * theHostName is passed by the child
+ * ver is passed by the child and should be composed of SYMPHONY_VERSION.CHILD_VERSION
+ * set mqttEnabled to true to enable mqtt
+ *
+ */
+void Symphony::setup(String theHostName, String ver, bool mqttEnabled) {
+	setup(theHostName, ver);
+	enableMqttHandler();
+}
 /*
  * The loop method
  * 		returns true if firmware update is not ongoing
@@ -613,10 +650,12 @@ void Symphony::setWsCallback(int (* Callback) (AsyncWebSocket ws, AsyncWebSocket
  * This is the handler for all MQTT transactions.
  *
  */
-void Symphony::setMqttHandler(const char *id, const char *url, int port) {
-	theMqttHandler.setId(id);
-	theMqttHandler.setUrl(url);
-	theMqttHandler.setPort(port);
+void Symphony::enableMqttHandler() {
+	theMqttHandler.setId(nameWithMac.c_str());
+	theMqttHandler.setUrl(mqttIp.c_str());
+	theMqttHandler.setPort(mqttPort);
+	theMqttHandler.setMsgCallback(mqttMsgHandler);
+	theMqttHandler.connect();
 	hasMqttHandler = true;
 }
 
@@ -668,6 +707,11 @@ void Symphony::connectToWifi() {
 			ssid = json["ssid"].as<String>();
 			pwd = json["pwd"].as<String>();
 			nameWithMac = json["name"].as<String>();
+			if (json.containsKey("mqttIp")) {
+				//mqttIp is found, set the mqtt variables
+				mqttIp = json["mqttIp"].as<String>();
+				mqttPort = json["mqttPort"].as<int>();
+			}
 		}
 #ifdef DEBUG_ONLY
 		json.prettyPrintTo(Serial);
@@ -736,7 +780,8 @@ void Symphony::setRootProperties(String s) {
 	Symphony::rootProperties = s;
 }
 /**
- * /should be called after mqttHandler has been set and product has been set
+ * Will do the actual registration after mqttHandler has been set and product has been set
+ *
  */
 bool Symphony::registerProduct() {
 	if (!isRegistered) {
@@ -761,7 +806,7 @@ bool Symphony::registerProduct() {
 				JsonArray& proplist = regJson.createNestedArray("proplist");
 				for (int i=0; i < product.getSize(); i++) {
 					attribStruct a = product.getKeyVal(i);
-					Serial.printf("************** registerProduct ", a.ssid.c_str(), a.gui.label.c_str(), a.gui.pinType);
+					Serial.printf("************** registerProduct ssid=%s label=%s, pintype=%i\n", a.ssid.c_str(), a.gui.label.c_str(), a.gui.pinType);
 					JsonObject& prop1 = proplist.createNestedObject();
 					prop1["ptype"] = "A1";
 					if (a.gui.pinType == BUTTON_CTL || a.gui.pinType == BUTTON_SNSR ) {
@@ -782,6 +827,19 @@ bool Symphony::registerProduct() {
 		}
 	}
 }
+/**
+ * Transmits data to the BM
+ * 	this could be via MQTT or any other protocol
+ */
+void Symphony::transmit(const char* payload) {
+	//for now, we are using mqtt
+	if (theMqttHandler.isConnected()) {
+		theMqttHandler.publish(payload, 2);
+	} else {
+		Serial.println("********* FAILED, not connected to MQTT. Unable to transmit data.");
+	}
+}
+
 void Symphony::sendToWsServer(String replyStr){
 //	webSocketClient.sendTXT(replyStr);July 13 2019 do we really need this device to be a ws client?
 }

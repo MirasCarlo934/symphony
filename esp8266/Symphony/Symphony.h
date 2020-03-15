@@ -30,9 +30,10 @@
 #define REBOOT_DELAY    500     /* Delay for rebooting once reboot flag is set */
 
 #define  CORE_INIT 1
-#define  CORE_COMMIT 2
+#define  CORE_COMMIT_DEVICE_SETTINGS 2
 #define  CORE_DELETE 3
 #define  CORE_GETDEVICEINFO 4
+#define  CORE_COMMIT_MQTT_SETTINGS 5
 #define  CORE_VALUES 20
 #define  CORE_CONTROL 7
 
@@ -53,31 +54,33 @@ class Symphony {
 
 	    //public methods
 	    void setup(String theHostName, String ver);
+	    void setup(String theHostName, String ver, bool mqttEnabled);
 	    bool loop();
 	    //lets the instantiator of this Symphony object assign a callback handler
 	    void on(const char* uri, WebRequestMethodComposite method, ArRequestHandlerFunction handler);
 	    void serveStatic(const char* uri, fs::FS& fs, const char* path);
 	    void setWsCallback(int (* WsCallback) (AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json));
 	    void textAll(JsonObject& message);  //for sending to WsClients
-	    void setMqttHandler(const char *id, const char *url, int port);
 	    static void setRootProperties(String s);
 	    void setProduct(Product p);
 	    void doReboot();
 	    void sendToWsServer(String replyStr);
+	    void transmit(const char* payload);
 
 	private:
 	    String ap_ssid, ap_passphrase = "12345678";
 	    IPAddress apIP = IPAddress (192, 168, 7, 1);
-	    String ssid = "bahay", pwd = "carlopiadredcels";
+	    String ssid = "bahay", pwd = "carlopiadredcels", mqttIp = "localhost";
 	    bool isProductSet = false, isRegistered = false;
 
-	    int wifiMaxConnCount=50;  //max counter when connecting to wifi AP, corresponds to 10secs
+	    int wifiMaxConnCount=50, mqttPort=1883;  //max counter when connecting to wifi AP, corresponds to 10secs
 	    long restartTimer = 0;  //the restart timer in millis.  this will restart every maxrestartTimer if wifi is not connected.
 	    const long maxRestartTimer = 120000; //the max millis before restart.  2 mins
 //	    String hostName = "Symphony";
 	    void connectToWifi();
 	    void createMyName(String theHostName);
 	    void setupAP();
+	    void enableMqttHandler();
 	    bool registerProduct();	//should be called after mqttHandler has been set and product has been set
 };
 
