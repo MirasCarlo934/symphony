@@ -141,7 +141,6 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 									//this is from the admin WS client
 									if (json.containsKey("data")) {
 										String cfg = json["data"].as<String>();
-
 #ifdef DEBUG_ONLY
 											Serial.printf("\nCORE_COMMIT_DEVICE_SETTINGS will save config %s\n", cfg.c_str());
 #endif
@@ -149,27 +148,29 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 										reboot = true;
 									}
 									break;
-								case CORE_COMMIT_MQTT_SETTINGS://this is the commit mqtt ip and port
-										//this is from the admin WS client
-										if (json.containsKey("data")) {
-											String cfg = json["data"].as<String>();
-											DynamicJsonBuffer jsonBuffer;
-											JsonObject& jsonCfg = jsonBuffer.parseObject(fManager.readConfig());
-											if (jsonCfg.success()) {
-												jsonCfg["mqttIp"] = json["data"]["mqttIp"].as<String>();
-												jsonCfg["mqttPort"] = json["data"]["mqttPort"].as<int>();
-#ifdef DEBUG_ONLY
-												jsonCfg.prettyPrintTo(Serial);
-												Serial.printf("\nCORE_COMMIT_MQTT_SETTINGS will save config %s\n", cfg.c_str());
-#endif
-												String newConfig;
-												jsonCfg.printTo(newConfig);
-												Serial.printf("New config is %s\n", newConfig.c_str());
-												fManager.saveConfig(newConfig.c_str());
-												reboot = true;
-											}
-										}
-										break;
+//							No need for this code as all config data are sent via CORE_COMMIT_DEVICE_SETTINGS
+//							we are just leaving this code here for reference on adding config to an existing config from file
+//								case CORE_COMMIT_MQTT_SETTINGS://this is the commit mqtt ip and port
+//										//this is from the admin WS client
+//										if (json.containsKey("data")) {
+//											String cfg = json["data"].as<String>();
+//											DynamicJsonBuffer jsonBuffer;
+//											JsonObject& jsonCfg = jsonBuffer.parseObject(fManager.readConfig());
+//											if (jsonCfg.success()) {
+//												jsonCfg["mqttIp"] = json["data"]["mqttIp"].as<String>();
+//												jsonCfg["mqttPort"] = json["data"]["mqttPort"].as<int>();
+//#ifdef DEBUG_ONLY
+//												jsonCfg.prettyPrintTo(Serial);
+//												Serial.printf("\nCORE_COMMIT_MQTT_SETTINGS will save config %s\n", cfg.c_str());
+//#endif
+//												String newConfig;
+//												jsonCfg.printTo(newConfig);
+//												Serial.printf("New config is %s\n", newConfig.c_str());
+//												fManager.saveConfig(newConfig.c_str());
+//												reboot = true;
+//											}
+//										}
+//										break;
 								case CORE_DELETE://this is the delete file command from the WS admin client
 									//delete path fr SPIFFS
 									if (json.containsKey("data")) {
@@ -304,7 +305,7 @@ void handleAppleCaptivePortal(AsyncWebServerRequest *request) {
     request->send(response);
 }
 void onWifiConnect(const WiFiEventStationModeGotIP &event) {
-    Serial.print(F("*** Connected with IP: "));
+    Serial.print(F("*** onWifiConnect Connected with IP: "));
     Serial.print(WiFi.localIP());
     Serial.println(" ***");
 
@@ -459,7 +460,6 @@ void handleMqttConfig (AsyncWebServerRequest *request) {
 void initWebServer() {
 
 	webServer.on("/control", showControl);		//shows the properties of the device for control functions
-	webServer.on("/config", HTTP_GET, handleDeviceConfig);		//handles the commit config
 	webServer.serveStatic("/admin", SPIFFS, "/admin.html");
 	webServer.serveStatic("/img.jpg", SPIFFS, "/img.jpg");
 	webServer.serveStatic("/symphony.css", SPIFFS, "/symphony.css");
@@ -474,6 +474,7 @@ void initWebServer() {
 	webServer.on("/mqttInfo", HTTP_GET, handleConfigInfo);  //get mqtt info from SPIFFS and return to client
 	webServer.on("/properties.html", showProperties);
 	webServer.on("/fwVersion", showVersion);	//show the firmware version to the client
+	webServer.on("/config", HTTP_GET, handleDeviceConfig);		//handles the commit config
 	webServer.on("/setMqttConfig", handleMqttConfig);	//handles the mqtt settings from the client
 	webServer.serveStatic("/files.html", SPIFFS, "/files.html");
 	webServer.serveStatic("/test.html", SPIFFS, "/test.html");

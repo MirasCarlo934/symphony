@@ -88,29 +88,19 @@ function updateFirmware() {
 	  }
 }
 /*
- * Function that commits the Ap, passkey and Device name
+ * Function that commits the Ap, passkey and Device name, and the (ip and port) of mqtt broker
  */
 function commitConfig() {
 	var name = document.getElementById("pName").value;
 	var ssid = document.getElementById("pSSID").value;
 	var pwd = document.getElementById("pPass").value;
+	var mqttIp = document.getElementById("mqttIp").value;
+	var mqttPort = document.getElementById("mqttPort").value;
 	var obj = { core: 2, 
 			data: {
 				name: name, 
 				ssid: ssid, 
-				pwd: pwd
-			}
-		};
-	websocket.send(JSON.stringify(obj));
-}
-/*
- * Function that commits the ip and port of mqtt broker
- */
-function commitMqtt() {
-	var mqttIp = document.getElementById("mqttIp").value;
-	var mqttPort = document.getElementById("mqttPort").value;
-	var obj = { core: 5, 
-			data: {
+				pwd: pwd,
 				mqttIp: mqttIp, 
 				mqttPort: mqttPort
 			}
@@ -401,7 +391,7 @@ function wsHandler() {
      };
 } 
 /**
- * Function that handles control trannsactions from directly connected WS Clients.
+ * Function that handles control transactions from directly connected WS Clients.
  * @param evt
  * @returns
  */
