@@ -2,20 +2,55 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7751de6c-8d69-41e4-8dde-bd532f5dc6af" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/controller/Controller.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/controller/ControllerThreadFactory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/controller/ModuleDispatcher.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/controller/ThreadPool.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/controller/ThreadRejectionHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/engines/AbstEngine.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/engines/DBEngine.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/engines/FileEngine.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/engines/exceptions/EngineException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/engines/requests/DBEngine/DBEngineRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/engines/requests/DBEngine/DeleteDBEReq.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/engines/requests/DBEngine/InsertDBEReq.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/engines/requests/DBEngine/QueryType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/engines/requests/DBEngine/RawDBEReq.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/engines/requests/DBEngine/SelectDBEReq.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/engines/requests/DBEngine/UpdateDBEReq.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/engines/requests/EngineRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/engines/requests/FileEngine/ClearFileFEReq.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/engines/requests/FileEngine/DeleteStringFEReq.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/engines/requests/FileEngine/FileEngineRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/engines/requests/FileEngine/FileEngineRequestType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/engines/requests/FileEngine/GetInputStreamFEReq.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/engines/requests/FileEngine/InsertToFileFEReq.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/engines/requests/FileEngine/OverwriteFileFEReq.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/engines/requests/FileEngine/ReadAllLinesFEReq.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/engines/requests/FileEngine/UpdateFEReq.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/engines/requests/FileEngine/VersionizeFileFEReq.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/interfaces/Initializable.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/modules/AbstModuleExtension.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/modules/B_AbstModule.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/modules/DeactivationModule.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/modules/DetachmentModule.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/modules/Module.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/modules/POOPModule.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/modules/RegistrationModule.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/modules/admin/AbstAdminModule.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/modules/admin/CreateRoomModule.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/modules/admin/DeleteRoomModule.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/modules/admin/GetRoomsModule.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/modules/exceptions/RequestProcessingException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/modules/exceptions/ResponseProcessingException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/repositories/AbstRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/repositories/DeviceRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/repositories/ProductRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/repositories/RoomRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-logic-devices/src/main/java/symphony/bm/bm_logic_devices/repositories/TimerRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/BMCommsApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/BMCommsApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/resources/bm-comms.config.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/resources/bm-comms.config.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/resources/bm-comms.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/resources/bm-comms.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../esp8266/.metadata/.log" beforeDir="false" afterPath="$PROJECT_DIR$/../esp8266/.metadata/.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../esp8266/.metadata/.plugins/org.eclipse.cdt.core/.log" beforeDir="false" afterPath="$PROJECT_DIR$/../esp8266/.metadata/.plugins/org.eclipse.cdt.core/.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../esp8266/.metadata/.plugins/org.eclipse.core.resources/.root/.indexes/properties.index" beforeDir="false" afterPath="$PROJECT_DIR$/../esp8266/.metadata/.plugins/org.eclipse.core.resources/.root/.indexes/properties.index" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../esp8266/.metadata/.plugins/org.eclipse.core.resources/.safetable/org.eclipse.core.resources" beforeDir="false" afterPath="$PROJECT_DIR$/../esp8266/.metadata/.plugins/org.eclipse.core.resources/.safetable/org.eclipse.core.resources" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../esp8266/.metadata/.plugins/org.eclipse.e4.workbench/workbench.xmi" beforeDir="false" afterPath="$PROJECT_DIR$/../esp8266/.metadata/.plugins/org.eclipse.e4.workbench/workbench.xmi" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../esp8266/.metadata/.plugins/org.eclipse.ui.workbench/workingsets.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../esp8266/.metadata/.plugins/org.eclipse.ui.workbench/workingsets.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../esp8266/.metadata/.plugins/org.eclipse.wst.sse.core/task-tags.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../esp8266/.metadata/.plugins/org.eclipse.wst.sse.core/task-tags.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../esp8266/.metadata/version.ini" beforeDir="false" afterPath="$PROJECT_DIR$/../esp8266/.metadata/version.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/InboundTrafficManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/InboundTrafficManager.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -60,7 +95,7 @@
         <entry file="file://$PROJECT_DIR$/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="287">
-              <caret line="94" column="53" lean-forward="true" selection-start-line="94" selection-start-column="53" selection-end-line="94" selection-end-column="53" />
+              <caret line="94" column="53" selection-start-line="94" selection-start-column="53" selection-end-line="94" selection-end-column="53" />
             </state>
           </provider>
         </entry>
@@ -190,12 +225,6 @@
             <path>
               <item name="BM-core_v3" type="b2602c69:ProjectViewProjectNode" />
               <item name="BM-core_v3" type="462c0819:PsiDirectoryNode" />
-              <item name="configuration" type="462c0819:PsiDirectoryNode" />
-              <item name="spring" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="BM-core_v3" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BM-core_v3" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -245,7 +274,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1584262689209" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1584276696281" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/.." />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -286,15 +315,15 @@
       <workItem from="1584030705961" duration="3624000" />
       <workItem from="1584202354828" duration="533000" />
       <workItem from="1584260451363" duration="263000" />
-      <workItem from="1584261248906" duration="986000" />
+      <workItem from="1584261248906" duration="1952000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="9117000" />
+    <option name="totallyTimeSpent" value="10083000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.26066098" />
@@ -729,7 +758,7 @@
     <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="287">
-          <caret line="94" column="53" lean-forward="true" selection-start-line="94" selection-start-column="53" selection-end-line="94" selection-end-column="53" />
+          <caret line="94" column="53" selection-start-line="94" selection-start-column="53" selection-end-line="94" selection-end-column="53" />
         </state>
       </provider>
     </entry>

@@ -1,5 +1,6 @@
 package symphony.bm.bm_comms;
 
+import com.mongodb.MongoClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
