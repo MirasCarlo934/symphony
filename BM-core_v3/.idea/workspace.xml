@@ -2,70 +2,20 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7751de6c-8d69-41e4-8dde-bd532f5dc6af" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/BMCommsApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/InboundTrafficManager.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/Listener.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/Protocol.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/ResponseManager.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/Sender.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/jeep/exceptions/PrimaryMessageCheckingException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/jeep/exceptions/SecondaryMessageCheckingException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/jeep/vo/JeepErrorResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/jeep/vo/JeepMessage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/jeep/vo/JeepMessageType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/jeep/vo/JeepRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/jeep/vo/JeepResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/jeep/vo/RawMessage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/jeep/vo/admin/JeepAdminRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/jeep/vo/admin/ReqCreateRoom.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/mqtt/MQTTClient.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/mqtt/MQTTListener.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/mqtt/MQTTPublisher.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/mqtt/objects/MQTTMessage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/rest/RestMicroserviceCommunicator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/resources/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/src/test/java/symphony/bm/bm_comms/BmCommsApplicationTests.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/388d9b2e-6786-4fb4-b87f-221dfdcbd980.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/3d3002d9-aa2f-4245-a1c1-8fb37517151d.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/4a92de6a-f9e9-4425-81c6-e8b4eec8ed75.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/59b7ea33-9496-4253-b2a9-db4fce783298.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/844f1842-50cb-4b30-893c-fd8df61b4b57.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/c10ee378-70e8-4005-9948-7a64a050e474.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BM-core (2).iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bm/comms/InboundTrafficManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bm/comms/InboundTrafficManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bm/comms/Listener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bm/comms/Listener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bm/comms/ResponseManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bm/comms/ResponseManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bm/comms/Sender.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bm/comms/Sender.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bm/context/adaptors/AbstAdaptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bm/context/adaptors/AbstAdaptor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bm/context/adaptors/AdaptorManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bm/context/adaptors/AdaptorManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bm/context/devices/Device.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bm/context/devices/Device.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bm/context/products/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bm/context/products/Product.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bm/context/products/ProductFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bm/context/products/ProductFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bm/context/properties/Property.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bm/context/properties/Property.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bm/context/properties/bindings/Binding.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bm/jeep/JEEPManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bm/jeep/JEEPManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bm/jeep/vo/JEEPMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bm/jeep/vo/JEEPMessage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bm/main/Maestro.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bm/main/Maestro.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bm/main/controller/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bm/main/controller/Controller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bm/main/controller/ControllerThreadFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bm/main/controller/ControllerThreadFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bm/main/controller/ModuleDispatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bm/main/controller/ModuleDispatcher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bm/main/controller/ThreadRejectionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bm/main/controller/ThreadRejectionHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bm/main/engines/AbstEngine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bm/main/engines/AbstEngine.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bm/main/engines/FileEngine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bm/main/engines/FileEngine.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bm/main/modules/AbstModuleExtension.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bm/main/modules/AbstModuleExtension.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bm/main/modules/B_AbstModule.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bm/main/modules/B_AbstModule.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bm/main/modules/Module.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bm/main/modules/Module.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bm/tools/VersionManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bm/tools/VersionManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/BMCommsApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/BMCommsApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/resources/bm-comms.config.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/resources/bm-comms.config.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/resources/bm-comms.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/resources/bm-comms.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../esp8266/.metadata/.log" beforeDir="false" afterPath="$PROJECT_DIR$/../esp8266/.metadata/.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../esp8266/.metadata/.plugins/org.eclipse.cdt.core/.log" beforeDir="false" afterPath="$PROJECT_DIR$/../esp8266/.metadata/.plugins/org.eclipse.cdt.core/.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../esp8266/.metadata/.plugins/org.eclipse.core.resources/.root/.indexes/properties.index" beforeDir="false" afterPath="$PROJECT_DIR$/../esp8266/.metadata/.plugins/org.eclipse.core.resources/.root/.indexes/properties.index" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../esp8266/.metadata/.plugins/org.eclipse.core.resources/.safetable/org.eclipse.core.resources" beforeDir="false" afterPath="$PROJECT_DIR$/../esp8266/.metadata/.plugins/org.eclipse.core.resources/.safetable/org.eclipse.core.resources" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../esp8266/.metadata/.plugins/org.eclipse.e4.workbench/workbench.xmi" beforeDir="false" afterPath="$PROJECT_DIR$/../esp8266/.metadata/.plugins/org.eclipse.e4.workbench/workbench.xmi" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../esp8266/.metadata/.plugins/org.eclipse.ui.workbench/workingsets.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../esp8266/.metadata/.plugins/org.eclipse.ui.workbench/workingsets.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../esp8266/.metadata/.plugins/org.eclipse.wst.sse.core/task-tags.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../esp8266/.metadata/.plugins/org.eclipse.wst.sse.core/task-tags.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../esp8266/.metadata/version.ini" beforeDir="false" afterPath="$PROJECT_DIR$/../esp8266/.metadata/version.ini" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -76,48 +26,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/bm/main/modules/B_AbstModule.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="952">
-              <caret line="60" column="29" selection-start-line="60" selection-start-column="29" selection-end-line="60" selection-end-column="29" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/bm/main/modules/DeactivationModule.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="18" column="13" selection-start-line="18" selection-start-column="13" selection-end-line="18" selection-end-column="13" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/bm/main/modules/Module.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="782">
-              <caret line="57" column="29" selection-start-line="57" selection-start-column="29" selection-end-line="57" selection-end-column="29" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/bm/main/modules/DetachmentModule.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="21" column="13" selection-start-line="21" selection-start-column="13" selection-end-line="21" selection-end-column="13" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/bm/main/modules/POOPModule.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -139,7 +47,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/bm/comms/Listener.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
+            <state relative-caret-position="204">
               <caret line="15" column="18" selection-start-line="15" selection-start-column="18" selection-end-line="15" selection-end-column="18" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -151,8 +59,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="357">
-              <caret line="162" column="24" selection-start-line="162" selection-start-column="24" selection-end-line="162" selection-end-column="24" />
+            <state relative-caret-position="287">
+              <caret line="94" column="53" lean-forward="true" selection-start-line="94" selection-start-column="53" selection-end-line="94" selection-end-column="53" />
             </state>
           </provider>
         </entry>
@@ -161,12 +69,12 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/bm/tools/SystemTimer.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="578">
-              <caret line="43" column="53" lean-forward="true" selection-start-line="43" selection-start-column="53" selection-end-line="43" selection-end-column="53" />
+              <caret line="43" column="53" selection-start-line="43" selection-start-column="53" selection-end-line="43" selection-end-column="53" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/bm/main/controller/Controller.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="204">
@@ -178,9 +86,49 @@
           </provider>
         </entry>
       </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/hello/TestMqtt.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="85">
+              <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/hello/Application.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="51">
+              <caret line="21" column="13" selection-start-line="21" selection-start-column="13" selection-end-line="21" selection-end-column="13" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/bm/main/Maestro.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="102">
+              <caret line="23" selection-start-line="23" selection-end-line="23" selection-end-column="62" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/configuration/spring/adaptors-config.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="51">
+              <caret line="3" column="7" selection-start-line="3" selection-start-column="7" selection-end-line="3" selection-end-column="68" />
+            </state>
+          </provider>
+        </entry>
+      </file>
     </leaf>
   </component>
   <component name="Git.Settings">
+    <option name="UPDATE_TYPE" value="MERGE" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="IdeDocumentHistory">
@@ -225,8 +173,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -237,6 +185,17 @@
             <path>
               <item name="BM-core_v3" type="b2602c69:ProjectViewProjectNode" />
               <item name="BM-core_v3" type="462c0819:PsiDirectoryNode" />
+              <item name="configuration" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="BM-core_v3" type="b2602c69:ProjectViewProjectNode" />
+              <item name="BM-core_v3" type="462c0819:PsiDirectoryNode" />
+              <item name="configuration" type="462c0819:PsiDirectoryNode" />
+              <item name="spring" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="BM-core_v3" type="b2602c69:ProjectViewProjectNode" />
+              <item name="BM-core_v3" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -267,104 +226,6 @@
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="bm" type="462c0819:PsiDirectoryNode" />
-              <item name="comms" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="BM-core_v3" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BM-core_v3" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="bm" type="462c0819:PsiDirectoryNode" />
-              <item name="context" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="BM-core_v3" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BM-core_v3" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="bm" type="462c0819:PsiDirectoryNode" />
-              <item name="context" type="462c0819:PsiDirectoryNode" />
-              <item name="adaptors" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="BM-core_v3" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BM-core_v3" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="bm" type="462c0819:PsiDirectoryNode" />
-              <item name="context" type="462c0819:PsiDirectoryNode" />
-              <item name="devices" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="BM-core_v3" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BM-core_v3" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="bm" type="462c0819:PsiDirectoryNode" />
-              <item name="context" type="462c0819:PsiDirectoryNode" />
-              <item name="products" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="BM-core_v3" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BM-core_v3" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="bm" type="462c0819:PsiDirectoryNode" />
-              <item name="context" type="462c0819:PsiDirectoryNode" />
-              <item name="properties" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="BM-core_v3" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BM-core_v3" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="bm" type="462c0819:PsiDirectoryNode" />
-              <item name="jeep" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="BM-core_v3" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BM-core_v3" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="bm" type="462c0819:PsiDirectoryNode" />
-              <item name="jeep" type="462c0819:PsiDirectoryNode" />
-              <item name="exceptions" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="BM-core_v3" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BM-core_v3" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="bm" type="462c0819:PsiDirectoryNode" />
-              <item name="jeep" type="462c0819:PsiDirectoryNode" />
-              <item name="vo" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="BM-core_v3" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BM-core_v3" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="bm" type="462c0819:PsiDirectoryNode" />
-              <item name="jeep" type="462c0819:PsiDirectoryNode" />
-              <item name="vo" type="462c0819:PsiDirectoryNode" />
-              <item name="device" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="BM-core_v3" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BM-core_v3" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="bm" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -373,70 +234,7 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="bm" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="controller" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="BM-core_v3" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BM-core_v3" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="bm" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="engines" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="BM-core_v3" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BM-core_v3" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="bm" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="engines" type="462c0819:PsiDirectoryNode" />
-              <item name="exceptions" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="BM-core_v3" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BM-core_v3" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="bm" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="interfaces" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="BM-core_v3" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BM-core_v3" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="bm" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="modules" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="BM-core_v3" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BM-core_v3" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="bm" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="modules" type="462c0819:PsiDirectoryNode" />
-              <item name="admin" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="BM-core_v3" type="b2602c69:ProjectViewProjectNode" />
-              <item name="BM-core_v3" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="bm" type="462c0819:PsiDirectoryNode" />
-              <item name="tools" type="462c0819:PsiDirectoryNode" />
+              <item name="hello" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -447,7 +245,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1584030359237" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1584262689209" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/.." />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -486,17 +284,20 @@
       <workItem from="1580083265791" duration="3455000" />
       <workItem from="1584030239848" duration="256000" />
       <workItem from="1584030705961" duration="3624000" />
+      <workItem from="1584202354828" duration="533000" />
+      <workItem from="1584260451363" duration="263000" />
+      <workItem from="1584261248906" duration="986000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="7335000" />
+    <option name="totallyTimeSpent" value="9117000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2553305" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.26066098" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
@@ -552,16 +353,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
           <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/bm/main/Maestro.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="31" column="31" selection-start-line="31" selection-start-column="31" selection-end-line="31" selection-end-column="31" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -843,6 +634,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/bm/jeep/JEEPManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="510">
+          <caret line="38" column="24" selection-start-line="38" selection-start-column="24" selection-end-line="38" selection-end-column="24" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/bm/main/modules/B_AbstModule.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="952">
@@ -893,7 +694,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/bm/comms/Listener.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
+        <state relative-caret-position="204">
           <caret line="15" column="18" selection-start-line="15" selection-start-column="18" selection-end-line="15" selection-end-column="18" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -901,27 +702,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/bm/jeep/JEEPManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
-          <caret line="38" column="24" selection-start-line="38" selection-start-column="24" selection-end-line="38" selection-end-column="24" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="162" column="24" selection-start-line="162" selection-start-column="24" selection-end-line="162" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/bm/tools/SystemTimer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="578">
-          <caret line="43" column="53" lean-forward="true" selection-start-line="43" selection-start-column="53" selection-end-line="43" selection-end-column="53" />
+          <caret line="43" column="53" selection-start-line="43" selection-start-column="53" selection-end-line="43" selection-end-column="53" />
         </state>
       </provider>
     </entry>
@@ -932,6 +716,44 @@
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/hello/TestMqtt.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="287">
+          <caret line="94" column="53" lean-forward="true" selection-start-line="94" selection-start-column="53" selection-end-line="94" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/hello/Application.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="21" column="13" selection-start-line="21" selection-start-column="13" selection-end-line="21" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/bm/main/Maestro.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="23" selection-start-line="23" selection-end-line="23" selection-end-column="62" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/configuration/spring/adaptors-config.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="3" column="7" selection-start-line="3" selection-start-column="7" selection-end-line="3" selection-end-column="68" />
         </state>
       </provider>
     </entry>
