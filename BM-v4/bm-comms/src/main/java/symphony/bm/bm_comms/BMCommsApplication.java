@@ -13,9 +13,7 @@ import symphony.bm.bm_comms.mqtt.MQTTClient;
 public class BMCommsApplication {
 
     public static void main(String[] args) {
-        ApplicationContext context = SpringApplication.run(BMCommsApplication.class, args);
-        MQTTClient c = (MQTTClient) context.getBean("MQTT.client");
-        System.out.println("HEKHEK");
+        SpringApplication.run(BMCommsApplication.class, args);
     }
 
 }

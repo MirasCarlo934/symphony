@@ -3,7 +3,6 @@ package symphony.bm.bm_comms.mqtt;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
-import org.springframework.stereotype.Component;
 import symphony.bm.bm_comms.Sender;
 import symphony.bm.bm_comms.jeep.vo.JeepErrorResponse;
 import symphony.bm.bm_comms.jeep.vo.JeepMessage;
@@ -19,15 +18,17 @@ public class MQTTPublisher extends Sender {
 	private LinkedList<MQTTMessage> queue = new LinkedList<MQTTMessage>();
 	private String regRTY;
 
-	public MQTTPublisher(String name, String logDomain, String default_topic, String error_topic, String regRTY) {
-		super(name, logDomain);
+	public MQTTPublisher(String logName, String logDomain, String default_topic, String error_topic, String regRTY) {
+		super(logName, logDomain);
 		this.regRTY = regRTY;
 		this.default_topic = default_topic;
 		this.error_topic = error_topic;
-		run();
+
+		Thread t = new Thread(this, MQTTPublisher.class.getSimpleName());
+		t.start();
 	}
 	
-	public void setClient(MQTTClient client) {
+	void setClient(MQTTClient client) {
 		this.client = client;
 	}
 

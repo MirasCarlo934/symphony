@@ -9,9 +9,9 @@ public abstract class Listener {
 	protected Protocol protocol;
 	private InboundTrafficManager itm;
 	
-	public Listener(String name, String logDomain, InboundTrafficManager inboundTrafficManager) {
+	public Listener(String logName, String logDomain, InboundTrafficManager inboundTrafficManager) {
 		this.itm = inboundTrafficManager;
-		LOG = LoggerFactory.getLogger(logDomain + "." + name);
+		LOG = LoggerFactory.getLogger(logDomain + "." + logName);
 		LOG.info("Listener started!");
 	}
 	

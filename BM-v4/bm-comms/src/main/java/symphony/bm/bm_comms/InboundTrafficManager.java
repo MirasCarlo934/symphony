@@ -16,11 +16,13 @@ public class InboundTrafficManager implements Runnable {
 //    private ResponseManager rm;
     private RestMicroserviceCommunicator rest;
 
-    public InboundTrafficManager(String logDomain, String name, RestMicroserviceCommunicator rest/*,
+    public InboundTrafficManager(String logDomain, String logName, RestMicroserviceCommunicator rest/*,
                                  ResponseManager responseManager*/) {
-        LOG = LoggerFactory.getLogger(logDomain + "." + name);
+        LOG = LoggerFactory.getLogger(logDomain + "." + logName);
 //        this.rm = responseManager;
         this.rest = rest;
+        Thread t = new Thread(this,logDomain + "." + logName);
+        t.start();
         LOG.info(InboundTrafficManager.class.getSimpleName() + " started!");
     }
 
@@ -33,7 +35,7 @@ public class InboundTrafficManager implements Runnable {
         while(!Thread.currentThread().isInterrupted()) {
             RawMessage rawMsg = rawMsgQueue.poll();
             if(rawMsg != null) {
-                LOG.trace("New request found! Checking primary validity...");
+                LOG.debug("New request received! Checking primary validity...");
                 try {
                     if (checkPrimaryMessageValidity(rawMsg) == JeepMessageType.REQUEST) {
                         JeepRequest request = new JeepRequest(new JSONObject(rawMsg.getMessageStr()),
@@ -42,7 +44,6 @@ public class InboundTrafficManager implements Runnable {
                     } else if (checkPrimaryMessageValidity(rawMsg) == JeepMessageType.RESPONSE) {
                         JeepResponse response = new JeepResponse(new JSONObject(rawMsg.getMessageStr()),
                                 rawMsg.getProtocol());
-//                        rm.removeActiveRequest(response.getRID());
                         rest.forwardJeepMessage(response);
                     }
                 } catch(PrimaryMessageCheckingException e) {
@@ -77,8 +78,6 @@ public class InboundTrafficManager implements Runnable {
             json = new JSONObject(request);
         } catch(JSONException e) {
             throw new PrimaryMessageCheckingException("Improper JSON construction!");
-//            sendError("Improper JSON construction!", rawMsg.getProtocol());
-//            return null;
         }
 
         //#2: Checks if there are missing primary request parameters
@@ -86,9 +85,6 @@ public class InboundTrafficManager implements Runnable {
                 !json.keySet().contains("RTY")) {
             throw new PrimaryMessageCheckingException("Request does not contain all primary " +
                     "request parameters!");
-//            sendError("Request does not contain all primary request parameters!",
-//                    rawMsg.getProtocol());
-//            return null;
         }
 
         //#3: Checks if the primary request parameters are null/empty

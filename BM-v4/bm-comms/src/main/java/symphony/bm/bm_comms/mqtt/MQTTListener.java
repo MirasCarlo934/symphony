@@ -18,14 +18,12 @@ import symphony.bm.bm_comms.jeep.vo.RawMessage;
  *
  */
 public class MQTTListener extends Listener implements MqttCallback {
-//	private static Logger LOG;
 	private String default_topic;
 	private String error_topic;
 
-	public MQTTListener(String name, String logDomain, String default_topic, String error_topic,
+	public MQTTListener(String logName, String logDomain, String default_topic, String error_topic,
 						InboundTrafficManager inboundTrafficManager) {
-		super(name, logDomain, inboundTrafficManager);
-//		logger = Logger.getLogger(logDomain + "." + MQTTListener.class.getSimpleName());
+		super(logName, logDomain, inboundTrafficManager);
 		setDefault_topic(default_topic);
 		setError_topic(error_topic);
 	}
@@ -49,9 +47,8 @@ public class MQTTListener extends Listener implements MqttCallback {
 	} 
 
 	public void messageArrived(String topic, MqttMessage msg) throws Exception {
-		System.out.println("\n\n");
 		LOG.debug("Message arrived at topic " + topic);
-		LOG.debug("Message is: \n" + msg.toString());
+		LOG.debug("Message is: " + msg.toString());
 		processRawMessage(new RawMessage(msg.toString(), protocol));
 	}
 

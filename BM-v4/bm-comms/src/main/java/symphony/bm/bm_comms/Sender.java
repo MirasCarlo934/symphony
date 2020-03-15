@@ -16,12 +16,12 @@ public abstract class Sender implements Runnable {
 	
 	/**
 	 * 
-	 * @param name
+	 * @param logName
 	 * @param logDomain
 	 */
-	public Sender(String name, String logDomain) {
-		LOG = LoggerFactory.getLogger(logDomain + "." + name);
-		this.name = name;
+	public Sender(String logName, String logDomain) {
+		LOG = LoggerFactory.getLogger(logDomain + "." + logName);
+		this.name = logName;
         LOG.info("Sender started!");
 	}
 	
