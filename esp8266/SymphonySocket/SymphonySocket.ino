@@ -28,7 +28,6 @@ bool prevSocketState;
 bool socketState = 1;
 bool isNormal = true;
 uint8_t isE131Enabled = 0;
-uint8_t isMqttEnabled = 0;
 
 struct timerStruct {
 	bool enabled = false;
@@ -71,7 +70,6 @@ void handleGetConfig(AsyncWebServerRequest *request) {
 	DynamicJsonBuffer jsonBuffer;
 	JsonObject& jsonObj = jsonBuffer.createObject();
 	jsonObj["e131"] = isE131Enabled;
-	jsonObj["Mqtt"] = isMqttEnabled;
 	String socketConfig;
 	jsonObj.printTo(socketConfig);
 	request->send(200, "text/html", socketConfig.c_str());
@@ -131,7 +129,6 @@ int wsHandler(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json)
 				json.remove("core");
 				json.remove("cmd");
 				isE131Enabled = json["e131"].as<int>();
-				isMqttEnabled = json["Mqtt"].as<int>();
 				String confData;
 				json.printTo(confData);
 				file.saveToSPIFFS(socketConfigFile.c_str(), confData.c_str());
@@ -170,15 +167,11 @@ void setup()
 	DynamicJsonBuffer jsonBuffer;
 	JsonObject& jsonObj = jsonBuffer.parseObject(config);
 	isE131Enabled = jsonObj["e131"].as<int>();
-	isMqttEnabled = jsonObj["Mqtt"].as<int>();
 	s.setWsCallback(wsHandler);
 //	s.setMqttHandler("mqttId", "192.168.0.109", 1883);		//not yet fully tested, so we are commenting out first  jan 05 2020
 	char ver[10];
 	sprintf(ver, "%u.%u", SYMPHONY_VERSION, MY_VERSION);
-	if (isMqttEnabled)
-		s.setup(myName, ver, true);
-	else
-		s.setup(myName, ver);
+	s.setup(myName, ver);
 	s.on("/init", HTTP_GET, handleInit);
 	s.on("/toggle", HTTP_GET, handleToggle);
 	s.serveStatic("/socket.html", SPIFFS, "/socket.html");
