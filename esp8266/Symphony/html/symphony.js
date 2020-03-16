@@ -90,8 +90,16 @@ function updateFirmware() {
 		  xhttp.send(formData);  
 	  }
 }
+/**
+ * toggles the mqttIp and mqttPort to enabled/disabled
+ * @returns
+ */
+function toggleMqtt() {
+	document.getElementById("mqttIp").disabled = !document.getElementById("mqttEnabled").checked;
+	document.getElementById("mqttPort").disabled = !document.getElementById("mqttEnabled").checked;	
+}
 /*
- * Function that commits the Ap, passkey and Device name, and the (ip and port) of mqtt broker
+ * Function that commits the Ap, passkey and Device name, and the (enabled, ip and port) of mqtt broker
  */
 function commitConfig() {
 	var name = document.getElementById("pName").value;
@@ -99,11 +107,16 @@ function commitConfig() {
 	var pwd = document.getElementById("pPass").value;
 	var mqttIp = document.getElementById("mqttIp").value;
 	var mqttPort = document.getElementById("mqttPort").value;
+	var chk = document.getElementById("mqttEnabled");
+	var mqttEnabled = 0;
+	if (chk.checked)
+		mqttEnabled = 1;
 	var obj = { core: 2, 
 			data: {
 				name: name, 
 				ssid: ssid, 
 				pwd: pwd,
+				mqttEnabled: mqttEnabled, 
 				mqttIp: mqttIp, 
 				mqttPort: mqttPort
 			}
@@ -566,8 +579,13 @@ function getDeviceInfoHandler(xhttp) {
 	document.getElementById("pName").value = jsonResponse.name;
 	document.getElementById("pSSID").value = jsonResponse.ssid;
 	document.getElementById("pPass").value = jsonResponse.pwd;
+	if (jsonResponse.mqttEnabled == 1)
+		document.getElementById("mqttEnabled").checked=true;
+	else
+		document.getElementById("mqttEnabled").checked=false;
 	document.getElementById("mqttIp").value = jsonResponse.mqttIp;
 	document.getElementById("mqttPort").value = jsonResponse.mqttPort;
+	toggleMqtt();
 }
 
 /**

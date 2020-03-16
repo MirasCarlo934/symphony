@@ -27,7 +27,7 @@
 #define HTTP_PORT 80      /* Default web server port */
 #define WS_PORT 8080      /* Web socket server port */
 #define CONNECT_TIMEOUT 15000   /* 15 seconds */
-#define REBOOT_DELAY    3500     /* Delay for rebooting once reboot flag is set */
+#define REBOOT_DELAY    1500     /* Delay for rebooting once reboot flag is set */
 
 #define  CORE_INIT 1
 #define  CORE_COMMIT_DEVICE_SETTINGS 2
@@ -54,7 +54,6 @@ class Symphony {
 
 	    //public methods
 	    void setup(String theHostName, String ver);
-	    void setup(String theHostName, String ver, bool mqttEnabled);
 	    bool loop();
 	    //lets the instantiator of this Symphony object assign a callback handler
 	    void on(const char* uri, WebRequestMethodComposite method, ArRequestHandlerFunction handler);
@@ -82,6 +81,7 @@ class Symphony {
 	    void setupAP();
 	    void enableMqttHandler();
 	    bool registerProduct();	//should be called after mqttHandler has been set and product has been set
+	    void readConfigFile();	//reads the config file and loads to the variables
 };
 
 /**

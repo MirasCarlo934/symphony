@@ -35,7 +35,6 @@ String Symphony::mac = "";
 String Symphony::nameWithMac = "myName";
 Product Symphony::product;
 String Symphony::version = "0.0";
-bool Symphony::hasMqttHandler = false;
 
 AsyncWebServer		webServer(HTTP_PORT); // Web Server
 AsyncWebServer		wsServer(WS_PORT); // WebSocket Server
@@ -138,7 +137,7 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 											client->text("PING Successful");
 									}
 									break;
-								case CORE_COMMIT_DEVICE_SETTINGS://this is the commit AP, Passkey and Device Name, then reboot is done
+								case CORE_COMMIT_DEVICE_SETTINGS://this is the commit AP, Passkey, Device Name, mqttEnabled, mqttIp and mqttPort then reboot is done
 									//this is from the admin WS client
 									if (json.containsKey("data")) {
 										String cfg = json["data"].as<String>();
@@ -490,7 +489,6 @@ void initWebServer() {
 		request->send(404, "text/plain", "Page not found");
 	});
 }
-
 /**
  *  This is the MQTT callback handler that is called when a message from mqtt broker arrives
  */
@@ -553,6 +551,7 @@ void Symphony::setup(String theHostName, String ver) {
 	wifiConnectHandler = WiFi.onStationModeGotIP(onWifiConnect);
 	delay(100);
 	initWebServer();	//initialize the html pages
+	readConfigFile();	//reads the content of the config file and loads to the necessary variables
 	connectToWifi();		//we are connecting to the wifi AP
 	createMyName(theHostName);		//create this device's name
 	if (WiFi.status() != WL_CONNECTED) {
@@ -581,6 +580,8 @@ void Symphony::setup(String theHostName, String ver) {
 	wifiDisconnectHandler = WiFi.onStationModeDisconnected(onWiFiDisconnect);
 	webServer.begin();
 	wsServer.begin();
+	if (theMqttHandler.enabled)
+		enableMqttHandler();
 
 #ifdef WSCLIENT
 	startWebSocketClients();
@@ -591,18 +592,6 @@ void Symphony::setup(String theHostName, String ver) {
 	Serial.printf("\n************[Symphony] Setup Version %i,  boot:%i***************\n", SYMPHONY_VERSION, reboot);
 }
 
-
-/*
- * Initiates the Symphony module
- * theHostName is passed by the child
- * ver is passed by the child and should be composed of SYMPHONY_VERSION.CHILD_VERSION
- * set mqttEnabled to true to enable mqtt
- *
- */
-void Symphony::setup(String theHostName, String ver, bool mqttEnabled) {
-	setup(theHostName, ver);
-	enableMqttHandler();
-}
 /*
  * The loop method
  * 		returns true if firmware update is not ongoing
@@ -670,9 +659,35 @@ void Symphony::enableMqttHandler() {
 	theMqttHandler.setPort(mqttPort);
 	theMqttHandler.setMsgCallback(mqttMsgHandler);
 	theMqttHandler.connect();
-	hasMqttHandler = true;
 }
-
+/**
+ * Reads the config file cfg.json and loads to the variables
+ */
+void Symphony::readConfigFile() {
+	//sets the wifi login
+		DynamicJsonBuffer jsonBuffer;
+		JsonObject& json = jsonBuffer.parseObject(fManager.readConfig());
+		if (!json.success()) {
+			Serial.println("connectToWifi parseObject() failed");
+		} else {
+			if (json.containsKey("ssid")) {
+				//ssid key is found, this means pwd and name are also there
+				ssid = json["ssid"].as<String>();
+				pwd = json["pwd"].as<String>();
+				nameWithMac = json["name"].as<String>();
+				theMqttHandler.enabled = json["mqttEnabled"].as<bool>();
+				if (json.containsKey("mqttIp")) {
+					//mqttIp is found, set the mqtt variables
+					mqttIp = json["mqttIp"].as<String>();
+					mqttPort = json["mqttPort"].as<int>();
+				}
+			}
+	#ifdef DEBUG_ONLY
+			json.prettyPrintTo(Serial);
+			Serial.printf("\nssid:%s pwd:%s\n", ssid.c_str(), pwd.c_str());
+	#endif
+		}
+}
 /**
  * Private methods below
  */
@@ -710,29 +725,6 @@ void Symphony::connectToWifi() {
 	// Switch to station mode and disconnect just in case
 	WiFi.mode(WIFI_STA);
 	WiFi.disconnect();
-	//sets the wifi login
-	DynamicJsonBuffer jsonBuffer;
-	JsonObject& json = jsonBuffer.parseObject(fManager.readConfig());
-	if (!json.success()) {
-		Serial.println("connectToWifi parseObject() failed");
-	} else {
-		if (json.containsKey("ssid")) {
-			//ssid key is found, this means pwd and name are also there
-			ssid = json["ssid"].as<String>();
-			pwd = json["pwd"].as<String>();
-			nameWithMac = json["name"].as<String>();
-			if (json.containsKey("mqttIp")) {
-				//mqttIp is found, set the mqtt variables
-				mqttIp = json["mqttIp"].as<String>();
-				mqttPort = json["mqttPort"].as<int>();
-			}
-		}
-#ifdef DEBUG_ONLY
-		json.prettyPrintTo(Serial);
-		Serial.printf("\nssid:%s pwd:%s\n", ssid.c_str(), pwd.c_str());
-#endif
-	}
-
 	WiFi.begin(ssid.c_str(), pwd.c_str());
 	int i = 0;
 	//tries to connect to the AP
@@ -800,7 +792,7 @@ void Symphony::setRootProperties(String s) {
 bool Symphony::registerProduct() {
 	if (!isRegistered) {
 		if (isProductSet) {
-			if ( hasMqttHandler && theMqttHandler.isConnected()) {
+			if ( theMqttHandler.enabled && theMqttHandler.isConnected()) {
 				//register to the BM if not yet registered and if product is set and if mqtt is connected
 				isRegistered = true;
 				theMqttHandler.setProduct(product);

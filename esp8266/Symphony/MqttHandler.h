@@ -16,6 +16,7 @@
 
 class MqttHandler {
 	public:
+	boolean enabled = false;
 	MqttHandler();
 	//generic methods
 	void setMsgCallback(void (* Callback) (char* topic, char* payload, size_t len));
