@@ -4,8 +4,8 @@
  *
  */
 
-#ifndef SYMPHONY_H_OLD_
-#define SYMPHONY_H_OLD_
+#ifndef SYMPHONY_H
+#define SYMPHONY_H
 
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
@@ -59,6 +59,7 @@ class Symphony {
 	    void on(const char* uri, WebRequestMethodComposite method, ArRequestHandlerFunction handler);
 	    void serveStatic(const char* uri, fs::FS& fs, const char* path);
 	    void setWsCallback(int (* WsCallback) (AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json));
+	    void setMqttCallback(int (* MqttCallback) (JsonObject& json));
 	    void textAll(JsonObject& message);  //for sending to WsClients
 	    static void setRootProperties(String s);
 	    void setProduct(Product p);
@@ -84,20 +85,5 @@ class Symphony {
 	    void readConfigFile();	//reads the config file and loads to the variables
 };
 
-/**
- * utility class to parse the websocket data sent during control transactions
- */
-class WsData
-{
-	public:
-		WsData(String data);
-		String getDeviceName();
-		String getSSID();
-		String getValue();
-	private:
-		String deviceName;
-		String ssid;
-		String value;
-};
 
-#endif /* SYMPHONY_H_OLD_ */
+#endif /* SYMPHONY_H */

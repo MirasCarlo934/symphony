@@ -62,14 +62,19 @@ int discoveryTries = 0;
 
 //WebSocketsClient webSocketClient;  July 13 2019 do we really need this device to be a ws client?
 
-/*
+/**
  * This is the callback handler that will be called when a Websocket event arrives.
- * This enables the instantiator to handle websocket events.
- * We are exposing the AsyncWebSocket ws to enable the instantiator to broadcast to all connected clients via the ws.textAll
+ * This enables the child to handle websocket events.  Callback will be called if the property is not directly changeable.
+ * We are exposing the AsyncWebSocket ws to enable the child to broadcast to all connected clients via the ws.textAll
  * AsyncWebSocketClient *client is exposed to enable response to the calling client.
  */
 int (* WsCallback) (AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json);
 
+/**
+ * This is the callback handler that will be called when an MQTT event arrives.
+ * This enables the child to handle MQTT events.  Callback will be called if the property is not directly changeable.
+ */
+int (* MqttCallback) (JsonObject& json);
 /*
  *	wsEvent handles the transactions sent by client websockets.
  *	events can either be handled by the core, or the implementor.
@@ -502,12 +507,40 @@ void mqttMsgHandler(char* topic, char* payload, size_t len) {
   char str2[len];
   strncpy ( str2, payload, len );
   Serial.println(str2);
-  if (strcmp(topic, "BM") == 0) {
+  if (strcmp(topic, theMqttHandler.getMyTopic().c_str()) == 0) {
 	  DynamicJsonBuffer jsonBuffer;
 	  JsonObject& jsonMsg = jsonBuffer.parseObject(str2);
-	  Serial.printf("RID=%s\n", jsonMsg["RID"].as<String>().c_str());
+	  Serial.printf("RID=%s \n", jsonMsg["RID"].as<String>().c_str());
+	  Serial.println(Symphony::product.stringify());
+
+	  //evaluate if corePin==true, execute here.  Else pass to wscallback
+	  attribStruct attrib = Symphony::product.getProperty(jsonMsg["property"].as<char *>());
+#ifdef DEBUG_ONLY
+	  Serial.printf("got attribute %s, current value=%i, pin=%i, corePin=%s\n", attrib.ssid.c_str(), attrib.gui.value, attrib.pin, attrib.corePin?"true":"false");
+#endif
+	  if (attrib.corePin) {
+		  Symphony::product.setValue(jsonMsg["property"].as<String>(), jsonMsg["value"].as<int>());
+	  } else {
+		  Serial.println("Cannot set the property %s since it is not directly changeable.");
+		  if (MqttCallback != nullptr) {
+			  MqttCallback(jsonMsg);
+		  } else {
+			  Serial.println("No MQTT callback set!!!");
+		  }
+	  }
+	  DynamicJsonBuffer jsonBuff;
+	  JsonObject& json = jsonBuff.createObject();
+	  json["core"] = 7;
+	  json["cmd"] = 10;
+	  json["mac"] = Symphony::mac;
+	  json["ssid"] = jsonMsg["property"].as<String>();
+	  json["val"] = jsonMsg["value"].as<int>();
+	  String strBroadcast;
+	  json.printTo(strBroadcast);
+	  Serial.printf("Will broadcast %s\n", strBroadcast.c_str());
+	  ws.textAll(strBroadcast);
   }
-}
+};
 
 /*
  * Constructor
@@ -647,6 +680,13 @@ void Symphony::serveStatic(const char* uri, fs::FS& fs, const char* path) {
  */
 void Symphony::setWsCallback(int (* Callback) (AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json)) {
 	WsCallback = Callback;
+}
+/**
+ * This callback is called by the mqttMsgHandler function.  We can do manipulation of pins here.
+ *
+ */
+void Symphony::setMqttCallback(int (* Callback) (JsonObject& json)) {
+	MqttCallback = Callback;
 }
 /*
  *
@@ -795,7 +835,6 @@ bool Symphony::registerProduct() {
 			if ( theMqttHandler.enabled && theMqttHandler.isConnected()) {
 				//register to the BM if not yet registered and if product is set and if mqtt is connected
 				isRegistered = true;
-				theMqttHandler.setProduct(product);
 				Serial.println("************** registerProduct start 1");
 				/*	Registration format is:
 					"{RID:5ccf7f15a492,CID:0000,RTY:register,name:Ngalan,roomID:J444,product:0000}";
@@ -840,7 +879,7 @@ bool Symphony::registerProduct() {
 void Symphony::transmit(const char* payload) {
 	//for now, we are using mqtt
 	if (theMqttHandler.isConnected()) {
-		theMqttHandler.publish(payload, 2);
+		theMqttHandler.publish(payload, 0);	//we are setting QOS of 0 to prevent from multiple sending of messages
 	} else {
 		Serial.println("********* FAILED, not connected to MQTT. Unable to transmit data.");
 	}
@@ -849,27 +888,5 @@ void Symphony::transmit(const char* payload) {
 void Symphony::sendToWsServer(String replyStr){
 //	webSocketClient.sendTXT(replyStr);July 13 2019 do we really need this device to be a ws client?
 }
-/***********************************************************************
-*					Utility classes
-************************************************************************/
-/**
- * This is the class for the holder of data received by Websocket
- * Data is of the format <ssid>=<value>
- *    ex 0006=1
- */
-WsData::WsData(String data){
-	deviceName = data.substring(0, data.indexOf(':'));
-	value = data.substring(data.indexOf('=') + 1);
-	ssid = data.substring(data.indexOf(':') + 1, data.indexOf('='));
-}
 
-String WsData::getDeviceName() {
-	return deviceName;
-}
-String WsData::getSSID() {
-	return ssid;
-}
-String WsData::getValue() {
-	return value;
-}
 
