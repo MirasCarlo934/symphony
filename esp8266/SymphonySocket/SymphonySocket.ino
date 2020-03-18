@@ -90,12 +90,13 @@ void sendTimerData(AsyncWebSocketClient *client, JsonObject& json) {
 	json.printTo(responseData);
 	client->text(responseData);
 }
+
 /*
- * Callback function for the websocket transactions
+ * Callback function for the websocket events
  */
 int wsHandler(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json) {
 //int wsHandler(AsyncWebSocket ws, AsyncWebSocketClient *client, uint8_t * payload, size_t len) {
-	Serial.println("SymphonySocket callback executed start");
+	Serial.println("SymphonySocket websocket callback executed start");
 	json.prettyPrintTo(Serial);Serial.println();
 	if (json.containsKey("cmd")) {
 			uint8_t cmd = json["cmd"];
@@ -152,9 +153,16 @@ int wsHandler(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json)
 				break;
 			}
 	}
-	Serial.println("\ncallback executed end");
+	Serial.println("SymphonySocket websocket callback executed end");
 }
-
+/*
+ * Callback function for the mqtt events
+ */
+int mqttHandler(JsonObject& json) {
+	Serial.println("SymphonySocket mqtt callback executed start");
+	json.prettyPrintTo(Serial);Serial.println();
+	Serial.println("SymphonySocket mqtt callback executed end");
+}
 void setup()
 {
 	Serial.begin(115200);
@@ -168,6 +176,7 @@ void setup()
 	JsonObject& jsonObj = jsonBuffer.parseObject(config);
 	isE131Enabled = jsonObj["e131"].as<int>();
 	s.setWsCallback(wsHandler);
+	s.setMqttCallback(mqttHandler);
 //	s.setMqttHandler("mqttId", "192.168.0.109", 1883);		//not yet fully tested, so we are commenting out first  jan 05 2020
 	char ver[10];
 	sprintf(ver, "%u.%u", SYMPHONY_VERSION, MY_VERSION);
