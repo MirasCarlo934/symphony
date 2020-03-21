@@ -1,9 +1,11 @@
 const CMD_INIT = 1
 const CMD_VALUES = 2
 const CMD_CLIENT = 10
-const CORE_VALUERESPONSE = 20
 const CORE_GETDEVICEINFO = 4;
 const CORE_TOCHILD = 7;
+const CORE_START_HEARTBEAT = 8;
+const CORE_VALUERESPONSE = 20
+
 
 var itm;
 var updateDone;
@@ -11,6 +13,7 @@ var counter = 0;
 var isUpdateFW = false;
 var mac;		//the identity of the device server
 var cid;		//the identity of this client
+var hb;			//the variable for the heartbeat timeout timer
 
 
 initWs();
@@ -54,7 +57,7 @@ function updateFirmware() {
 	  xhttp.onreadystatechange = function() {
 	    if (this.readyState==4 && this.status==200) {
 	      document.getElementById("status").innerHTML = this.responseText;
-	      document.getElementById("msg").innerHTML = "Please refresh browser or wait for ready status.";
+//	      document.getElementById("msg").innerHTML = "Please refresh page or wait for READY status.";
 	      isUpdateFW = true;
 	    }
 	  }
@@ -87,30 +90,33 @@ function updateFirmware() {
 		  xhttp.send(formData);  
 	  }
 }
+/**
+ * toggles the mqttIp and mqttPort to enabled/disabled
+ * @returns
+ */
+function toggleMqtt() {
+	document.getElementById("mqttIp").disabled = !document.getElementById("mqttEnabled").checked;
+	document.getElementById("mqttPort").disabled = !document.getElementById("mqttEnabled").checked;	
+}
 /*
- * Function that commits the Ap, passkey and Device name
+ * Function that commits the Ap, passkey and Device name, and the (enabled, ip and port) of mqtt broker
  */
 function commitConfig() {
 	var name = document.getElementById("pName").value;
 	var ssid = document.getElementById("pSSID").value;
 	var pwd = document.getElementById("pPass").value;
+	var mqttIp = document.getElementById("mqttIp").value;
+	var mqttPort = document.getElementById("mqttPort").value;
+	var chk = document.getElementById("mqttEnabled");
+	var mqttEnabled = 0;
+	if (chk.checked)
+		mqttEnabled = 1;
 	var obj = { core: 2, 
 			data: {
 				name: name, 
 				ssid: ssid, 
-				pwd: pwd
-			}
-		};
-	websocket.send(JSON.stringify(obj));
-}
-/*
- * Function that commits the ip and port of mqtt broker
- */
-function commitMqtt() {
-	var mqttIp = document.getElementById("mqttIp").value;
-	var mqttPort = document.getElementById("mqttPort").value;
-	var obj = { core: 5, 
-			data: {
+				pwd: pwd,
+				mqttEnabled: mqttEnabled, 
 				mqttIp: mqttIp, 
 				mqttPort: mqttPort
 			}
@@ -381,13 +387,33 @@ function sendRangeWs(e) {
 	jsonResponse["val"] =  e.value;
 	websocket.send(JSON.stringify(jsonResponse));
 }
-
+/**
+ * The websocket keep alive
+ * Will only be executed during transactions where device is doing reboot
+ * 		1. commitConfig()
+ * 		2. updateFirmware() 
+ */
+function wsHeartbeat() {
+  if (typeof websocket === 'undefined' || websocket.readyState != 1) {
+	  //do nothing, there is no websocket connection
+  } else {
+	  websocket.send('{"core":5}');//send a ping core command
+	  hb = setTimeout(wsHeartbeat, 10000);	//interval is 10s
+  }
+}
+/**
+ * The websocket handler
+ * @returns
+ */
 function wsHandler() {	 
      websocket.onopen = function(evt) {
 //       for (i=1;i<=2;i++) {
 //         var hover = document.getElementById("tmp"+i);
 //         hover.parentNode.removeChild(hover);
 //       }
+    	 var status = document.getElementById("status");
+         status.innerHTML="READY";
+         clearTimeout(hb);
      };
      websocket.onclose = function(evt) {
        //alert("DISCONNECTED");
@@ -401,7 +427,7 @@ function wsHandler() {
      };
 } 
 /**
- * Function that handles control trannsactions from directly connected WS Clients.
+ * Function that handles control transactions from directly connected WS Clients.
  * @param evt
  * @returns
  */
@@ -440,7 +466,6 @@ function handleControl(evt) {
  * 
  */
 function handleWsMessage(evt) {
-//alert(evt.data)
   	var jsonResponse = JSON.parse(evt.data);
   	var core = jsonResponse["core"];
   	var cmd = jsonResponse["cmd"];
@@ -448,12 +473,21 @@ function handleWsMessage(evt) {
   	var status = document.getElementById(box);
   	switch(core) {
   		case CORE_TOCHILD://data from server to the child javascript
-  			var msg = document.getElementById("msg");//comment this out later
-  			msg.innerHTML = JSON.stringify(jsonResponse);//comment this out later
-			if (serverResponseHandler!=null) {//serverResponseHandler method can be defined in the child's javascript
-				serverResponseHandler(jsonResponse);//pass the jsonResponse to the child's javascript
-			}
-  			break;
+  			{
+	  			var msg = document.getElementById("msg");//comment this out later
+	  			msg.innerHTML = JSON.stringify(jsonResponse);//comment this out later
+				if (serverResponseHandler!=null) {//serverResponseHandler method can be defined in the child's javascript
+					serverResponseHandler(jsonResponse);//pass the jsonResponse to the child's javascript
+				}
+	  			break;
+  			}
+  		case CORE_START_HEARTBEAT: 
+  			{
+	  			wsHeartbeat();
+//	  			document.getElementById("msg").innerHTML = "Please refresh page or wait for READY status.";
+	  	        document.getElementById("status").innerHTML = "Device Reboot";
+	  			break;
+	  		}
   		case CORE_VALUERESPONSE://value response from server
   			{
   			switch(cmd) {
@@ -491,9 +525,9 @@ function handleWsMessage(evt) {
   				}
   		  		 break;
   		  	 default:
-  		  	 }		
-  			}
+  		  	 }
   			break;
+  		}
   	}
   	if (status!=null) {
   		if (jsonResponse.msg!=null)
@@ -545,8 +579,13 @@ function getDeviceInfoHandler(xhttp) {
 	document.getElementById("pName").value = jsonResponse.name;
 	document.getElementById("pSSID").value = jsonResponse.ssid;
 	document.getElementById("pPass").value = jsonResponse.pwd;
+	if (jsonResponse.mqttEnabled == 1)
+		document.getElementById("mqttEnabled").checked=true;
+	else
+		document.getElementById("mqttEnabled").checked=false;
 	document.getElementById("mqttIp").value = jsonResponse.mqttIp;
 	document.getElementById("mqttPort").value = jsonResponse.mqttPort;
+	toggleMqtt();
 }
 
 /**

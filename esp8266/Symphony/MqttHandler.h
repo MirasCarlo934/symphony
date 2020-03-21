@@ -16,6 +16,8 @@
 
 class MqttHandler {
 	public:
+	boolean enabled = false;
+
 	MqttHandler();
 	//generic methods
 	void setMsgCallback(void (* Callback) (char* topic, char* payload, size_t len));
@@ -24,9 +26,8 @@ class MqttHandler {
 	void setId(const char *id);	//sets the id, can be uised if MqttHandler was instantiated using the default constructor
 	void connect(); //to connect to MQTT server. id, url and port should already have been set
 	void publish(const char* payload, uint8_t qos); //publish message to mqtt server
+	String getMyTopic(); //the topic where this device listens for control commands
 	bool isConnected();
-	//product specific methods
-	void setProduct(Product p);	//sets the Product definition of this device.  This will be used to communicate with other devices
 
 	private:
 };

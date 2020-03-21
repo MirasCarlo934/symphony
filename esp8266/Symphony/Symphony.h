@@ -4,8 +4,8 @@
  *
  */
 
-#ifndef SYMPHONY_H_OLD_
-#define SYMPHONY_H_OLD_
+#ifndef SYMPHONY_H
+#define SYMPHONY_H
 
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
@@ -27,13 +27,13 @@
 #define HTTP_PORT 80      /* Default web server port */
 #define WS_PORT 8080      /* Web socket server port */
 #define CONNECT_TIMEOUT 15000   /* 15 seconds */
-#define REBOOT_DELAY    500     /* Delay for rebooting once reboot flag is set */
+#define REBOOT_DELAY    1500     /* Delay for rebooting once reboot flag is set */
 
 #define  CORE_INIT 1
 #define  CORE_COMMIT_DEVICE_SETTINGS 2
 #define  CORE_DELETE 3
 #define  CORE_GETDEVICEINFO 4
-#define  CORE_COMMIT_MQTT_SETTINGS 5
+#define  CORE_PING 5
 #define  CORE_VALUES 20
 #define  CORE_CONTROL 7
 
@@ -54,12 +54,12 @@ class Symphony {
 
 	    //public methods
 	    void setup(String theHostName, String ver);
-	    void setup(String theHostName, String ver, bool mqttEnabled);
 	    bool loop();
 	    //lets the instantiator of this Symphony object assign a callback handler
 	    void on(const char* uri, WebRequestMethodComposite method, ArRequestHandlerFunction handler);
 	    void serveStatic(const char* uri, fs::FS& fs, const char* path);
 	    void setWsCallback(int (* WsCallback) (AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json));
+	    void setMqttCallback(int (* MqttCallback) (JsonObject& json));
 	    void textAll(JsonObject& message);  //for sending to WsClients
 	    static void setRootProperties(String s);
 	    void setProduct(Product p);
@@ -82,22 +82,8 @@ class Symphony {
 	    void setupAP();
 	    void enableMqttHandler();
 	    bool registerProduct();	//should be called after mqttHandler has been set and product has been set
+	    void readConfigFile();	//reads the config file and loads to the variables
 };
 
-/**
- * utility class to parse the websocket data sent during control transactions
- */
-class WsData
-{
-	public:
-		WsData(String data);
-		String getDeviceName();
-		String getSSID();
-		String getValue();
-	private:
-		String deviceName;
-		String ssid;
-		String value;
-};
 
-#endif /* SYMPHONY_H_OLD_ */
+#endif /* SYMPHONY_H */
