@@ -8,6 +8,13 @@
 
     <context:property-placeholder location="bm-comms.properties" />
 
+    <bean id="DB.MongoManager" class="symphony.bm.bm_comms.mongodb.BMCommsMongoDBManager">
+        <constructor-arg name="logDomain" value="${log.db}"/>
+        <constructor-arg name="logName" value="MongoClient"/>
+        <constructor-arg name="uri" value="${mongo.serverURI}"/>
+        <constructor-arg name="bmCommsDatabase" value="${mongo.database}"/>
+    </bean>
+
     <bean id="MQTT.client" class="symphony.bm.bm_comms.mqtt.MQTTClient">
         <constructor-arg name="logDomain" value="${log.mqtt}"/>
         <constructor-arg name="logName" value="client"/>
@@ -41,6 +48,8 @@
         <constructor-arg name="logDomain" value="${log.comms}"/>
         <constructor-arg name="logName" value="inboundTrafficManager"/>
         <constructor-arg name="rest" ref="restMicroserviceCommunicator"/>
+        <constructor-arg name="mongoDBManager" ref="DB.MongoManager"/>
+        <constructor-arg name="devicesDBCollection" value="${mongo.collection.devices}"/>
     </bean>
 
 </beans>
