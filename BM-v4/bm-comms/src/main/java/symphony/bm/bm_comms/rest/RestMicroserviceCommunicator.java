@@ -1,22 +1,32 @@
 package symphony.bm.bm_comms.rest;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import symphony.bm.bm_comms.jeep.vo.JeepMessage;
-import symphony.bm.bm_comms.jeep.vo.JeepRequest;
+import symphony.bm.bm_comms.mongodb.BMCommsMongoDBManager;
 
 @RestController
 public class RestMicroserviceCommunicator {
     private Logger LOG;
     private String name = RestMicroserviceCommunicator.class.getSimpleName();
 
-    public RestMicroserviceCommunicator(@Value("${log.comms}")String logDomain) {
+    @Value("${mongo.collection.devices}")
+    private String devicesCollection;
+
+    private BMCommsMongoDBManager mongoDBManager;
+
+    public RestMicroserviceCommunicator(@Value("${log.comms}")String logDomain,
+                                        @Autowired @Qualifier("DB.MongoManager") BMCommsMongoDBManager mongoDBManager) {
         LOG = LoggerFactory.getLogger(logDomain + "." + name);
+        this.mongoDBManager = mongoDBManager;
         LOG.info(name + " started!");
     }
 
@@ -25,6 +35,20 @@ public class RestMicroserviceCommunicator {
         TestTxt obj = new TestTxt(txt);
         LOG.info(txt);
         return obj;
+    }
+
+    @RequestMapping("/registerNewDevice")
+    public boolean registerNewDevice(@RequestParam(value="cid") String cid) {
+        LOG.info("Registering device " + cid + " to database (for MQTT purposes)...");
+        DBObject device = new BasicDBObject("CID", cid)
+                            .append("topic", cid + "-topic");
+        try {
+            mongoDBManager.insert(devicesCollection, device);
+            return true;
+        } catch (Exception e) {
+            LOG.error("Cannot register device " + cid + " to database!", e);
+            return false;
+        }
     }
 
     /**
@@ -54,7 +78,7 @@ public class RestMicroserviceCommunicator {
     class TestTxt {
         private String txt;
 
-        public TestTxt(String txt) {
+        TestTxt(String txt) {
             this.txt = txt;
         }
 

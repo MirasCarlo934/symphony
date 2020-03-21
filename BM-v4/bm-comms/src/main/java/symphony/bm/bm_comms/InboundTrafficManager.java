@@ -1,14 +1,16 @@
 package symphony.bm.bm_comms;
 
-import com.mongodb.MongoClient;
+import com.mongodb.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import symphony.bm.bm_comms.jeep.exceptions.PrimaryMessageCheckingException;
 import symphony.bm.bm_comms.jeep.vo.*;
+import symphony.bm.bm_comms.mongodb.BMCommsMongoDBManager;
 import symphony.bm.bm_comms.rest.RestMicroserviceCommunicator;
 
+import java.net.UnknownHostException;
 import java.util.LinkedList;
 
 public class InboundTrafficManager implements Runnable {
@@ -16,12 +18,18 @@ public class InboundTrafficManager implements Runnable {
     private LinkedList<RawMessage> rawMsgQueue = new LinkedList<RawMessage>();
 //    private ResponseManager rm;
     private RestMicroserviceCommunicator rest;
+    private BMCommsMongoDBManager mongoDBManager;
+    private String devicesDBCollection;
 
     public InboundTrafficManager(String logDomain, String logName, RestMicroserviceCommunicator rest/*,
-                                 ResponseManager responseManager*/) {
+                                 ResponseManager responseManager*/, BMCommsMongoDBManager mongoDBManager,
+                                 String devicesDBCollection) {
         LOG = LoggerFactory.getLogger(logDomain + "." + logName);
 //        this.rm = responseManager;
         this.rest = rest;
+        this.mongoDBManager = mongoDBManager;
+        this.devicesDBCollection = devicesDBCollection;
+
         Thread t = new Thread(this,logDomain + "." + logName);
         t.start();
         LOG.info(InboundTrafficManager.class.getSimpleName() + " started!");
@@ -36,13 +44,15 @@ public class InboundTrafficManager implements Runnable {
         while(!Thread.currentThread().isInterrupted()) {
             RawMessage rawMsg = rawMsgQueue.poll();
             if(rawMsg != null) {
-                LOG.debug("New request received! Checking primary validity...");
+                LOG.debug("New JEEP message received! Checking primary message validity...");
                 try {
                     if (checkPrimaryMessageValidity(rawMsg) == JeepMessageType.REQUEST) {
+                        LOG.debug("JEEP request found! Forwarding to logic layer...");
                         JeepRequest request = new JeepRequest(new JSONObject(rawMsg.getMessageStr()),
                                 rawMsg.getProtocol());
                         rest.forwardJeepMessage(request);
                     } else if (checkPrimaryMessageValidity(rawMsg) == JeepMessageType.RESPONSE) {
+                        LOG.debug("JEEP response found! Forwarding to logic layer...");
                         JeepResponse response = new JeepResponse(new JSONObject(rawMsg.getMessageStr()),
                                 rawMsg.getProtocol());
                         rest.forwardJeepMessage(response);
@@ -101,7 +111,7 @@ public class InboundTrafficManager implements Runnable {
         if(json.getString("RTY").equals("register") ||
                 (json.getString("RTY").equals("getRooms") &&
                         json.getString("CID").equals("default_topic")));
-        else if(rest.checkDevice(json.getString("CID"))) {
+        else if(!checkIfDeviceExists(json.getString("CID"))) {
             throw new PrimaryMessageCheckingException("CID does not exist!");
         }
 
@@ -125,6 +135,12 @@ public class InboundTrafficManager implements Runnable {
         else {
             throw new PrimaryMessageCheckingException("Invalid RTY!");
         }
+    }
+
+    private boolean checkIfDeviceExists(String cid) {
+        DBObject query = new BasicDBObject("CID", cid);
+        DBCursor cursor = mongoDBManager.query(devicesDBCollection, query);
+        return cursor.length() > 0;
     }
 
     private void sendError(String message, Protocol protocol) {
