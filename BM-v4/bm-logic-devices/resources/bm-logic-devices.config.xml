@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context-3.0.xsd http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util.xsd">
+
+    <context:property-placeholder location="bm-logic-devices.properties" />
+
+    <util:map id="serviceList" map-class="java.util.HashMap">
+        <entry key="register" value-ref="services.register"/>
+    </util:map>
+
+    <bean id="CORE.controller" class="symphony.bm.bmlogicdevices.controller.Controller">
+        <constructor-arg name="logDomain" value="${log.logic}"/>
+        <constructor-arg name="services" ref="serviceList"/>
+        <constructor-arg name="outboundRestMicroserviceCommunicator" ref="REST.outboundCommunicator"/>
+    </bean>
+
+    <bean id="DB.MongoManager" class="symphony.bm.bmlogicdevices.mongodb.MongoDBManager">
+        <constructor-arg name="database" value="${mongo.database}"/>
+        <constructor-arg name="logDomain" value="${log.db}"/>
+        <constructor-arg name="logName" value="MongoClient"/>
+        <constructor-arg name="uri" value="${mongo.serverURI}"/>
+    </bean>
+
+    <bean id="REST.outboundCommunicator" class="symphony.bm.bmlogicdevices.rest.OutboundRestMicroserviceCommunicator">
+
+    </bean>
+
+    <bean id="services.register" class="symphony.bm.bmlogicdevices.services.RegisterService">
+        <constructor-arg name="devicesMongoDBCollection" value="${mongo.collection.devices}"/>
+        <constructor-arg name="logDomain" value="${log.logic}"/>
+        <constructor-arg name="messageServiceName" value="${services.register.msn}"/>
+        <constructor-arg name="mongoDBManager" ref="DB.MongoManager"/>
+        <constructor-arg name="restCommunicator" ref="REST.outboundCommunicator"/>
+        <constructor-arg name="serviceName" value="${services.register.name}"/>
+    </bean>
+
+</beans>

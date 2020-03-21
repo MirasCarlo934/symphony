@@ -60,10 +60,10 @@ public class RestMicroserviceCommunicator {
     }
 
     /**
-     * Checks if the RTY corresponds to an existing request module in the logic layer
-     * @param rty the RTY to be checked
+     * Checks if the MSN corresponds to an existing request module in the logic layer
+     * @param msn the MSN to be checked
      */
-    public boolean checkRTY(String rty) {
+    public boolean checkMSN(String msn) {
         return true;
     }
 
@@ -71,7 +71,7 @@ public class RestMicroserviceCommunicator {
      * Checks if the device with the corresponding CID exists
      * @param cid the RTY to be checked
      */
-    public boolean checkDevice(String cid) {
+    public boolean checkCID(String cid) {
         return true;
     }
 

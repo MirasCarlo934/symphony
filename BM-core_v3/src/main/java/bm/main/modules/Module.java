@@ -68,7 +68,6 @@ public abstract class Module implements Runnable {
 		} else {
 			this.responseParams = requestParams;
 		}
-//		this.mp = mp;
 		this.dr = deviceRepository;
 		requestType = RTY;
 	}

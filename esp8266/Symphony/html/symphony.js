@@ -483,6 +483,7 @@ function handleWsMessage(evt) {
   			}
   		case CORE_START_HEARTBEAT: 
   			{
+// alert("received heartbeat");
 	  			wsHeartbeat();
 //	  			document.getElementById("msg").innerHTML = "Please refresh page or wait for READY status.";
 	  	        document.getElementById("status").innerHTML = "Device Reboot";

@@ -75,7 +75,7 @@ public class InboundTrafficManager implements Runnable {
      * 			<li>There are missing primary request parameters</li>
      * 			<li>There are primary request parameters that are null/empty</li>
      * 			<li>CID does not exist</li>
-     * 			<li>RTY does not exist</li>
+     * 			<li>MSN does not exist</li>
      * 		</ul>
      */
     private JeepMessageType checkPrimaryMessageValidity(RawMessage rawMsg)
@@ -92,33 +92,33 @@ public class InboundTrafficManager implements Runnable {
         }
 
         //#2: Checks if there are missing primary request parameters
-        if(!json.keySet().contains("RID") || !json.keySet().contains("CID") ||
-                !json.keySet().contains("RTY")) {
+        if(!json.keySet().contains("MRN") || !json.keySet().contains("CID") ||
+                !json.keySet().contains("MSN")) {
             throw new PrimaryMessageCheckingException("Request does not contain all primary " +
                     "request parameters!");
         }
 
         //#3: Checks if the primary request parameters are null/empty
-        if(json.getString("RID").equals("") || json.getString("RID") == null) {
-            throw new PrimaryMessageCheckingException("Null RID!");
+        if(json.getString("MRN").equals("") || json.getString("MRN") == null) {
+            throw new PrimaryMessageCheckingException("Null MRN!");
         } else if(json.getString("CID").equals("") || json.getString("CID") == null) {
             throw new PrimaryMessageCheckingException("Null CID!");
-        } else if(json.getString("RTY").equals("") || json.getString("RTY") == null) {
-            throw new PrimaryMessageCheckingException("Null RTY!");
+        } else if(json.getString("MSN").equals("") || json.getString("MSN") == null) {
+            throw new PrimaryMessageCheckingException("Null MSN!");
         }
 
         //#4: Checks if CID exists
-        if(json.getString("RTY").equals("register") ||
-                (json.getString("RTY").equals("getRooms") &&
+        if(json.getString("MSN").equals("register") ||
+                (json.getString("MSN").equals("getRooms") &&
                         json.getString("CID").equals("default_topic")));
         else if(!checkIfDeviceExists(json.getString("CID"))) {
             throw new PrimaryMessageCheckingException("CID does not exist!");
         }
 
-        //#5 Checks if RTY exists
+        //#5 Checks if MSN exists
         boolean b = false;
 
-        if(rest.checkRTY(json.getString("RTY"))) {
+        if(rest.checkMSN(json.getString("MSN"))) {
             b = true;
         }
 
@@ -133,7 +133,7 @@ public class InboundTrafficManager implements Runnable {
             }
         }
         else {
-            throw new PrimaryMessageCheckingException("Invalid RTY!");
+            throw new PrimaryMessageCheckingException("Invalid MSN!");
         }
     }
 
