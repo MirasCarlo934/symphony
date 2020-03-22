@@ -38,6 +38,9 @@ int wsHandler(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json)
 				product.setValue(ssid, json["val"].as<int>());
 				json["core"] = 20;
 				s.textAll(json);		//broadcast to other clients
+				String strReg;
+				json.printTo(strReg);
+				s.transmit(strReg.c_str());
 				if (ssid.toInt() == 25) {
 					isLatchSwitch = json["val"];
 				} else if (ssid.toInt() == 27) {
