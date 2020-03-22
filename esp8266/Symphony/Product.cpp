@@ -95,8 +95,8 @@ void Product::addProperty(String ssid, boolean corePin, int8_t pin, Gui gui)
  * The overloaded addProperty method
  * this is for the virtual property
  */
-void Product::addProperty(String ssid, boolean corePin, Gui gui) {
-	addProperty(ssid, corePin, -1, gui);
+void Product::addProperty(String ssid, Gui gui) {
+	addProperty(ssid, false, -1, gui);
 }
 
 /*
@@ -184,6 +184,7 @@ String Product::stringify() {
 		element["val"] = attributes[i].gui.value;
 		element["grp"] = attributes[i].gui.group;
 		element["id"] = attributes[i].ssid;
+		element["hasPin"] = attributes[i].corePin;
 	}
 	String s;
 	json.printTo(s);
