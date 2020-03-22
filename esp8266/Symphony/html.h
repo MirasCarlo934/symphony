@@ -18,8 +18,9 @@ const char CONTROL_HTML1[] PROGMEM = R"=====(
 <link rel="stylesheet" type="text/css" href="symphony.css">
 <script type="text/javascript" src="symphony.js"></script>
 <body onload="loadControlPage()">
-<div class="header" id="theName"></div>
-<h2>Symphony</h2>
+<input id="hiddenName" type="hidden">
+<div class="header" id="theName">thename</div>
+<h2>PIR Sensor</h2>
 <div class="header" id="msg"></div>
 <div class="footer" id="status"></div>
 <div class="blurred"></div>
