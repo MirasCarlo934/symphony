@@ -281,6 +281,7 @@ function renderPage(xhttp) {
     		input.setAttribute('lbl',p.lbl);
 //    		input.setAttribute('id',name+":"+p.val);
     		input.setAttribute('id',p.id);
+    		input.setAttribute('hsaPin',p.hasPin);
     		input.setAttribute('name', k);
     		if (p.typ == 10 || p.typ == 50) { //RADIO_CTL = 10, RADIO_SNSR = 50 
     			input.setAttribute('type',"radio");
@@ -499,6 +500,7 @@ function handleWsMessage(evt) {
   		  		name = document.getElementById("hiddenName").value;
 //alert("element: name " + name +" mac " +mac +" from json: name_mac " + jsonResponse["name_mac"]);
   		   		if (jsonResponse["name_mac"] == name+'_'+mac) {
+  		   			cid = jsonResponse["cid"];
 //alert(" jsonResponse.data " + jsonResponse.data);
   		   			for (i in jsonResponse.data){
   						var input =  document.getElementById(jsonResponse.data[i].id);
