@@ -98,7 +98,7 @@ int (* MqttCallback) (JsonObject& json);
 void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void * arg, uint8_t *data, size_t len) {
 	if (!isUpdateFw) {
 #ifdef DEBUG_ONLY
-		Serial.printf("Symphony websocket called len=%i id=%i\n",len, client->id());
+		Serial.printf("[CORE] websocket called len=%i id=%i\n",len, client->id());
 #endif
 		switch (type) {
 			case WS_EVT_DATA: {
@@ -107,10 +107,10 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 					DynamicJsonBuffer jsonBuffer;
 					JsonObject& json = jsonBuffer.parseObject(data);
 					if (!json.success()) {
-						Serial.println("core parseObject() failed");
+						Serial.println("[CORE] parseObject() failed");
 					} else {
 #ifdef DEBUG_ONLY
-						Serial.printf("id=%i ",client->id());
+						Serial.printf("[CORE] id=%i ",client->id());
 						json.printTo(Serial);Serial.println();
 #endif
 						if (json.containsKey("do")) {
@@ -147,7 +147,7 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 									if (json.containsKey("data")) {
 										String cfg = json["data"].as<String>();
 #ifdef DEBUG_ONLY
-											Serial.printf("\nCORE_COMMIT_DEVICE_SETTINGS will save config %s\n", cfg.c_str());
+											Serial.printf("\n[CORE] will save config %s\n", cfg.c_str());
 #endif
 										fManager.saveConfig(cfg.c_str());
 										reboot = true;
@@ -155,7 +155,7 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 									break;
 								case CORE_PING: {
 #ifdef DEBUG_ONLY
-											Serial.println("CORE_PING received");
+											Serial.println("[CORE] PING received");
 #endif
 									break;
 								}
@@ -187,7 +187,7 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 									if (json.containsKey("data")) {
 										String path = json["data"].as<String>();
 #ifdef DEBUG_ONLY
-										Serial.printf("\nwill delete %s\n", path.c_str());
+										Serial.printf("\n[CORE] will delete %s\n", path.c_str());
 #endif
 										fManager.delFile(path);
 										client->text(path + " deleted");
@@ -195,7 +195,12 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 									break;
 								case CORE_VALUES: {//VALUES command from the WS client, sends the current values of the product
 									//this is used by the client app to display the current state of the product
-										client->text(Symphony::product.stringifyValues());
+									DynamicJsonBuffer jsonBuffer;
+									JsonObject& reply = jsonBuffer.parse(Symphony::product.stringifyValues());
+									reply["cid"] = client->id();
+									String replyStr;
+									reply.printTo(replyStr);
+									client->text(replyStr);
 									break;
 								}
 								case CORE_CONTROL://transactions from client to control the device
@@ -205,7 +210,7 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 										//evaluate if corePin==true, execute here.  Else pass to wscallback
 										attribStruct attrib = Symphony::product.getProperty(json["ssid"].as<char *>());
 #ifdef DEBUG_ONLY
-										Serial.printf("got attribute %s, current value=%i, pin=%i, corePin=%s\n", attrib.ssid.c_str(), attrib.gui.value, attrib.pin, attrib.corePin?"true":"false");
+										Serial.printf("[CORE] got attribute %s, current value=%i, pin=%i, corePin=%s\n", attrib.ssid.c_str(), attrib.gui.value, attrib.pin, attrib.corePin?"true":"false");
 #endif
 										if (attrib.corePin) {
 											Symphony::product.setValue(json["ssid"].as<char *>(), json["val"].as<int>());
@@ -214,7 +219,7 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 											if (WsCallback != nullptr) {
 												WsCallback(ws, client, json);
 											} else {
-												Serial.println("[wsEvent]No Websocket callback set!!!");
+												Serial.println("[CORE] wsEvent No Websocket callback set!!!");
 											}
 										}
 										String strReply;
@@ -225,14 +230,14 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 										if (WsCallback != nullptr) {
 											WsCallback(ws, client, json);
 										} else {
-											Serial.println("[wsEvent]No Websocket callback set!!!");
+											Serial.println("[CORE] wsEvent No Websocket callback set!!!");
 										}
 									}
 								}
 									break;
 							}
 						} else {
-							Serial.println("core value-pair not found.");
+							Serial.println("[CORE] value-pair not found.");
 						}
 					}
 				} else {
@@ -241,7 +246,7 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 				break;
 			}
 			case WS_EVT_CONNECT: {
-				Serial.print(F("WS Connect - "));
+				Serial.print(F("[CORE] WS Connect - "));
 				Serial.println(client->id());
 // sep 06 2019, removed sending of data during connect, this should be handled via AJAX call
 ////				client->text("{\"box\":\"status\",\"msg\":\"Connected\"}");
@@ -273,10 +278,58 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 			}
 		}
 	} else {
-		Serial.print(F("Cannot do websocket request since we are updating firmware.\n"));
+		Serial.println("[CORE] Cannot do websocket request since we are updating firmware.");
 	}
 }
+/**
+ *  This is the MQTT callback handler that is called when a message from mqtt broker arrives
+ */
+void mqttMsgHandler(char* topic, char* payload, size_t len) {
+#ifdef DEBUG_ONLY
+  Serial.println("[CORE]\t[mqttMsgHandler] ************** Messsage received.");
+  Serial.print("\t[mqttMsgHandler] **************   topic:");
+  Serial.print(topic);
+  Serial.print(", len: ");
+  Serial.println(len);
+  Serial.println("[CORE]\t[mqttMsgHandler]   payload: ");
+#endif
+  char str2[len];
+  strncpy ( str2, payload, len );
+  Serial.println(str2);
+  if (strcmp(topic, theMqttHandler.getMyTopic().c_str()) == 0) {
+	  DynamicJsonBuffer jsonBuffer;
+	  JsonObject& jsonMsg = jsonBuffer.parseObject(str2);
+	  Serial.printf("[CORE] RID=%s \n", jsonMsg["RID"].as<String>().c_str());
+	  Serial.println(Symphony::product.stringify());
 
+	  //evaluate if corePin==true, execute here.  Else pass to wscallback
+	  attribStruct attrib = Symphony::product.getProperty(jsonMsg["property"].as<char *>());
+#ifdef DEBUG_ONLY
+	  Serial.printf("[CORE] got attribute %s, current value=%i, pin=%i, corePin=%s\n", attrib.ssid.c_str(), attrib.gui.value, attrib.pin, attrib.corePin?"true":"false");
+#endif
+	  if (attrib.corePin) {
+		  Symphony::product.setValue(jsonMsg["property"].as<String>(), jsonMsg["value"].as<int>());
+	  } else {
+		  Serial.println("[CORE] Cannot set the property %s since it is not directly changeable.");
+		  if (MqttCallback != nullptr) {
+			  MqttCallback(jsonMsg);
+		  } else {
+			  Serial.println("[CORE] No MQTT callback set!!!");
+		  }
+	  }
+	  DynamicJsonBuffer jsonBuff;
+	  JsonObject& json = jsonBuff.createObject();
+	  json["core"] = 7;
+	  json["cmd"] = 10;
+	  json["mac"] = Symphony::mac;
+	  json["ssid"] = jsonMsg["property"].as<String>();
+	  json["val"] = jsonMsg["value"].as<int>();
+	  String strBroadcast;
+	  json.printTo(strBroadcast);
+	  Serial.printf("[CORE] Will broadcast %s\n", strBroadcast.c_str());
+	  ws.textAll(strBroadcast);
+  }
+};
 /**
 * Handler tha displays Captive portal during softAP mode
 */
@@ -293,7 +346,7 @@ public:
 	void handleRequest(AsyncWebServerRequest *request) {
 		AsyncClient *client = request->client();
 		ctr++;
-		Serial.printf("CaptivePortalRequestHandler Address:%i Port:%i, counter:%i\n", client->getRemoteAddress(), client->getRemotePort(), ctr);
+		Serial.printf("[CORE] CaptivePortalRequestHandler Address:%i Port:%i, counter:%i\n", client->getRemoteAddress(), client->getRemotePort(), ctr);
 //		AsyncResponseStream *response = request->beginResponseStream("text/html");
 //		response->print("<meta http-equiv='Refresh' content='0; url=http://192.168.7.1/admin' />");  //this works in iPhone but not in ASUS android.
 //																									//But in iPhone, if you repeatedly do captive portal login, this does not work anymore.
@@ -316,9 +369,8 @@ void handleAppleCaptivePortal(AsyncWebServerRequest *request) {
     request->send(response);
 }
 void onWifiConnect(const WiFiEventStationModeGotIP &event) {
-    Serial.print(F("*** onWifiConnect Connected with IP: "));
-    Serial.print(WiFi.localIP());
-    Serial.println(" ***");
+    Serial.print(F("[CORE] onWifiConnect Connected with IP: "));
+    Serial.println(WiFi.localIP());
 
     // Setup mDNS / DNS-SD
     char chipId[7] = { 0 };
@@ -332,7 +384,7 @@ void onWifiConnect(const WiFiEventStationModeGotIP &event) {
 
 }
 void onWiFiDisconnect(const WiFiEventStationModeDisconnected &event) {
-    Serial.println(F("*** WiFi Disconnected ***"));
+    Serial.println(F("[CORE] WiFi Disconnected"));
 
     // Pause MQTT reconnect while WiFi is reconnecting
 //    mqttTicker.detach();
@@ -345,7 +397,7 @@ void onWiFiDisconnect(const WiFiEventStationModeDisconnected &event) {
  */
 void showControl(AsyncWebServerRequest *request) {
 	request->send(200, "text/html", homeHtml);
-	Serial.println("control page displayed");
+	Serial.println("[CORE] control page displayed");
 }
 /*
  *  Returns the properties in the form:
@@ -356,33 +408,33 @@ void showControl(AsyncWebServerRequest *request) {
  */
 void showProperties(AsyncWebServerRequest *request) {
 	request->send(200, "text/html", Symphony::rootProperties);
-	Serial.println("**************************** showProperties");
+	Serial.println("[CORE] showProperties");
 }
 /*
  * Returns the Version
  */
 void showVersion(AsyncWebServerRequest *request) {
 	request->send(200, "text/html", Symphony::version);
-	Serial.println("**************************** showVersion");
+	Serial.println("[CORE] showVersion");
 }
 /**
  * File upload Section
  */
 void showFileUpload(AsyncWebServerRequest *request) {
-	Serial.println("**************************** showFileUpload");
+	Serial.println("[CORE] showFileUpload");
 	request->send(200, "text/html", UPLOAD_HTML);//shows file upload html from the PROGMEM defined in html.h, we are doing this because initial loading of firmware does not have the SPIFFS files
 }
 /*
  * handles the upload of File
  */
 void handleFileUpload(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final) { // upload a new file to the SPIFFS
-	Serial.printf("handleFileUpload filename=%s\n", filename.c_str());
+	Serial.printf("[CORE] handleFileUpload filename=%s\n", filename.c_str());
 	int8_t result = fManager.uploadFile(filename, index, data, len, final);
-	Serial.printf("handleFileUpload done result=%i\n", result);
+	Serial.printf("[CORE]handleFileUpload done result=%i\n", result);
 }
 void doneFileUpload(AsyncWebServerRequest *request) {
 	request->send(200, "text/html", "{\"resp\":\"203\",\"msg\":\"File Upload Done.\"}");
-	Serial.println("**************************** doneFileUpload");
+	Serial.println("[CORE] doneFileUpload");
 }
 void handleGetFiles(AsyncWebServerRequest *request) {
 	String str = fManager.getFiles();
@@ -396,7 +448,7 @@ void handleConfigInfo(AsyncWebServerRequest *request) {
 	JsonObject& jsonObj = jsonBuffer.parseObject(fManager.readConfig());
 	if (jsonObj.success()) {
 #ifdef DEBUG_ONLY
-		Serial.println("********************** AJAX Get device Info.");
+		Serial.println("[CORE] AJAX Get device Info.");
 		jsonObj.prettyPrintTo(Serial);
 		Serial.println();
 #endif
@@ -412,12 +464,12 @@ void handleConfigInfo(AsyncWebServerRequest *request) {
 void showFWUpdate(AsyncWebServerRequest *request) {
 	request->send(SPIFFS, "/admin.html", "text/html"); //we are showing admin.html in SPIFFS
 //	request->send(200, "text/html", UPLOAD_HTML1);
-	Serial.println("**************************** showFWUpdate");
+	Serial.println("[CORE] showFWUpdate");
 }
 
 void doneFWUpdate(AsyncWebServerRequest *request) {
 	request->send(200, "text/html", "Firmware Update Done.");
-	Serial.printf("**************************** doneFWUpdate %i\n", fwResult);
+	Serial.printf("[CORE] doneFWUpdate %i\n", fwResult);
 	reboot = true;
 }
 void handleFirmWareUpload(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final) {
@@ -434,7 +486,7 @@ void handleFirmWareUpload(AsyncWebServerRequest *request, String filename, size_
  */
 void handleDeviceConfig(AsyncWebServerRequest *request) {
 #ifdef DEBUG_ONLY
-	Serial.printf("\nhandleDeviceConfig start\n");
+	Serial.printf("\n[CORE] handleDeviceConfig start\n");
 #endif
 	AsyncWebParameter* pName = request->getParam("pName");
 	AsyncWebParameter* pSSID = request->getParam("pSSID");
@@ -444,7 +496,7 @@ void handleDeviceConfig(AsyncWebServerRequest *request) {
 	configStr.replace("$ssid", pSSID->value().c_str());
 	configStr.replace("$pwd", pPass->value().c_str());
 #ifdef DEBUG_ONLY
-	Serial.printf("\handleDeviceConfig will save config %s\n", configStr.c_str());
+	Serial.printf("\[CORE] handleDeviceConfig will save config %s\n", configStr.c_str());
 #endif
 	fManager.saveConfig(configStr.c_str());
 	reboot = true;
@@ -453,7 +505,7 @@ void handleDeviceConfig(AsyncWebServerRequest *request) {
  * Handles the mqqt settings sent by the client
  */
 void handleMqttConfig (AsyncWebServerRequest *request) {
-	Serial.println("handleMqttConfig START");
+	Serial.println("[CORE] handleMqttConfig START");
 	DynamicJsonBuffer jsonBuffer;
 	JsonObject& json = jsonBuffer.parseObject(fManager.readConfig());
 	json.prettyPrintTo(Serial);
@@ -462,7 +514,7 @@ void handleMqttConfig (AsyncWebServerRequest *request) {
 	String mqttConfigStr = "data:{ip:$ip, port:$port}";
 //	mqttConfigStr.replace("$ip", pIP->value().c_str());
 //	mqttConfigStr.replace("$port", pPort->value().c_str());
-	Serial.printf("\nhandleMqttConfig will save %s\n", mqttConfigStr.c_str());
+	Serial.printf("\n[CORE] handleMqttConfig will save %s\n", mqttConfigStr.c_str());
 }
 
 /****
@@ -494,53 +546,7 @@ void initWebServer() {
 		request->send(404, "text/plain", "Page not found");
 	});
 }
-/**
- *  This is the MQTT callback handler that is called when a message from mqtt broker arrives
- */
-void mqttMsgHandler(char* topic, char* payload, size_t len) {
-  Serial.println("\t[mqttMsgHandler] ************** Messsage received.");
-  Serial.print("\t[mqttMsgHandler] **************   topic:");
-  Serial.print(topic);
-  Serial.print(", len: ");
-  Serial.println(len);
-  Serial.println("\t[mqttMsgHandler]   payload: ");
-  char str2[len];
-  strncpy ( str2, payload, len );
-  Serial.println(str2);
-  if (strcmp(topic, theMqttHandler.getMyTopic().c_str()) == 0) {
-	  DynamicJsonBuffer jsonBuffer;
-	  JsonObject& jsonMsg = jsonBuffer.parseObject(str2);
-	  Serial.printf("RID=%s \n", jsonMsg["RID"].as<String>().c_str());
-	  Serial.println(Symphony::product.stringify());
 
-	  //evaluate if corePin==true, execute here.  Else pass to wscallback
-	  attribStruct attrib = Symphony::product.getProperty(jsonMsg["property"].as<char *>());
-#ifdef DEBUG_ONLY
-	  Serial.printf("got attribute %s, current value=%i, pin=%i, corePin=%s\n", attrib.ssid.c_str(), attrib.gui.value, attrib.pin, attrib.corePin?"true":"false");
-#endif
-	  if (attrib.corePin) {
-		  Symphony::product.setValue(jsonMsg["property"].as<String>(), jsonMsg["value"].as<int>());
-	  } else {
-		  Serial.println("Cannot set the property %s since it is not directly changeable.");
-		  if (MqttCallback != nullptr) {
-			  MqttCallback(jsonMsg);
-		  } else {
-			  Serial.println("No MQTT callback set!!!");
-		  }
-	  }
-	  DynamicJsonBuffer jsonBuff;
-	  JsonObject& json = jsonBuff.createObject();
-	  json["core"] = 7;
-	  json["cmd"] = 10;
-	  json["mac"] = Symphony::mac;
-	  json["ssid"] = jsonMsg["property"].as<String>();
-	  json["val"] = jsonMsg["value"].as<int>();
-	  String strBroadcast;
-	  json.printTo(strBroadcast);
-	  Serial.printf("Will broadcast %s\n", strBroadcast.c_str());
-	  ws.textAll(strBroadcast);
-  }
-};
 
 /*
  * Constructor
@@ -594,14 +600,14 @@ void Symphony::setup(String theHostName, String ver) {
 	homeHtml = CONTROL_HTML1;
 	homeHtml.replace("$AAA$", hostName);
 #ifdef DEBUG_ONLY
-	Serial.printf("Hostname=%s.local nameWithMac=%s version=%s\n", hostName.c_str(), Symphony::version.c_str());
+	Serial.printf("[CORE] Hostname=%s.local nameWithMac=%s version=%s\n", hostName.c_str(), Symphony::version.c_str());
 #endif
 	MDNS.setInstanceName("staticHostname");
 	if (MDNS.begin(Symphony::hostName.c_str())) {
 		//setup the mDNS responder
 		MDNS.addService("http", "tcp", HTTP_PORT);
 	} else {
-		Serial.println(F("*** Error setting up mDNS responder ***"));
+		Serial.println(F("[CORE] Error setting up mDNS responder"));
 	}
 	// Handle OTA update from asynchronous callbacks
 	Update.runAsync(true);
@@ -620,9 +626,9 @@ void Symphony::setup(String theHostName, String ver) {
 	startWebSocketClients();
 #endif
 
-	Serial.print(F("- Web Server started on port "));
+	Serial.print(F("[CORE] Web Server started on port "));
 	Serial.println(HTTP_PORT);
-	Serial.printf("\n************[Symphony] Setup Version %i,  boot:%i***************\n", SYMPHONY_VERSION, reboot);
+	Serial.printf("\n[CORE] Setup Version %i,  boot:%i\n", SYMPHONY_VERSION, reboot);
 }
 
 /*
@@ -640,7 +646,7 @@ bool Symphony::loop() {
 		String strHbMsg;
 		hbMsg.printTo(strHbMsg);
 		ws.textAll(strHbMsg);//send a start heartbeat timer to all the clients
-		Serial.println("Rebooting...");
+		Serial.println("[CORE] Rebooting...");
 		delay(REBOOT_DELAY);
 		ESP.restart();
 	} else {
@@ -708,7 +714,7 @@ void Symphony::readConfigFile() {
 		DynamicJsonBuffer jsonBuffer;
 		JsonObject& json = jsonBuffer.parseObject(fManager.readConfig());
 		if (!json.success()) {
-			Serial.println("connectToWifi parseObject() failed");
+			Serial.println("[CORE] connectToWifi parseObject() failed");
 		} else {
 			if (json.containsKey("ssid")) {
 				//ssid key is found, this means pwd and name are also there
@@ -724,7 +730,7 @@ void Symphony::readConfigFile() {
 			}
 	#ifdef DEBUG_ONLY
 			json.prettyPrintTo(Serial);
-			Serial.printf("\nssid:%s pwd:%s\n", ssid.c_str(), pwd.c_str());
+			Serial.printf("\n[CORE] ssid:%s pwd:%s\n", ssid.c_str(), pwd.c_str());
 	#endif
 		}
 }
@@ -732,14 +738,14 @@ void Symphony::readConfigFile() {
  * Private methods below
  */
 void Symphony::setupAP() {
-	Serial.println(F("Failed to connect as wifi client, going to softAP."));
+	Serial.println(F("[CORE] Failed to connect as wifi client, going to softAP."));
 	ap_ssid = "AP_"+hostName;
 	WiFi.mode(WIFI_AP);
 	/* Soft AP network parameters */
 	IPAddress netMsk(255, 255, 255, 0);
     WiFi.softAPConfig(apIP, apIP, netMsk);
 #ifdef DEBUG_ONLY
-    Serial.printf("AP:%s, pk:%s, ip:%s\n",ap_ssid.c_str(),ap_passphrase.c_str(),apIP.toString().c_str());
+    Serial.printf("[CORE] AP:%s, pk:%s, ip:%s\n",ap_ssid.c_str(),ap_passphrase.c_str(),apIP.toString().c_str());
 #endif
     WiFi.softAP(ap_ssid.c_str(), ap_passphrase.c_str());
 
@@ -835,7 +841,7 @@ bool Symphony::registerProduct() {
 			if ( theMqttHandler.enabled && theMqttHandler.isConnected()) {
 				//register to the BM if not yet registered and if product is set and if mqtt is connected
 				isRegistered = true;
-				Serial.println("************** registerProduct start 1");
+				Serial.println("[CORE] registerProduct start 1");
 				/*	Registration format is:
 					"{RID:5ccf7f15a492,CID:0000,RTY:register,name:Ngalan,roomID:J444,product:0000}";
 				*/
@@ -851,7 +857,7 @@ bool Symphony::registerProduct() {
 				JsonArray& proplist = regJson.createNestedArray("proplist");
 				for (int i=0; i < product.getSize(); i++) {
 					attribStruct a = product.getKeyVal(i);
-					Serial.printf("************** registerProduct ssid=%s label=%s, pintype=%i\n", a.ssid.c_str(), a.gui.label.c_str(), a.gui.pinType);
+					Serial.printf("[CORE] registerProduct ssid=%s label=%s, pintype=%i\n", a.ssid.c_str(), a.gui.label.c_str(), a.gui.pinType);
 					JsonObject& prop1 = proplist.createNestedObject();
 					prop1["ptype"] = "A1";
 					if (a.gui.pinType == BUTTON_CTL || a.gui.pinType == BUTTON_SNSR ) {
@@ -867,7 +873,7 @@ bool Symphony::registerProduct() {
 				String strReg;
 				regJson.printTo(strReg);
 				theMqttHandler.publish(strReg.c_str(), 0);
-				Serial.printf("************** registerProduct end payload len=%i\n", strReg.length());
+				Serial.printf("[CORE] registerProduct end payload len=%i\n", strReg.length());
 			}
 		}
 	}
@@ -881,7 +887,7 @@ void Symphony::transmit(const char* payload) {
 	if (theMqttHandler.isConnected()) {
 		theMqttHandler.publish(payload, 0);	//we are setting QOS of 0 to prevent from multiple sending of messages
 	} else {
-		Serial.println("********* FAILED, not connected to MQTT. Unable to transmit data.");
+		Serial.println("[CORE] FAILED, not connected to MQTT. Unable to transmit data.");
 	}
 }
 
