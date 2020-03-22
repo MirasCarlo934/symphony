@@ -1,6 +1,11 @@
 package symphony.bm.bmlogicdevices.mongodb;
 
 import com.mongodb.*;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,31 +14,32 @@ import java.net.UnknownHostException;
 public class MongoDBManager {
     private Logger LOG;
     private MongoClient mongoClient;
-    private DB db;
+    private MongoDatabase db;
 
     public MongoDBManager(String logDomain, String logName, String uri, String database) {
         LOG = LoggerFactory.getLogger(logDomain + "." + logName);
-        try {
-            LOG.info("Connecting to mongoDB...");
-            mongoClient = new MongoClient(new MongoClientURI(uri));
-            LOG.info("Using database " + database);
-            db = mongoClient.getDB(database);
-            LOG.info("Connected to mongoDB...");
-        } catch (UnknownHostException e) {
-            LOG.error("Unable to connect to mongoDB!", e);
-        }
+        LOG.info("Connecting to mongoDB...");
+        mongoClient = new MongoClient(new MongoClientURI(uri));
+        LOG.info("Using database " + database);
+        db = mongoClient.getDatabase(database);
+        LOG.info("Connected to mongoDB...");
     }
 
-    public void insert(String collection, DBObject dbObject) {
-        LOG.trace("Inserting DBObject " + dbObject.toString() + " to " + db.getName() + "." + collection + "...");
-        DBCollection c = db.getCollection(collection);
-        c.insert(dbObject);
-        LOG.trace("DBObject " + dbObject.toString() + " inserted to " + db.getName() + "." + collection);
+    public void insert(String collectionName, Document document) {
+        LOG.trace("Inserting document " + document.toString() + " to " + db.getName() + "." + collectionName + "...");
+        MongoCollection<Document> c = db.getCollection(collectionName);
+        c.insertOne(document);
+        LOG.trace("Document " + document.toString() + " inserted to " + db.getName() + "." + collectionName);
     }
 
-    public DBCursor query(String collection, DBObject query) {
-        LOG.trace("Querying " + query.toString() + " from " + db.getName() + "." + collection);
-        DBCollection c = db.getCollection(collection);
-        return c.find(query);
+    public FindIterable<Document> find(String collectionName, Bson filter) {
+        LOG.trace("Finding " + filter.toString() + " from " + db.getName() + "." + collectionName + "...");
+        MongoCollection<Document> collection = db.getCollection(collectionName);
+        return collection.find(filter);
+    }
+
+    public MongoCollection<Document> getCollection(String collectionName) {
+        LOG.trace("Getting " + db + "." + collectionName);
+        return db.getCollection(collectionName);
     }
 }

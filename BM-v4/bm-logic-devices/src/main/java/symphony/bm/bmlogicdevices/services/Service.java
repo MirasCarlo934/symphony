@@ -25,7 +25,7 @@ public abstract class Service {
     public void processMessage(JeepMessage message) throws SecondaryMessageParameterCheckingException {
         LOG.debug("Checking secondary message parameters for MRN: " + message.getMRN());
         checkSecondaryMessageParameters(message);
-        LOG.info("Secondary message parameters checked! Processing...");
+        LOG.debug("Secondary message parameters checked! Processing...");
         process(message);
     }
 
