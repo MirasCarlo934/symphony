@@ -283,9 +283,6 @@ function renderPage(xhttp) {
     		input.setAttribute('id',p.id);
     		input.setAttribute('hasPin',p.hasPin);
     		input.setAttribute('name', k);
-    		if (p.typ >= 50 ) {	//this is a sensor property
-    			input.disabled = true;
-    		}
     		if (p.typ == 10 || p.typ == 50) { //RADIO_CTL = 10, RADIO_SNSR = 50    			
     			input.setAttribute('type',"radio");
     			if (p.val == 1)
@@ -306,6 +303,11 @@ function renderPage(xhttp) {
 	              input.checked=true;
 	            else
 	              input.checked=false;
+    		}
+    		if (p.typ >= 50 ) {	//this is a sensor property
+    			input.disabled = true;
+    			div2.setAttribute('style','cursor:not-allowed;');
+    			lbl.setAttribute('style','opacity:.7;cursor:not-allowed;');
     		}
     		lbl.appendChild(div1);
     		lbl.appendChild(input);
