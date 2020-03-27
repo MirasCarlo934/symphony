@@ -37,6 +37,7 @@
 /*
  * _CTL means pinmode is OUTPUT and GUI displays this as an enabled element that can control the device
  * _SNSR means pinmode is INPUT and GUI displays this as a disabled element that shows values from the state of the device
+ * 		all sensors have value greater than or equal to 50
  *
  */
 #define RADIO_CTL 10

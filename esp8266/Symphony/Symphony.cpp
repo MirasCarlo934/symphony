@@ -883,12 +883,24 @@ bool Symphony::registerProduct() {
 					Serial.printf("[CORE] registerProduct ssid=%s label=%s, pintype=%i\n", a.ssid.c_str(), a.gui.label.c_str(), a.gui.pinType);
 					JsonObject& prop1 = proplist.createNestedObject();
 					prop1["ptype"] = "A1";
+					if (a.gui.pinType == BUTTON_CTL || a.gui.pinType == SLIDER_CTL) {
+						prop1["mode"] = "O";
+					} else {  //a.gui.pinType == BUTTON_SNSR || a.gui.pinType == SLIDER_SNSR
+						prop1["mode"] = "I";
+					}
+
 					if (a.gui.pinType == BUTTON_CTL || a.gui.pinType == BUTTON_SNSR ) {
 						prop1["type"] = "D";
-						if (a.gui.pinType == BUTTON_CTL)
-							prop1["mode"] = "O";
-						if (a.gui.pinType == BUTTON_SNSR )
-							prop1["mode"] = "I";
+//						if (a.gui.pinType == BUTTON_CTL)
+//							prop1["mode"] = "O";
+//						if (a.gui.pinType == BUTTON_SNSR )
+//							prop1["mode"] = "I";
+					} else { //if (a.gui.pinType == SLIDER_CTL || a.gui.pinType == SLIDER_SNSR )
+						prop1["type"] = "A";
+//						if (a.gui.pinType == SLIDER_CTL)
+//							prop1["mode"] = "O";
+//						if (a.gui.pinType == SLIDER_SNSR )
+//							prop1["mode"] = "I";
 					}
 					prop1["name"] = a.gui.label;
 					prop1["index"] = i;
