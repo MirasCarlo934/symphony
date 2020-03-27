@@ -20,8 +20,12 @@ public class DeviceProperty {
         return value;
     }
 
-    public void setValue(int value) {
+    void setValue(int value) {
         this.value = value;
+    }
+
+    boolean checkValue(int value) {
+        return (value < maxValue && value > minValue);
     }
 
     public int getIndex() {

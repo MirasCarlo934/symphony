@@ -27,9 +27,4 @@ public class UnregisterService extends Service {
         if (!env.containsDeviceObject(message.getCID()))
             throw secondaryMessageCheckingException("CID does not exist!");
     }
-
-    private SecondaryMessageParameterCheckingException secondaryMessageCheckingException(String errorMsg) {
-        LOG.error(errorMsg);
-        return new SecondaryMessageParameterCheckingException(errorMsg);
-    }
 }

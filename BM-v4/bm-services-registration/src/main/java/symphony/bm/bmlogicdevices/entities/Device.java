@@ -57,6 +57,26 @@ public class Device {
         return room;
     }
 
+    public boolean hasPropertyIndex(int index) {
+        return properties.containsKey(index);
+    }
+
+    public boolean checkValueValidity(int propIndex, int value) {
+        return properties.get(propIndex).checkValue(value);
+    }
+
+    public void setPropertyValue(int propIndex, int value) {
+        DeviceProperty prop = properties.get(propIndex);
+        for (Adaptor adaptor : adaptors) {
+            adaptor.propertyValueUpdated(this, prop);
+        }
+        prop.setValue(value);
+    }
+
+    public int getPropertyValue(int propIndex) {
+        return properties.get(propIndex).getValue();
+    }
+
     public List<DeviceProperty> getPropertiesList() {
         Vector<DeviceProperty> props = new Vector<>();
         for (int i = 0; i < properties.size(); i++) {

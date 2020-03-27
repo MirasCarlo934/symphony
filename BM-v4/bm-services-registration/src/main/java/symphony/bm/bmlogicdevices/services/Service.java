@@ -33,4 +33,9 @@ public abstract class Service {
 
     protected abstract void checkSecondaryMessageParameters(JeepMessage message)
             throws SecondaryMessageParameterCheckingException;
+
+    protected SecondaryMessageParameterCheckingException secondaryMessageCheckingException(String errorMsg) {
+        LOG.error(errorMsg);
+        return new SecondaryMessageParameterCheckingException(errorMsg);
+    }
 }

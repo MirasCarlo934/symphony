@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>symphony.bm</groupId>
-    <artifactId>bm-services-registration</artifactId>
+    <artifactId>bm-serviceManagers-registration</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>bm-logic-devices</name>
     <description>BM Logic Layer for Devices</description>

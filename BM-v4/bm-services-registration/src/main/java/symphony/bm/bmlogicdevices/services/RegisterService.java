@@ -56,7 +56,7 @@ public class RegisterService extends Service {
             }
 
             if (message.get("product").getClass().equals(String.class)) { // for PID registration
-                Document product = products.find(eq("product", message.getString("product"))).first();
+                Document product = products.find(eq("PID", message.getString("product"))).first();
                 assert product != null;
                 List<Document> productProps = product.getList("properties", Document.class);
                 pid = message.getString("product");
@@ -73,9 +73,9 @@ public class RegisterService extends Service {
                     JSONObject propJSON = (JSONObject) p;
                     String name = propJSON.getString("name");
                     int index = propJSON.getInt("index");
-                    String type = propJSON.getJSONObject("type").getString("ID");
-                    int minVal = propJSON.getJSONObject("type").getInt("minValue");
-                    int maxVal = propJSON.getJSONObject("type").getInt("maxValue");
+                    String type = propJSON.getString("ID");
+                    int minVal = propJSON.getInt("minValue");
+                    int maxVal = propJSON.getInt("maxValue");
                     properties.add(new DeviceProperty(index, name, type, minVal, maxVal));
                 }
             }
@@ -96,7 +96,7 @@ public class RegisterService extends Service {
             Object product = message.get("product");
             if (product.getClass().equals(String.class)) { // for PID registration
                 MongoCollection<Document> products = mongo.getCollection(productsCollection);
-                Document result = products.find(eq("product", product)).first();
+                Document result = products.find(eq("PID", product)).first();
                 if (result == null) {
                     throw secondaryMessageCheckingException("Invalid product!");
                 }
@@ -158,10 +158,5 @@ public class RegisterService extends Service {
             LOG.error(errorMsg);
             throw secondaryMessageCheckingException("\"roomID\" parameter not found!");
         }
-    }
-
-    private SecondaryMessageParameterCheckingException secondaryMessageCheckingException(String errorMsg) {
-        LOG.error(errorMsg);
-        return new SecondaryMessageParameterCheckingException(errorMsg);
     }
 }

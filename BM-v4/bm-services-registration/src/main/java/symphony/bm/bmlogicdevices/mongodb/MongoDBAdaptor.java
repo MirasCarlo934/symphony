@@ -85,4 +85,9 @@ public class MongoDBAdaptor implements Adaptor {
         devices.deleteOne(eq("CID", device.getCID()));
         LOG.info("Device " + device.getCID() + " deleted from MongoDB");
     }
+
+    @Override
+    public void propertyValueUpdated(Device device, DeviceProperty property) {
+
+    }
 }
