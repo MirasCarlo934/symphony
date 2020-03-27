@@ -44,7 +44,7 @@
 		<link>
 			<name>libraries/ArduinoJson</name>
 			<type>2</type>
-			<location>C:/Users/User/Documents/Arduino/libraries/ArduinoJson</location>
+			<location>C:/Users/miras.DESKTOP-JHPGKS4/OneDrive/Documents/Arduino/libraries/ArduinoJson</location>
 		</link>
 		<link>
 			<name>libraries/DNSServer</name>
@@ -79,17 +79,17 @@
 		<link>
 			<name>libraries/ESPAsyncTCP-master</name>
 			<type>2</type>
-			<location>C:/Users/User/Documents/Arduino/libraries/ESPAsyncTCP-master</location>
+			<location>C:/Users/miras.DESKTOP-JHPGKS4/OneDrive/Documents/Arduino/libraries/ESPAsyncTCP-master</location>
 		</link>
 		<link>
 			<name>libraries/ESPAsyncUDP-master</name>
 			<type>2</type>
-			<location>C:/Users/User/Documents/Arduino/libraries/ESPAsyncUDP-master</location>
+			<location>C:/Users/miras.DESKTOP-JHPGKS4/OneDrive/Documents/Arduino/libraries/ESPAsyncUDP-master</location>
 		</link>
 		<link>
 			<name>libraries/ESPAsyncWebServer-master</name>
 			<type>2</type>
-			<location>C:/Users/User/Documents/Arduino/libraries/ESPAsyncWebServer-master</location>
+			<location>C:/Users/miras.DESKTOP-JHPGKS4/OneDrive/Documents/Arduino/libraries/ESPAsyncWebServer-master</location>
 		</link>
 		<link>
 			<name>libraries/Hash</name>
@@ -109,17 +109,22 @@
 		<link>
 			<name>libraries/Symphony</name>
 			<type>2</type>
-			<location>D:/projects/arduinolibraries/Symphony</location>
+			<location>C:/Users/miras.DESKTOP-JHPGKS4/OneDrive/Documents/Arduino/libraries/Symphony</location>
 		</link>
 		<link>
 			<name>libraries/arduinoWebSockets-master</name>
 			<type>2</type>
-			<location>C:/Users/User/Documents/Arduino/libraries/arduinoWebSockets-master</location>
+			<location>C:/Users/miras.DESKTOP-JHPGKS4/OneDrive/Documents/Arduino/libraries/arduinoWebSockets-master</location>
+		</link>
+		<link>
+			<name>libraries/async-mqtt-client-master</name>
+			<type>2</type>
+			<location>C:/Users/miras.DESKTOP-JHPGKS4/OneDrive/Documents/Arduino/libraries/async-mqtt-client-master</location>
 		</link>
 		<link>
 			<name>libraries/firebase-arduino-master</name>
 			<type>2</type>
-			<location>C:/Users/User/Documents/Arduino/libraries/firebase-arduino-master</location>
+			<location>C:/Users/miras.DESKTOP-JHPGKS4/OneDrive/Documents/Arduino/libraries/firebase-arduino-master</location>
 		</link>
 	</linkedResources>
 </projectDescription>
