@@ -10,9 +10,9 @@
 
 Product::Product(){}
 
-Product::Product(String name_mac, String room, String productType){
+Product::Product(String name_mac, String room, String productName){
   this->room = room;
-  this->productType = productType;
+  this->productName = productName;
   this->name_mac = name_mac;
   attributes = new attribStruct[0];
 }

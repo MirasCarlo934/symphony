@@ -35,6 +35,7 @@ String Symphony::mac = "";
 String Symphony::nameWithMac = "myName";
 Product Symphony::product;
 String Symphony::version = "0.0";
+long Symphony::MRN = 0;
 
 AsyncWebServer		webServer(HTTP_PORT); // Web Server
 AsyncWebServer		wsServer(WS_PORT); // WebSocket Server
@@ -834,6 +835,29 @@ void Symphony::setRootProperties(String s) {
 /**
  * Will do the actual registration after mqttHandler has been set and product has been set
  *
+ *  {
+		"MRN": "1234",			//Message Reference Number
+		"MSN": "register",		//Message Service Name
+		"CID": "abcd",			//Component ID, must be unique to the device; can be left empty to delegate ID assignment to BM
+		"name": "deviceName",
+		"product":
+			{
+			"PID": "productID",
+			"properties":
+				[{	name: "On/Off",
+					index: 0,
+					type: "toggle",
+					minValue: 0,
+					maxValue: 1
+				}]
+			},
+		"room": {
+			"RID": "roomID",
+			"name": "roomName"
+		}
+	}
+ *
+ *
  */
 bool Symphony::registerProduct() {
 	if (!isRegistered) {
@@ -847,21 +871,20 @@ bool Symphony::registerProduct() {
 				*/
 				DynamicJsonBuffer jsonBuffer;
 				JsonObject& regJson = jsonBuffer.createObject();
-				regJson["RID"] = Symphony::mac;
-				regJson["CID"] = "0000";
-				regJson["RTY"] = "register";
-				regJson["name"] = product.name_mac;
-				regJson["roomID"] = product.room;
-				regJson["product"] = "0000";
-				regJson["icon"] = "socket";
-				JsonArray& proplist = regJson.createNestedArray("proplist");
+				regJson["MRN"] = getMRN();
+				regJson["MSN"] = "register";
+				regJson["CID"] = Symphony::nameWithMac;
+				regJson["name"] = product.productName;
+				JsonObject& pJson = regJson.createNestedObject("product");
+				pJson["PID"] = product.productName;
+				JsonArray& proplist = pJson.createNestedArray("properties");
 				for (int i=0; i < product.getSize(); i++) {
 					attribStruct a = product.getKeyVal(i);
 					Serial.printf("[CORE] registerProduct ssid=%s label=%s, pintype=%i\n", a.ssid.c_str(), a.gui.label.c_str(), a.gui.pinType);
 					JsonObject& prop1 = proplist.createNestedObject();
 					prop1["ptype"] = "A1";
 					if (a.gui.pinType == BUTTON_CTL || a.gui.pinType == BUTTON_SNSR ) {
-						prop1["ptype"] = "D";
+						prop1["type"] = "D";
 						if (a.gui.pinType == BUTTON_CTL)
 							prop1["mode"] = "O";
 						if (a.gui.pinType == BUTTON_SNSR )
@@ -869,7 +892,12 @@ bool Symphony::registerProduct() {
 					}
 					prop1["name"] = a.gui.label;
 					prop1["index"] = i;
+					prop1["minValue"] = a.gui.min;
+					prop1["maxValue"] = a.gui.max;
 				}
+				JsonObject& rJson = regJson.createNestedObject("room");
+				rJson["RID"] = "1";
+				rJson["name"] = product.room;
 				String strReg;
 				regJson.printTo(strReg);
 				theMqttHandler.publish(strReg.c_str(), 0);
@@ -890,6 +918,16 @@ void Symphony::transmit(const char* payload) {
 		Serial.println("[CORE] FAILED, not connected to MQTT. Unable to transmit data.");
 	}
 }
+/**
+ * returns the MRN as string with 7 digits
+ */
+String Symphony::getMRN() {
+	MRN++;
+	char s[8];
+	sprintf(s, "%07d", MRN);
+	return s;
+}
+
 
 void Symphony::sendToWsServer(String replyStr){
 //	webSocketClient.sendTXT(replyStr);July 13 2019 do we really need this device to be a ws client?

@@ -66,13 +66,14 @@ class Symphony {
 	    void doReboot();
 	    void sendToWsServer(String replyStr);
 	    void transmit(const char* payload);
+	    static String getMRN();
 
 	private:
 	    String ap_ssid, ap_passphrase = "12345678";
 	    IPAddress apIP = IPAddress (192, 168, 7, 1);
-	    String ssid = "bahay", pwd = "carlopiadredcels", mqttIp = "localhost";
+	    String ssid = "ssid", pwd = "pwd", mqttIp = "localhost";
+	    static long MRN;	//the Message Reference Number, an incremental variable
 	    bool isProductSet = false, isRegistered = false;
-
 	    int wifiMaxConnCount=50, mqttPort=1883;  //max counter when connecting to wifi AP, corresponds to 10secs
 	    long restartTimer = 0;  //the restart timer in millis.  this will restart every maxrestartTimer if wifi is not connected.
 	    const long maxRestartTimer = 120000; //the max millis before restart.  2 mins
