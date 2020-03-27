@@ -281,9 +281,12 @@ function renderPage(xhttp) {
     		input.setAttribute('lbl',p.lbl);
 //    		input.setAttribute('id',name+":"+p.val);
     		input.setAttribute('id',p.id);
-    		input.setAttribute('hsaPin',p.hasPin);
+    		input.setAttribute('hasPin',p.hasPin);
     		input.setAttribute('name', k);
-    		if (p.typ == 10 || p.typ == 50) { //RADIO_CTL = 10, RADIO_SNSR = 50 
+    		if (p.typ >= 50 ) {	//this is a sensor property
+    			input.disabled = true;
+    		}
+    		if (p.typ == 10 || p.typ == 50) { //RADIO_CTL = 10, RADIO_SNSR = 50    			
     			input.setAttribute('type',"radio");
     			if (p.val == 1)
     				input.checked=true;
@@ -365,6 +368,7 @@ function sendWSRequestToServer(cmd, formId) {
 }
 function sendOnOffWs(e) {
 	var jsonResponse = {"core":7, "cmd":10};// core:7 - this transaction is to control the device
+	
 	jsonResponse["mac"] = mac;
 	jsonResponse["ssid"] = e.id;
 	jsonResponse["cid"] = cid;
