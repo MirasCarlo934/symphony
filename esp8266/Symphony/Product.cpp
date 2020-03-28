@@ -17,6 +17,15 @@ Product::Product(String name_mac, String room, String productName){
   attributes = new attribStruct[0];
 }
 
+
+/**
+ * This is the callback handler that will be called when this product's property changes value.
+ */
+int (* valueChangeCallback) (int event);
+
+void Product::setValueChangeCallback(int (* Callback) (int propertyIndex)) {
+	valueChangeCallback = Callback;
+}
 /**
  *
  *
@@ -163,6 +172,7 @@ void Product::setValue(String ssid, int value) {
 #endif
 	      attributes[i].gui.value = value;
 	      Serial.print("\t value is set to ");Serial.println(attributes[i].gui.value);
+	      valueChangeCallback(i);
 	    }
 	  }
 }
@@ -196,8 +206,8 @@ String Product::stringify() {
 String Product::stringifyValues() {
 	DynamicJsonBuffer jsonBuffer;
 	JsonObject& json = jsonBuffer.createObject();
-	json["core"] = 20;
-	json["cmd"] = 2;
+	json["core"] = WSCLIENT_DO_DISPLAY;
+	json["cmd"] = CMD_VALUES;
 	json["name_mac"] = name_mac;
 	JsonArray& data = json.createNestedArray("data");
 	for (int i=0; i<size; i++) {

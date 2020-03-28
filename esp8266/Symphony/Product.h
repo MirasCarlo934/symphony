@@ -32,6 +32,7 @@
 
 #include <Arduino.h>
 #include <ArduinoJson.h>
+#include "DataObjects.h"
 
 #define DEBUG_
 /*
@@ -84,6 +85,7 @@ class Product {
 
     Product();
     Product(String name_mac, String room, String productName);
+    void setValueChangeCallback(int (* Callback) (int propertyIndex));	//sets the callback that will handle changes in property values
     /**
      * Adds a property to this device.
      * ssid		= the SSID of this property (from the COMPROPLIST table)
