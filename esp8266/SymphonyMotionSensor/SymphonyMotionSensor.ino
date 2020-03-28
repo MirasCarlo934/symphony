@@ -69,6 +69,17 @@ void sendSensorData(int value) {
 	reply.printTo(replyStr);
 	Serial.print("*** Sending ");reply.printTo(Serial);Serial.println();
 	s.textAll(reply);	//broadcast to other clients
+
+	DynamicJsonBuffer buffer;
+	JsonObject& poopJson = buffer.createObject();
+	poopJson["MRN"] = Symphony::getMRN();
+	poopJson["MSN"] = "poop";
+	poopJson["CID"] = "0000";
+	poopJson["prop-index"] = "0026";
+	poopJson["prop-value"] = value;
+	String strReg;
+	poopJson.printTo(strReg);
+	s.transmit(strReg.c_str());	//transmit to mqtt
 }
 /**
  * The setup
@@ -85,7 +96,7 @@ void setup()
 	sprintf(ver, "%u.%u", SYMPHONY_VERSION, MY_VERSION);
 	s.setup(myName, ver);
 
-	product = Product(s.nameWithMac, "J444", myName);
+	product = Product(s.nameWithMac, "Dining", myName);
 	Gui gui1 = Gui("Mode", BUTTON_CTL, "Latch", 0, 1, 0);
 	pinMode(LED_PIN1, OUTPUT);
 	digitalWrite(LED_PIN1, 1);

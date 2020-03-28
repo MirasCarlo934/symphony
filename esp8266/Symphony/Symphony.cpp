@@ -35,6 +35,7 @@ String Symphony::mac = "";
 String Symphony::nameWithMac = "myName";
 Product Symphony::product;
 String Symphony::version = "0.0";
+long Symphony::MRN = 0;
 
 AsyncWebServer		webServer(HTTP_PORT); // Web Server
 AsyncWebServer		wsServer(WS_PORT); // WebSocket Server
@@ -75,6 +76,20 @@ int (* WsCallback) (AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject&
  * This enables the child to handle MQTT events.  Callback will be called if the property is not directly changeable.
  */
 int (* MqttCallback) (JsonObject& json);
+
+/**
+ * The callback function that called by Product.setValue.
+ * Sends transactions to the WS and MQTT.
+ * If event was triggered by WS Client, we should send message to all WS Clients and the MQTT to inform the BM.
+ *   - this means that there is command from WS Client to change state of the property.
+ * If event was triggered by MQTT, we should send message to all WS Clients but need not send to MQTT to inform the BM.
+ *   - this means that the BM sent a message
+ *
+ */
+int productValueChangedEvent (int propertyIndex) {
+	attribStruct a = Symphony::product.getKeyVal(propertyIndex);
+	Serial.printf("productValueChangeEvent propertyIndex=%i SSID=%s LABEL=%s VALUE=%i\n", propertyIndex, a.ssid.c_str(), a.gui.label.c_str(), a.gui.value);
+}
 /*
  *	wsEvent handles the transactions sent by client websockets.
  *	events can either be handled by the core, or the implementor.
@@ -127,7 +142,7 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 										if (d.equals("INIT")) {
 											DynamicJsonBuffer jsonBuffer;
 											JsonObject& reply = jsonBuffer.createObject();
-											reply["cmd"] = 1;
+											reply["cmd"] = CMD_INIT;
 											reply["name"] = Symphony::hostName;
 											reply["msg"] = "Ready for commands.";
 											reply["mac"] = Symphony::mac;
@@ -206,7 +221,7 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 								case CORE_CONTROL://transactions from client to control the device
 								{
 									int cmd = json["cmd"].as<int>();
-									if (cmd == 10) {//command from control
+									if (cmd == CMD_PIN_CONTROL) {//command to control the device pins
 										//evaluate if corePin==true, execute here.  Else pass to wscallback
 										attribStruct attrib = Symphony::product.getProperty(json["ssid"].as<char *>());
 #ifdef DEBUG_ONLY
@@ -319,8 +334,8 @@ void mqttMsgHandler(char* topic, char* payload, size_t len) {
 	  }
 	  DynamicJsonBuffer jsonBuff;
 	  JsonObject& json = jsonBuff.createObject();
-	  json["core"] = 7;
-	  json["cmd"] = 10;
+	  json["core"] = WSCLIENT_CONTROL;
+	  json["cmd"] = WSCLIENT_DO_CMD;
 	  json["mac"] = Symphony::mac;
 	  json["ssid"] = jsonMsg["property"].as<String>();
 	  json["val"] = jsonMsg["value"].as<int>();
@@ -642,7 +657,7 @@ bool Symphony::loop() {
 	if (reboot) {
 		DynamicJsonBuffer jsonBuffer;
 		JsonObject& hbMsg = jsonBuffer.createObject();
-		hbMsg["core"] = 8;
+		hbMsg["core"] = CORE_START_HEARTBEAT;	//we start heartbeat in the WS client for it to start sending heartbeat and be aware when we are done with reboot
 		String strHbMsg;
 		hbMsg.printTo(strHbMsg);
 		ws.textAll(strHbMsg);//send a start heartbeat timer to all the clients
@@ -805,6 +820,7 @@ void Symphony::createMyName(String theHostName) {
  */
 void Symphony::setProduct(Product p) {
 	product = p;
+	product.setValueChangeCallback(productValueChangedEvent);
 	setRootProperties(product.stringify());
 	isProductSet = true;
 }
@@ -834,6 +850,29 @@ void Symphony::setRootProperties(String s) {
 /**
  * Will do the actual registration after mqttHandler has been set and product has been set
  *
+ *  {
+		"MRN": "1234",			//Message Reference Number
+		"MSN": "register",		//Message Service Name
+		"CID": "abcd",			//Component ID, must be unique to the device; can be left empty to delegate ID assignment to BM
+		"name": "deviceName",
+		"product":
+			{
+			"PID": "productID",
+			"properties":
+				[{	name: "On/Off",
+					index: 0,
+					type: "toggle",
+					minValue: 0,
+					maxValue: 1
+				}]
+			},
+		"room": {
+			"RID": "roomID",
+			"name": "roomName"
+		}
+	}
+ *
+ *
  */
 bool Symphony::registerProduct() {
 	if (!isRegistered) {
@@ -847,29 +886,45 @@ bool Symphony::registerProduct() {
 				*/
 				DynamicJsonBuffer jsonBuffer;
 				JsonObject& regJson = jsonBuffer.createObject();
-				regJson["RID"] = Symphony::mac;
-				regJson["CID"] = "0000";
-				regJson["RTY"] = "register";
-				regJson["name"] = product.name_mac;
-				regJson["roomID"] = product.room;
-				regJson["product"] = "0000";
-				regJson["icon"] = "socket";
-				JsonArray& proplist = regJson.createNestedArray("proplist");
+				regJson["MRN"] = getMRN();
+				regJson["MSN"] = "register";
+				regJson["CID"] = Symphony::nameWithMac;
+				regJson["name"] = product.productName;
+				JsonObject& pJson = regJson.createNestedObject("product");
+				pJson["PID"] = product.productName;
+				JsonArray& proplist = pJson.createNestedArray("properties");
 				for (int i=0; i < product.getSize(); i++) {
 					attribStruct a = product.getKeyVal(i);
 					Serial.printf("[CORE] registerProduct ssid=%s label=%s, pintype=%i\n", a.ssid.c_str(), a.gui.label.c_str(), a.gui.pinType);
 					JsonObject& prop1 = proplist.createNestedObject();
 					prop1["ptype"] = "A1";
+					if (a.gui.pinType == BUTTON_CTL || a.gui.pinType == SLIDER_CTL) {
+						prop1["mode"] = "O";
+					} else {  //a.gui.pinType == BUTTON_SNSR || a.gui.pinType == SLIDER_SNSR
+						prop1["mode"] = "I";
+					}
+
 					if (a.gui.pinType == BUTTON_CTL || a.gui.pinType == BUTTON_SNSR ) {
-						prop1["ptype"] = "D";
-						if (a.gui.pinType == BUTTON_CTL)
-							prop1["mode"] = "O";
-						if (a.gui.pinType == BUTTON_SNSR )
-							prop1["mode"] = "I";
+						prop1["type"] = "D";
+//						if (a.gui.pinType == BUTTON_CTL)
+//							prop1["mode"] = "O";
+//						if (a.gui.pinType == BUTTON_SNSR )
+//							prop1["mode"] = "I";
+					} else { //if (a.gui.pinType == SLIDER_CTL || a.gui.pinType == SLIDER_SNSR )
+						prop1["type"] = "A";
+//						if (a.gui.pinType == SLIDER_CTL)
+//							prop1["mode"] = "O";
+//						if (a.gui.pinType == SLIDER_SNSR )
+//							prop1["mode"] = "I";
 					}
 					prop1["name"] = a.gui.label;
 					prop1["index"] = i;
+					prop1["minValue"] = a.gui.min;
+					prop1["maxValue"] = a.gui.max;
 				}
+				JsonObject& rJson = regJson.createNestedObject("room");
+				rJson["RID"] = "1";
+				rJson["name"] = product.room;
 				String strReg;
 				regJson.printTo(strReg);
 				theMqttHandler.publish(strReg.c_str(), 0);
@@ -890,6 +945,16 @@ void Symphony::transmit(const char* payload) {
 		Serial.println("[CORE] FAILED, not connected to MQTT. Unable to transmit data.");
 	}
 }
+/**
+ * returns the MRN as string with 7 digits
+ */
+String Symphony::getMRN() {
+	MRN++;
+	char s[8];
+	sprintf(s, "%07d", MRN);
+	return s;
+}
+
 
 void Symphony::sendToWsServer(String replyStr){
 //	webSocketClient.sendTXT(replyStr);July 13 2019 do we really need this device to be a ws client?

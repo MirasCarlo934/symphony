@@ -32,9 +32,15 @@
 
 #include <Arduino.h>
 #include <ArduinoJson.h>
+#include "DataObjects.h"
 
 #define DEBUG_
-//_CTL means pinmode is OUTPUT, _SNSR means pinmode is INPUT
+/*
+ * _CTL means pinmode is OUTPUT and GUI displays this as an enabled element that can control the device
+ * _SNSR means pinmode is INPUT and GUI displays this as a disabled element that shows values from the state of the device
+ * 		all sensors have value greater than or equal to 50
+ *
+ */
 #define RADIO_CTL 10
 #define BUTTON_CTL 20
 #define SLIDER_CTL 30
@@ -73,14 +79,27 @@ public:
 class Product {
   public:
     String room;
-    String productType;
+    String productName;
     String name_mac = "";
     attribStruct *attributes = NULL;
 
     Product();
-    Product(String name_mac, String room, String productType);
+    Product(String name_mac, String room, String productName);
+    void setValueChangeCallback(int (* Callback) (int propertyIndex));	//sets the callback that will handle changes in property values
+    /**
+     * Adds a property to this device.
+     * ssid		= the SSID of this property (from the COMPROPLIST table)
+     * corePin	= if true (1), pin will be handled in the core Symphony.  if false (0), pin will be handled by the implementing ino class.
+     * 			Implementing ino class would need to handle the websocket and mqtt transactions.
+     * pin		= the corresponding ESP8266 pin where this property is attached.  if < 0, this component is virtual and not attached to a pin
+     * gui		= the gui attributes
+     */
     void addProperty(String ssid, boolean corePin, int8_t pin, Gui gui);
-    void addProperty(String ssid, boolean corePin, Gui gui); //an overloaded function. for logical properties that are not physically connected to a pin
+    /**
+     * The overloaded addProperty. For logical properties that are not physically connected to a pin.
+     * Implementing ino class would need to handle the websocket and mqtt transactions.
+     */
+    void addProperty(String ssid, Gui gui);
 
     attribStruct getProperty(String ssid);
     attribStruct getKeyVal(int index);

@@ -13,7 +13,7 @@
 AsyncMqttClient mqttClient;
 const char* myId = "myMqttID";
 const char* mqttServer = "localhost";
-String myTopic = "BM/";
+String myTopic = "devices/";
 int mqttPort = 1883;
 
 boolean connected = false;
