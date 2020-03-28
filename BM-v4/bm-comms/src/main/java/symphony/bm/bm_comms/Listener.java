@@ -2,7 +2,7 @@ package symphony.bm.bm_comms;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import symphony.bm.bm_comms.jeep.vo.RawMessage;
+import symphony.bm.bm_comms.jeep.RawMessage;
 
 public abstract class Listener {
 	protected Logger LOG;

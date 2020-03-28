@@ -2,12 +2,9 @@ package symphony.bm.bm_comms;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import symphony.bm.bm_comms.jeep.vo.JeepErrorResponse;
-import symphony.bm.bm_comms.jeep.vo.JeepMessage;
-import symphony.bm.bm_comms.jeep.vo.JeepRequest;
+import symphony.bm.bm_comms.jeep.JeepMessage;
 
 import java.util.LinkedList;
-import java.util.Timer;
 
 public abstract class Sender implements Runnable {
 	protected Logger LOG;
@@ -39,9 +36,6 @@ public abstract class Sender implements Runnable {
 	 * @param message The JEEP message to send
 	 */
 	public void send(JeepMessage message) throws IllegalArgumentException {
-		if(message instanceof JeepRequest) {
-			JeepRequest req = (JeepRequest) message;
-		}
 		sendJeepMessage(message);
 	}
 	
@@ -51,7 +45,7 @@ public abstract class Sender implements Runnable {
 	 * 
 	 * @param error The JEEPErrorResponse
 	 */
-	public abstract void sendErrorResponse(JeepErrorResponse error);
+	public abstract void sendErrorMessage(JeepMessage error);
 	
 	public String getName() {
 		return name;

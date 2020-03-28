@@ -8,11 +8,13 @@ import org.bson.Document;
 import symphony.bm.bmlogicdevices.SymphonyEnvironment;
 import symphony.bm.bmlogicdevices.entities.Device;
 import symphony.bm.bmlogicdevices.entities.DeviceProperty;
+import symphony.bm.bmlogicdevices.entities.DevicePropertyMode;
 import symphony.bm.bmlogicdevices.entities.Room;
 import symphony.bm.bmlogicdevices.jeep.JeepMessage;
+import symphony.bm.bmlogicdevices.jeep.JeepResponse;
 import symphony.bm.bmlogicdevices.mongodb.MongoDBManager;
 import symphony.bm.bmlogicdevices.rest.OutboundRestMicroserviceCommunicator;
-import symphony.bm.bmlogicdevices.services.exceptions.SecondaryMessageParameterCheckingException;
+import symphony.bm.bmlogicdevices.services.exceptions.MessageParameterCheckingException;
 
 import java.util.List;
 import java.util.Vector;
@@ -34,7 +36,7 @@ public class RegisterService extends Service {
     }
 
     @Override
-    protected void process(JeepMessage message) {
+    protected JeepResponse process(JeepMessage message) {
         String cid = message.getCID();
         MongoCollection<Document> products = mongo.getCollection(productsCollection);
         Device device = env.getDeviceObject(cid);
@@ -61,8 +63,9 @@ public class RegisterService extends Service {
                 List<Document> productProps = product.getList("properties", Document.class);
                 pid = message.getString("product");
                 for (Document propDoc : productProps) {
+                    DevicePropertyMode mode = DevicePropertyMode.valueOf(propDoc.getString("mode"));
                     properties.add(new DeviceProperty(propDoc.getInteger("index"),
-                            propDoc.getString("name"), propDoc.getString("type"),
+                            propDoc.getString("name"), propDoc.getString("type"), mode,
                             propDoc.getInteger("minValue"), propDoc.getInteger("maxValue")));
                 }
             } else { // for with-product registration
@@ -73,22 +76,26 @@ public class RegisterService extends Service {
                     JSONObject propJSON = (JSONObject) p;
                     String name = propJSON.getString("name");
                     int index = propJSON.getInt("index");
-                    String type = propJSON.getString("ID");
+                    String type = propJSON.getString("type");
+                    DevicePropertyMode mode = DevicePropertyMode.valueOf(propJSON.getString("mode"));
                     int minVal = propJSON.getInt("minValue");
                     int maxVal = propJSON.getInt("maxValue");
-                    properties.add(new DeviceProperty(index, name, type, minVal, maxVal));
+                    properties.add(new DeviceProperty(index, name, type, mode, minVal, maxVal));
                 }
             }
             env.createDeviceObject(message.getCID(), pid,
                     message.getString("name"), roomObj, properties);
             LOG.info("Device " + cid + " registered successfully!");
+            return new JeepResponse(message);
         } else {
+            //TODO device update functionality
             LOG.info("Updating device " + cid + "...");
+            return null;
         }
     }
 
     @Override
-    protected void checkSecondaryMessageParameters(JeepMessage message) throws SecondaryMessageParameterCheckingException {
+    protected void checkSecondaryMessageParameters(JeepMessage message) throws MessageParameterCheckingException {
         // Check if message contains proper parameters
         if (!message.has("name"))
             throw secondaryMessageCheckingException("\"name\" parameter not found!");
@@ -115,6 +122,8 @@ public class RegisterService extends Service {
                         throw secondaryMessageCheckingException("a declared property has no specified name!");
                     if (!prop.has("type"))
                         throw secondaryMessageCheckingException("a declared property has no specified type!");
+                    if (!prop.has("mode"))
+                        throw secondaryMessageCheckingException("a declared property has no specified mode!");
                     if (!prop.has("index"))
                         throw secondaryMessageCheckingException("a declared property has no specified index!");
                     if (!prop.has("minValue"))

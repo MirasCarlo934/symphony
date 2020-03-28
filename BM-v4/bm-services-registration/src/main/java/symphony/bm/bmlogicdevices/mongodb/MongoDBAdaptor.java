@@ -47,11 +47,10 @@ public class MongoDBAdaptor implements Adaptor {
                 propDoc.append(String.valueOf(index), new Document()
                         .append("index", index)
                         .append("name", prop.getName())
-                        .append("type", new Document()
-                                .append("ID", prop.getType())
-                                .append("minValue", prop.getMinValue())
-                                .append("maxValue", prop.getMaxValue())
-                        )
+                        .append("type", prop.getType())
+                        .append("mode", prop.getMode().toString())
+                        .append("minValue", prop.getMinValue())
+                        .append("maxValue", prop.getMaxValue())
                         .append("value", 0));
             }
             Document deviceDoc = new Document("CID", device.getCID())

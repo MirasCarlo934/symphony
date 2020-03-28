@@ -2,27 +2,27 @@ package symphony.bm.bm_comms.mqtt;
 
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
 import symphony.bm.bm_comms.Sender;
-import symphony.bm.bm_comms.jeep.vo.JeepErrorResponse;
-import symphony.bm.bm_comms.jeep.vo.JeepMessage;
-import symphony.bm.bm_comms.jeep.vo.JeepResponse;
+import symphony.bm.bm_comms.jeep.JeepMessage;
 import symphony.bm.bm_comms.mqtt.objects.MQTTMessage;
 
 import java.util.LinkedList;
 
 public class MQTTPublisher extends Sender {
 	private MQTTClient client;
-	private String default_topic;
+	private String universal_topic;
 	private String error_topic;
+	private String devices_topic;
 	private LinkedList<MQTTMessage> queue = new LinkedList<MQTTMessage>();
-	private String regRTY;
+	private String msn_register;
 
-	public MQTTPublisher(String logName, String logDomain, String default_topic, String error_topic, String regRTY) {
+	public MQTTPublisher(String logName, String logDomain, String universal_topic, String error_topic,
+						 String devices_topic, String msn_register) {
 		super(logName, logDomain);
-		this.regRTY = regRTY;
-		this.default_topic = default_topic;
+		this.msn_register = msn_register;
+		this.universal_topic = universal_topic;
 		this.error_topic = error_topic;
+		this.devices_topic = devices_topic;
 
 		Thread t = new Thread(this, MQTTPublisher.class.getSimpleName());
 		t.start();
@@ -42,36 +42,29 @@ public class MQTTPublisher extends Sender {
 				payload.setQos(2);
 				try {
 					client.publish(m.topic, payload);
-				} catch (MqttPersistenceException e) {
-					LOG.error("Cannot publish message \"" + m.message + "\" to topic \"" + m.topic + "\" "
-							+ "topic!", e);
 				} catch (MqttException e) {
 					LOG.error("Cannot publish message \"" + m.message + "\" to topic \"" + m.topic + "\" "
 							+ "topic!", e);
 				}
-
 			}
 		}
 	}
 
 	@Override
 	public void sendJeepMessage(JeepMessage message) {
-		if(message.getRTY().equals(regRTY)) {
+		if(message.getMSN().equals(msn_register)) {
 			publishToDefaultTopic(message);
 		} else {
-			publishToDefaultTopic(message); // TODO update to MQTT topic implementation
+			publish(devices_topic + "/" + message.getCID(), message.toString());
 		}
 	}
 	
 	@Override
-	public void sendErrorResponse(JeepErrorResponse error) {
-		publishToDefaultTopic(error);
-		publishToErrorTopic(error);
-	}
-
-	public void sendErrorResponse(String topic, JeepErrorResponse error) {
-		publish(topic, error.getJSON().toString());
-		sendErrorResponse(error);
+	public void sendErrorMessage(JeepMessage error) {
+		if (error.has("CID")) {
+			publish(devices_topic + "/" + error.getString("CID") + "/" + error_topic, error.toString());
+		}
+		publishToUniversalErrorTopic(error);
 	}
 	
 	/**
@@ -85,10 +78,10 @@ public class MQTTPublisher extends Sender {
 	}
 
 	public void publishToDefaultTopic(JeepMessage message) {
-		publish(default_topic, message.getJSON().toString());
+		publish(universal_topic, message.toString());
 	}
 
-	private void publishToErrorTopic(JeepResponse response) {
-		publish(error_topic, response.toString());
+	private void publishToUniversalErrorTopic(JeepMessage message) {
+		publish(universal_topic + "/" + error_topic, message.toString());
 	}
 }

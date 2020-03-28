@@ -6,7 +6,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import symphony.bm.bm_comms.InboundTrafficManager;
 import symphony.bm.bm_comms.Listener;
-import symphony.bm.bm_comms.jeep.vo.RawMessage;
+import symphony.bm.bm_comms.jeep.RawMessage;
 
 /**
  * The MQTTHandler is the object that handles all interactions related to an MQTT server. 
@@ -18,13 +18,13 @@ import symphony.bm.bm_comms.jeep.vo.RawMessage;
  *
  */
 public class MQTTListener extends Listener implements MqttCallback {
-	private String default_topic;
+	private String universal_topic;
 	private String error_topic;
 
-	public MQTTListener(String logName, String logDomain, String default_topic, String error_topic,
+	public MQTTListener(String logName, String logDomain, String universal_topic, String error_topic,
 						InboundTrafficManager inboundTrafficManager) {
 		super(logName, logDomain, inboundTrafficManager);
-		setDefault_topic(default_topic);
+		setUniversal_topic(universal_topic);
 		setError_topic(error_topic);
 	}
 
@@ -46,7 +46,7 @@ public class MQTTListener extends Listener implements MqttCallback {
 		}
 	} 
 
-	public void messageArrived(String topic, MqttMessage msg) throws Exception {
+	public void messageArrived(String topic, MqttMessage msg) {
 		LOG.debug("Message arrived at topic " + topic);
 		LOG.debug("Message is: " + msg.toString());
 		processRawMessage(new RawMessage(msg.toString(), protocol));
@@ -55,15 +55,15 @@ public class MQTTListener extends Listener implements MqttCallback {
 	/**
 	 * @return the default_topic
 	 */
-	public String getDefault_topic() {
-		return default_topic;
+	public String getUniversal_topic() {
+		return universal_topic;
 	}
 
 	/**
-	 * @param default_topic the default_topic to set
+	 * @param universal_topic the default_topic to set
 	 */
-	public void setDefault_topic(String default_topic) {
-		this.default_topic = default_topic;
+	public void setUniversal_topic(String universal_topic) {
+		this.universal_topic = universal_topic;
 	}
 
 	/**
