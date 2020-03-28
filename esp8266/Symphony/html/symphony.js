@@ -3,8 +3,10 @@ const CMD_VALUES = 2
 const CMD_CLIENT = 10
 const CORE_GETDEVICEINFO = 4;
 const CORE_TOCHILD = 7;
+const CONTROL_DEVICE = 7;
 const CORE_START_HEARTBEAT = 8;
-const CORE_VALUERESPONSE = 20
+const CORE_DO_DISPLAY = 20
+const CMD_DEVICE_PIN_CONTROL = 10
 
 
 var itm;
@@ -357,7 +359,7 @@ function getRange(e) {
  */
 function sendWSRequestToServer(cmd, formId) {
 	var count = document.getElementById(formId).elements.length;
-	var jsonRequest = {"core":7, "cmd":cmd};//we are sending a cmd to the device
+	var jsonRequest = {"core":CONTROL_DEVICE, "cmd":cmd};//we are sending a cmd to the device
 	for (i=0;i<count;i++) {
 		var id = document.getElementById(formId).elements[i].id;
 		var typ = document.getElementById(formId).elements[i].type;
@@ -369,7 +371,7 @@ function sendWSRequestToServer(cmd, formId) {
 	websocket.send(JSON.stringify(jsonRequest));
 }
 function sendOnOffWs(e) {
-	var jsonResponse = {"core":7, "cmd":10};// core:7 - this transaction is to control the device
+	var jsonResponse = {"core":CONTROL_DEVICE, "cmd":CMD_DEVICE_PIN_CONTROL};// core:7 - this transaction is to control the device
 	
 	jsonResponse["mac"] = mac;
 	jsonResponse["ssid"] = e.id;
@@ -387,7 +389,7 @@ function sendRangeWs(e) {
 	document.getElementById("popup").remove();
   	var tdiv = document.getElementById("lbl_"+e.getAttribute("parent")+":rng");
   	tdiv.textContent = e.value;
-  	var jsonResponse = {"core":7, "cmd":10};// core:7 - this transaction is to control the device
+  	var jsonResponse = {"core":CONTROL_DEVICE, "cmd":CMD_DEVICE_PIN_CONTROL};// core:7 - this transaction is to control the device
 	jsonResponse["mac"] = mac;
 	jsonResponse["ssid"] = e.getAttribute("parent");
 	jsonResponse["cid"] = cid;
@@ -496,7 +498,7 @@ function handleWsMessage(evt) {
 	  	        document.getElementById("status").innerHTML = "Device Reboot";
 	  			break;
 	  		}
-  		case CORE_VALUERESPONSE://value response from server
+  		case CORE_DO_DISPLAY://data from device to be displayed in the elements
   			{
   			switch(cmd) {
   		  	 case CMD_VALUES:
