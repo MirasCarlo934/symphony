@@ -76,6 +76,20 @@ int (* WsCallback) (AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject&
  * This enables the child to handle MQTT events.  Callback will be called if the property is not directly changeable.
  */
 int (* MqttCallback) (JsonObject& json);
+
+/**
+ * The callback function that called by Product.setValue.
+ * Sends transactions to the WS and MQTT.
+ * If event was triggered by WS Client, we should send message to all WS Clients and the MQTT to inform the BM.
+ *   - this means that there is command from WS Client to change state of the property.
+ * If event was triggered by MQTT, we should send message to all WS Clients but need not send to MQTT to inform the BM.
+ *   - this means that the BM sent a message
+ *
+ */
+int productValueChangedEvent (int propertyIndex) {
+	attribStruct a = Symphony::product.getKeyVal(propertyIndex);
+	Serial.printf("productValueChangeEvent propertyIndex=%i SSID=%s LABEL=%s VALUE=%i\n", propertyIndex, a.ssid.c_str(), a.gui.label.c_str(), a.gui.value);
+}
 /*
  *	wsEvent handles the transactions sent by client websockets.
  *	events can either be handled by the core, or the implementor.
@@ -128,7 +142,7 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 										if (d.equals("INIT")) {
 											DynamicJsonBuffer jsonBuffer;
 											JsonObject& reply = jsonBuffer.createObject();
-											reply["cmd"] = 1;
+											reply["cmd"] = CMD_INIT;
 											reply["name"] = Symphony::hostName;
 											reply["msg"] = "Ready for commands.";
 											reply["mac"] = Symphony::mac;
@@ -207,7 +221,7 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 								case CORE_CONTROL://transactions from client to control the device
 								{
 									int cmd = json["cmd"].as<int>();
-									if (cmd == 10) {//command from control
+									if (cmd == CMD_PIN_CONTROL) {//command to control the device pins
 										//evaluate if corePin==true, execute here.  Else pass to wscallback
 										attribStruct attrib = Symphony::product.getProperty(json["ssid"].as<char *>());
 #ifdef DEBUG_ONLY
@@ -320,8 +334,8 @@ void mqttMsgHandler(char* topic, char* payload, size_t len) {
 	  }
 	  DynamicJsonBuffer jsonBuff;
 	  JsonObject& json = jsonBuff.createObject();
-	  json["core"] = 7;
-	  json["cmd"] = 10;
+	  json["core"] = WSCLIENT_CONTROL;
+	  json["cmd"] = WSCLIENT_DO_CMD;
 	  json["mac"] = Symphony::mac;
 	  json["ssid"] = jsonMsg["property"].as<String>();
 	  json["val"] = jsonMsg["value"].as<int>();
@@ -643,7 +657,7 @@ bool Symphony::loop() {
 	if (reboot) {
 		DynamicJsonBuffer jsonBuffer;
 		JsonObject& hbMsg = jsonBuffer.createObject();
-		hbMsg["core"] = 8;
+		hbMsg["core"] = CORE_START_HEARTBEAT;	//we start heartbeat in the WS client for it to start sending heartbeat and be aware when we are done with reboot
 		String strHbMsg;
 		hbMsg.printTo(strHbMsg);
 		ws.textAll(strHbMsg);//send a start heartbeat timer to all the clients
@@ -806,6 +820,7 @@ void Symphony::createMyName(String theHostName) {
  */
 void Symphony::setProduct(Product p) {
 	product = p;
+	product.setValueChangeCallback(productValueChangedEvent);
 	setRootProperties(product.stringify());
 	isProductSet = true;
 }

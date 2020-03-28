@@ -20,6 +20,7 @@
 #include "version.h"
 #include "Product.h"
 #include "MqttHandler.h"
+#include "DataObjects.h"
 
 #define DEBUG_ONLY
 //#define SHOW_FLASH
@@ -29,13 +30,13 @@
 #define CONNECT_TIMEOUT 15000   /* 15 seconds */
 #define REBOOT_DELAY    1500     /* Delay for rebooting once reboot flag is set */
 
-#define  CORE_INIT 1
-#define  CORE_COMMIT_DEVICE_SETTINGS 2
-#define  CORE_DELETE 3
-#define  CORE_GETDEVICEINFO 4
-#define  CORE_PING 5
-#define  CORE_VALUES 20
-#define  CORE_CONTROL 7
+//#define  CORE_INIT 1
+//#define  CORE_COMMIT_DEVICE_SETTINGS 2
+//#define  CORE_DELETE 3
+//#define  CORE_GETDEVICEINFO 4
+//#define  CORE_PING 5
+//#define  CORE_VALUES 20
+//#define  CORE_CONTROL 7
 
 class Symphony {
 	public:
