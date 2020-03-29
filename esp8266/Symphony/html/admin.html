@@ -26,6 +26,10 @@
 <label>Enabled:</label><input type='checkbox' id='mqttEnabled' onclick='toggleMqtt()'><br>
 <label>IP:</label><input type='text' id='mqttIp'><br>
 <label>Port:</label><input type='text' id='mqttPort' value="1883"><br>
+<fieldset><legend>Topics</legend>
+<label>Subscribe:</label><input type='text' id='sTopic' disabled><br>
+<label>Publish:</label><input type='text' id='pTopic' disabled><br>
+</fieldset><br>
 <input type='button' value='Commit' onclick='commitConfig()'>
 </fieldset></center>
 </form>

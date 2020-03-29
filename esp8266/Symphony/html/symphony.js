@@ -596,6 +596,8 @@ function getDeviceInfoHandler(xhttp) {
 		document.getElementById("mqttEnabled").checked=false;
 	document.getElementById("mqttIp").value = jsonResponse.mqttIp;
 	document.getElementById("mqttPort").value = jsonResponse.mqttPort;
+	document.getElementById("sTopic").value = jsonResponse.sTopic;
+	document.getElementById("pTopic").value = jsonResponse.pTopic;
 	toggleMqtt();
 }
 
@@ -611,16 +613,6 @@ function getDeviceInfo() {
 	//we send an INIT command to get the deviceName and mac
 //	websocket.send('{"core":4,"data":"INF"}'); deperecated, we should use AJAX
 	sendToServer('GET', '/devInfo', getDeviceInfoHandler);
-}
-/**
- * Gets the mqtt details
- * 		- ip
- * 		- port
- * 		
- * @returns
- */
-function getMqttInfo() {
-	sendToServer('GET', '/mqttInfo', getDeviceInfoHandler);
 }
 /**
  * handles the firmware version response
