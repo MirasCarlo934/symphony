@@ -355,37 +355,45 @@ void mqttMsgHandler(char* topic, char* payload, size_t len) {
   if (strcmp(topic, theMqttHandler.getSubscribedTopic().c_str()) == 0) {
 	  DynamicJsonBuffer jsonBuffer;
 	  JsonObject& jsonMsg = jsonBuffer.parseObject(str2);
-	  Serial.printf("[CORE] RID=%s \n", jsonMsg["RID"].as<String>().c_str());
-	  Serial.println(Symphony::product.stringify());
-
-	  //evaluate if directPin==true, execute here.  Else pass to wscallback
-	  attribStruct attrib = Symphony::product.getProperty(jsonMsg["property"].as<char *>());
+	  Serial.printf("[CORE] MSN=%s \n", jsonMsg["MSN"].as<String>().c_str());
+	  String msn = jsonMsg["MSN"].as<String>();
+	  if(msn.equals("register")) {	//this is the response to our register request
 #ifdef DEBUG_ONLY
-	  Serial.printf("[CORE] got attribute %s, current value=%i, pin=%i, directPin=%s\n", attrib.ssid.c_str(), attrib.gui.value, attrib.pin, attrib.directPin?"true":"false");
+		  Serial.println("[CORE] MQTT registration successful.");
 #endif
-	  if (attrib.directPin) {//we set the value here because this is a directPin and its value can be set to pin directly
-		  Symphony::product.setValue(jsonMsg["property"].as<String>(), jsonMsg["value"].as<int>());
-	  } else {//we do not set the value here, the callback might need to do some computation before setting the pin
-#ifdef DEBUG_ONLY
-		  Serial.printf("[CORE] Cannot set the property %s since it is not directly changeable.\n", attrib.ssid.c_str());
-#endif
-		  if (MqttCallback != nullptr) {
-			  MqttCallback(jsonMsg);
-		  } else {
-			  Serial.println("[CORE] No MQTT callback set!!!");
-		  }
 	  }
-	  DynamicJsonBuffer jsonBuff;
-	  JsonObject& json = jsonBuff.createObject();
-	  json["core"] = WSCLIENT_CALLBACK_CONTROL;
-	  json["cmd"] = WSCLIENT_DO_CMD;
-	  json["mac"] = Symphony::mac;
-	  json["ssid"] = jsonMsg["property"].as<String>();
-	  json["val"] = jsonMsg["value"].as<int>();
-	  String strBroadcast;
-	  json.printTo(strBroadcast);
-	  Serial.printf("[CORE] Will broadcast %s\n", strBroadcast.c_str());
-	  ws.textAll(strBroadcast);
+	  if(msn.equals("poop")) {	//this is a poop request
+		  Serial.println(Symphony::product.stringify());
+
+		  //evaluate if directPin==true, execute here.  Else pass to wscallback
+		  attribStruct attrib = Symphony::product.getProperty(jsonMsg["property"].as<char *>());
+#ifdef DEBUG_ONLY
+		  Serial.printf("[CORE] got attribute %s, current value=%i, pin=%i, directPin=%s\n", attrib.ssid.c_str(), attrib.gui.value, attrib.pin, attrib.directPin?"true":"false");
+#endif
+		  if (attrib.directPin) {//we set the value here because this is a directPin and its value can be set to pin directly
+			  Symphony::product.setValue(jsonMsg["property"].as<String>(), jsonMsg["value"].as<int>());
+		  } else {//we do not set the value here, the callback might need to do some computation before setting the pin
+#ifdef DEBUG_ONLY
+			  Serial.printf("[CORE] Cannot set the property %s since it is not directly changeable.\n", attrib.ssid.c_str());
+#endif
+			  if (MqttCallback != nullptr) {
+				  MqttCallback(jsonMsg);
+			  } else {
+				  Serial.println("[CORE] No MQTT callback set!!!");
+			  }
+		  }
+//		  DynamicJsonBuffer jsonBuff;
+//		  JsonObject& json = jsonBuff.createObject();
+//		  json["core"] = WSCLIENT_CALLBACK_CONTROL;
+//		  json["cmd"] = WSCLIENT_DO_CMD;
+//		  json["mac"] = Symphony::mac;
+//		  json["ssid"] = jsonMsg["property"].as<String>();
+//		  json["val"] = jsonMsg["value"].as<int>();
+//		  String strBroadcast;
+//		  json.printTo(strBroadcast);
+//		  Serial.printf("[CORE] Will broadcast %s\n", strBroadcast.c_str());
+//		  ws.textAll(strBroadcast);
+	  }
   }
 };
 /**
