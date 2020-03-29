@@ -270,7 +270,7 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 											json["core"] = WSCLIENT_DO_DISPLAY;
 										} else {//we do not set the value here, the callback might need to do some computation before setting the pin
 #ifdef DEBUG_ONLY
-											Serial.printf("[CORE] Cannot set the property %s since it is not directly changeable.", attrib.ssid.c_str());
+											Serial.printf("[CORE] Cannot set the property %s since it is not directly changeable.\n", attrib.ssid.c_str());
 #endif
 											if (WsCallback != nullptr) {
 												WsCallback(ws, client, json);
@@ -290,7 +290,7 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 										}
 									}
 								}
-									break;
+								break;
 							}
 						} else {
 							Serial.println("[CORE] value-pair not found.");
@@ -352,7 +352,7 @@ void mqttMsgHandler(char* topic, char* payload, size_t len) {
   char str2[len];
   strncpy ( str2, payload, len );
   Serial.println(str2);
-  if (strcmp(topic, theMqttHandler.getMyTopic().c_str()) == 0) {
+  if (strcmp(topic, theMqttHandler.getSubscribedTopic().c_str()) == 0) {
 	  DynamicJsonBuffer jsonBuffer;
 	  JsonObject& jsonMsg = jsonBuffer.parseObject(str2);
 	  Serial.printf("[CORE] RID=%s \n", jsonMsg["RID"].as<String>().c_str());
@@ -367,7 +367,7 @@ void mqttMsgHandler(char* topic, char* payload, size_t len) {
 		  Symphony::product.setValue(jsonMsg["property"].as<String>(), jsonMsg["value"].as<int>());
 	  } else {//we do not set the value here, the callback might need to do some computation before setting the pin
 #ifdef DEBUG_ONLY
-		  Serial.printf("[CORE] Cannot set the property %s since it is not directly changeable.", attrib.ssid.c_str());
+		  Serial.printf("[CORE] Cannot set the property %s since it is not directly changeable.\n", attrib.ssid.c_str());
 #endif
 		  if (MqttCallback != nullptr) {
 			  MqttCallback(jsonMsg);
@@ -504,6 +504,14 @@ void handleGetFiles(AsyncWebServerRequest *request) {
 void handleConfigInfo(AsyncWebServerRequest *request) {
 	DynamicJsonBuffer jsonBuffer;
 	JsonObject& jsonObj = jsonBuffer.parseObject(fManager.readConfig());
+	if (!jsonObj.containsKey("sTopic")) {
+		Serial.printf("[CORE] sTopic not found. Should be %s/n", theMqttHandler.getSubscribedTopic().c_str());
+		jsonObj["sTopic"] = theMqttHandler.getSubscribedTopic();
+	}
+	if (!jsonObj.containsKey("pTopic")) {
+		Serial.printf("[CORE] pTopic not found. Should be %s/n", theMqttHandler.getPublishTopic().c_str());
+		jsonObj["pTopic"] = theMqttHandler.getPublishTopic();
+	}
 	if (jsonObj.success()) {
 #ifdef DEBUG_ONLY
 		Serial.println("[CORE] AJAX Get device Info.");
@@ -561,6 +569,8 @@ void handleDeviceConfig(AsyncWebServerRequest *request) {
 }
 /*
  * Handles the mqqt settings sent by the client
+ *
+ * deprecated Mar 29 2020
  */
 void handleMqttConfig (AsyncWebServerRequest *request) {
 	Serial.println("[CORE] handleMqttConfig START");
@@ -592,11 +602,11 @@ void initWebServer() {
 	webServer.on("/uploadFile", HTTP_POST, doneFileUpload, handleFileUpload); //handle the file update request
 	webServer.on("/getFiles", HTTP_GET, handleGetFiles);  //show the Files in SPIFFS
 	webServer.on("/devInfo", HTTP_GET, handleConfigInfo);  //get device info from SPIFFS and return to client
-	webServer.on("/mqttInfo", HTTP_GET, handleConfigInfo);  //get mqtt info from SPIFFS and return to client
+//	webServer.on("/mqttInfo", HTTP_GET, handleConfigInfo);  //get mqtt info from SPIFFS and return to client deprecated Mar 29 2020, we use /devInfo instead
 	webServer.on("/properties.html", showProperties);
 	webServer.on("/fwVersion", showVersion);	//show the firmware version to the client
-	webServer.on("/config", HTTP_GET, handleDeviceConfig);		//handles the commit config
-	webServer.on("/setMqttConfig", handleMqttConfig);	//handles the mqtt settings from the client
+//	webServer.on("/config", HTTP_GET, handleDeviceConfig);		//handles the commit config    deprecated Mar 29 2020, we use WS event
+//	webServer.on("/setMqttConfig", handleMqttConfig);	//handles the mqtt settings from the client  deprecated Mar 29 2020, we use WS event
 	webServer.serveStatic("/files.html", SPIFFS, "/files.html");
 	webServer.serveStatic("/test.html", SPIFFS, "/test.html");
 //	webServer.on("/hotspot-detect.html", handleAppleCaptivePortal);//for apple devices
