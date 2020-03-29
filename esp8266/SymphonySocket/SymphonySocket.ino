@@ -138,13 +138,13 @@ int wsHandler(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json)
 			}
 			case 10://on-off command
 				socketState = json["val"].as<int>();
-				product.setValue("0001", socketState);
+				product.setValue(json["val"].as<String>(), socketState);	//even if the property is virtual, we are setting its value here
 				DynamicJsonBuffer jsonBuffer;
 				JsonObject& poopJson = jsonBuffer.createObject();
 				poopJson["RID"] = Symphony::mac;
 				poopJson["CID"] = "0000";
 				poopJson["RTY"] = "poop";
-				poopJson["property"] = "0001";
+				poopJson["property"] = json["val"].as<String>();
 				poopJson["value"] = socketState;
 				String strReg;
 				poopJson.printTo(strReg);
@@ -177,7 +177,6 @@ void setup()
 	isE131Enabled = jsonObj["e131"].as<int>();
 	s.setWsCallback(wsHandler);
 	s.setMqttCallback(mqttHandler);
-//	s.setMqttHandler("mqttId", "192.168.0.109", 1883);		//not yet fully tested, so we are commenting out first  jan 05 2020
 	char ver[10];
 	sprintf(ver, "%u.%u", SYMPHONY_VERSION, MY_VERSION);
 	s.setup(myName, ver);
@@ -189,9 +188,9 @@ void setup()
 
 	product = Product(s.nameWithMac, "J444", "Socket");
 	Gui gui1 = Gui("Socket Control", BUTTON_CTL, "On/Off", 0, 1, socketState);
-	product.addProperty("0001", false, SOCKET_PIN, gui1);//add aproperty that has an attached pin
+	product.addCallableProperty("0001", SOCKET_PIN, gui1);//add a property that has an attached pin
 	Gui gui2 = Gui("Socket Control", BUTTON_SNSR, "Indicator", 0, 1, socketState);
-	product.addProperty("0002", false, gui2);//add aproperty that has an attached pin
+	product.addVirtualProperty("0002", gui2);//add a logical property that has no attached pin
 	s.setProduct(product);
 
 	if (e131.begin(E131_MULTICAST, UNIVERSE_START, UNIVERSE_COUNT))   // Listen via Multicast
