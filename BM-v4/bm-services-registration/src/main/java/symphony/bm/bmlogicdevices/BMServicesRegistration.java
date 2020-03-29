@@ -6,12 +6,12 @@ import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.PropertySource;
 
 @SpringBootApplication
-@PropertySource("file:resources/bm-logic-devices.properties")
-@ImportResource({"file:resources/bm-logic-devices.config.xml"})
-public class BMLogicDevicesApplication {
+@PropertySource("file:resources/bm-services-registration.properties")
+@ImportResource({"file:resources/bm-services-registration.config.xml"})
+public class BMServicesRegistration {
 
     public static void main(String[] args) {
-        SpringApplication.run(BMLogicDevicesApplication.class, args);
+        SpringApplication.run(BMServicesRegistration.class, args);
     }
 
 }

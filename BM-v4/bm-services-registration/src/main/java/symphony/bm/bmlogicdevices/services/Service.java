@@ -3,8 +3,9 @@ package symphony.bm.bmlogicdevices.services;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import symphony.bm.bmlogicdevices.jeep.JeepMessage;
+import symphony.bm.bmlogicdevices.jeep.JeepResponse;
 import symphony.bm.bmlogicdevices.rest.OutboundRestMicroserviceCommunicator;
-import symphony.bm.bmlogicdevices.services.exceptions.SecondaryMessageParameterCheckingException;
+import symphony.bm.bmlogicdevices.services.exceptions.MessageParameterCheckingException;
 
 public abstract class Service {
     protected Logger LOG;
@@ -22,20 +23,27 @@ public abstract class Service {
         this.restCommunicator = restCommunicator;
     }
 
-    public void processMessage(JeepMessage message) throws SecondaryMessageParameterCheckingException {
+    public JeepResponse processMessage(JeepMessage message) throws MessageParameterCheckingException {
         LOG.debug("Checking secondary message parameters for MRN: " + message.getMRN());
         checkSecondaryMessageParameters(message);
         LOG.debug("Secondary message parameters checked! Processing...");
-        process(message);
+        return process(message);
     }
 
-    protected abstract void process(JeepMessage message);
+    protected MessageParameterCheckingException secondaryMessageCheckingException(String errorMsg) {
+        LOG.error(errorMsg);
+        return new MessageParameterCheckingException(errorMsg);
+    }
+
+    protected MessageParameterCheckingException secondaryMessageCheckingException(String errorMsg,
+                                                                                           Exception e) {
+        LOG.error(errorMsg);
+        return new MessageParameterCheckingException(errorMsg, e);
+    }
+
+    protected abstract JeepResponse process(JeepMessage message);
 
     protected abstract void checkSecondaryMessageParameters(JeepMessage message)
-            throws SecondaryMessageParameterCheckingException;
+            throws MessageParameterCheckingException;
 
-    protected SecondaryMessageParameterCheckingException secondaryMessageCheckingException(String errorMsg) {
-        LOG.error(errorMsg);
-        return new SecondaryMessageParameterCheckingException(errorMsg);
-    }
 }

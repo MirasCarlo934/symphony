@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import symphony.bm.bmlogicdevices.adaptors.Adaptor;
 import symphony.bm.bmlogicdevices.entities.Device;
 import symphony.bm.bmlogicdevices.entities.DeviceProperty;
+import symphony.bm.bmlogicdevices.entities.DevicePropertyMode;
 import symphony.bm.bmlogicdevices.entities.Room;
 import symphony.bm.bmlogicdevices.mongodb.MongoDBManager;
 
@@ -49,10 +50,10 @@ public class SymphonyEnvironment {
             Set<String> propIndices = propertiesDoc.keySet();
             for (String index : propIndices) { // get properties
                 Document propDoc = (Document) propertiesDoc.get(index);
-                Document propType = (Document) propDoc.get("type");
+                DevicePropertyMode mode = DevicePropertyMode.valueOf(propDoc.getString("mode"));
                 properties.add(new DeviceProperty(propDoc.getInteger("index"),
-                        propDoc.getString("name"), propType.getString("ID"),
-                        propType.getInteger("minValue"), propType.getInteger("maxValue")));
+                        propDoc.getString("name"), propDoc.getString("type"), mode,
+                        propDoc.getInteger("minValue"), propDoc.getInteger("maxValue")));
             }
 
             Device device = new Device(cid, pid, name, room, properties, adaptors);

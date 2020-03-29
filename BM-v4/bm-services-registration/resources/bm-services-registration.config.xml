@@ -7,16 +7,22 @@
                            http://www.springframework.org/schema/context
                            http://www.springframework.org/schema/context/spring-context-3.0.xsd http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util.xsd">
 
-    <context:property-placeholder location="bm-logic-devices.properties" />
+    <context:property-placeholder location="bm-services-registration.properties"/>
 
     <util:map id="serviceList" map-class="java.util.HashMap">
-        <entry key="register" value-ref="services.managers.register"/>
-        <entry key="unreg" value-ref="services.managers.unregister"/>
+        <entry key="${mqtt.topic.bm.register}" value-ref="services.managers.register"/>
+        <entry key="${mqtt.topic.bm.unregister}" value-ref="services.managers.unregister"/>
     </util:map>
+
+    <util:list id="serviceTopics" list-class="java.util.Vector">
+        <value>${mqtt.topic.bm.register}</value>
+        <value>${mqtt.topic.bm.unregister}</value>
+    </util:list>
 
     <util:list id="adaptorsList" list-class="java.util.Vector">
         <ref bean="ADAPTOR.mongodb"/>
     </util:list>
+
 
     <bean id="ADAPTOR.mongodb" class="symphony.bm.bmlogicdevices.mongodb.MongoDBAdaptor">
         <constructor-arg name="adaptorName" value="MongoDB"/>
@@ -31,6 +37,7 @@
         <constructor-arg name="logDomain" value="${log.logic}"/>
         <constructor-arg name="serviceManagers" ref="serviceList"/>
         <constructor-arg name="outboundRestMicroserviceCommunicator" ref="REST.outboundCommunicator"/>
+        <constructor-arg name="symphonyEnvironment" ref="CORE.env"/>
     </bean>
 
     <bean id="CORE.env" class="symphony.bm.bmlogicdevices.SymphonyEnvironment">
@@ -49,46 +56,48 @@
         <constructor-arg name="uri" value="${mongo.serverURI}"/>
     </bean>
 
-    <bean id="MQTT.client" class="symphony.bm.bmlogicdevices.mqtt.MQTTClient">
-        <constructor-arg name="bm_logic_topic" value="${mqtt.topic.bm-logic}"/>
-        <constructor-arg name="clientId" value="${mqtt.clientID}"/>
-        <constructor-arg name="controller" ref="CORE.controller"/>
-        <constructor-arg name="devMode" value="true"/>
-        <constructor-arg name="error_topic" value="${mqtt.topic.error}"/>
-        <constructor-arg name="logDomain" value="${log.mqtt}"/>
-        <constructor-arg name="logName" value="client"/>
-        <constructor-arg name="serverURI" value="${mqtt.serverURI}"/>
-    </bean>
+<!--    <bean id="MQTT.client" class="symphony.bm.bmlogicdevices.mqtt.MQTTClient">-->
+<!--        <constructor-arg name="bm_topic" value="${mqtt.topic.bm}"/>-->
+<!--        <constructor-arg name="clientId" value="${mqtt.clientID}"/>-->
+<!--        <constructor-arg name="controller" ref="CORE.controller"/>-->
+<!--        <constructor-arg name="devices_topic" value="${mqtt.topic.devices}"/>-->
+<!--        <constructor-arg name="error_topic" value="${mqtt.topic.error}"/>-->
+<!--        <constructor-arg name="logDomain" value="${log.mqtt}"/>-->
+<!--        <constructor-arg name="logName" value="client"/>-->
+<!--        <constructor-arg name="serverURI" value="${mqtt.serverURI}"/>-->
+<!--        <constructor-arg name="service_topics" ref="serviceTopics"/>-->
+<!--        <constructor-arg name="univ_topic" value="${mqtt.topic.universal}"/>-->
+<!--    </bean>-->
 
     <bean id="REST.outboundCommunicator" class="symphony.bm.bmlogicdevices.rest.OutboundRestMicroserviceCommunicator">
 
     </bean>
 
     <bean id="services.managers.register" class="symphony.bm.bmlogicdevices.services.ServiceManager">
-        <constructor-arg name="msn" value="${serviceManagers.register.msn}"/>
+<!--        <constructor-arg name="msn" value="${serviceManagers.register.msn}"/>-->
         <lookup-method name="createService" bean="services.register"/>
     </bean>
 
     <bean id="services.managers.unregister" class="symphony.bm.bmlogicdevices.services.ServiceManager">
-        <constructor-arg name="msn" value="${serviceManagers.unreg.msn}"/>
+<!--        <constructor-arg name="msn" value="${serviceManagers.unreg.msn}"/>-->
         <lookup-method name="createService" bean="services.unregister"/>
     </bean>
 
     <bean id="services.register" class="symphony.bm.bmlogicdevices.services.RegisterService" scope="prototype">
         <constructor-arg name="symphonyEnvironment" ref="CORE.env"/>
         <constructor-arg name="logDomain" value="${log.logic}"/>
-        <constructor-arg name="messageServiceName" value="${serviceManagers.register.msn}"/>
+        <constructor-arg name="messageServiceName" value="${services.register.msn}"/>
         <constructor-arg name="mongoDBManager" ref="DB.mongodb"/>
         <constructor-arg name="productsCollectionName" value="${mongo.collection.products}"/>
         <constructor-arg name="restCommunicator" ref="REST.outboundCommunicator"/>
-        <constructor-arg name="serviceName" value="${serviceManagers.register.name}"/>
+        <constructor-arg name="serviceName" value="${services.register.name}"/>
     </bean>
     <bean id="services.unregister" class="symphony.bm.bmlogicdevices.services.UnregisterService" scope="prototype">
         <constructor-arg name="symphonyEnvironment" ref="CORE.env"/>
         <constructor-arg name="logDomain" value="${log.logic}"/>
-        <constructor-arg name="messageServiceName" value="${serviceManagers.unreg.msn}"/>
+        <constructor-arg name="messageServiceName" value="${services.unreg.msn}"/>
         <constructor-arg name="restCommunicator" ref="REST.outboundCommunicator"/>
-        <constructor-arg name="serviceName" value="${serviceManagers.unreg.name}"/>
+        <constructor-arg name="serviceName" value="${services.unreg.name}"/>
     </bean>
 
 </beans>

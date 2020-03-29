@@ -4,14 +4,16 @@ public class DeviceProperty {
     private int index;
     private String name;
     private String type;
+    private DevicePropertyMode mode;
     private int minValue;
     private int maxValue;
     private int value;
 
-    public DeviceProperty(int index, String name, String type, int minValue, int maxValue) {
+    public DeviceProperty(int index, String name, String type, DevicePropertyMode mode, int minValue, int maxValue) {
         this.index = index;
         this.name = name;
         this.type = type;
+        this.mode = mode;
         this.minValue = minValue;
         this.maxValue = maxValue;
     }
@@ -46,5 +48,9 @@ public class DeviceProperty {
 
     public int getMaxValue() {
         return maxValue;
+    }
+
+    public DevicePropertyMode getMode() {
+        return mode;
     }
 }
