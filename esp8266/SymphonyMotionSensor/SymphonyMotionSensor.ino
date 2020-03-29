@@ -44,11 +44,11 @@ int wsHandler(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json)
 			case 10: {
 				String ssid = json["ssid"].as<char*>();
 				product.setValue(ssid, json["val"].as<int>());
-				json["core"] = 20;
-				s.textAll(json);		//broadcast to other clients
-				String strReg;
-				json.printTo(strReg);
-				s.transmit(strReg.c_str());
+//				json["core"] = 20;
+//				s.textAll(json);		//broadcast to other clients
+//				String strReg;
+//				json.printTo(strReg);
+//				s.transmit(strReg.c_str());
 				if (ssid.toInt() == 25) {
 					isLatchSwitch = json["val"];
 				} else if (ssid.toInt() == 27) {
@@ -107,7 +107,7 @@ void setup()
 	pinMode(LED_PIN1, OUTPUT);
 	digitalWrite(LED_PIN1, 1);
 	Gui gui1 = Gui("Mode", BUTTON_CTL, "Latch", 0, 1, 0);
-	product.addProperty("0025", LED_PIN1, gui1);
+	product.addCallableProperty("0025", LED_PIN1, gui1);
 	Gui gui2 = Gui("Mode", BUTTON_SNSR, "Sensor", 0, 1, 0);
 	product.addProperty("0026", INPUT_PIN, gui2);
 	Gui gui3 = Gui("Mode", BUTTON_SNSR, "Controller", 0, 1, 1);
