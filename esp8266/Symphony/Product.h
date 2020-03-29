@@ -34,7 +34,6 @@
 #include <ArduinoJson.h>
 #include "DataObjects.h"
 
-#define DEBUG_
 /*
  * _CTL means pinmode is OUTPUT and GUI displays this as an enabled element that can control the device
  * _SNSR means pinmode is INPUT and GUI displays this as a disabled element that shows values from the state of the device
