@@ -78,17 +78,55 @@ int (* WsCallback) (AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject&
 int (* MqttCallback) (JsonObject& json);
 
 /**
+ * Transmits data to the BM
+ * 	this could be via MQTT or any other protocol
+ */
+void transmit(const char* payload) {
+	//for now, we are using mqtt
+	if (theMqttHandler.isConnected()) {
+		theMqttHandler.publish(payload, 0);	//we are setting QOS of 0 to prevent from multiple sending of messages
+	} else {
+		Serial.println("[CORE] FAILED, not connected to MQTT. Unable to transmit data.");
+	}
+}
+
+/**
  * The callback function that called by Product.setValue.
  * Sends transactions to the WS and MQTT.
  * If event was triggered by WS Client, we should send message to all WS Clients and the MQTT to inform the BM.
  *   - this means that there is command from WS Client to change state of the property.
  * If event was triggered by MQTT, we should send message to all WS Clients but need not send to MQTT to inform the BM.
- *   - this means that the BM sent a message
+ *   - this means that the BM sent the message
  *
  */
 int productValueChangedEvent (int propertyIndex) {
 	attribStruct a = Symphony::product.getKeyVal(propertyIndex);
-	Serial.printf("productValueChangeEvent propertyIndex=%i SSID=%s LABEL=%s VALUE=%i\n", propertyIndex, a.ssid.c_str(), a.gui.label.c_str(), a.gui.value);
+	Serial.printf("\n[CORE]================================productValueChangeEvent\n[CORE]propertyIndex=%i SSID=%s LABEL=%s VALUE=%i\n", propertyIndex, a.ssid.c_str(), a.gui.label.c_str(), a.gui.value);
+	//create the reply string to the WS {"core":20,"cmd":10,"ssid":"0026","mac":"5ccf7fc78dc3","cid":0,"val":1}
+	DynamicJsonBuffer jsonBuffer;
+	JsonObject& reply = jsonBuffer.createObject();
+	reply["core"] = WSCLIENT_DO_DISPLAY;
+	reply["cmd"] = WSCLIENT_DO_CMD;
+	reply["ssid"] = a.ssid;
+	reply["mac"] = Symphony::mac;
+	reply["cid"] = 0;	//the client id, we set it to 0
+	reply["val"] = a.gui.value;
+	String strReply;
+	reply.printTo(strReply);
+	ws.textAll(strReply);
+
+	DynamicJsonBuffer buffer;
+	JsonObject& poopJson = buffer.createObject();
+	poopJson["MRN"] = Symphony::getMRN();
+	poopJson["MSN"] = "poop";
+	poopJson["CID"] = "0000";
+	poopJson["prop-index"] = a.ssid;
+	poopJson["prop-value"] = a.gui.value;
+	String strReg;
+	poopJson.printTo(strReg);
+	transmit(strReg.c_str());	//transmit to mqtt
+
+	Serial.println("[CORE]================================productValueChangeEvent done");
 }
 /*
  *	wsEvent handles the transactions sent by client websockets.
@@ -222,24 +260,27 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 								{
 									int cmd = json["cmd"].as<int>();
 									if (cmd == CMD_PIN_CONTROL) {//command to control the device pins
-										//evaluate if corePin==true, execute here.  Else pass to wscallback
+										//evaluate if directPin==true, execute here.  Else pass to wscallback
 										attribStruct attrib = Symphony::product.getProperty(json["ssid"].as<char *>());
 #ifdef DEBUG_ONLY
-										Serial.printf("[CORE] got attribute %s, current value=%i, pin=%i, corePin=%s\n", attrib.ssid.c_str(), attrib.gui.value, attrib.pin, attrib.corePin?"true":"false");
+										Serial.printf("[CORE] got attribute %s, current value=%i, pin=%i, directPin=%s\n", attrib.ssid.c_str(), attrib.gui.value, attrib.pin, attrib.directPin?"true":"false");
 #endif
-										if (attrib.corePin) {
+										if (attrib.directPin) {//we set the value here because this is a directPin and its value can be set to pin directly
 											Symphony::product.setValue(json["ssid"].as<char *>(), json["val"].as<int>());
-										} else {
-											//this is for the implementor
+											json["core"] = WSCLIENT_DO_DISPLAY;
+										} else {//we do not set the value here, the callback might need to do some computation before setting the pin
+#ifdef DEBUG_ONLY
+											Serial.printf("[CORE] Cannot set the property %s since it is not directly changeable.", attrib.ssid.c_str());
+#endif
 											if (WsCallback != nullptr) {
 												WsCallback(ws, client, json);
 											} else {
 												Serial.println("[CORE] wsEvent No Websocket callback set!!!");
 											}
 										}
-										String strReply;
-										json.printTo(strReply);
-										ws.textAll(strReply);
+//										String strReply;
+//										json.printTo(strReply);
+//										ws.textAll(strReply);
 									} else {//other commands like setup, etc specific to the control of device
 										//this is for the implementor
 										if (WsCallback != nullptr) {
@@ -317,15 +358,17 @@ void mqttMsgHandler(char* topic, char* payload, size_t len) {
 	  Serial.printf("[CORE] RID=%s \n", jsonMsg["RID"].as<String>().c_str());
 	  Serial.println(Symphony::product.stringify());
 
-	  //evaluate if corePin==true, execute here.  Else pass to wscallback
+	  //evaluate if directPin==true, execute here.  Else pass to wscallback
 	  attribStruct attrib = Symphony::product.getProperty(jsonMsg["property"].as<char *>());
 #ifdef DEBUG_ONLY
-	  Serial.printf("[CORE] got attribute %s, current value=%i, pin=%i, corePin=%s\n", attrib.ssid.c_str(), attrib.gui.value, attrib.pin, attrib.corePin?"true":"false");
+	  Serial.printf("[CORE] got attribute %s, current value=%i, pin=%i, directPin=%s\n", attrib.ssid.c_str(), attrib.gui.value, attrib.pin, attrib.directPin?"true":"false");
 #endif
-	  if (attrib.corePin) {
+	  if (attrib.directPin) {//we set the value here because this is a directPin and its value can be set to pin directly
 		  Symphony::product.setValue(jsonMsg["property"].as<String>(), jsonMsg["value"].as<int>());
-	  } else {
-		  Serial.println("[CORE] Cannot set the property %s since it is not directly changeable.");
+	  } else {//we do not set the value here, the callback might need to do some computation before setting the pin
+#ifdef DEBUG_ONLY
+		  Serial.printf("[CORE] Cannot set the property %s since it is not directly changeable.", attrib.ssid.c_str());
+#endif
 		  if (MqttCallback != nullptr) {
 			  MqttCallback(jsonMsg);
 		  } else {
@@ -334,7 +377,7 @@ void mqttMsgHandler(char* topic, char* payload, size_t len) {
 	  }
 	  DynamicJsonBuffer jsonBuff;
 	  JsonObject& json = jsonBuff.createObject();
-	  json["core"] = WSCLIENT_CONTROL;
+	  json["core"] = WSCLIENT_CALLBACK_CONTROL;
 	  json["cmd"] = WSCLIENT_DO_CMD;
 	  json["mac"] = Symphony::mac;
 	  json["ssid"] = jsonMsg["property"].as<String>();
@@ -933,17 +976,13 @@ bool Symphony::registerProduct() {
 		}
 	}
 }
+
 /**
- * Transmits data to the BM
- * 	this could be via MQTT or any other protocol
+ * The exposed transmit function
  */
 void Symphony::transmit(const char* payload) {
 	//for now, we are using mqtt
-	if (theMqttHandler.isConnected()) {
-		theMqttHandler.publish(payload, 0);	//we are setting QOS of 0 to prevent from multiple sending of messages
-	} else {
-		Serial.println("[CORE] FAILED, not connected to MQTT. Unable to transmit data.");
-	}
+	transmit(payload);
 }
 /**
  * returns the MRN as string with 7 digits

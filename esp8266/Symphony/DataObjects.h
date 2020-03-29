@@ -22,7 +22,7 @@
 
 #define  CMD_INIT 1						//a command from device to the client for the initiation of the websocket, deprecated
 #define  CMD_VALUES 2					//a command from device to the client when sending the values requested via CORE_VALUES
-#define  WSCLIENT_CONTROL 7				//a core command from device to the WS Client
+#define  WSCLIENT_CALLBACK_CONTROL 7	//a core command from device to the WS Client
 #define  WSCLIENT_DO_CMD 10				//a command from device to the client to change the state of the elements displayed. This is used to update the GUI when values change in the product's properties
 #define  WSCLIENT_DO_DISPLAY 20			//a core command from device to the client to change the state of the elements displayed. This is used to update the GUI when values change in the product's properties
 #define  CMD_PIN_CONTROL 10				//a command the client to change the state of the pins of the device. This should update the product's properties.

@@ -6,7 +6,7 @@
  */
 #include "Product.h"
 
-#define DEBUG_
+//#define DEBUG_
 
 Product::Product(){}
 
@@ -27,54 +27,53 @@ void Product::setValueChangeCallback(int (* Callback) (int propertyIndex)) {
 	valueChangeCallback = Callback;
 }
 /**
- *
- *
- * ssid		= the SSID of this property (from the COMPROPLIST table)
- * corePin	= if true (1), pin will be handled in the core Symphony.  if false (0), pin will be handled by the implementing ino class.
- * pin		= the corresponding ESP8266 pin where this property is attached.  if < 0, this component is virtual and not attached to a pin
- * gui		= the gui attributes
- * 	pinType		= the type of pin {RADIO_CTL = 1, BUTTON_CTL = 2, SLIDER_CTL = 3 , RADIO_SNSR = 5, BUTTON_SNSR = 6, SLIDER_SNSR = 7, UNDEF = 99}
-			= CTL = pinMode(as.pin, OUTPUT);
-			= SNSR = pinMode(as.pin, INPUT);
- * 	label		= the label to be displayed in the WebSocket page
- * 	min			= the minimum value
- * 	max			= the maximum value
- * 	value		= the actual value
- *
- */
-void Product::addProperty(String ssid, boolean corePin, int8_t pin, Gui gui)
-{
+* ssid		= the SSID of this property (from the COMPROPLIST table)
+* directPin
+* 		- if true (1), pin will be handled in the core Symphony.
+* 		- if false(0), pin will be handled by the implementing ino class by providing callback functions.
+* 	 		callback functions might need to do some calculation first before setting the value of the pi.
+* pin		= the corresponding ESP8266 pin where this property is attached.  if < 0, this component is virtual and not attached to a pin
+* gui		= the gui attributes
+* 	pinType		= the type of pin {RADIO_CTL = 1, BUTTON_CTL = 2, SLIDER_CTL = 3 , RADIO_SNSR = 5, BUTTON_SNSR = 6, SLIDER_SNSR = 7, UNDEF = 99}
+		= CTL = pinMode(as.pin, OUTPUT);
+		= SNSR = pinMode(as.pin, INPUT);
+* 	label		= the label to be displayed in the WebSocket page
+* 	min			= the minimum value
+* 	max			= the maximum value
+* 	value		= the actual value
+*/
+void Product::addProperty(String ssid, boolean directPin, int8_t pin, Gui gui) {
 	size++;
 	attribStruct as;
 	as.ssid = ssid;
-	as.corePin = corePin;
+	as.directPin = directPin;
 	as.pin = pin;
 	as.gui = gui.gui;
 #ifdef DEBUG_
-	Serial.printf("SymphProduct::addProperty data ssid:%s pin:%i type:%i",as.ssid.c_str(), as.pin, as.gui.pinType);
+	Serial.printf("[Product]::addProperty data ssid:%s pin:%i type:%i",as.ssid.c_str(), as.pin, as.gui.pinType);
 #endif
 	if (pin < 0) {
 		//this property is not physical (it is virtual), no need to set the pinmode
 #ifdef DEBUG_
-		Serial.println("SymphProduct::addProperty this is a virtual pin.");
+		Serial.println("[Product]::addProperty this is a virtual pin.");
 #endif
 	} else {
 		if (as.gui.pinType == BUTTON_CTL || as.gui.pinType == RADIO_CTL || as.gui.pinType == SLIDER_CTL) {
 			pinMode(as.pin, OUTPUT);
 #ifdef DEBUG_
-			Serial.printf("SymphProduct::addProperty setting pin%d as OUTPUT.\n", as.pin);
+			Serial.printf("[Product]::addProperty setting pin%d as OUTPUT.\n", as.pin);
 #endif
 		} else {
 			pinMode(as.pin, INPUT);
 #ifdef DEBUG_
-			Serial.printf("SymphProduct::addProperty setting pin%d as INPUT.", as.pin);
+			Serial.printf("[Product]::addProperty setting pin%d as INPUT.", as.pin);
 #endif
 		}
 	}
-	as.corePin = corePin;
+	as.directPin = directPin;
 	as.ssid = ssid;
 #ifdef DEBUG_
-	Serial.printf("SymphProduct::addProperty size=%d, sizeof=%d\n", size, sizeof(attribStruct));
+	Serial.printf("[Product]::addProperty size=%d, sizeof=%d\n", size, sizeof(attribStruct));
 #endif
 	attribStruct* temp = new attribStruct[size];
 	for (int i=0; i<size; i++) {
@@ -95,8 +94,24 @@ void Product::addProperty(String ssid, boolean corePin, int8_t pin, Gui gui)
 //  pIndex++;
 //  size = pIndex;
 #ifdef DEBUG_
-  Serial.println("Done SymphProduct::addProperty");
+  Serial.println("[Product]::addProperty Done");
 #endif
+}
+/**
+ * directPin will be set to true (1), pin will be handled in the core Symphony.
+ *
+ */
+void Product::addProperty(String ssid, int8_t pin, Gui gui){
+	addProperty(ssid, true, pin, gui);
+}
+
+/**
+ * directPin will be set to false(0) pin will be handled by the implementing ino class by providing callback functions.
+ * 	 	callback functions might need to do some calculation first before setting the value of the pi.
+ *
+ */
+void Product::addCallableProperty(String ssid, int8_t pin, Gui gui){
+	addProperty(ssid, false, pin, gui);
 }
 
 /**
@@ -104,7 +119,7 @@ void Product::addProperty(String ssid, boolean corePin, int8_t pin, Gui gui)
  * The overloaded addProperty method
  * this is for the virtual property
  */
-void Product::addProperty(String ssid, Gui gui) {
+void Product::addVirtualProperty(String ssid, Gui gui) {
 	addProperty(ssid, false, -1, gui);
 }
 
@@ -116,11 +131,11 @@ attribStruct Product::getProperty(String ssid) {
   for (int i=0; i<size; i++) {
     if (strcmp(ssid.c_str(), attributes[i].ssid.c_str())==0) {
 #ifdef DEBUG_
-      Serial.print("SymphProduct::getProperty i=");Serial.print(i);
+      Serial.print("[Product]::getProperty i=");Serial.print(i);
 	  Serial.print("\tsize=");Serial.print(size);
 	  Serial.print("\tpin=");Serial.print(attributes[i].pin);
 	  Serial.print("\tp.pinType=");Serial.print(attributes[i].gui.pinType);
-	  Serial.print("\tp.corepin=");Serial.print(attributes[i].corePin);
+	  Serial.print("\tp.directPin=");Serial.print(attributes[i].directPin);
 	  Serial.print("\tp.ssid=");Serial.print(attributes[i].ssid);
 	  Serial.print("\tprop.value=");Serial.println(attributes[i].gui.value);
 #endif
@@ -131,7 +146,7 @@ attribStruct Product::getProperty(String ssid) {
   attribStruct ps;
   ps.pin = -1;
   ps.gui.pinType = BUTTON_CTL;
-  ps.corePin = false;
+  ps.directPin = false;
   ps.ssid = "NULL";
   return ps;
 }
@@ -148,7 +163,7 @@ attribStruct Product::getKeyVal(int index) {
 		attribStruct ps;
 		ps.pin = -1;
 		ps.gui.pinType = BUTTON_CTL;
-		ps.corePin = false;
+		ps.directPin = false;
 		ps.ssid = "NULL";
 		return ps;
 	}
@@ -162,11 +177,11 @@ void Product::setValue(String ssid, int value) {
 	for (int i=0; i<size; i++) {
 	    if (strcmp(ssid.c_str(), attributes[i].ssid.c_str())==0) {
 #ifdef DEBUG_
-      Serial.print("SymphProduct::setValue before set i=");Serial.print(i);
+      Serial.print("[Product]::setValue before set i=");Serial.print(i);
 		  Serial.print("\t size=");Serial.print(size);
 		  Serial.print("\t pin=");Serial.print(attributes[i].pin);
 		  Serial.print("\t p.pinType=");Serial.print(attributes[i].gui.pinType);
-		  Serial.print("\t p.corepin=");Serial.print(attributes[i].corePin);
+		  Serial.print("\t p.directPin=");Serial.print(attributes[i].directPin);
 		  Serial.print("\t p.ssid=");Serial.print(attributes[i].ssid);
 		  Serial.print("\t prop.value=");Serial.println(attributes[i].gui.value);
 #endif
@@ -194,7 +209,7 @@ String Product::stringify() {
 		element["val"] = attributes[i].gui.value;
 		element["grp"] = attributes[i].gui.group;
 		element["id"] = attributes[i].ssid;
-		element["hasPin"] = attributes[i].corePin;
+		element["hasPin"] = attributes[i].directPin;
 	}
 	String s;
 	json.printTo(s);
@@ -225,11 +240,11 @@ String Product::stringifyValues() {
 void Product::print() {
   for (int i=0; i<size; i++) {
 #ifdef DEBUG_
-	  Serial.print("SymphProduct::print i=");Serial.print(i);
+	  Serial.print("[Product]::print i=");Serial.print(i);
 	  Serial.print("\tsize=");Serial.print(size);
       Serial.print("\tp.pin=");Serial.print(attributes[i].pin);
       Serial.print("\tp.pinType=");Serial.print(attributes[i].gui.pinType);
-      Serial.print("\tp.corepin=");Serial.print(attributes[i].corePin);
+      Serial.print("\tp.directPin=");Serial.print(attributes[i].directPin);
       Serial.print("\tp.ssid=");Serial.print(attributes[i].ssid);
       Serial.print("\tprop.value=");Serial.println(attributes[i].gui.value);
 #endif
