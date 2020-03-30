@@ -52,11 +52,13 @@ public class MQTTPublisher extends Sender {
 
 	@Override
 	public void sendJeepMessage(JeepMessage message) {
-		if(message.getMSN().equals(msn_register)) {
-			publishToDefaultTopic(message);
-		} else {
-			publish(devices_topic + "/" + message.getCID(), message.toString());
-		}
+//		if(message.getMSN().equals(msn_register)) {
+//			publishToDefaultTopic(message);
+//		} else {
+//			publish(devices_topic + "/" + message.getCID(), message.toString());
+//		}
+		publishToDefaultTopic(message);
+		publish(devices_topic + "/" + message.getCID(), message.toString());
 	}
 	
 	@Override

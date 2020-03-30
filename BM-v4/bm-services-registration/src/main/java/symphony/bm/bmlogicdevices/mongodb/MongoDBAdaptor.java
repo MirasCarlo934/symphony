@@ -2,6 +2,7 @@ package symphony.bm.bmlogicdevices.mongodb;
 
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import symphony.bm.bmlogicdevices.adaptors.Adaptor;
@@ -13,6 +14,8 @@ import java.util.List;
 import java.util.Vector;
 
 import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.combine;
+import static com.mongodb.client.model.Updates.set;
 
 public class MongoDBAdaptor implements Adaptor {
     private Logger LOG;
@@ -88,5 +91,15 @@ public class MongoDBAdaptor implements Adaptor {
     @Override
     public void propertyValueUpdated(Device device, DeviceProperty property) {
 
+    }
+
+    @Override
+    public void deviceUpdated(Device device) {
+        LOG.info("Updating device " + device.getCID() + " in MongoDB...");
+        MongoCollection<Document> devices = mongo.getCollection(devicesCollection);
+        Document room = device.getRoom().convertToDocument();
+        Bson update = combine(set("name", device.getName()), set("room", room));
+        devices.findOneAndUpdate(eq("CID", device.getCID()), update);
+        LOG.info("Device " + device.getCID() + " updated in MongoDB");
     }
 }
