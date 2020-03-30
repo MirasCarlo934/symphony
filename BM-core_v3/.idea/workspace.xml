@@ -2,39 +2,56 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7751de6c-8d69-41e4-8dde-bd532f5dc6af" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-services-poop/.mvn/wrapper/MavenWrapperDownloader.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-services-poop/src/main/java/symphony/bm/bmservicespoop/BmServicesPoopApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-services-poop/src/test/java/symphony/bm/bmservicespoop/BmServicesPoopApplicationTests.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/.idea/bm-comms.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/BmCommsApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/Protocol.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/jeep/exceptions/PrimaryMessageCheckingException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/mqtt/MQTTClient.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/mqtt/objects/MQTTMessage.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-services-poop/src/main/java/symphony/bm/bmservicespoop/DevicePropertyRegistry.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-services-poop/src/main/java/symphony/bm/bmservicespoop/adaptors/POOPAdaptor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-services-poop/src/main/java/symphony/bm/bmservicespoop/cir/rule/Rule.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-services-poop/src/main/java/symphony/bm/bmservicespoop/cir/rule/TriggerComparativeOperator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-services-poop/src/main/java/symphony/bm/bmservicespoop/cir/rule/TriggerLogicalOperator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-services-poop/src/main/java/symphony/bm/bmservicespoop/entities/DeviceProperty.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-services-poop/src/main/java/symphony/bm/bmservicespoop/entities/DevicePropertyMode.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-services-poop/src/main/java/symphony/bm/bmservicespoop/jeep/JeepMessage.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-services-poop/src/main/java/symphony/bm/bmservicespoop/jeep/JeepResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-services-poop/src/main/java/symphony/bm/bmservicespoop/mongodb/MongoDB_POOPAdaptor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-services-poop/src/main/java/symphony/bm/bmservicespoop/rest/RestMicroserviceCommunicator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-services-poop/src/main/java/symphony/bm/bmservicespoop/services/AbstService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-services-poop/src/main/java/symphony/bm/bmservicespoop/services/POOPService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-services-poop/src/main/java/symphony/bm/bmservicespoop/services/ServiceManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-services-poop/src/main/java/symphony/bm/bmservicespoop/services/exceptions/MessageParameterCheckingException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-services-registration/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/mongodb/MongoDBManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/.idea/compiler.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/BMCommsApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/Protocol.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/jeep/exceptions/PrimaryMessageCheckingException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/jeep/exceptions/SecondaryMessageCheckingException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/mqtt/MQTTClient.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/mqtt/objects/MQTTMessage.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/resources/application.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/src/test/java/symphony/bm/bm_comms/BmCommsApplicationTests.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/.mvn/wrapper/MavenWrapperDownloader.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/.mvn/wrapper/maven-wrapper.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/mvnw" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/mvnw.cmd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/adaptors/Adaptor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/controller/ControllerThreadFactory.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/controller/ThreadPool.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/controller/ThreadRejectionHandler.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/entities/Device.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/entities/Room.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/mongodb/MongoDBManager.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/rest/vo/Success.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/resources/application.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../esp8266/SymphonyMotionSensor/sloeber.ino.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../esp8266/SymphonyMotionSensor/sloeber.ino.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/resources/bm-comms.config.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/resources/bm-comms.config.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/resources/bm-comms.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-comms/resources/bm.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-poop/resources/bm-services-poop.config.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-poop/resources/bm.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-services-poop/resources/bm.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-poop/src/main/java/symphony/bm/bmservicespoop/BmServicesPoopApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-services-poop/src/main/java/symphony/bm/bmservicespoop/BmServicesPoopApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-poop/src/main/java/symphony/bm/bmservicespoop/cir/CIRManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-services-poop/src/main/java/symphony/bm/bmservicespoop/cir/CIRManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-poop/src/main/java/symphony/bm/bmservicespoop/cir/Rule.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-poop/src/main/java/symphony/bm/bmservicespoop/mongodb/MongoDBManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-services-poop/src/main/java/symphony/bm/bmservicespoop/mongodb/MongoDBManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-poop/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-services-poop/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-services-registration/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-services-registration/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/bm-serviceManagers-registration.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-services-registration/bm-serviceManagers-registration.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/resources/bm-services-registration.config.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-services-registration/resources/bm-services-registration.config.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/SymphonyEnvironment.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/SymphonyEnvironment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/adaptors/Adaptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/adaptors/RegistryAdaptor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/controller/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/controller/Controller.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/entities/Device.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/entities/Device.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/entities/Room.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/entities/Room.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/mongodb/MongoDBAdaptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/mongodb/MongoDBRegistryAdaptor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/rest/InboundRestMicroserviceCommunicator.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/rest/InboundRestMicroserviceCommunicator.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -46,18 +63,9 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/bm/main/modules/RegistrationModule.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="408">
-              <caret line="48" column="8" selection-start-line="48" selection-start-column="8" selection-end-line="48" selection-end-column="8" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/bm/comms/Listener.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
+            <state relative-caret-position="255">
               <caret line="15" column="18" selection-start-line="15" selection-start-column="18" selection-end-line="15" selection-end-column="18" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -87,7 +95,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/bm/main/controller/Controller.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
+            <state relative-caret-position="408">
               <caret line="24" column="24" selection-start-line="24" selection-start-column="24" selection-end-line="24" selection-end-column="24" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -117,7 +125,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/bm/main/Maestro.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
+            <state relative-caret-position="391">
               <caret line="23" selection-start-line="23" selection-end-line="23" selection-end-column="62" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -126,11 +134,29 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/configuration/spring/adaptors-config.xml">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="68">
               <caret line="4" column="16" selection-start-line="4" selection-start-column="16" selection-end-line="4" selection-end-column="16" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/bm/comms/Protocol.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="34">
+              <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/bm/comms/mqtt/MQTTClient.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="544">
+              <caret line="43" column="13" lean-forward="true" selection-start-line="43" selection-start-column="13" selection-end-line="43" selection-end-column="13" />
             </state>
           </provider>
         </entry>
@@ -183,7 +209,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -229,7 +254,7 @@
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="bm" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="comms" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="BM-core_v3" type="b2602c69:ProjectViewProjectNode" />
@@ -238,8 +263,19 @@
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="bm" type="462c0819:PsiDirectoryNode" />
+              <item name="comms" type="462c0819:PsiDirectoryNode" />
+              <item name="mqtt" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="BM-core_v3" type="b2602c69:ProjectViewProjectNode" />
+              <item name="BM-core_v3" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="modules" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="bm" type="462c0819:PsiDirectoryNode" />
+              <item name="comms" type="462c0819:PsiDirectoryNode" />
+              <item name="mqtt" type="462c0819:PsiDirectoryNode" />
+              <item name="objects" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="BM-core_v3" type="b2602c69:ProjectViewProjectNode" />
@@ -253,6 +289,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
       <pane id="Scope" />
     </panes>
   </component>
@@ -310,11 +347,12 @@
       <workItem from="1585044740544" duration="661000" />
       <workItem from="1585214673174" duration="1984000" />
       <workItem from="1585529274001" duration="339000" />
+      <workItem from="1585566943420" duration="875000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="19779000" />
+    <option name="totallyTimeSpent" value="20654000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -359,13 +397,6 @@
     <option name="version" value="1" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/bm/jeep/vo/JEEPMessage.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-442">
-          <caret line="11" column="25" selection-start-line="11" selection-start-column="25" selection-end-line="11" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/bm/jeep/vo/JEEPRequest.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
@@ -387,13 +418,6 @@
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/bm/comms/Protocol.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
         </state>
       </provider>
     </entry>
@@ -718,7 +742,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/bm/comms/Listener.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
+        <state relative-caret-position="255">
           <caret line="15" column="18" selection-start-line="15" selection-start-column="18" selection-end-line="15" selection-end-column="18" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -742,7 +766,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/bm/main/controller/Controller.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
+        <state relative-caret-position="408">
           <caret line="24" column="24" selection-start-line="24" selection-start-column="24" selection-end-line="24" selection-end-column="24" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -766,7 +790,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/bm/main/Maestro.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
+        <state relative-caret-position="391">
           <caret line="23" selection-start-line="23" selection-end-line="23" selection-end-column="62" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -778,6 +802,20 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
           <caret line="4" column="16" selection-start-line="4" selection-start-column="16" selection-end-line="4" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/bm/comms/Protocol.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/bm/comms/mqtt/MQTTClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="544">
+          <caret line="43" column="13" lean-forward="true" selection-start-line="43" selection-start-column="13" selection-end-line="43" selection-end-column="13" />
         </state>
       </provider>
     </entry>

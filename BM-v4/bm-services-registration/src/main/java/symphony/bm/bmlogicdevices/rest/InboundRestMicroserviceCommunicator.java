@@ -13,7 +13,6 @@ import symphony.bm.bmlogicdevices.SymphonyEnvironment;
 import symphony.bm.bmlogicdevices.controller.Controller;
 import symphony.bm.bmlogicdevices.jeep.JeepMessage;
 import symphony.bm.bmlogicdevices.jeep.JeepResponse;
-import symphony.bm.bmlogicdevices.rest.vo.Success;
 import symphony.bm.bmlogicdevices.services.exceptions.MessageParameterCheckingException;
 
 @RestController

@@ -1,6 +1,6 @@
 package symphony.bm.bmlogicdevices.entities;
 
-import symphony.bm.bmlogicdevices.adaptors.Adaptor;
+import symphony.bm.bmlogicdevices.adaptors.RegistryAdaptor;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,9 +12,9 @@ public class Device {
     private String name;
     private Room room;
     private HashMap<Integer, DeviceProperty> properties = new HashMap<>();
-    private List<Adaptor> adaptors;
+    private List<RegistryAdaptor> adaptors;
 
-    public Device(String cid, String pid, String name, Room room, List<DeviceProperty> properties, List<Adaptor> adaptors) {
+    public Device(String cid, String pid, String name, Room room, List<DeviceProperty> properties, List<RegistryAdaptor> adaptors) {
         this.cid = cid;
         this.pid = pid;
         this.name = name;
@@ -29,13 +29,13 @@ public class Device {
     }
 
     public void registerDevice() {
-        for (Adaptor adaptor : adaptors) {
+        for (RegistryAdaptor adaptor : adaptors) {
             adaptor.deviceRegistered(this);
         }
     }
 
     public void unregisterDevice() {
-        for (Adaptor adaptor : adaptors) {
+        for (RegistryAdaptor adaptor : adaptors) {
             adaptor.deviceUnregistered(this);
         }
     }
@@ -45,7 +45,7 @@ public class Device {
             this.name = name;
         if (room != null)
             this.room = room;
-        for (Adaptor adaptor : adaptors) {
+        for (RegistryAdaptor adaptor : adaptors) {
             adaptor.deviceUpdated(this);
         }
     }
@@ -76,7 +76,7 @@ public class Device {
 
     public void setPropertyValue(int propIndex, int value) {
         DeviceProperty prop = properties.get(propIndex);
-        for (Adaptor adaptor : adaptors) {
+        for (RegistryAdaptor adaptor : adaptors) {
             adaptor.propertyValueUpdated(this, prop);
         }
         prop.setValue(value);

@@ -18,7 +18,7 @@ public class Controller {
     private LinkedList<Service> serviceQueue = new LinkedList<Service>();
     private HashMap<String, Service> ongoing = new HashMap<String, Service>(1);
     private HashMap<String, ServiceManager> serviceManagers;
-    private ThreadPool threadPool;
+//    private ThreadPool threadPool;
     private OutboundRestMicroserviceCommunicator outboundRestCommunicator;
     private SymphonyEnvironment env;
 //    private int rn = 1;

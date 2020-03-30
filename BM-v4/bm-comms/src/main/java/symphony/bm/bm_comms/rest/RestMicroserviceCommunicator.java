@@ -68,7 +68,8 @@ public class RestMicroserviceCommunicator {
      * @param message the JEEP message to be forwarded
      */
     public void forwardJeepMessage(JeepMessage message) throws IOException {
-        HttpPost request = new HttpPost(bmServerURL + ":" + servicePorts.get(message.getMSN()));
+        HttpPost request = new HttpPost(bmServerURL + ":" + servicePorts.get(message.getMSN()) + "/"
+                + message.getMSN());
         StringEntity params = new StringEntity("msg=" + message.toString());
         request.addHeader("content-type", "application/x-www-form-urlencoded");
         request.setEntity(params);

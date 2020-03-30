@@ -7,23 +7,25 @@
                            http://www.springframework.org/schema/context
                            http://www.springframework.org/schema/context/spring-context-3.0.xsd http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util.xsd">
 
-    <context:property-placeholder location="bm-comms.properties" />
+    <context:property-placeholder location="bm.properties" />
 
     <util:list id="msnList" list-class="java.util.Vector">
         <value>${services.register.msn}</value>
         <value>${services.unreg.msn}</value>
+        <value>${services.poop.msn}</value>
     </util:list>
 
     <util:map id="servicePorts" map-class="java.util.HashMap">
-        <entry key="${services.register.msn}" value="${http.url.port.services.register}"/>
-        <entry key="${services.unreg.msn}" value="${http.url.port.services.register}"/>
+        <entry key="${services.register.msn}" value="${services.register.url.port}"/>
+        <entry key="${services.unreg.msn}" value="${services.register.url.port}"/>
+        <entry key="poop" value="${services.poop.url.port}"/>
     </util:map>
 
     <bean id="DB.MongoManager" class="symphony.bm.bm_comms.mongodb.BMCommsMongoDBManager">
         <constructor-arg name="logDomain" value="${log.db}"/>
         <constructor-arg name="logName" value="MongoClient"/>
         <constructor-arg name="uri" value="${mongo.serverURI}"/>
-        <constructor-arg name="bmCommsDatabase" value="${mongo.database}"/>
+        <constructor-arg name="bmCommsDatabase" value="${mongo.database.devices}"/>
     </bean>
 
     <bean id="MQTT.client" class="symphony.bm.bm_comms.mqtt.MQTTClient">

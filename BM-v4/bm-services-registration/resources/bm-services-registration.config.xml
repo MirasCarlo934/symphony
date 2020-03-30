@@ -24,7 +24,7 @@
     </util:list>
 
 
-    <bean id="ADAPTOR.mongodb" class="symphony.bm.bmlogicdevices.mongodb.MongoDBAdaptor">
+    <bean id="ADAPTOR.mongodb" class="symphony.bm.bmlogicdevices.mongodb.MongoDBRegistryAdaptor">
         <constructor-arg name="adaptorName" value="MongoDB"/>
         <constructor-arg name="devicesCollectionName" value="${mongo.collection.devices}"/>
         <constructor-arg name="logDomain" value="${log.adaptor}"/>

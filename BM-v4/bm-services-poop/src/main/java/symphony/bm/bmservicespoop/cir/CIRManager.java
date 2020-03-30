@@ -6,20 +6,27 @@ import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
+import symphony.bm.bmservicespoop.cir.rule.Rule;
 import symphony.bm.bmservicespoop.mongodb.MongoDBManager;
 
+import java.util.List;
 import java.util.Vector;
 
+@Repository
 public class CIRManager {
     private Logger LOG;
     private MongoDatabase cirDB;
-    private String rulesCollectionName;
     private Vector<Rule> rules = new Vector<>();
 
-    public CIRManager(String logDomain, String logName, MongoDBManager mongoDBManager, String databaseName,
-                      String rulesCollectionName) {
-        LOG = LoggerFactory.getLogger(logDomain + "." + logName);
-        cirDB = mongoDBManager.getClient().getDatabase(databaseName);
+    private String rulesCollectionName;
+
+    public CIRManager(@Value("${log.poop}") String logDomain, @Value("${mongo.database.cir}") String cirDBname,
+                      @Value("${mongo.collection.rules}") String rulesCollectionName,
+                      MongoDBManager mongoDBManager) {
+        LOG = LoggerFactory.getLogger(logDomain + "." + CIRManager.class.getSimpleName());
+        cirDB = mongoDBManager.getClient().getDatabase(cirDBname);
         this.rulesCollectionName = rulesCollectionName;
 
         getRulesFromDB();
@@ -30,21 +37,32 @@ public class CIRManager {
         MongoCollection<Document> rulesCollection = cirDB.getCollection(rulesCollectionName);
         FindIterable<Document> ruleDocs = rulesCollection.find();
         int n = 0;
-        while (ruleDocs.cursor().hasNext()) {
-            Rule rule = new Rule(ruleDocs.cursor().next());
-            LOG.info("Rule " + rule.getRuleID() + "(" + rule.getRuleName() + ") found.");
-            if (!containsRule(rule.getRuleID())) {
+        for (Document ruleDoc : ruleDocs) {
+            Rule rule = new Rule(ruleDoc);
+            LOG.info("Rule " + rule.getID() + "(" + rule.getName() + ") found.");
+            if (!containsRule(rule.getID())) {
                 rules.add(rule);
                 n++;
-            } else
-                LOG.info("Rule " + rule.getRuleID() + "(" + rule.getRuleName() + ") already exists in rules list.");
+            } else {
+                LOG.info("Rule " + rule.getID() + "(" + rule.getName() + ") already exists in rules list.");
+            }
         }
         LOG.info(n + " new rules retrieved from DB. Total rules: " + rules.size());
     }
 
+    public List<Rule> getRulesTriggered(String cid, int propIndex) {
+        Vector<Rule> rulesTriggered = new Vector<>();
+        for (Rule rule : rules) {
+            if (rule.hasTriggerDeviceProperty(cid, propIndex)) {
+                rulesTriggered.add(rule);
+            }
+        }
+        return rulesTriggered;
+    }
+
     private boolean containsRule(String ruleID) {
         for (Rule rule : rules) {
-            if (rule.getRuleID().equals(ruleID)) return true;
+            if (rule.getID().equals(ruleID)) return true;
         }
         return false;
     }

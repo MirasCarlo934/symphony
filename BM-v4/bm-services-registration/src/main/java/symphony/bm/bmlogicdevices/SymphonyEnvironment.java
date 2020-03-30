@@ -5,7 +5,7 @@ import com.mongodb.client.MongoCollection;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import symphony.bm.bmlogicdevices.adaptors.Adaptor;
+import symphony.bm.bmlogicdevices.adaptors.RegistryAdaptor;
 import symphony.bm.bmlogicdevices.entities.Device;
 import symphony.bm.bmlogicdevices.entities.DeviceProperty;
 import symphony.bm.bmlogicdevices.entities.DevicePropertyMode;
@@ -18,10 +18,10 @@ public class SymphonyEnvironment {
     private Logger LOG;
     private HashMap<String, Room> rooms = new HashMap<>();
     private HashMap<String, Device> devices = new HashMap<>();
-    private List<Adaptor> adaptors;
+    private List<RegistryAdaptor> adaptors;
     private MongoDBManager mongo;
 
-    public SymphonyEnvironment(String logDomain, String logName, List<Adaptor> adaptors, MongoDBManager mongoDBManager,
+    public SymphonyEnvironment(String logDomain, String logName, List<RegistryAdaptor> adaptors, MongoDBManager mongoDBManager,
                                String devicesCollectionName, String roomsCollectionName) {
         LOG = LoggerFactory.getLogger(logDomain + "." + logName);
         this.adaptors = adaptors;

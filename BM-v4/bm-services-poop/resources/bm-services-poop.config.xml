@@ -1,22 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <context:property-placeholder location="bm.properties"/>
 
-    <bean id="DB.mongoDBManager" class="symphony.bm.bmservicespoop.mongodb.MongoDBManager">
-        <constructor-arg name="logDomain" value="${log.db}"/>
-        <constructor-arg name="logName" value="mongo"/>
-        <constructor-arg name="uri" value="${mongo.serverURI}"/>
-    </bean>
-
-    <bean id="CORE.cirManager" class="symphony.bm.bmservicespoop.cir.CIRManager">
-        <constructor-arg name="logDomain" value="${log.poop}"/>
-        <constructor-arg name="logName" value="cirManager"/>
-        <constructor-arg name="databaseName" value="${mongo.database.cir}"/>
-        <constructor-arg name="rulesCollectionName" value="${mongo.collection.rules}"/>
-        <constructor-arg name="mongoDBManager" ref="DB.mongoDBManager"/>
-    </bean>
 </beans>

@@ -5,27 +5,26 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import symphony.bm.bmlogicdevices.adaptors.Adaptor;
+import symphony.bm.bmlogicdevices.adaptors.RegistryAdaptor;
 import symphony.bm.bmlogicdevices.entities.Device;
 import symphony.bm.bmlogicdevices.entities.DeviceProperty;
 import symphony.bm.bmlogicdevices.entities.Room;
 
 import java.util.List;
-import java.util.Vector;
 
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.set;
 
-public class MongoDBAdaptor implements Adaptor {
+public class MongoDBRegistryAdaptor implements RegistryAdaptor {
     private Logger LOG;
     private MongoDBManager mongo;
     private String devicesCollection;
     private String roomsCollection;
     private String productsCollection;
 
-    public MongoDBAdaptor(String logDomain, String adaptorName, MongoDBManager mongoDBManager,
-                          String devicesCollectionName, String roomsCollectionName, String productsCollectionName) {
+    public MongoDBRegistryAdaptor(String logDomain, String adaptorName, MongoDBManager mongoDBManager,
+                                  String devicesCollectionName, String roomsCollectionName, String productsCollectionName) {
         LOG = LoggerFactory.getLogger(logDomain + "." + adaptorName);
         this.mongo = mongoDBManager;
         this.devicesCollection = devicesCollectionName;

@@ -4,7 +4,7 @@ import symphony.bm.bmlogicdevices.entities.Device;
 import symphony.bm.bmlogicdevices.entities.DeviceProperty;
 import symphony.bm.bmlogicdevices.entities.Room;
 
-public interface Adaptor {
+public interface RegistryAdaptor {
     void deviceRegistered(Device device);
     void deviceUnregistered(Device device);
     void deviceUpdated(Device device);
