@@ -38,6 +38,7 @@ public class RegisterService extends Service {
     @Override
     protected JeepResponse process(JeepMessage message) {
         String cid = message.getCID();
+        String name = message.getString("name");
         MongoCollection<Document> products = mongo.getCollection(productsCollection);
         Device device = env.getDeviceObject(cid);
 
@@ -74,23 +75,31 @@ public class RegisterService extends Service {
                 pid = prodJSON.getString("PID");
                 for (Object p : propsJSON) {
                     JSONObject propJSON = (JSONObject) p;
-                    String name = propJSON.getString("name");
+                    String propName = propJSON.getString("name");
                     int index = propJSON.getInt("index");
                     String type = propJSON.getString("type");
                     DevicePropertyMode mode = DevicePropertyMode.valueOf(propJSON.getString("mode"));
                     int minVal = propJSON.getInt("minValue");
                     int maxVal = propJSON.getInt("maxValue");
-                    properties.add(new DeviceProperty(index, name, type, mode, minVal, maxVal));
+                    properties.add(new DeviceProperty(index, propName, type, mode, minVal, maxVal));
                 }
             }
-            env.createDeviceObject(message.getCID(), pid,
-                    message.getString("name"), roomObj, properties);
+            env.createDeviceObject(message.getCID(), pid, name, roomObj, properties);
             LOG.info("Device " + cid + " registered successfully!");
             return new JeepResponse(message);
         } else {
-            //TODO device update functionality
+            Room room;
+            if (message.get("room").getClass().equals(String.class)) {
+                room = env.getRoomObject(message.getString("room"));
+            } else {
+                JSONObject roomJSON = message.getJSONObject("room");
+                room = env.createRoomObject(roomJSON.getString("RID"), roomJSON.getString("name"));
+            }
             LOG.info("Updating device " + cid + "...");
-            return null;
+            LOG.info("Updating device " + cid + " name to " + name + "...");
+            LOG.info("Updating device " + cid + " room to " + room.getRID() + "(" + room.getName() + ")...");
+            device.updateDetails(name, room);
+            return new JeepResponse(message);
         }
     }
 

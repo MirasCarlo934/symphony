@@ -4,7 +4,6 @@ import symphony.bm.bmlogicdevices.adaptors.Adaptor;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.Vector;
 
 public class Device {
@@ -38,6 +37,16 @@ public class Device {
     public void unregisterDevice() {
         for (Adaptor adaptor : adaptors) {
             adaptor.deviceUnregistered(this);
+        }
+    }
+
+    public void updateDetails(String name, Room room) {
+        if (name != null)
+            this.name = name;
+        if (room != null)
+            this.room = room;
+        for (Adaptor adaptor : adaptors) {
+            adaptor.deviceUpdated(this);
         }
     }
 

@@ -1,18 +1,19 @@
 package symphony.bm.bmlogicdevices.entities;
 
+import org.bson.Document;
 import symphony.bm.bmlogicdevices.adaptors.Adaptor;
 
 import java.util.List;
 import java.util.Vector;
 
 public class Room {
-    private String RID;
+    private String rid;
     private String name;
     private Vector<Device> devices = new Vector<>();
     private List<Adaptor> adaptors;
 
-    public Room(String RID, String name, List<Adaptor> adaptors) {
-        this.RID = RID;
+    public Room(String rid, String name, List<Adaptor> adaptors) {
+        this.rid = rid;
         this.name = name;
         this.adaptors = adaptors;
     }
@@ -21,6 +22,12 @@ public class Room {
         for (Adaptor adaptor : adaptors) {
             adaptor.roomCreated(this);
         }
+    }
+
+    public Document convertToDocument() {
+        return new Document()
+                .append("RID", rid)
+                .append("name", name);
     }
 
     public void addDevice(Device device) {
@@ -32,7 +39,7 @@ public class Room {
     }
 
     public String getRID() {
-        return RID;
+        return rid;
     }
 
     public String getName() {

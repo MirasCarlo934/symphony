@@ -56,18 +56,19 @@
         <constructor-arg name="uri" value="${mongo.serverURI}"/>
     </bean>
 
-<!--    <bean id="MQTT.client" class="symphony.bm.bmlogicdevices.mqtt.MQTTClient">-->
-<!--        <constructor-arg name="bm_topic" value="${mqtt.topic.bm}"/>-->
-<!--        <constructor-arg name="clientId" value="${mqtt.clientID}"/>-->
-<!--        <constructor-arg name="controller" ref="CORE.controller"/>-->
-<!--        <constructor-arg name="devices_topic" value="${mqtt.topic.devices}"/>-->
-<!--        <constructor-arg name="error_topic" value="${mqtt.topic.error}"/>-->
-<!--        <constructor-arg name="logDomain" value="${log.mqtt}"/>-->
-<!--        <constructor-arg name="logName" value="client"/>-->
-<!--        <constructor-arg name="serverURI" value="${mqtt.serverURI}"/>-->
-<!--        <constructor-arg name="service_topics" ref="serviceTopics"/>-->
-<!--        <constructor-arg name="univ_topic" value="${mqtt.topic.universal}"/>-->
-<!--    </bean>-->
+<!--    COMMENT FOR PRODUCTION   -->
+    <bean id="MQTT.client" class="symphony.bm.bmlogicdevices.mqtt.MQTTClient">
+        <constructor-arg name="bm_topic" value="${mqtt.topic.bm}"/>
+        <constructor-arg name="clientId" value="${mqtt.clientID}"/>
+        <constructor-arg name="controller" ref="CORE.controller"/>
+        <constructor-arg name="devices_topic" value="${mqtt.topic.devices}"/>
+        <constructor-arg name="error_topic" value="${mqtt.topic.error}"/>
+        <constructor-arg name="logDomain" value="${log.mqtt}"/>
+        <constructor-arg name="logName" value="client"/>
+        <constructor-arg name="serverURI" value="${mqtt.serverURI}"/>
+        <constructor-arg name="service_topics" ref="serviceTopics"/>
+        <constructor-arg name="univ_topic" value="${mqtt.topic.universal}"/>
+    </bean>
 
     <bean id="REST.outboundCommunicator" class="symphony.bm.bmlogicdevices.rest.OutboundRestMicroserviceCommunicator">
 
