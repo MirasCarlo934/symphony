@@ -2,20 +2,39 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7751de6c-8d69-41e4-8dde-bd532f5dc6af" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/services/POOPService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/services/ServiceManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-services-poop/.mvn/wrapper/MavenWrapperDownloader.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-services-poop/src/main/java/symphony/bm/bmservicespoop/BmServicesPoopApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BM-v4/bm-services-poop/src/test/java/symphony/bm/bmservicespoop/BmServicesPoopApplicationTests.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-services-registration/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/resources/bm-logic-devices.config.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-services-registration/resources/bm-logic-devices.config.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/resources/bm-logic-devices.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-services-registration/resources/bm-logic-devices.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/adaptors/Adaptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/adaptors/Adaptor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/controller/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/controller/Controller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/entities/Device.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/entities/Device.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/entities/DeviceProperty.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/entities/DeviceProperty.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/mongodb/MongoDBAdaptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/mongodb/MongoDBAdaptor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/services/RegisterService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/services/RegisterService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/services/Service.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/services/Service.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/services/UnregisterService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/services/UnregisterService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/.idea/compiler.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/BMCommsApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/Protocol.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/jeep/exceptions/PrimaryMessageCheckingException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/jeep/exceptions/SecondaryMessageCheckingException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/mqtt/MQTTClient.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/java/symphony/bm/bm_comms/mqtt/objects/MQTTMessage.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-comms/src/test/java/symphony/bm/bm_comms/BmCommsApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/.mvn/wrapper/MavenWrapperDownloader.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/.mvn/wrapper/maven-wrapper.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/mvnw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/mvnw.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/adaptors/Adaptor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/controller/ControllerThreadFactory.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/controller/ThreadPool.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/controller/ThreadRejectionHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/entities/Device.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/entities/Room.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/mongodb/MongoDBManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/java/symphony/bm/bmlogicdevices/rest/vo/Success.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BM-v4/bm-services-registration/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../esp8266/SymphonyMotionSensor/sloeber.ino.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../esp8266/SymphonyMotionSensor/sloeber.ino.cpp" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -152,7 +171,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="140" />
     <option name="y" value="20" />
     <option name="width" value="1400" />
@@ -164,7 +183,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
@@ -235,6 +253,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -289,17 +308,19 @@
       <workItem from="1584803321442" duration="985000" />
       <workItem from="1584931140783" duration="685000" />
       <workItem from="1585044740544" duration="661000" />
-      <workItem from="1585214673174" duration="1379000" />
+      <workItem from="1585214673174" duration="1984000" />
+      <workItem from="1585529274001" duration="339000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="18835000" />
+    <option name="totallyTimeSpent" value="19779000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1945629" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19669509" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
