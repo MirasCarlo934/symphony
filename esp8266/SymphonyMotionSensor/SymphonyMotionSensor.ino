@@ -19,8 +19,16 @@ void handleInterrupt() {
 }
 
 /*
+ * Callback function for the mqtt events
+ */
+int mqttHandler(JsonObject& json) {
+	Serial.println("PIR mqtt callback executed start");
+	json.prettyPrintTo(Serial);Serial.println();
+	Serial.println("PIR mqtt callback executed end");
+}
+/*
  * Callback function for the websocket transactions
- * Will only be called if the property corePin = false
+ * Will only be called if the property directPin = false
  */
 int wsHandler(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json) {
 //int wsHandler(AsyncWebSocket ws, AsyncWebSocketClient *client, uint8_t * payload, size_t len) {
@@ -36,11 +44,11 @@ int wsHandler(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json)
 			case 10: {
 				String ssid = json["ssid"].as<char*>();
 				product.setValue(ssid, json["val"].as<int>());
-				json["core"] = 20;
-				s.textAll(json);		//broadcast to other clients
-				String strReg;
-				json.printTo(strReg);
-				s.transmit(strReg.c_str());
+//				json["core"] = 20;
+//				s.textAll(json);		//broadcast to other clients
+//				String strReg;
+//				json.printTo(strReg);
+//				s.transmit(strReg.c_str());
 				if (ssid.toInt() == 25) {
 					isLatchSwitch = json["val"];
 				} else if (ssid.toInt() == 27) {
@@ -55,12 +63,11 @@ int wsHandler(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json)
 /**
  *
  */
-
 void sendSensorData(int value) {
 	DynamicJsonBuffer jsonBuffer;
 	JsonObject& reply = jsonBuffer.createObject();
-	reply["core"] = 20;
-	reply["cmd"] = 10;
+	reply["core"] = WSCLIENT_DO_DISPLAY;
+	reply["cmd"] = WSCLIENT_DO_CMD;
 	reply["ssid"] = "0026";
 	reply["mac"] = s.mac;
 	reply["cid"] = 0;	//we are putting a dummy id, the cid of client will not match this.  Hence client will change the element's satus.
@@ -91,23 +98,26 @@ void setup()
 	Serial.println("************Setup MOTION SENSOR***************");
 	s.setWsCallback(wsHandler);
 
-//	s.setMqttCallback(mqttHandler);
+	s.setMqttCallback(mqttHandler);
 	char ver[10];
 	sprintf(ver, "%u.%u", SYMPHONY_VERSION, MY_VERSION);
 	s.setup(myName, ver);
 
 	product = Product(s.nameWithMac, "Dining", myName);
-	Gui gui1 = Gui("Mode", BUTTON_CTL, "Latch", 0, 1, 0);
 	pinMode(LED_PIN1, OUTPUT);
 	digitalWrite(LED_PIN1, 1);
-	product.addProperty("0025", false, LED_PIN1, gui1);
+	Gui gui1 = Gui("Mode", BUTTON_CTL, "Latch", 0, 1, 0);
+	product.addCallableProperty("0025", LED_PIN1, gui1);
 	Gui gui2 = Gui("Mode", BUTTON_SNSR, "Sensor", 0, 1, 0);
-	product.addProperty("0026", true, INPUT_PIN, gui2);
-	Gui gui4 = Gui("Mode", BUTTON_SNSR, "Controller", 0, 1, 1);
-
-	product.addProperty("0027", gui4);	//add a logical property that has no attached pin
-	Gui gui3 = Gui("State", BUTTON_CTL, "State", 0, 1, 0);
-	product.addProperty("0060", gui3);	//add a logical property that has no attached pin
+	product.addProperty("0026", INPUT_PIN, gui2);
+	Gui gui3 = Gui("Mode", BUTTON_SNSR, "Controller", 0, 1, 1);
+	product.addVirtualProperty("0027", gui3);	//add a logical property that has no attached pin
+	Gui gui4 = Gui("State", BUTTON_CTL, "State", 0, 1, 0);
+	product.addVirtualProperty("0060", gui4);	//add a logical property that has no attached pin
+	Gui gui5 = Gui("State", SLIDER_CTL, "Test", 0, 100, 50);
+	product.addVirtualProperty("0070", gui5);	//add a logical property that has no attached pin
+	Gui gui6 = Gui("State", SLIDER_SNSR, "SnSR", 0, 100, 70);
+	product.addVirtualProperty("0080", gui6);	//add a logical property that has no attached pin
 	s.setProduct(product);
 	pinMode(INPUT_PIN, INPUT);
 	oldInputState = digitalRead(INPUT_PIN);
@@ -129,9 +139,9 @@ void loop()
 					oldInputState = !oldInputState;
 					product.setValue("0026", oldInputState);
 					digitalWrite(LED_PIN1, !oldInputState);
-					if (isController) {
-						sendSensorData(oldInputState?1:0);
-					}
+//					if (isController) {
+//						sendSensorData(oldInputState?1:0);
+//					}
 	//				MqttUtil::sendCommand("0026", oldInputState);
 				}
 				Serial.println("*** MotionSensor isLatch\n");
@@ -140,9 +150,9 @@ void loop()
 				sprintf(state, "%d", inputState);
 				product.setValue("0026", inputState);
 				digitalWrite(LED_PIN1, !inputState);
-				if (isController) {
-					sendSensorData(inputState);
-				}
+//				if (isController) {
+//					sendSensorData(inputState);
+//				}
 	//			MqttUtil::sendCommand("0026", inputState);
 				Serial.println("*** MotionSensor isMomentary\n");
 			}

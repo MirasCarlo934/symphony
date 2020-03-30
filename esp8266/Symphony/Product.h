@@ -6,7 +6,7 @@
     productType	= the product type;
  *
  * ssid		= the SSID of this property (from the COMPROPLIST table)
- * corePin	= if true (1), pin will be handled in the core Symphony.  if false (0), pin will be handled by the implementing ino class.
+ * directPin	= if true (1), pin will be set directly with the value in the core Symphony.  if false (0), pin will be handled by the callback ino class since a computation might need to be done first before setting the pin value.
  * pin		= the corresponding ESP8266 pin where this property is attached.  if < 0, this component is virtual and not attached to a pin
  * gui		= the gui attributes
  * 	pinType		= the type of pin {RADIO_CTL = 1, BUTTON_CTL = 2, SLIDER_CTL = 3 , RADIO_SNSR = 5, BUTTON_SNSR = 6, SLIDER_SNSR = 7, UNDEF = 99}
@@ -19,8 +19,8 @@
 
 	{"name_mac":"NAME", "room":"ROOM", "type":"Product Type",
 		"props" :[
-			{"ssid":"SSID", "corePin":1, "pin":12, "gui":{"type":"PINTYPE", "lbl":"LABEL", "min":"MIN", "max":"MAX", "value":1, "grp":"GROUP"}},
-			{"ssid":"SSID", "corePin":1, "pin":12, "gui":{"type":"PINTYPE", "lbl":"LABEL", "min":"MIN", "max":"MAX", "value":1, "grp":"GROUP"}}
+			{"ssid":"SSID", "directPin":1, "pin":12, "gui":{"type":"PINTYPE", "lbl":"LABEL", "min":"MIN", "max":"MAX", "value":1, "grp":"GROUP"}},
+			{"ssid":"SSID", "directPin":1, "pin":12, "gui":{"type":"PINTYPE", "lbl":"LABEL", "min":"MIN", "max":"MAX", "value":1, "grp":"GROUP"}}
 		]
 	}
 
@@ -34,7 +34,6 @@
 #include <ArduinoJson.h>
 #include "DataObjects.h"
 
-#define DEBUG_
 /*
  * _CTL means pinmode is OUTPUT and GUI displays this as an enabled element that can control the device
  * _SNSR means pinmode is INPUT and GUI displays this as a disabled element that shows values from the state of the device
@@ -63,7 +62,7 @@ struct guiStruct {
 
 struct attribStruct {
   String ssid;
-  boolean corePin = false;
+  boolean directPin = false;
   int8_t pin = 12;
   guiStruct gui;
 };
@@ -89,17 +88,27 @@ class Product {
     /**
      * Adds a property to this device.
      * ssid		= the SSID of this property (from the COMPROPLIST table)
-     * corePin	= if true (1), pin will be handled in the core Symphony.  if false (0), pin will be handled by the implementing ino class.
-     * 			Implementing ino class would need to handle the websocket and mqtt transactions.
      * pin		= the corresponding ESP8266 pin where this property is attached.  if < 0, this component is virtual and not attached to a pin
      * gui		= the gui attributes
+     *
+     *      directPin will be set to true (1), pin will be handled in the core Symphony.
      */
-    void addProperty(String ssid, boolean corePin, int8_t pin, Gui gui);
+    void addProperty(String ssid, int8_t pin, Gui gui);
     /**
-     * The overloaded addProperty. For logical properties that are not physically connected to a pin.
-     * Implementing ino class would need to handle the websocket and mqtt transactions.
+	 * Adds a property to this device.
+	 * ssid		= the SSID of this property (from the COMPROPLIST table)
+	 * pin		= the corresponding ESP8266 pin where this property is attached.  if < 0, this component is virtual and not attached to a pin
+	 * gui		= the gui attributes
+	 *
+	 * 	 directPin will be set to false(0) pin will be handled by the implementing ino class by providing callback functions.
+	 * 	 	callback functions might need to do some calculation first before setting the value of the pi.
+	 */
+    void addCallableProperty(String ssid, int8_t pin, Gui gui);
+    /**
+     * For virtual properties that are not physically connected to a pin.
+     * Implementing ino class would need to handle the websocket and mqtt transactions by providing callback functions.
      */
-    void addProperty(String ssid, Gui gui);
+    void addVirtualProperty(String ssid, Gui gui);
 
     attribStruct getProperty(String ssid);
     attribStruct getKeyVal(int index);
@@ -112,6 +121,17 @@ class Product {
   private:
     int pIndex = 0;
     int size = 0;
+    /**
+     * Adds a property to this device.
+     * ssid		= the SSID of this property (from the COMPROPLIST table)
+     * directPin
+     * 		- if true (1), pin will be handled in the core Symphony.
+     * 		- if false(0), pin will be handled by the implementing ino class by providing callback functions.
+	 * 	 		callback functions might need to do some calculation first before setting the value of the pi.
+     * pin		= the corresponding ESP8266 pin where this property is attached.  if < 0, this component is virtual and not attached to a pin
+     * gui		= the gui attributes
+     */
+    void addProperty(String ssid, boolean directPin, int8_t pin, Gui gui);
 };
 
 

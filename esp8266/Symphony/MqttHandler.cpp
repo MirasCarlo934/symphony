@@ -13,7 +13,8 @@
 AsyncMqttClient mqttClient;
 const char* myId = "myMqttID";
 const char* mqttServer = "localhost";
-String myTopic = "devices/";
+String subscribeTopic = "devices/";
+String publishTopic = "BM";
 int mqttPort = 1883;
 
 boolean connected = false;
@@ -24,11 +25,12 @@ boolean connected = false;
 void (* msgCallback) (char* topic, char* payload, size_t len);
 
 void onMqttConnect(bool sessionPresent) {
-  Serial.println("[MqttHandler] ************** Connected to MQTT.");
+  Serial.println("[MqttHandler] Connected to MQTT.");
 //  Serial.print("Session present: ");
 //  Serial.println(sessionPresent);
-  myTopic += myId;
-  uint16_t packetIdSub = mqttClient.subscribe(myTopic.c_str(), 0);
+  subscribeTopic += myId;
+  uint16_t packetIdSub = mqttClient.subscribe(subscribeTopic.c_str(), 0);
+  Serial.printf("[MqttHandler] subscribed to topic %s\n", subscribeTopic.c_str());
 //  Serial.print("Subscribing at QoS 2, packetId: ");
 //  Serial.println(packetIdSub);
 //  mqttClient.publish("BM", 0, true, "test 1");
@@ -45,11 +47,11 @@ void onMqttConnect(bool sessionPresent) {
 }
 
 void onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
-  Serial.println("[MqttHandler] ************** Disconnected from MQTT.");
+  Serial.println("[MqttHandler] Disconnected from MQTT.");
 }
 
 void onMqttSubscribe(uint16_t packetId, uint8_t qos) {
-  Serial.println("[MqttHandler] ************** Subscribe acknowledged.");
+  Serial.println("[MqttHandler] Subscribe acknowledged.");
   Serial.print("  packetId: ");
   Serial.println(packetId);
   Serial.print("  qos: ");
@@ -57,13 +59,13 @@ void onMqttSubscribe(uint16_t packetId, uint8_t qos) {
 }
 
 void onMqttUnsubscribe(uint16_t packetId) {
-  Serial.println("[MqttHandler] ************** Unsubscribe acknowledged.");
+  Serial.println("[MqttHandler] Unsubscribe acknowledged.");
   Serial.print("  packetId: ");
   Serial.println(packetId);
 }
 
 void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total) {
-  Serial.println("[MqttHandler] ************** Messsage received.");
+  Serial.println("[MqttHandler] Messsage received.");
 //  Serial.print("[MqttHandler] **************   topic: ");
 //  Serial.println(topic);
 //  Serial.print("[MqttHandler]   qos: ");
@@ -86,7 +88,7 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
 }
 
 void onMqttPublish(uint16_t packetId) {
-  Serial.println("[MqttHandler] ************** Publish acknowledged.");
+  Serial.println("[MqttHandler] Publish acknowledged.");
   Serial.print(" packetId: ");
   Serial.println(packetId);
 }
@@ -110,7 +112,7 @@ void MqttHandler::setMsgCallback(void (* Callback) (char* topic, char* payload, 
  * sets the URL, can be uised if MqttHandler was instantiated using the default constructor
  */
 void MqttHandler::setUrl(const char *url) {
-	Serial.printf("[MqttHandler] ************** url=%s\n", url);
+	Serial.printf("[MqttHandler] url=%s\n", url);
 	mqttServer = url;
 }
 /**
@@ -130,7 +132,7 @@ void MqttHandler::setId(const char *id) {
  * Connect to the MQTT server
  */
 void MqttHandler::connect() { //to connect to MQTT server
-	Serial.println("[MqttHandler] ************** Connecting.");
+	Serial.println("[MqttHandler] Connecting.");
 	mqttClient.setClientId(myId);
 	mqttClient.onConnect(onMqttConnect);
 	mqttClient.onDisconnect(onMqttDisconnect);
@@ -138,7 +140,7 @@ void MqttHandler::connect() { //to connect to MQTT server
 	mqttClient.onUnsubscribe(onMqttUnsubscribe);
 	mqttClient.onMessage(onMqttMessage);
 	mqttClient.onPublish(onMqttPublish);
-	Serial.printf("[MqttHandler] ************** url=%s port=%i\n", mqttServer, mqttPort);
+	Serial.printf("[MqttHandler] url=%s port=%i\n", mqttServer, mqttPort);
 	mqttClient.setServer(mqttServer, mqttPort);
 
 	mqttClient.connect();
@@ -148,8 +150,8 @@ void MqttHandler::connect() { //to connect to MQTT server
  * Publish data to the mqtt server
  */
 void MqttHandler::publish(const char* payload, uint8_t qos) {
-	Serial.printf("[MqttHandler] ************** Publishing at QoS %i\n", qos);
-	mqttClient.publish("BM", qos, true, payload);
+	Serial.printf("[MqttHandler] Publishing in topic BM at QoS %i\n", qos);
+	mqttClient.publish( publishTopic.c_str(), qos, true, payload);
 }
 
 /**
@@ -162,6 +164,13 @@ bool  MqttHandler::isConnected() {
 /**
  * Returns the topic where this device listens for control commands
  */
-String MqttHandler::getMyTopic() {
-	return myTopic;
+String MqttHandler::getSubscribedTopic() {
+	return subscribeTopic;
+}
+
+/**
+ * Returns the topic where this device listens for control commands
+ */
+String MqttHandler::getPublishTopic() {
+	return publishTopic;
 }

@@ -26,7 +26,8 @@ class MqttHandler {
 	void setId(const char *id);	//sets the id, can be uised if MqttHandler was instantiated using the default constructor
 	void connect(); //to connect to MQTT server. id, url and port should already have been set
 	void publish(const char* payload, uint8_t qos); //publish message to mqtt server
-	String getMyTopic(); //the topic where this device listens for control commands
+	String getSubscribedTopic(); //the topic where this device listens for control commands
+	String getPublishTopic(); //the topic where this publishes for control commands
 	bool isConnected();
 
 	private:

@@ -47,7 +47,7 @@ int8_t Filemanager::updateFirmware(String filename, size_t index, uint8_t *data,
 		pinMode(2, OUTPUT);
 		update_status = UPLOAD_ONGOING;
 		WiFiUDP::stopAll();
-		Serial.printf("Update: %s\n", filename.c_str());
+		Serial.printf("\n\nUpdate: %s\n", filename.c_str());
 		uint32_t maxSketchSpace = (ESP.getFreeSketchSpace() - 0x1000) & 0xFFFFF000;
 		Serial.printf("maxSketchSpace: %d\n", maxSketchSpace);
 		if(!Update.begin(maxSketchSpace)){//start with max available size

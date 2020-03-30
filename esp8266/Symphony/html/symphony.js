@@ -2,7 +2,7 @@ const CMD_INIT = 1
 const CMD_VALUES = 2
 const CMD_CLIENT = 10
 const CORE_GETDEVICEINFO = 4;
-const CORE_TOCHILD = 7;
+const CORE_TO_CALLBACK = 7;
 const CONTROL_DEVICE = 7;
 const CORE_START_HEARTBEAT = 8;
 const CORE_DO_DISPLAY = 20
@@ -481,7 +481,7 @@ function handleWsMessage(evt) {
   	var box = jsonResponse["box"];
   	var status = document.getElementById(box);
   	switch(core) {
-  		case CORE_TOCHILD://data from server to the child javascript
+  		case CORE_TO_CALLBACK://data from server to the child javascript
   			{
 	  			var msg = document.getElementById("msg");//comment this out later
 	  			msg.innerHTML = JSON.stringify(jsonResponse);//comment this out later
@@ -549,7 +549,7 @@ function handleWsMessage(evt) {
    * 
    * code below is deprecated	
    if (jsonResponse["msg"] != "Connected") {
-	   if ( core != CORE_TOCHILD ) {
+	   if ( core != CORE_TO_CALLBACK ) {
 		  	 //evt.data is of the form: {"cmd":1,"data",{data}}
 		  	 switch(cmd) {
 		  	 case CMD_INIT:
@@ -596,6 +596,8 @@ function getDeviceInfoHandler(xhttp) {
 		document.getElementById("mqttEnabled").checked=false;
 	document.getElementById("mqttIp").value = jsonResponse.mqttIp;
 	document.getElementById("mqttPort").value = jsonResponse.mqttPort;
+	document.getElementById("sTopic").value = jsonResponse.sTopic;
+	document.getElementById("pTopic").value = jsonResponse.pTopic;
 	toggleMqtt();
 }
 
@@ -611,16 +613,6 @@ function getDeviceInfo() {
 	//we send an INIT command to get the deviceName and mac
 //	websocket.send('{"core":4,"data":"INF"}'); deperecated, we should use AJAX
 	sendToServer('GET', '/devInfo', getDeviceInfoHandler);
-}
-/**
- * Gets the mqtt details
- * 		- ip
- * 		- port
- * 		
- * @returns
- */
-function getMqttInfo() {
-	sendToServer('GET', '/mqttInfo', getDeviceInfoHandler);
 }
 /**
  * handles the firmware version response
