@@ -35,6 +35,7 @@ String Symphony::mac = "";
 String Symphony::nameWithMac = "myName";
 Product Symphony::product;
 String Symphony::version = "0.0";
+
 long Symphony::MRN = 0;
 
 AsyncWebServer		webServer(HTTP_PORT); // Web Server
@@ -60,6 +61,7 @@ Filemanager	fManager = 		Filemanager();
 int8_t		fwResult = 0;
 long identifyTries[] = {5000, 10000, 20000};
 int discoveryTries = 0;
+long mqttReconnectIntervalMillis = 5000;	//will reconnect to MQTT every 5 secs
 
 //WebSocketsClient webSocketClient;  July 13 2019 do we really need this device to be a ws client?
 
@@ -101,7 +103,7 @@ void transmit(const char* payload) {
  */
 int productValueChangedEvent (int propertyIndex) {
 	attribStruct a = Symphony::product.getKeyVal(propertyIndex);
-	Serial.printf("\n[CORE]================================productValueChangeEvent\n[CORE]propertyIndex=%i SSID=%s LABEL=%s VALUE=%i\n", propertyIndex, a.ssid.c_str(), a.gui.label.c_str(), a.gui.value);
+	Serial.printf("\n[CORE] productValueChangeEvent start\n[CORE]propertyIndex=%i SSID=%s LABEL=%s VALUE=%i\n", propertyIndex, a.ssid.c_str(), a.gui.label.c_str(), a.gui.value);
 	//create the reply string to the WS {"core":20,"cmd":10,"ssid":"0026","mac":"5ccf7fc78dc3","cid":0,"val":1}
 	DynamicJsonBuffer jsonBuffer;
 	JsonObject& reply = jsonBuffer.createObject();
@@ -126,7 +128,7 @@ int productValueChangedEvent (int propertyIndex) {
 	poopJson.printTo(strReg);
 	transmit(strReg.c_str());	//transmit to mqtt
 
-	Serial.println("[CORE]================================productValueChangeEvent done");
+	Serial.println("[CORE] productValueChangeEvent done");
 }
 /*
  *	wsEvent handles the transactions sent by client websockets.
@@ -337,6 +339,7 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 		Serial.println("[CORE] Cannot do websocket request since we are updating firmware.");
 	}
 }
+
 /**
  *  This is the MQTT callback handler that is called when a message from mqtt broker arrives
  */
@@ -349,52 +352,41 @@ void mqttMsgHandler(char* topic, char* payload, size_t len) {
   Serial.println(len);
   Serial.println("[CORE]\t[mqttMsgHandler]   payload: ");
 #endif
-  char str2[len];
-  strncpy ( str2, payload, len );
-  Serial.println(str2);
-  if (strcmp(topic, theMqttHandler.getSubscribedTopic().c_str()) == 0) {
-	  DynamicJsonBuffer jsonBuffer;
-	  JsonObject& jsonMsg = jsonBuffer.parseObject(str2);
-	  Serial.printf("[CORE] MSN=%s \n", jsonMsg["MSN"].as<String>().c_str());
-	  String msn = jsonMsg["MSN"].as<String>();
-	  if(msn.equals("register")) {	//this is the response to our register request
+	  	char str2[len];
+	    strncpy ( str2, payload, len );
+	    Serial.println(str2);
+	    if (strcmp(topic, theMqttHandler.getSubscribedTopic().c_str()) == 0) {
+	  	  DynamicJsonBuffer jsonBuffer;
+	  	  JsonObject& jsonMsg = jsonBuffer.parseObject(str2);
+	  	  Serial.printf("[CORE] MSN=%s \n", jsonMsg["MSN"].as<String>().c_str());
+	  	  String msn = jsonMsg["MSN"].as<String>();
+	  	  if(msn.equals("register")) {	//this is the response to our register request
 #ifdef DEBUG_ONLY
-		  Serial.println("[CORE] MQTT registration successful.");
+	  		  Serial.println("[CORE] MQTT registration successful.");
 #endif
-	  }
-	  if(msn.equals("poop")) {	//this is a poop request
-		  Serial.println(Symphony::product.stringify());
+	  	  }
+	  	  if(msn.equals("poop")) {	//this is a poop request
+	  		  Serial.println(Symphony::product.stringify());
 
-		  //evaluate if directPin==true, execute here.  Else pass to wscallback
-		  attribStruct attrib = Symphony::product.getProperty(jsonMsg["property"].as<char *>());
+	  		  //evaluate if directPin==true, execute here.  Else pass to wscallback
+	  		  attribStruct attrib = Symphony::product.getProperty(jsonMsg["property"].as<char *>());
 #ifdef DEBUG_ONLY
-		  Serial.printf("[CORE] got attribute %s, current value=%i, pin=%i, directPin=%s\n", attrib.ssid.c_str(), attrib.gui.value, attrib.pin, attrib.directPin?"true":"false");
+	  		  Serial.printf("[CORE] got attribute %s, current value=%i, pin=%i, directPin=%s\n", attrib.ssid.c_str(), attrib.gui.value, attrib.pin, attrib.directPin?"true":"false");
 #endif
-		  if (attrib.directPin) {//we set the value here because this is a directPin and its value can be set to pin directly
-			  Symphony::product.setValue(jsonMsg["property"].as<String>(), jsonMsg["value"].as<int>());
-		  } else {//we do not set the value here, the callback might need to do some computation before setting the pin
+	  		  if (attrib.directPin) {//we set the value here because this is a directPin and its value can be set to pin directly
+	  			  Symphony::product.setValue(jsonMsg["property"].as<String>(), jsonMsg["value"].as<int>());
+	  		  } else {//we do not set the value here, the callback might need to do some computation before setting the pin
 #ifdef DEBUG_ONLY
-			  Serial.printf("[CORE] Cannot set the property %s since it is not directly changeable.\n", attrib.ssid.c_str());
+	  			  Serial.printf("[CORE] Cannot set the property %s since it is not directly changeable.\n", attrib.ssid.c_str());
 #endif
-			  if (MqttCallback != nullptr) {
-				  MqttCallback(jsonMsg);
-			  } else {
-				  Serial.println("[CORE] No MQTT callback set!!!");
-			  }
-		  }
-//		  DynamicJsonBuffer jsonBuff;
-//		  JsonObject& json = jsonBuff.createObject();
-//		  json["core"] = WSCLIENT_CALLBACK_CONTROL;
-//		  json["cmd"] = WSCLIENT_DO_CMD;
-//		  json["mac"] = Symphony::mac;
-//		  json["ssid"] = jsonMsg["property"].as<String>();
-//		  json["val"] = jsonMsg["value"].as<int>();
-//		  String strBroadcast;
-//		  json.printTo(strBroadcast);
-//		  Serial.printf("[CORE] Will broadcast %s\n", strBroadcast.c_str());
-//		  ws.textAll(strBroadcast);
-	  }
-  }
+	  			  if (MqttCallback != nullptr) {
+	  				  MqttCallback(jsonMsg);
+	  			  } else {
+	  				  Serial.println("[CORE] No MQTT callback set!!!");
+	  			  }
+	  		  }
+	  	  }
+	    }
 };
 /**
 * Handler tha displays Captive portal during softAP mode
@@ -513,11 +505,11 @@ void handleConfigInfo(AsyncWebServerRequest *request) {
 	DynamicJsonBuffer jsonBuffer;
 	JsonObject& jsonObj = jsonBuffer.parseObject(fManager.readConfig());
 	if (!jsonObj.containsKey("sTopic")) {
-		Serial.printf("[CORE] sTopic not found. Should be %s/n", theMqttHandler.getSubscribedTopic().c_str());
+		Serial.printf("[CORE] sTopic not found. Should be %s\n", theMqttHandler.getSubscribedTopic().c_str());
 		jsonObj["sTopic"] = theMqttHandler.getSubscribedTopic();
 	}
 	if (!jsonObj.containsKey("pTopic")) {
-		Serial.printf("[CORE] pTopic not found. Should be %s/n", theMqttHandler.getPublishTopic().c_str());
+		Serial.printf("[CORE] pTopic not found. Should be %s\n", theMqttHandler.getPublishTopic().c_str());
 		jsonObj["pTopic"] = theMqttHandler.getPublishTopic();
 	}
 	if (jsonObj.success()) {
@@ -676,7 +668,7 @@ void Symphony::setup(String theHostName, String ver) {
 	homeHtml = CONTROL_HTML1;
 	homeHtml.replace("$AAA$", hostName);
 #ifdef DEBUG_ONLY
-	Serial.printf("[CORE] Hostname=%s.local nameWithMac=%s version=%s\n", hostName.c_str(), Symphony::version.c_str());
+	Serial.printf("[CORE] Hostname=%s.local nameWithMac=%s\n", hostName.c_str());
 #endif
 	MDNS.setInstanceName("staticHostname");
 	if (MDNS.begin(Symphony::hostName.c_str())) {
@@ -712,6 +704,7 @@ void Symphony::setup(String theHostName, String ver) {
  * 		returns true if firmware update is not ongoing
  * 		false otherwise
  */
+long timerMilli = 0;	//used as timer
 bool Symphony::loop() {
 	//DO NOT PUT A delay() AS IT CAUSES ERROR DURING OTA
 	// Reboot handler
@@ -730,6 +723,7 @@ bool Symphony::loop() {
 		dnsServer.processNextRequest();
 //		webSocketClient.loop();July 13 2019 do we really need this device to be a ws client?
 		registerProduct();//register this product to BM
+		theMqttHandler.reconnect();//reconnect if MQTT is not connected
 	}
 	if (!isUpdateFw) {
 #ifdef DISCOVERABLE
@@ -770,10 +764,9 @@ void Symphony::setWsCallback(int (* Callback) (AsyncWebSocket ws, AsyncWebSocket
 void Symphony::setMqttCallback(int (* Callback) (JsonObject& json)) {
 	MqttCallback = Callback;
 }
-/*
- *
- * This is the handler for all MQTT transactions.
- *
+
+/**
+ * Member method that enables the MQTT handler.
  */
 void Symphony::enableMqttHandler() {
 	theMqttHandler.setId(nameWithMac.c_str());
@@ -781,6 +774,7 @@ void Symphony::enableMqttHandler() {
 	theMqttHandler.setPort(mqttPort);
 	theMqttHandler.setMsgCallback(mqttMsgHandler);
 	theMqttHandler.connect();
+	theMqttHandler.setReconnectInterval(mqttReconnectIntervalMillis);
 }
 /**
  * Reads the config file cfg.json and loads to the variables

@@ -16,8 +16,9 @@ const char* mqttServer = "localhost";
 String subscribeTopic = "devices/";
 String publishTopic = "BM";
 int mqttPort = 1883;
+long timerMillis = 0, reconnectIntervalMillis = 10000;	//default 10 second reconnect interval
 
-boolean connected = false;
+boolean connected = false, doReconnect = false;
 
 /*
  * This is the callback handler in Symphony.cpp that will be called when a message arrives.
@@ -28,9 +29,9 @@ void onMqttConnect(bool sessionPresent) {
   Serial.println("[MqttHandler] Connected to MQTT.");
 //  Serial.print("Session present: ");
 //  Serial.println(sessionPresent);
-  subscribeTopic += myId;
-  uint16_t packetIdSub = mqttClient.subscribe(subscribeTopic.c_str(), 0);
-  Serial.printf("[MqttHandler] subscribed to topic %s\n", subscribeTopic.c_str());
+  String topic = subscribeTopic + myId;
+  uint16_t packetIdSub = mqttClient.subscribe(topic.c_str(), 0);
+  Serial.printf("[MqttHandler] subscribed to topic %s\n", topic.c_str());
 //  Serial.print("Subscribing at QoS 2, packetId: ");
 //  Serial.println(packetIdSub);
 //  mqttClient.publish("BM", 0, true, "test 1");
@@ -43,11 +44,14 @@ void onMqttConnect(bool sessionPresent) {
 //  Serial.println(packetIdPub2);
 //  uint16_t packetIdPub3 = mqttClient.publish("BM", 2, true, thisProduct.stringify().c_str());
   connected = true;
-
+  doReconnect = false;
 }
 
 void onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
-  Serial.println("[MqttHandler] Disconnected from MQTT.");
+  Serial.printf("[MqttHandler] Disconnected from MQTT reason %i.\n", reason);
+  //we send a message to the callback handler with topic="reboot" and len=reason
+  connected = false;
+  doReconnect = true;
 }
 
 void onMqttSubscribe(uint16_t packetId, uint8_t qos) {
@@ -173,4 +177,22 @@ String MqttHandler::getSubscribedTopic() {
  */
 String MqttHandler::getPublishTopic() {
 	return publishTopic;
+}
+/**
+ * sets the reconnect interval
+ */
+void MqttHandler::setReconnectInterval(long interval) {
+	reconnectIntervalMillis = interval;
+}
+/**
+ * tries to reconnect to MQTT host using the interval set above
+ */
+void MqttHandler::reconnect() {
+	if ( enabled && doReconnect) {
+		if (millis() - timerMillis >= reconnectIntervalMillis) {
+			Serial.println("[MqttHandler] Reconnecting.");
+			mqttClient.connect();
+			timerMillis = millis();
+		}
+	}
 }
