@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/bm-serviceManagers-registration.iml" filepath="$PROJECT_DIR$/bm-serviceManagers-registration.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bm-services-registration.iml" filepath="$PROJECT_DIR$/bm-services-registration.iml" />
     </modules>
   </component>
 </project>

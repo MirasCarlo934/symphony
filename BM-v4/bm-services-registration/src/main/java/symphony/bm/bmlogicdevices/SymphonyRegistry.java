@@ -5,6 +5,8 @@ import com.mongodb.client.MongoCollection;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
 import symphony.bm.bmlogicdevices.adaptors.RegistryAdaptor;
 import symphony.bm.bmlogicdevices.entities.Device;
 import symphony.bm.bmlogicdevices.entities.DeviceProperty;
@@ -14,16 +16,19 @@ import symphony.bm.bmlogicdevices.mongodb.MongoDBManager;
 
 import java.util.*;
 
-public class SymphonyEnvironment {
+@Repository
+public class SymphonyRegistry {
     private Logger LOG;
     private HashMap<String, Room> rooms = new HashMap<>();
     private HashMap<String, Device> devices = new HashMap<>();
     private List<RegistryAdaptor> adaptors;
     private MongoDBManager mongo;
 
-    public SymphonyEnvironment(String logDomain, String logName, List<RegistryAdaptor> adaptors, MongoDBManager mongoDBManager,
-                               String devicesCollectionName, String roomsCollectionName) {
-        LOG = LoggerFactory.getLogger(logDomain + "." + logName);
+    public SymphonyRegistry(@Value("${log.logic}") String logDomain,
+                            @Value("${mongo.collection.devices}") String devicesCollectionName,
+                            @Value("${mongo.collection.rooms}") String roomsCollectionName,
+                            List<RegistryAdaptor> adaptors, MongoDBManager mongoDBManager) {
+        LOG = LoggerFactory.getLogger(logDomain + ".registry");
         this.adaptors = adaptors;
         this.mongo = mongoDBManager;
 

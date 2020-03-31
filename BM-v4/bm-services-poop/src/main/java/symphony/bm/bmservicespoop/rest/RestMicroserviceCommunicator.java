@@ -1,5 +1,6 @@
 package symphony.bm.bmservicespoop.rest;
 
+import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +11,8 @@ import symphony.bm.bmservicespoop.jeep.JeepMessage;
 import symphony.bm.bmservicespoop.jeep.JeepResponse;
 import symphony.bm.bmservicespoop.services.POOPService;
 import symphony.bm.bmservicespoop.services.exceptions.MessageParameterCheckingException;
+
+import java.util.List;
 
 @RestController
 public class RestMicroserviceCommunicator {
@@ -24,12 +27,16 @@ public class RestMicroserviceCommunicator {
     }
 
     @RequestMapping("/poop")
-    public String receiveJeepMessage(@RequestParam("msg") String msgStr) {
+    public String receivePOOPMessage(@RequestParam("msg") String msgStr) {
         LOG.debug("Message arrived: " + msgStr);
         JeepMessage msg = new JeepMessage(msgStr);
         try {
-            JeepResponse response = poop.processMessage(msg);
-            return response.toString();
+            List<JeepResponse> responses = poop.processMessage(msg);
+            JSONArray responseArray = new JSONArray();
+            for (JeepResponse res : responses) {
+                responseArray.put(res);
+            }
+            return responseArray.toString();
         }
         catch (MessageParameterCheckingException e) {
             LOG.error("Unable to process message!", e);

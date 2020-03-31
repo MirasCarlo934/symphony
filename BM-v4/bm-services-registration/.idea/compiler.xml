@@ -6,16 +6,16 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="bm-serviceManagers-registration" />
+        <module name="bm-services-registration" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="bm-serviceManagers-registration" target="1.8" />
+      <module name="bm-services-registration" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="bm-serviceManagers-registration" options="-parameters" />
+      <module name="bm-services-registration" options="-parameters" />
     </option>
   </component>
 </project>

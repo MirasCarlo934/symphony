@@ -6,7 +6,7 @@ import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.PropertySource;
 
 @SpringBootApplication
-@PropertySource("file:resources/bm-services-registration.properties")
+@PropertySource("file:resources/bm.properties")
 @ImportResource({"file:resources/bm-services-registration.config.xml"})
 public class BMServicesRegistration {
 

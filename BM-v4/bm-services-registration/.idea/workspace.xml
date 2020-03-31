@@ -2,64 +2,45 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9dffb15d-b86d-4940-8905-e84a588a0548" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../bm-comms/.idea/bm-comms.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../bm-comms/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../bm-comms/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../bm-comms/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../bm-comms/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../bm-comms/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../bm-comms/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../bm-comms/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../bm-comms/src/main/java/symphony/bm/bm_comms/BmCommsApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../bm-comms/src/main/java/symphony/bm/bm_comms/Protocol.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../bm-comms/src/main/java/symphony/bm/bm_comms/jeep/exceptions/PrimaryMessageCheckingException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../bm-comms/src/main/java/symphony/bm/bm_comms/mqtt/MQTTClient.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../bm-comms/src/main/java/symphony/bm/bm_comms/mqtt/objects/MQTTMessage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../bm-services-poop/src/main/java/symphony/bm/bmservicespoop/DevicePropertyRegistry.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../bm-services-poop/src/main/java/symphony/bm/bmservicespoop/adaptors/POOPAdaptor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../bm-services-poop/src/main/java/symphony/bm/bmservicespoop/cir/rule/Rule.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../bm-services-poop/src/main/java/symphony/bm/bmservicespoop/cir/rule/TriggerComparativeOperator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../bm-services-poop/src/main/java/symphony/bm/bmservicespoop/cir/rule/TriggerLogicalOperator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../bm-services-poop/src/main/java/symphony/bm/bmservicespoop/entities/DeviceProperty.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../bm-services-poop/src/main/java/symphony/bm/bmservicespoop/entities/DevicePropertyMode.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../bm-services-poop/src/main/java/symphony/bm/bmservicespoop/jeep/JeepMessage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../bm-services-poop/src/main/java/symphony/bm/bmservicespoop/jeep/JeepResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../bm-services-poop/src/main/java/symphony/bm/bmservicespoop/mongodb/MongoDB_POOPAdaptor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../bm-services-poop/src/main/java/symphony/bm/bmservicespoop/rest/RestMicroserviceCommunicator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../bm-services-poop/src/main/java/symphony/bm/bmservicespoop/services/AbstService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../bm-services-poop/src/main/java/symphony/bm/bmservicespoop/services/POOPService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../bm-services-poop/src/main/java/symphony/bm/bmservicespoop/services/ServiceManager.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../bm-services-poop/src/main/java/symphony/bm/bmservicespoop/services/exceptions/MessageParameterCheckingException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/mongodb/MongoDBManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-core_v3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-core_v3/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../bm-comms/src/main/resources/application.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/rest/RestMicroserviceCommunicator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bm-comms/.idea/bm-comms.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../bm-comms/.idea/bm-comms.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bm-comms/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../bm-comms/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../bm-comms/resources/bm-comms.config.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../bm-comms/resources/bm-comms.config.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../bm-comms/resources/bm-comms.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../bm-comms/resources/bm.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bm-comms/resources/bm.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../bm-comms/resources/bm.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bm-comms/src/main/java/symphony/bm/bm_comms/InboundTrafficManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/../bm-comms/src/main/java/symphony/bm/bm_comms/InboundTrafficManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bm-comms/src/main/java/symphony/bm/bm_comms/mongodb/BMCommsMongoDBManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/../bm-comms/src/main/java/symphony/bm/bm_comms/mongodb/BMCommsMongoDBManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../bm-comms/src/main/java/symphony/bm/bm_comms/rest/RestMicroserviceCommunicator.java" beforeDir="false" afterPath="$PROJECT_DIR$/../bm-comms/src/main/java/symphony/bm/bm_comms/rest/RestMicroserviceCommunicator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../bm-comms/target/classes/symphony/bm/bm_comms/BMCommsApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/../bm-comms/target/classes/symphony/bm/bm_comms/BMCommsApplication.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../bm-comms/target/classes/symphony/bm/bm_comms/jeep/exceptions/PrimaryMessageCheckingException.class" beforeDir="false" afterPath="$PROJECT_DIR$/../bm-comms/target/classes/symphony/bm/bm_comms/jeep/exceptions/PrimaryMessageCheckingException.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../bm-comms/target/classes/symphony/bm/bm_comms/jeep/exceptions/SecondaryMessageCheckingException.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../bm-comms/target/classes/symphony/bm/bm_comms/mqtt/MQTTPublisher.class" beforeDir="false" afterPath="$PROJECT_DIR$/../bm-comms/target/classes/symphony/bm/bm_comms/mqtt/MQTTPublisher.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../bm-comms/target/classes/symphony/bm/bm_comms/rest/RestMicroserviceCommunicator$TestTxt.class" beforeDir="false" afterPath="$PROJECT_DIR$/../bm-comms/target/classes/symphony/bm/bm_comms/rest/RestMicroserviceCommunicator$TestTxt.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bm-comms/target/classes/symphony/bm/bm_comms/InboundTrafficManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/../bm-comms/target/classes/symphony/bm/bm_comms/InboundTrafficManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bm-comms/target/classes/symphony/bm/bm_comms/mongodb/BMCommsMongoDBManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/../bm-comms/target/classes/symphony/bm/bm_comms/mongodb/BMCommsMongoDBManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bm-comms/target/classes/symphony/bm/bm_comms/rest/RestMicroserviceCommunicator$TestTxt.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../bm-comms/target/classes/symphony/bm/bm_comms/rest/RestMicroserviceCommunicator.class" beforeDir="false" afterPath="$PROJECT_DIR$/../bm-comms/target/classes/symphony/bm/bm_comms/rest/RestMicroserviceCommunicator.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../bm-services-poop/resources/bm-services-poop.config.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bm-services-poop/resources/bm-services-poop.config.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../bm-services-poop/resources/bm-services-poop.config.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../bm-services-poop/resources/bm.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../bm-services-poop/resources/bm.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../bm-services-poop/src/main/java/symphony/bm/bmservicespoop/BmServicesPoopApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/../bm-services-poop/src/main/java/symphony/bm/bmservicespoop/BmServicesPoopApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../bm-services-poop/src/main/java/symphony/bm/bmservicespoop/cir/CIRManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/../bm-services-poop/src/main/java/symphony/bm/bmservicespoop/cir/CIRManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../bm-services-poop/src/main/java/symphony/bm/bmservicespoop/cir/Rule.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../bm-services-poop/src/main/java/symphony/bm/bmservicespoop/mongodb/MongoDBManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/../bm-services-poop/src/main/java/symphony/bm/bmservicespoop/mongodb/MongoDBManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../bm-services-poop/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../bm-services-poop/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bm-services-poop/src/main/java/symphony/bm/bmservicespoop/mongodb/MongoDB_POOPAdaptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/../bm-services-poop/src/main/java/symphony/bm/bmservicespoop/mongodb/MongoDB_POOPAdaptor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bm-services-poop/src/main/java/symphony/bm/bmservicespoop/rest/RestMicroserviceCommunicator.java" beforeDir="false" afterPath="$PROJECT_DIR$/../bm-services-poop/src/main/java/symphony/bm/bmservicespoop/rest/RestMicroserviceCommunicator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bm-services-poop/src/main/java/symphony/bm/bmservicespoop/services/AbstService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../bm-services-poop/src/main/java/symphony/bm/bmservicespoop/services/AbstService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bm-services-poop/src/main/java/symphony/bm/bmservicespoop/services/POOPService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../bm-services-poop/src/main/java/symphony/bm/bmservicespoop/services/POOPService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bm-serviceManagers-registration.iml" beforeDir="false" afterPath="$PROJECT_DIR$/bm-serviceManagers-registration.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bm-serviceManagers-registration.iml" beforeDir="false" afterPath="$PROJECT_DIR$/bm-services-registration.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/bm-services-registration.config.xml" beforeDir="false" afterPath="$PROJECT_DIR$/resources/bm-services-registration.config.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/SymphonyEnvironment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/SymphonyEnvironment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/adaptors/Adaptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/adaptors/RegistryAdaptor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/controller/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/controller/Controller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/entities/Device.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/entities/Device.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/entities/Room.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/entities/Room.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/mongodb/MongoDBAdaptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/mongodb/MongoDBRegistryAdaptor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/rest/InboundRestMicroserviceCommunicator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/rest/InboundRestMicroserviceCommunicator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/bm-services-registration.properties" beforeDir="false" afterPath="$PROJECT_DIR$/resources/bm.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/BMServicesRegistration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/BMServicesRegistration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/SymphonyEnvironment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/SymphonyRegistry.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/controller/Controller.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/mongodb/MongoDBManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/mongodb/MongoDBManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/mqtt/MQTTClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/mqtt/MQTTClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/rest/InboundRestMicroserviceCommunicator.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/rest/OutboundRestMicroserviceCommunicator.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/services/RegisterService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/services/RegisterService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/services/Service.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/services/AbstService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/services/ServiceManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/services/UnregisterService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/services/UnregisterService.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -71,59 +52,34 @@
   <component name="FileEditorManager">
     <leaf>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/pom.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1164">
-              <caret line="84" column="12" selection-start-line="84" selection-start-column="12" selection-end-line="102" selection-end-column="21" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/resources/bm-services-registration.config.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-6">
-              <caret line="22" column="35" selection-start-line="22" selection-start-column="35" selection-end-line="22" selection-end-column="35" />
+            <state relative-caret-position="238">
+              <caret line="14" column="22" lean-forward="true" selection-start-line="14" selection-start-column="22" selection-end-line="14" selection-end-column="22" />
               <folding>
-                <element signature="e#863#890#0" expanded="true" />
-                <element signature="e#951#980#0" expanded="true" />
-                <element signature="n#value#0;n#util:list#0;n#beans#0;n#!!top" expanded="true" />
-                <element signature="n#value#1;n#util:list#0;n#beans#0;n#!!top" expanded="true" />
-                <element signature="e#1565#1594#0" expanded="true" />
-                <element signature="e#1645#1661#0" expanded="true" />
-                <element signature="e#1791#1821#0" expanded="true" />
-                <element signature="e#1882#1909#0" expanded="true" />
-                <element signature="e#2062#2076#0" expanded="true" />
-                <element signature="e#2534#2563#0" expanded="true" />
-                <element signature="e#2614#2628#0" expanded="true" />
-                <element signature="e#2809#2836#0" expanded="true" />
-                <element signature="e#2984#3003#0" expanded="true" />
-                <element signature="e#3054#3065#0" expanded="true" />
-                <element signature="e#3172#3192#0" expanded="true" />
-                <element signature="e#3371#3389#0" expanded="true" />
-                <element signature="e#3439#3457#0" expanded="true" />
-                <element signature="e#3579#3602#0" expanded="true" />
-                <element signature="e#3655#3676#0" expanded="true" />
-                <element signature="e#3727#3740#0" expanded="true" />
-                <element signature="e#3848#3867#0" expanded="true" />
-                <element signature="e#3988#4013#0" expanded="true" />
-                <element signature="e#4934#4948#0" expanded="true" />
-                <element signature="e#5008#5034#0" expanded="true" />
-                <element signature="e#5164#5194#0" expanded="true" />
-                <element signature="e#5330#5357#0" expanded="true" />
-                <element signature="e#5605#5619#0" expanded="true" />
-                <element signature="e#5679#5702#0" expanded="true" />
-                <element signature="e#5838#5862#0" expanded="true" />
+                <element signature="e#1593#1622#0" expanded="true" />
+                <element signature="e#1673#1689#0" expanded="true" />
+                <element signature="e#1819#1849#0" expanded="true" />
+                <element signature="e#1910#1937#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/mongodb/MongoDBManager.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/BMServicesRegistration.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="391">
-              <caret line="23" column="54" selection-start-line="23" selection-start-column="54" selection-end-line="23" selection-end-column="54" />
+            <state relative-caret-position="85">
+              <caret line="8" column="32" selection-start-line="8" selection-start-column="32" selection-end-line="8" selection-end-column="32" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/services/RegisterService.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="161">
+              <caret line="28" column="50" selection-start-line="28" selection-start-column="50" selection-end-line="28" selection-end-column="50" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -132,40 +88,25 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/services/RegisterService.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/mongodb/MongoDBManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1207">
-              <caret line="23" column="13" selection-start-line="23" selection-start-column="13" selection-end-line="23" selection-end-column="13" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/mongodb/MongoDBRegistryAdaptor.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-221">
-              <caret line="19" column="4" selection-start-line="19" selection-start-column="4" selection-end-line="21" selection-end-column="37" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/rest/InboundRestMicroserviceCommunicator.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
-              <caret line="14" column="52" selection-start-line="14" selection-start-column="52" selection-end-line="14" selection-end-column="52" />
+            <state relative-caret-position="374">
+              <caret line="22" column="56" selection-start-line="22" selection-start-column="56" selection-end-line="22" selection-end-column="56" />
               <folding>
-                <element signature="e#1134#1147#1" expanded="true" />
+                <element signature="imports" expanded="true" />
+                <element signature="e#522#533#1" expanded="true" />
+                <element signature="e#560#580#1" expanded="true" />
+                <element signature="e#627#654#1" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/controller/Controller.java">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/resources/application.properties">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="170">
-              <caret line="21" column="36" selection-start-line="21" selection-start-column="36" selection-end-line="21" selection-end-column="36" />
+            <state>
+              <caret column="16" lean-forward="true" selection-start-column="16" selection-end-column="16" />
             </state>
           </provider>
         </entry>
@@ -173,26 +114,55 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/mqtt/MQTTClient.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
-              <caret line="6" column="31" selection-start-line="6" selection-start-column="31" selection-end-line="6" selection-end-column="31" />
+            <state relative-caret-position="408">
+              <caret line="24" column="44" selection-start-line="24" selection-start-column="44" selection-end-line="24" selection-end-column="44" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/adaptors/RegistryAdaptor.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/SymphonyRegistry.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="68">
-              <caret line="6" column="17" selection-start-line="6" selection-start-column="17" selection-end-line="6" selection-end-column="17" />
+            <state relative-caret-position="-145">
+              <caret line="39" selection-start-line="39" selection-end-line="39" />
+              <folding>
+                <element signature="e#984#998#1" expanded="true" />
+                <element signature="e#1025#1054#1" expanded="true" />
+                <element signature="e#1157#1184#1" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/resources/bm.properties">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="238">
+              <caret line="14" column="41" lean-forward="true" selection-start-line="14" selection-start-column="41" selection-end-line="14" selection-end-column="41" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/SymphonyEnvironment.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/rest/RestMicroserviceCommunicator.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="629">
-              <caret line="49" column="61" selection-start-line="49" selection-start-column="61" selection-end-line="49" selection-end-column="61" />
+            <state relative-caret-position="331">
+              <caret line="27" column="5" selection-start-line="27" selection-start-column="5" selection-end-line="27" selection-end-column="5" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#1255#1268#1" expanded="true" />
+                <element signature="e#1740#1741#0" expanded="true" />
+                <element signature="e#1794#1795#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/jeep/JeepResponse.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="34">
+              <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
             </state>
           </provider>
         </entry>
@@ -213,11 +183,23 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/resources/bm-services-registration.properties" />
         <option value="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/mongodb/MongoDBRegistryAdaptor.java" />
-        <option value="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/mongodb/MongoDBManager.java" />
         <option value="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/rest/InboundRestMicroserviceCommunicator.java" />
+        <option value="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/services/Service.java" />
         <option value="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/controller/Controller.java" />
+        <option value="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/rest/RestMicroserviceCommunicator.java" />
+        <option value="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/services/AbstService.java" />
+        <option value="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/mqtt/MQTTClient.java" />
+        <option value="$PROJECT_DIR$/resources/bm-services-registration.config.xml" />
+        <option value="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/SymphonyEnvironment.java" />
+        <option value="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/SymphonyRegistry.java" />
+        <option value="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/services/UnregisterService.java" />
+        <option value="$PROJECT_DIR$/resources/bm-services-registration.properties" />
+        <option value="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/BMServicesRegistration.java" />
+        <option value="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/mongodb/MongoDBManager.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/application.properties" />
+        <option value="$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/services/RegisterService.java" />
+        <option value="$PROJECT_DIR$/resources/bm.properties" />
       </list>
     </option>
   </component>
@@ -237,7 +219,7 @@
       <select />
     </treeState>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="140" />
     <option name="y" value="20" />
     <option name="width" value="1400" />
@@ -295,61 +277,14 @@
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="bmlogicdevices" type="462c0819:PsiDirectoryNode" />
-              <item name="adaptors" type="462c0819:PsiDirectoryNode" />
+              <item name="services" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="bm-serviceManagers-registration" type="b2602c69:ProjectViewProjectNode" />
               <item name="bm-services-registration" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="bmlogicdevices" type="462c0819:PsiDirectoryNode" />
-              <item name="controller" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="bm-serviceManagers-registration" type="b2602c69:ProjectViewProjectNode" />
-              <item name="bm-services-registration" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="bmlogicdevices" type="462c0819:PsiDirectoryNode" />
-              <item name="entities" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="bm-serviceManagers-registration" type="b2602c69:ProjectViewProjectNode" />
-              <item name="bm-services-registration" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="bmlogicdevices" type="462c0819:PsiDirectoryNode" />
-              <item name="jeep" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="bm-serviceManagers-registration" type="b2602c69:ProjectViewProjectNode" />
-              <item name="bm-services-registration" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="bmlogicdevices" type="462c0819:PsiDirectoryNode" />
-              <item name="mongodb" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="bm-serviceManagers-registration" type="b2602c69:ProjectViewProjectNode" />
-              <item name="bm-services-registration" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="bmlogicdevices" type="462c0819:PsiDirectoryNode" />
-              <item name="mqtt" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="bm-serviceManagers-registration" type="b2602c69:ProjectViewProjectNode" />
-              <item name="bm-services-registration" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="bmlogicdevices" type="462c0819:PsiDirectoryNode" />
-              <item name="rest" type="462c0819:PsiDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="bm-serviceManagers-registration" type="b2602c69:ProjectViewProjectNode" />
@@ -372,13 +307,22 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="RequestMappingsPanelOrder0" value="0" />
+    <property name="RequestMappingsPanelOrder1" value="1" />
+    <property name="RequestMappingsPanelWidth0" value="75" />
+    <property name="RequestMappingsPanelWidth1" value="75" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1585572691022" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1585643237123" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../.." />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+    <property name="settings.editor.selected.configurable" value="Errors" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\symphony\git\BM-v4\bm-services-registration\src\main" />
+    </key>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -393,8 +337,55 @@
     </option>
   </component>
   <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType" factoryName="Kotlin">
+      <module name="bm-services-registration" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="WORKING_DIRECTORY" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType" factoryName="Kotlin script">
+      <module name="bm-services-registration" />
+      <option name="filePath" />
+      <option name="vmParameters" />
+      <option name="alternativeJrePath" />
+      <option name="programParameters" />
+      <option name="passParentEnvs" value="true" />
+      <option name="workingDirectory" />
+      <option name="isAlternativeJrePathEnabled" value="false" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="WORKING_DIRECTORY" />
+      <option name="filePath" />
+      <option name="vmParameters" />
+      <option name="alternativeJrePath" />
+      <option name="programParameters" />
+      <option name="passParentEnvs" value="true" />
+      <option name="workingDirectory" />
+      <option name="isAlternativeJrePathEnabled" value="false" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="WORKING_DIRECTORY" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="BMServicesRegistration" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
-      <module name="bm-serviceManagers-registration" />
+      <module name="bm-services-registration" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="symphony.bm.bmlogicdevices.BMServicesRegistration" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -411,15 +402,15 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1585529622996</updated>
-      <workItem from="1585529625592" duration="11329000" />
+      <workItem from="1585529625592" duration="15747000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="11329000" />
+    <option name="totallyTimeSpent" value="15747000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Designer" />
@@ -428,7 +419,7 @@
       <window_info id="UI Designer" />
       <window_info id="Favorites" side_tool="true" />
       <window_info id="Web" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Spring" />
       <window_info anchor="bottom" id="Terminal" />
@@ -439,8 +430,8 @@
       <window_info anchor="bottom" id="Database Changes" />
       <window_info anchor="bottom" id="Version Control" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32936078" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.4225352" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -461,38 +452,10 @@
     <option name="version" value="1" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/resources/bm-services-registration.properties">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="23" column="28" selection-end-line="25" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/BMServicesRegistration.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="9" column="71" selection-start-line="7" selection-start-column="22" selection-end-line="9" selection-end-column="71" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/adaptors/RegistryAdaptor.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
           <caret line="6" column="17" selection-start-line="6" selection-start-column="17" selection-end-line="6" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/SymphonyEnvironment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="629">
-          <caret line="49" column="61" selection-start-line="49" selection-start-column="61" selection-end-line="49" selection-end-column="61" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/mqtt/MQTTClient.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="31" selection-start-line="6" selection-start-column="31" selection-end-line="6" selection-end-column="31" />
         </state>
       </provider>
     </entry>
@@ -510,75 +473,137 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/bm-services-registration.config.xml">
+    <entry file="file://$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/controller/Controller.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-6">
-          <caret line="22" column="35" selection-start-line="22" selection-start-column="35" selection-end-line="22" selection-end-column="35" />
+        <state relative-caret-position="289">
+          <caret line="27" column="47" selection-start-line="27" selection-start-column="47" selection-end-line="27" selection-end-column="47" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/jeep/JeepMessage.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="21" column="5" selection-start-line="21" selection-start-column="5" selection-end-line="21" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/jeep/JeepResponse.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/rest/RestMicroserviceCommunicator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="331">
+          <caret line="27" column="5" selection-start-line="27" selection-start-column="5" selection-end-line="27" selection-end-column="5" />
           <folding>
-            <element signature="e#863#890#0" expanded="true" />
-            <element signature="e#951#980#0" expanded="true" />
-            <element signature="n#value#0;n#util:list#0;n#beans#0;n#!!top" expanded="true" />
-            <element signature="n#value#1;n#util:list#0;n#beans#0;n#!!top" expanded="true" />
-            <element signature="e#1565#1594#0" expanded="true" />
-            <element signature="e#1645#1661#0" expanded="true" />
-            <element signature="e#1791#1821#0" expanded="true" />
-            <element signature="e#1882#1909#0" expanded="true" />
-            <element signature="e#2062#2076#0" expanded="true" />
-            <element signature="e#2534#2563#0" expanded="true" />
-            <element signature="e#2614#2628#0" expanded="true" />
-            <element signature="e#2809#2836#0" expanded="true" />
-            <element signature="e#2984#3003#0" expanded="true" />
-            <element signature="e#3054#3065#0" expanded="true" />
-            <element signature="e#3172#3192#0" expanded="true" />
-            <element signature="e#3371#3389#0" expanded="true" />
-            <element signature="e#3439#3457#0" expanded="true" />
-            <element signature="e#3579#3602#0" expanded="true" />
-            <element signature="e#3655#3676#0" expanded="true" />
-            <element signature="e#3727#3740#0" expanded="true" />
-            <element signature="e#3848#3867#0" expanded="true" />
-            <element signature="e#3988#4013#0" expanded="true" />
-            <element signature="e#4934#4948#0" expanded="true" />
-            <element signature="e#5008#5034#0" expanded="true" />
-            <element signature="e#5164#5194#0" expanded="true" />
-            <element signature="e#5330#5357#0" expanded="true" />
-            <element signature="e#5605#5619#0" expanded="true" />
-            <element signature="e#5679#5702#0" expanded="true" />
-            <element signature="e#5838#5862#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#1255#1268#1" expanded="true" />
+            <element signature="e#1740#1741#0" expanded="true" />
+            <element signature="e#1794#1795#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/services/ServiceManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" column="22" selection-start-line="2" selection-start-column="22" selection-end-line="2" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/mqtt/MQTTClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="408">
+          <caret line="24" column="44" selection-start-line="24" selection-start-column="44" selection-end-line="24" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/services/UnregisterService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="14" column="37" selection-start-line="14" selection-start-column="37" selection-end-line="14" selection-end-column="37" />
+          <folding>
+            <element signature="e#871#894#1" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/services/AbstService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="8" column="35" selection-start-line="8" selection-start-column="35" selection-end-line="8" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/BMServicesRegistration.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="8" column="32" selection-start-line="8" selection-start-column="32" selection-end-line="8" selection-end-column="32" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/services/RegisterService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1207">
-          <caret line="23" column="13" selection-start-line="23" selection-start-column="13" selection-end-line="23" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/mongodb/MongoDBManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="23" column="54" selection-start-line="23" selection-start-column="54" selection-end-line="23" selection-end-column="54" />
+        <state relative-caret-position="161">
+          <caret line="28" column="50" selection-start-line="28" selection-start-column="50" selection-end-line="28" selection-end-column="50" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/rest/InboundRestMicroserviceCommunicator.java">
+    <entry file="file://$PROJECT_DIR$/src/main/resources/application.properties">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="14" column="52" selection-start-line="14" selection-start-column="52" selection-end-line="14" selection-end-column="52" />
+        <state>
+          <caret column="16" lean-forward="true" selection-start-column="16" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/mongodb/MongoDBManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="22" column="56" selection-start-line="22" selection-start-column="56" selection-end-line="22" selection-end-column="56" />
           <folding>
-            <element signature="e#1134#1147#1" expanded="true" />
+            <element signature="imports" expanded="true" />
+            <element signature="e#522#533#1" expanded="true" />
+            <element signature="e#560#580#1" expanded="true" />
+            <element signature="e#627#654#1" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/controller/Controller.java">
+    <entry file="file://$PROJECT_DIR$/resources/bm-services-registration.config.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="21" column="36" selection-start-line="21" selection-start-column="36" selection-end-line="21" selection-end-column="36" />
+        <state relative-caret-position="238">
+          <caret line="14" column="22" lean-forward="true" selection-start-line="14" selection-start-column="22" selection-end-line="14" selection-end-column="22" />
+          <folding>
+            <element signature="e#1593#1622#0" expanded="true" />
+            <element signature="e#1673#1689#0" expanded="true" />
+            <element signature="e#1819#1849#0" expanded="true" />
+            <element signature="e#1910#1937#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/symphony/bm/bmlogicdevices/SymphonyRegistry.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-145">
+          <caret line="39" selection-start-line="39" selection-end-line="39" />
+          <folding>
+            <element signature="e#984#998#1" expanded="true" />
+            <element signature="e#1025#1054#1" expanded="true" />
+            <element signature="e#1157#1184#1" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/bm.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="14" column="41" lean-forward="true" selection-start-line="14" selection-start-column="41" selection-end-line="14" selection-end-column="41" />
         </state>
       </provider>
     </entry>

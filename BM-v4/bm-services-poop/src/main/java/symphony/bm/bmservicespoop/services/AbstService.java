@@ -6,6 +6,8 @@ import symphony.bm.bmservicespoop.jeep.JeepMessage;
 import symphony.bm.bmservicespoop.jeep.JeepResponse;
 import symphony.bm.bmservicespoop.services.exceptions.MessageParameterCheckingException;
 
+import java.util.List;
+
 public abstract class AbstService {
     protected Logger LOG;
     protected String logDomain;
@@ -19,7 +21,7 @@ public abstract class AbstService {
         this.messageServiceName = messageServiceName;
     }
 
-    public JeepResponse processMessage(JeepMessage message) throws MessageParameterCheckingException {
+    public List<JeepResponse> processMessage(JeepMessage message) throws MessageParameterCheckingException {
         LOG.debug("Checking secondary message parameters for MRN: " + message.getMRN());
         checkSecondaryMessageParameters(message);
         LOG.debug("Secondary message parameters checked! Processing...");
@@ -37,7 +39,7 @@ public abstract class AbstService {
         return new MessageParameterCheckingException(errorMsg, e);
     }
 
-    protected abstract JeepResponse process(JeepMessage message);
+    protected abstract List<JeepResponse> process(JeepMessage message);
 
     protected abstract void checkSecondaryMessageParameters(JeepMessage message)
             throws MessageParameterCheckingException;

@@ -11,7 +11,6 @@ import symphony.bm.bmservicespoop.entities.DeviceProperty;
 
 import static com.mongodb.client.model.Filters.eq;
 
-@Component
 public class MongoDB_POOPAdaptor implements POOPAdaptor {
     private Logger LOG;
     private MongoDBManager mongo;
@@ -19,12 +18,10 @@ public class MongoDB_POOPAdaptor implements POOPAdaptor {
     private String devicesCollectionName;
     private String devicesDBname;
 
-    public MongoDB_POOPAdaptor(@Value("${log.adaptor}") String logDomain,
-                               @Value("${mongo.collection.devices}") String devicesCollectionName,
-                               @Value("${mongo.database.devices}") String devicesDBname,
-                               MongoDBManager mongo) {
+    public MongoDB_POOPAdaptor(String logDomain, String devicesCollectionName, String devicesDBname,
+                               MongoDBManager mongoDBmanager) {
         LOG = LoggerFactory.getLogger(logDomain + ".mongoDB");
-        this.mongo = mongo;
+        this.mongo = mongoDBmanager;
         this.devicesCollectionName = devicesCollectionName;
         this.devicesDBname = devicesDBname;
     }

@@ -14,19 +14,11 @@ import java.util.Vector;
 
 @SpringBootApplication
 @PropertySource("file:resources/bm.properties")
+@ImportResource("file:resources/bm-services-poop.config.xml")
 public class BmServicesPoopApplication {
-
-    @Autowired
-    private MongoDB_POOPAdaptor poop;
 
     public static void main(String[] args) {
         SpringApplication.run(BmServicesPoopApplication.class, args);
     }
 
-    @Bean()
-    public List<POOPAdaptor> getAdaptors() {
-        Vector<POOPAdaptor> adaptors = new Vector<>();
-        adaptors.add(poop);
-        return adaptors;
-    }
 }

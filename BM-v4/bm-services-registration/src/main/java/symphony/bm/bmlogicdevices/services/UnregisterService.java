@@ -1,32 +1,38 @@
 package symphony.bm.bmlogicdevices.services;
 
-import symphony.bm.bmlogicdevices.SymphonyEnvironment;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.stereotype.Service;
+import symphony.bm.bmlogicdevices.SymphonyRegistry;
 import symphony.bm.bmlogicdevices.jeep.JeepMessage;
 import symphony.bm.bmlogicdevices.jeep.JeepResponse;
-import symphony.bm.bmlogicdevices.rest.OutboundRestMicroserviceCommunicator;
 import symphony.bm.bmlogicdevices.services.exceptions.MessageParameterCheckingException;
 
-public class UnregisterService extends Service {
-    private SymphonyEnvironment env;
+@Service
+@Scope(value = "prototype", proxyMode = ScopedProxyMode.TARGET_CLASS)
+public class UnregisterService extends AbstService {
+    private SymphonyRegistry registry;
 
-    public UnregisterService(String logDomain, String serviceName, String messageServiceName,
-                             OutboundRestMicroserviceCommunicator restCommunicator,
-                             SymphonyEnvironment symphonyEnvironment) {
-        super(logDomain, serviceName, messageServiceName, restCommunicator);
-        this.env = symphonyEnvironment;
+    public UnregisterService(@Value("${log.logic}") String logDomain,
+                             @Value("${services.unreg..name}") String serviceName,
+                             @Value("${services.unreg.msn}") String messageServiceName,
+                             SymphonyRegistry symphonyRegistry) {
+        super(logDomain, serviceName, messageServiceName);
+        this.registry = symphonyRegistry;
     }
 
     @Override
     protected JeepResponse process(JeepMessage message) {
         LOG.info("Unregistering device " + message.getCID() + " from Symphony network");
-        env.deleteDeviceObject(message.getCID());
+        registry.deleteDeviceObject(message.getCID());
         LOG.info("Device " + message.getCID() + " unregistered successfully!");
         return new JeepResponse(message);
     }
 
     @Override
     protected void checkSecondaryMessageParameters(JeepMessage message) throws MessageParameterCheckingException {
-        if (!env.containsDeviceObject(message.getCID()))
+        if (!registry.containsDeviceObject(message.getCID()))
             throw secondaryMessageCheckingException("CID does not exist!");
     }
 }

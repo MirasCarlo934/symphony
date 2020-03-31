@@ -13,19 +13,26 @@ public class BMCommsMongoDBManager {
     private Logger LOG;
     private MongoClient mongoClient;
     private MongoDatabase db;
+    private MongoCollection<Document> devicesCollection;
 
-    public BMCommsMongoDBManager(String logDomain, String logName, String uri, String bmCommsDatabase) {
+    public BMCommsMongoDBManager(String logDomain, String logName, String uri, String bmCommsDatabase,
+                                 String devicesCollectionName) {
         LOG = LoggerFactory.getLogger(logDomain + "." + logName);
         LOG.info("Connecting to mongoDB...");
         mongoClient = new MongoClient(new MongoClientURI(uri));
         LOG.info("Using BM-comms database " + bmCommsDatabase);
         db = mongoClient.getDatabase(bmCommsDatabase);
+        devicesCollection = db.getCollection(devicesCollectionName);
         LOG.info("Connected to mongoDB...");
     }
 
     public MongoCollection<Document> getCollection(String collectionName) {
         LOG.trace("Getting " + db + "." + collectionName);
         return db.getCollection(collectionName);
+    }
+
+    public MongoCollection<Document> getDevicesCollection() {
+        return devicesCollection;
     }
 
 //    public void insert(String collection, DBObject dbObject) {

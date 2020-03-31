@@ -15,12 +15,15 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Vector;
 
 @Service
 @Scope(value = "prototype", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class POOPService extends AbstService {
     private CIRManager cirm;
     private DevicePropertyRegistry dpr;
+    private Vector<JeepResponse> responses = new Vector<>();
+    private JeepMessage message;
 
     public POOPService(@Value("${log.poop}") String logDomain, @Value("${services.poop.name}") String serviceName,
                        @Value("${services.poop.msn}") String messageServiceName,
@@ -31,7 +34,8 @@ public class POOPService extends AbstService {
     }
 
     @Override
-    protected JeepResponse process(JeepMessage message) {
+    protected List<JeepResponse> process(JeepMessage message) {
+        this.message = message;
         String cid = message.getCID();
         int propIndex = message.getInt("prop-index");
         int propValue = message.getInt("prop-value");
@@ -39,7 +43,7 @@ public class POOPService extends AbstService {
         List<Rule> rules = cirm.getRulesTriggered(cid, propIndex);
         executeRules(rules);
 
-        return new JeepResponse(message, "testing only");
+        return responses;
     }
 
     private void executeRules(List<Rule> rules) {
@@ -67,6 +71,11 @@ public class POOPService extends AbstService {
         DeviceProperty prop = dpr.getDeviceProperty(cid, propIndex);
         LOG.info("Changing value of " + prop.getID() + " to " + propValue + "...");
         prop.setValue(propValue);
+        JeepResponse res = new JeepResponse(message);
+        res.put("CID", cid);
+        res.put("prop-index", propIndex);
+        res.put("prop-value", propValue);
+        responses.add(res);
         LOG.info(prop.getID() + " successfully changed value to " + propValue);
     }
 

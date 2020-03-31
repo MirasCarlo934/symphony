@@ -5,7 +5,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.bson.Document;
-import symphony.bm.bmlogicdevices.SymphonyEnvironment;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.stereotype.Service;
+import symphony.bm.bmlogicdevices.SymphonyRegistry;
 import symphony.bm.bmlogicdevices.entities.Device;
 import symphony.bm.bmlogicdevices.entities.DeviceProperty;
 import symphony.bm.bmlogicdevices.entities.DevicePropertyMode;
@@ -13,7 +17,6 @@ import symphony.bm.bmlogicdevices.entities.Room;
 import symphony.bm.bmlogicdevices.jeep.JeepMessage;
 import symphony.bm.bmlogicdevices.jeep.JeepResponse;
 import symphony.bm.bmlogicdevices.mongodb.MongoDBManager;
-import symphony.bm.bmlogicdevices.rest.OutboundRestMicroserviceCommunicator;
 import symphony.bm.bmlogicdevices.services.exceptions.MessageParameterCheckingException;
 
 import java.util.List;
@@ -21,16 +24,20 @@ import java.util.Vector;
 
 import static com.mongodb.client.model.Filters.eq;
 
-public class RegisterService extends Service {
-    private SymphonyEnvironment env;
+@Service
+@Scope(value = "prototype", proxyMode = ScopedProxyMode.TARGET_CLASS)
+public class RegisterService extends AbstService {
+    private SymphonyRegistry registry;
     private MongoDBManager mongo;
     private String productsCollection;
 
-    public RegisterService(String logDomain, String serviceName, String messageServiceName,
-                           OutboundRestMicroserviceCommunicator restCommunicator, SymphonyEnvironment symphonyEnvironment,
-                           MongoDBManager mongoDBManager, String productsCollectionName) {
-        super(logDomain, serviceName, messageServiceName, restCommunicator);
-        this.env = symphonyEnvironment;
+    public RegisterService(@Value("${log.logic}") String logDomain,
+                           @Value("${services.register.name}") String serviceName,
+                           @Value("${services.register.msn}") String messageServiceName,
+                           @Value("${mongo.collection.products}") String productsCollectionName,
+                           SymphonyRegistry symphonyRegistry, MongoDBManager mongoDBManager) {
+        super(logDomain, serviceName, messageServiceName);
+        this.registry = symphonyRegistry;
         this.mongo = mongoDBManager;
         this.productsCollection = productsCollectionName;
     }
@@ -40,7 +47,7 @@ public class RegisterService extends Service {
         String cid = message.getCID();
         String name = message.getString("name");
         MongoCollection<Document> products = mongo.getCollection(productsCollection);
-        Device device = env.getDeviceObject(cid);
+        Device device = registry.getDeviceObject(cid);
 
         if (device == null) {
             LOG.info("Registering device " + cid + " to Symphony network...");
@@ -48,12 +55,12 @@ public class RegisterService extends Service {
             Vector<DeviceProperty> properties = new Vector<>();
             Room roomObj;
             if (message.get("room").getClass().equals(String.class)) { // for RID registration
-                roomObj = env.getRoomObject(message.getString("room"));
+                roomObj = registry.getRoomObject(message.getString("room"));
             } else { // for new room registration
                 JSONObject roomDoc = (JSONObject) message.get("room");
-                roomObj = env.getRoomObject(roomDoc.getString("RID"));
+                roomObj = registry.getRoomObject(roomDoc.getString("RID"));
                 if (roomObj == null) {
-                    roomObj = env.createRoomObject(roomDoc.getString("RID"),
+                    roomObj = registry.createRoomObject(roomDoc.getString("RID"),
                             roomDoc.getString("name"));
                 }
             }
@@ -84,16 +91,16 @@ public class RegisterService extends Service {
                     properties.add(new DeviceProperty(index, propName, type, mode, minVal, maxVal));
                 }
             }
-            env.createDeviceObject(message.getCID(), pid, name, roomObj, properties);
+            registry.createDeviceObject(message.getCID(), pid, name, roomObj, properties);
             LOG.info("Device " + cid + " registered successfully!");
             return new JeepResponse(message);
         } else {
             Room room;
             if (message.get("room").getClass().equals(String.class)) {
-                room = env.getRoomObject(message.getString("room"));
+                room = registry.getRoomObject(message.getString("room"));
             } else {
                 JSONObject roomJSON = message.getJSONObject("room");
-                room = env.createRoomObject(roomJSON.getString("RID"), roomJSON.getString("name"));
+                room = registry.createRoomObject(roomJSON.getString("RID"), roomJSON.getString("name"));
             }
             LOG.info("Updating device " + cid + "...");
             LOG.info("Updating device " + cid + " name to " + name + "...");
@@ -160,7 +167,7 @@ public class RegisterService extends Service {
         try {
             Object room = message.get("room");
             if (room.getClass().equals(String.class)) { // for RID registration
-                Room r = env.getRoomObject((String) room);
+                Room r = registry.getRoomObject((String) room);
                 if (r == null) {
                     throw secondaryMessageCheckingException("Nonexistent roomID!");
                 }

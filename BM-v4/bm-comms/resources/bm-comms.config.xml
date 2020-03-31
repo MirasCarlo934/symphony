@@ -26,6 +26,7 @@
         <constructor-arg name="logName" value="MongoClient"/>
         <constructor-arg name="uri" value="${mongo.serverURI}"/>
         <constructor-arg name="bmCommsDatabase" value="${mongo.database.devices}"/>
+        <constructor-arg name="devicesCollectionName" value="${mongo.collection.devices}"/>
     </bean>
 
     <bean id="MQTT.client" class="symphony.bm.bm_comms.mqtt.MQTTClient">

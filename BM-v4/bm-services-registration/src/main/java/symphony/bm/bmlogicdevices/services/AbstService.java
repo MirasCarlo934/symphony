@@ -4,23 +4,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import symphony.bm.bmlogicdevices.jeep.JeepMessage;
 import symphony.bm.bmlogicdevices.jeep.JeepResponse;
-import symphony.bm.bmlogicdevices.rest.OutboundRestMicroserviceCommunicator;
 import symphony.bm.bmlogicdevices.services.exceptions.MessageParameterCheckingException;
 
-public abstract class Service {
-    protected Logger LOG;
-    protected String logDomain;
-    protected String serviceName;
-    protected String messageServiceName;
-    protected OutboundRestMicroserviceCommunicator restCommunicator;
+public abstract class AbstService {
+    Logger LOG;
+    String logDomain;
+    String serviceName;
+    String messageServiceName;
 
-    public Service(String logDomain, String serviceName, String messageServiceName,
-                   OutboundRestMicroserviceCommunicator restCommunicator) {
+    public AbstService(String logDomain, String serviceName, String messageServiceName) {
         LOG = LoggerFactory.getLogger(logDomain + "." + serviceName);
         this.logDomain = logDomain;
         this.serviceName = serviceName;
         this.messageServiceName = messageServiceName;
-        this.restCommunicator = restCommunicator;
     }
 
     public JeepResponse processMessage(JeepMessage message) throws MessageParameterCheckingException {
