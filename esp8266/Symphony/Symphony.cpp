@@ -346,19 +346,20 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
  */
 void mqttMsgHandler(char* topic, char* payload, size_t len) {
 #ifdef DEBUG_ONLY
-  Serial.println("[CORE]\t[mqttMsgHandler] ************** Messsage received.");
-  Serial.print("\t[mqttMsgHandler] **************   topic:");
+  Serial.print("[CORE] Messsage received.");
+  Serial.print(" topic:");
   Serial.print(topic);
   Serial.print(", len: ");
   Serial.println(len);
-  Serial.println("[CORE]\t[mqttMsgHandler]   payload: ");
+  Serial.print("[CORE] payload: ");
 #endif
-	  	char str2[len];
+	  	char str2[len+1];
 	    strncpy ( str2, payload, len );
-	    Serial.println(str2);
+	    str2[len+1] = '\0';
+	    Serial.println(payload);
 	    if (strcmp(topic, theMqttHandler.getSubscribedTopic().c_str()) == 0) {
 	  	  DynamicJsonBuffer jsonBuffer;
-	  	  JsonObject& jsonMsg = jsonBuffer.parseObject(str2);
+	  	  JsonObject& jsonMsg = jsonBuffer.parseObject(payload);
 	  	  Serial.printf("[CORE] MSN=%s \n", jsonMsg["MSN"].as<String>().c_str());
 	  	  String msn = jsonMsg["MSN"].as<String>();
 	  	  if(msn.equals("register")) {	//this is the response to our register request
@@ -367,8 +368,6 @@ void mqttMsgHandler(char* topic, char* payload, size_t len) {
 #endif
 	  	  }
 	  	  if(msn.equals("poop")) {	//this is a poop request
-	  		  Serial.println(Symphony::product.stringify());
-
 	  		  //evaluate if directPin==true, execute here.  Else pass to wscallback
 	  		  attribStruct attrib = Symphony::product.getKeyVal(jsonMsg["prop-index"].as<int>());
 #ifdef DEBUG_ONLY
