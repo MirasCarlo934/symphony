@@ -13,7 +13,7 @@
 AsyncMqttClient mqttClient;
 const char* myId = "myMqttID";
 const char* mqttServer = "localhost";
-String subscribeTopic = "devices/";
+char* subscribeTopic = "devices/";
 String publishTopic = "BM";
 int mqttPort = 1883;
 long timerMillis = 0, reconnectIntervalMillis = 10000;	//default 10 second reconnect interval
@@ -29,9 +29,9 @@ void onMqttConnect(bool sessionPresent) {
   Serial.println("[MqttHandler] Connected to MQTT.");
 //  Serial.print("Session present: ");
 //  Serial.println(sessionPresent);
-  String topic = subscribeTopic + myId;
-  uint16_t packetIdSub = mqttClient.subscribe(topic.c_str(), 0);
-  Serial.printf("[MqttHandler] subscribed to topic %s\n", topic.c_str());
+  sprintf(subscribeTopic, "%s%s","devices/", myId);
+  uint16_t packetIdSub = mqttClient.subscribe(subscribeTopic, 0);
+  Serial.printf("[MqttHandler] subscribed to topic %s\n", subscribeTopic);
 //  Serial.print("Subscribing at QoS 2, packetId: ");
 //  Serial.println(packetIdSub);
 //  mqttClient.publish("BM", 0, true, "test 1");
