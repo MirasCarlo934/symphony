@@ -594,6 +594,14 @@ function getDeviceInfoHandler(xhttp) {
 		document.getElementById("mqttEnabled").checked=true;
 	else
 		document.getElementById("mqttEnabled").checked=false;
+	lgnd = document.getElementById("mqttLegend");
+	if (jsonResponse.mqttConn == 1) {
+		lgnd.innerHTML = "Connected";
+		lgnd.setAttribute('style', 'background-color:lightgreen;')		
+	} else {
+		lgnd.innerHTML = "Disconnected";
+		lgnd.setAttribute('style', 'background-color:white;')
+	}
 	document.getElementById("mqttIp").value = jsonResponse.mqttIp;
 	document.getElementById("mqttPort").value = jsonResponse.mqttPort;
 	document.getElementById("sTopic").value = jsonResponse.sTopic;
