@@ -111,7 +111,7 @@ int productValueChangedEvent (int propertyIndex) {
 	reply["cmd"] = WSCLIENT_DO_CMD;
 	reply["ssid"] = a.ssid;
 	reply["mac"] = Symphony::mac;
-	reply["cid"] = 0;	//the client id, we set it to 0
+	reply["cid"] = 0;	//the WS client id, we set it to 0
 	reply["val"] = a.gui.value;
 	String strReply;
 	reply.printTo(strReply);
@@ -121,8 +121,9 @@ int productValueChangedEvent (int propertyIndex) {
 	JsonObject& poopJson = buffer.createObject();
 	poopJson["MRN"] = Symphony::getMRN();
 	poopJson["MSN"] = "poop";
-	poopJson["CID"] = "0000";
-	poopJson["prop-index"] = a.ssid;
+	poopJson["CID"] = Symphony::nameWithMac;
+//	poopJson["OP"] = "req";
+	poopJson["prop-index"] = propertyIndex;
 	poopJson["prop-value"] = a.gui.value;
 	String strReg;
 	poopJson.printTo(strReg);
@@ -369,7 +370,7 @@ void mqttMsgHandler(char* topic, char* payload, size_t len) {
 	  		  Serial.println(Symphony::product.stringify());
 
 	  		  //evaluate if directPin==true, execute here.  Else pass to wscallback
-	  		  attribStruct attrib = Symphony::product.getProperty(jsonMsg["property"].as<char *>());
+	  		  attribStruct attrib = Symphony::product.getKeyVal(jsonMsg["prop-index"].as<int>());
 #ifdef DEBUG_ONLY
 	  		  Serial.printf("[CORE] got attribute %s, current value=%i, pin=%i, directPin=%s\n", attrib.ssid.c_str(), attrib.gui.value, attrib.pin, attrib.directPin?"true":"false");
 #endif
@@ -377,7 +378,7 @@ void mqttMsgHandler(char* topic, char* payload, size_t len) {
 	  			  Symphony::product.setValue(jsonMsg["property"].as<String>(), jsonMsg["value"].as<int>());
 	  		  } else {//we do not set the value here, the callback might need to do some computation before setting the pin
 #ifdef DEBUG_ONLY
-	  			  Serial.printf("[CORE] Cannot set the property %s since it is not directly changeable.\n", attrib.ssid.c_str());
+	  			  Serial.printf("[CORE] Property %s not directly changeable. Passing to callback.\n", attrib.ssid.c_str());
 #endif
 	  			  if (MqttCallback != nullptr) {
 	  				  MqttCallback(jsonMsg);
@@ -504,20 +505,21 @@ void handleGetFiles(AsyncWebServerRequest *request) {
 void handleConfigInfo(AsyncWebServerRequest *request) {
 	DynamicJsonBuffer jsonBuffer;
 	JsonObject& jsonObj = jsonBuffer.parseObject(fManager.readConfig());
-	if (!jsonObj.containsKey("sTopic")) {
-		Serial.printf("[CORE] sTopic not found. Should be %s\n", theMqttHandler.getSubscribedTopic().c_str());
-		jsonObj["sTopic"] = theMqttHandler.getSubscribedTopic();
-	}
-	if (!jsonObj.containsKey("pTopic")) {
-		Serial.printf("[CORE] pTopic not found. Should be %s\n", theMqttHandler.getPublishTopic().c_str());
-		jsonObj["pTopic"] = theMqttHandler.getPublishTopic();
-	}
 	if (jsonObj.success()) {
 #ifdef DEBUG_ONLY
 		Serial.println("[CORE] AJAX Get device Info.");
 		jsonObj.prettyPrintTo(Serial);
 		Serial.println();
 #endif
+		if (!jsonObj.containsKey("sTopic")) {
+			Serial.printf("[CORE] sTopic not found. Should be %s\n", theMqttHandler.getSubscribedTopic().c_str());
+			jsonObj["sTopic"] = theMqttHandler.getSubscribedTopic();
+		}
+		if (!jsonObj.containsKey("pTopic")) {
+			Serial.printf("[CORE] pTopic not found. Should be %s\n", theMqttHandler.getPublishTopic().c_str());
+			jsonObj["pTopic"] = theMqttHandler.getPublishTopic();
+		}
+		jsonObj["mqttConn"] = theMqttHandler.isConnected();
 		String cfgInfo;
 		jsonObj.printTo(cfgInfo);
 		request->send(200, "text/html", cfgInfo);
@@ -944,6 +946,7 @@ bool Symphony::registerProduct() {
 				regJson["MRN"] = getMRN();
 				regJson["MSN"] = "register";
 				regJson["CID"] = Symphony::nameWithMac;
+//				regJson["OP"] = "req";
 				regJson["name"] = product.productName;
 				JsonObject& pJson = regJson.createNestedObject("product");
 				pJson["PID"] = product.productName;
