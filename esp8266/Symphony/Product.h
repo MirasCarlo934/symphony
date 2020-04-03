@@ -84,7 +84,12 @@ class Product {
 
     Product();
     Product(String name_mac, String room, String productName);
-    void setValueChangeCallback(int (* Callback) (int propertyIndex));	//sets the callback that will handle changes in property values
+    /*
+     * 	sets the callback that will handle changes in property values
+     * 	forHub = 	true : triggers transaction to the hub
+     * 				false: only for propagating to display clients, does not trigger transaction to hub
+     */
+    void setValueChangeCallback(int (* Callback) (int propertyIndex, boolean forHub));
     /**
      * Adds a property to this device.
      * ssid		= the SSID of this property (from the COMPROPLIST table)
@@ -112,7 +117,7 @@ class Product {
 
     attribStruct getProperty(String ssid);
     attribStruct getKeyVal(int index);
-    void setValue(String ssid, int value);
+    void setValue(String ssid, int value, boolean forHub);
     String stringify();
     String stringifyValues();
     void print();

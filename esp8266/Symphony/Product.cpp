@@ -6,7 +6,7 @@
  */
 #include "Product.h"
 
-//#define DEBUG_
+#define DEBUG_
 
 Product::Product(){}
 
@@ -20,10 +20,12 @@ Product::Product(String name_mac, String room, String productName){
 
 /**
  * This is the callback handler that will be called when this product's property changes value.
+ * forHub = true : triggers transaction to the hub
+ * 			false: only for propagating to display clients, does not trigger transaction to hub
  */
-int (* valueChangeCallback) (int event);
+int (* valueChangeCallback) (int propertyIndex, boolean forHub);
 
-void Product::setValueChangeCallback(int (* Callback) (int propertyIndex)) {
+void Product::setValueChangeCallback(int (* Callback) (int propertyIndex, boolean forHub)) {
 	valueChangeCallback = Callback;
 }
 /**
@@ -171,9 +173,13 @@ attribStruct Product::getKeyVal(int index) {
 
 
 /*
- * Sets the value of the product property with the given ssid
+ * Sets the value of the product property with the given ssid then sends to MQTT.
+ * Use this if
  */
-void Product::setValue(String ssid, int value) {
+void Product::setValue(String ssid, int value, boolean forHub) {
+#ifdef DEBUG_
+      Serial.printf("[Product]::setValue ssid=%s value=%i\n", ssid.c_str(), value);
+#endif
 	for (int i=0; i<size; i++) {
 	    if (strcmp(ssid.c_str(), attributes[i].ssid.c_str())==0) {
 #ifdef DEBUG_
@@ -187,10 +193,11 @@ void Product::setValue(String ssid, int value) {
 #endif
 	      attributes[i].gui.value = value;
 	      Serial.print("\t value is set to ");Serial.println(attributes[i].gui.value);
-	      valueChangeCallback(i);
+	      valueChangeCallback(i, forHub);
 	    }
 	  }
 }
+
 /**
  * creates a jason object for this product then returns the string
  */

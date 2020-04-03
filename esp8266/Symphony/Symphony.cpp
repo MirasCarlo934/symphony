@@ -93,15 +93,15 @@ void transmit(const char* payload) {
 }
 
 /**
- * The callback function that called by Product.setValue.
- * Sends transactions to the WS and MQTT.
- * If event was triggered by WS Client, we should send message to all WS Clients and the MQTT to inform the BM.
+ * The callback function that is called by Product.setValue
+ *
+ * If forHub=false: event was triggered by WS Client, we should send message to all WS Clients and the MQTT to inform the BM.
  *   - this means that there is command from WS Client to change state of the property.
- * If event was triggered by MQTT, we should send message to all WS Clients but need not send to MQTT to inform the BM.
+ * If forHub=true: event was triggered by MQTT, we should send message to all WS Clients but need not send to MQTT to inform the BM.
  *   - this means that the BM sent the message
  *
  */
-int productValueChangedEvent (int propertyIndex) {
+int productValueChangedEvent (int propertyIndex, boolean forHub) {
 	attribStruct a = Symphony::product.getKeyVal(propertyIndex);
 	Serial.printf("\n[CORE] productValueChangeEvent start\n[CORE]propertyIndex=%i SSID=%s LABEL=%s VALUE=%i\n", propertyIndex, a.ssid.c_str(), a.gui.label.c_str(), a.gui.value);
 	//create the reply string to the WS {"core":20,"cmd":10,"ssid":"0026","mac":"5ccf7fc78dc3","cid":0,"val":1}
@@ -116,18 +116,18 @@ int productValueChangedEvent (int propertyIndex) {
 	String strReply;
 	reply.printTo(strReply);
 	ws.textAll(strReply);
-
-	DynamicJsonBuffer buffer;
-	JsonObject& poopJson = buffer.createObject();
-	poopJson["MRN"] = Symphony::getMRN();
-	poopJson["MSN"] = "poop";
-	poopJson["CID"] = Symphony::nameWithMac;
-//	poopJson["OP"] = "req";
-	poopJson["prop-index"] = propertyIndex;
-	poopJson["prop-value"] = a.gui.value;
-	String strReg;
-	poopJson.printTo(strReg);
-	transmit(strReg.c_str());	//transmit to mqtt
+	if (forHub) {
+		DynamicJsonBuffer buffer;
+		JsonObject& poopJson = buffer.createObject();
+		poopJson["MRN"] = Symphony::getMRN();
+		poopJson["MSN"] = "poop";
+		poopJson["CID"] = Symphony::nameWithMac;
+		poopJson["prop-index"] = propertyIndex;
+		poopJson["prop-value"] = a.gui.value;
+		String strReg;
+		poopJson.printTo(strReg);
+		transmit(strReg.c_str());	//transmit to mqtt
+	}
 
 	Serial.println("[CORE] productValueChangeEvent done");
 }
@@ -269,7 +269,7 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 										Serial.printf("[CORE] got attribute %s, current value=%i, pin=%i, directPin=%s\n", attrib.ssid.c_str(), attrib.gui.value, attrib.pin, attrib.directPin?"true":"false");
 #endif
 										if (attrib.directPin) {//we set the value here because this is a directPin and its value can be set to pin directly
-											Symphony::product.setValue(json["ssid"].as<char *>(), json["val"].as<int>());
+											Symphony::product.setValue(json["ssid"].as<char *>(), json["val"].as<int>(), true); //forHub=true, sending txn to hub
 											json["core"] = WSCLIENT_DO_DISPLAY;
 										} else {//we do not set the value here, the callback might need to do some computation before setting the pin
 #ifdef DEBUG_ONLY
@@ -353,14 +353,10 @@ void mqttMsgHandler(char* topic, char* payload, size_t len) {
   Serial.println(len);
   Serial.print("[CORE] payload: ");
 #endif
-	  	char str2[len+1];
-	    strncpy ( str2, payload, len );
-	    str2[len+1] = '\0';
-	    Serial.println(payload);
 	    if (strcmp(topic, theMqttHandler.getSubscribedTopic().c_str()) == 0) {
 	  	  DynamicJsonBuffer jsonBuffer;
 	  	  JsonObject& jsonMsg = jsonBuffer.parseObject(payload);
-	  	  Serial.printf("[CORE] MSN=%s \n", jsonMsg["MSN"].as<String>().c_str());
+	  	  jsonMsg.printTo(Serial);Serial.println();
 	  	  String msn = jsonMsg["MSN"].as<String>();
 	  	  if(msn.equals("register")) {	//this is the response to our register request
 #ifdef DEBUG_ONLY
@@ -368,28 +364,35 @@ void mqttMsgHandler(char* topic, char* payload, size_t len) {
 #endif
 	  	  }
 	  	  if(msn.equals("poop")) {	//this is a poop request
-	  		  //evaluate if directPin==true, execute here.  Else pass to wscallback
-	  		  attribStruct attrib = Symphony::product.getKeyVal(jsonMsg["prop-index"].as<int>());
+	  		  if(jsonMsg.containsKey("success")) {	//this is a response
+	  			  //do nothing
+	  		  } else {
+	  			  /* this is the request that we will receive
+	  			   * {"MRN":"0000005","MSN":"poop","CID":"pir_5ccf7fc78dc3","prop-index":1,"prop-value":0}
+	  			   */
+	  			  //evaluate if directPin==true, execute here.  Else pass to wscallback
+				  attribStruct attrib = Symphony::product.getKeyVal(jsonMsg["prop-index"].as<int>());
 #ifdef DEBUG_ONLY
-	  		  Serial.printf("[CORE] got attribute %s, current value=%i, pin=%i, directPin=%s\n", attrib.ssid.c_str(), attrib.gui.value, attrib.pin, attrib.directPin?"true":"false");
+				  Serial.printf("[CORE] got attribute %s, current value=%i, pin=%i, directPin=%s\n", attrib.ssid.c_str(), attrib.gui.value, attrib.pin, attrib.directPin?"true":"false");
 #endif
-	  		  if (attrib.directPin) {//we set the value here because this is a directPin and its value can be set to pin directly
-	  			  Symphony::product.setValue(jsonMsg["property"].as<String>(), jsonMsg["value"].as<int>());
-	  		  } else {//we do not set the value here, the callback might need to do some computation before setting the pin
+				  if (attrib.directPin) {//we set the value here because this is a directPin and its value can be set to pin directly
+					  Symphony::product.setValue(jsonMsg["property"].as<String>(), jsonMsg["value"].as<int>(), false);//forHub=false, we are only showing this to the clients
+				  } else {//we do not set the value here, the callback might need to do some computation before setting the pin
 #ifdef DEBUG_ONLY
-	  			  Serial.printf("[CORE] Property %s not directly changeable. Passing to callback.\n", attrib.ssid.c_str());
+					  Serial.printf("[CORE] Property %s not directly changeable. Passing to callback.\n", attrib.ssid.c_str());
 #endif
-	  			  if (MqttCallback != nullptr) {
-	  				  MqttCallback(jsonMsg);
-	  			  } else {
-	  				  Serial.println("[CORE] No MQTT callback set!!!");
-	  			  }
+					  if (MqttCallback != nullptr) {
+						  MqttCallback(jsonMsg);
+					  } else {
+						  Serial.println("[CORE] No MQTT callback set!!!");
+					  }
+				  }
 	  		  }
 	  	  }
 	    }
 };
 /**
-* Handler tha displays Captive portal during softAP mode
+* Handler that displays Captive portal during softAP mode
 */
 class CaptivePortalRequestHandler : public AsyncWebHandler {
 public:
@@ -539,8 +542,19 @@ void doneFWUpdate(AsyncWebServerRequest *request) {
 	Serial.printf("[CORE] doneFWUpdate %i\n", fwResult);
 	reboot = true;
 }
+bool initUpdate = true;
 void handleFirmWareUpload(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final) {
 	isUpdateFw = true;
+	if (initUpdate) {
+		initUpdate = false;
+		DynamicJsonBuffer jsonBuffer;
+		JsonObject& hbMsg = jsonBuffer.createObject();
+		hbMsg["box"] = "status";	//send a firmware update message to all WS clients
+		hbMsg["msg"] = "Updating firmware...";	//send a firmware update message to all WS clients
+		String strHbMsg;
+		hbMsg.printTo(strHbMsg);
+		ws.textAll(strHbMsg);//send a start heartbeat timer to all the clients
+	}
 	delay(50);	//this is to enable the update to do SPIFF write before getting another data to write
 	fwResult = fManager.updateFirmware(filename, index, data, len, final);
 //	if (fwResult < 0) {
@@ -823,16 +837,16 @@ void Symphony::setupAP() {
     /* Setup the DNS server redirecting all the domains to the apIP */
 	dnsServer.setErrorReplyCode(DNSReplyCode::NoError);
 	dnsServer.start(DNS_PORT, "*", apIP);
-	webServer.addHandler(new CaptivePortalRequestHandler()).setFilter(ON_AP_FILTER);//only when requested from AP
-//	webServer.serveStatic("/generate_204", SPIFFS, "/admin.html");
-//	webServer.serveStatic("/fwlink", SPIFFS, "/admin.html");
-//
-//	webServer.serveStatic("/", SPIFFS, "/admin.html");
-//	webServer.serveStatic("/wifi", SPIFFS, "/admin.html");
-//	webServer.serveStatic("/0wifi", SPIFFS, "/admin.html");
-//	webServer.serveStatic("/wifisave", SPIFFS, "/admin.html");
-//	webServer.serveStatic("/i", SPIFFS, "/admin.html");
-//	webServer.serveStatic("/r", SPIFFS, "/admin.html");
+//	webServer.addHandler(new CaptivePortalRequestHandler()).setFilter(ON_AP_FILTER);//only when requested from AP
+	webServer.serveStatic("/generate_204", SPIFFS, "/admin.html");
+	webServer.serveStatic("/fwlink", SPIFFS, "/admin.html");
+
+	webServer.serveStatic("/", SPIFFS, "/admin.html");
+	webServer.serveStatic("/wifi", SPIFFS, "/admin.html");
+	webServer.serveStatic("/0wifi", SPIFFS, "/admin.html");
+	webServer.serveStatic("/wifisave", SPIFFS, "/admin.html");
+	webServer.serveStatic("/i", SPIFFS, "/admin.html");
+	webServer.serveStatic("/r", SPIFFS, "/admin.html");
 }
 /**
  * Connect to the AP using the passkey
@@ -945,7 +959,6 @@ bool Symphony::registerProduct() {
 				regJson["MRN"] = getMRN();
 				regJson["MSN"] = "register";
 				regJson["CID"] = Symphony::nameWithMac;
-//				regJson["OP"] = "req";
 				regJson["name"] = product.productName;
 				JsonObject& pJson = regJson.createNestedObject("product");
 				pJson["PID"] = product.productName;
