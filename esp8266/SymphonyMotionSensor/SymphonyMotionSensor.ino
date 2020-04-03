@@ -43,7 +43,7 @@ int wsHandler(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json)
 				break;
 			case 10: {
 				String ssid = json["ssid"].as<char*>();
-				product.setValue(ssid, json["val"].as<int>());
+				product.setValue(ssid, json["val"].as<int>(), true);//sending to hub
 //				json["core"] = 20;
 //				s.textAll(json);		//broadcast to other clients
 //				String strReg;
@@ -60,34 +60,6 @@ int wsHandler(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json)
 	Serial.println("\ncallback executed end");
 }
 
-/**
- *
- */
-void sendSensorData(int value) {
-	DynamicJsonBuffer jsonBuffer;
-	JsonObject& reply = jsonBuffer.createObject();
-	reply["core"] = WSCLIENT_DO_DISPLAY;
-	reply["cmd"] = WSCLIENT_DO_CMD;
-	reply["ssid"] = "0026";
-	reply["mac"] = s.mac;
-	reply["cid"] = 0;	//we are putting a dummy id, the cid of client will not match this.  Hence client will change the element's satus.
-	reply["val"] = value;
-	String replyStr;
-	reply.printTo(replyStr);
-	Serial.print("*** Sending ");reply.printTo(Serial);Serial.println();
-	s.textAll(reply);	//broadcast to other clients
-
-	DynamicJsonBuffer buffer;
-	JsonObject& poopJson = buffer.createObject();
-	poopJson["MRN"] = Symphony::getMRN();
-	poopJson["MSN"] = "poop";
-	poopJson["CID"] = "0000";
-	poopJson["prop-index"] = "0026";
-	poopJson["prop-value"] = value;
-	String strReg;
-	poopJson.printTo(strReg);
-	s.transmit(strReg.c_str());	//transmit to mqtt
-}
 /**
  * The setup
  */
@@ -137,7 +109,7 @@ void loop()
 			if (isLatchSwitch) {
 				if (inputState) {
 					oldInputState = !oldInputState;
-					product.setValue("0026", oldInputState);
+					product.setValue("0026", oldInputState, true);//sending this to hub
 					digitalWrite(LED_PIN1, !oldInputState);
 //					if (isController) {
 //						sendSensorData(oldInputState?1:0);
@@ -148,7 +120,7 @@ void loop()
 			} else {
 				char state[2];
 				sprintf(state, "%d", inputState);
-				product.setValue("0026", inputState);
+				product.setValue("0026", inputState, true);//sending this to hub
 				digitalWrite(LED_PIN1, !inputState);
 //				if (isController) {
 //					sendSensorData(inputState);
