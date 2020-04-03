@@ -22,7 +22,7 @@ String socketConfigFile = "/socket.cfg";
 
 uint16_t myUniverse = 2;
 uint16_t countE131 = 0;  //count to be used to to determine if we are receiving any E131 packets
-long timerMilli = 0;
+long myTimerMilli = 0;
 ESPAsyncE131 e131;
 bool prevSocketState;
 bool socketState = 1;
@@ -138,17 +138,17 @@ int wsHandler(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json)
 			}
 			case 10://on-off command
 				socketState = json["val"].as<int>();
-				product.setValue(json["val"].as<String>(), socketState);	//even if the property is virtual, we are setting its value here
-				DynamicJsonBuffer jsonBuffer;
-				JsonObject& poopJson = jsonBuffer.createObject();
-				poopJson["RID"] = Symphony::mac;
-				poopJson["CID"] = "0000";
-				poopJson["RTY"] = "poop";
-				poopJson["property"] = json["val"].as<String>();
-				poopJson["value"] = socketState;
-				String strReg;
-				poopJson.printTo(strReg);
-				s.transmit(strReg.c_str());
+				product.setValue(json["ssid"].as<String>(), socketState, true);	//even if the property is virtual, we are setting its value here
+//				DynamicJsonBuffer jsonBuffer;
+//				JsonObject& poopJson = jsonBuffer.createObject();
+//				poopJson["RID"] = Symphony::mac;
+//				poopJson["CID"] = "0000";
+//				poopJson["RTY"] = "poop";
+//				poopJson["property"] = json["val"].as<String>();
+//				poopJson["value"] = socketState;
+//				String strReg;
+//				poopJson.printTo(strReg);
+//				s.transmit(strReg.c_str());
 				Serial.printf("wsHandler Pin%i set to %i\n",SOCKET_PIN, socketState);
 				break;
 			}
@@ -186,7 +186,7 @@ void setup()
 
 	s.on("/getConfig", HTTP_GET, handleGetConfig);
 
-	product = Product(s.nameWithMac, "J444", "Socket");
+	product = Product(s.nameWithMac, "Kitchen", "Socket");
 	Gui gui1 = Gui("Socket Control", BUTTON_CTL, "On/Off", 0, 1, socketState);
 	product.addCallableProperty("0001", SOCKET_PIN, gui1);//add a property that has an attached pin
 	Gui gui2 = Gui("Socket Control", BUTTON_SNSR, "Indicator", 0, 1, socketState);
@@ -209,7 +209,7 @@ void loop() {
 		if (!e131.isEmpty() && isNormal) {
 			isNormal = false;
 		}
-		if (millis() - timerMilli >= 1000) {
+		if (millis() - myTimerMilli >= 1000) {
 #ifdef DEBUG_SOCKET
 			Serial.printf("countE131=%u countEmpty=%u\n",countE131);
 #endif
@@ -217,7 +217,7 @@ void loop() {
 			if (countE131 == 0)
 				isNormal = true;
 			countE131 = 0;
-			timerMilli = millis();
+			myTimerMilli = millis();
 		}
 		if (isNormal) {
 			//the normal socket state
@@ -230,7 +230,7 @@ void loop() {
 			if (timerData.enabled) {
 				if (millis() >= (timerData.startMillis + timerData.millis)) {
 					socketState = !socketState;
-					product.setValue("0001", socketState);
+					product.setValue("0001", socketState, true);
 					timerData.enabled = false;		//disable timer
 					DynamicJsonBuffer jsonBuffer;
 					JsonObject& json = jsonBuffer.createObject();
