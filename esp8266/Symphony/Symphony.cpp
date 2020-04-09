@@ -49,7 +49,7 @@ String homeHtml;
 
 // DNS server
 const byte DNS_PORT = 53;
-DNSServer dnsServer;
+AsyncDNSServer dnsServer;
 String responseHTML = ""
                       "<!DOCTYPE html><html><head><title>CaptivePortal</title></head><body>"
                       "<h1>Hello World!</h1><p>This is a captive portal example. All requests will "
@@ -434,8 +434,8 @@ void onWifiConnect(const WiFiEventStationModeGotIP &event) {
     Serial.println(WiFi.localIP());
 
     // Setup mDNS / DNS-SD
-    char chipId[7] = { 0 };
-    snprintf(chipId, sizeof(chipId), "%06x", ESP.getChipId());
+//    char chipId[7] = { 0 };
+//    snprintf(chipId, sizeof(chipId), "%06x", ESP.getChipId());
 
 
 #ifdef DISCOVERABLE
@@ -735,7 +735,7 @@ bool Symphony::loop() {
 		ESP.restart();
 	} else {
 		//we process other items if it is not reboot mode
-		dnsServer.processNextRequest();
+//		dnsServer.processNextRequest();
 //		webSocketClient.loop();July 13 2019 do we really need this device to be a ws client?
 		registerProduct();//register this product to BM
 		theMqttHandler.reconnect();//reconnect if MQTT is not connected
@@ -819,10 +819,17 @@ void Symphony::readConfigFile() {
 	#endif
 		}
 }
+
+void fnAPHadler(AsyncWebServerRequest *request) {
+	request->send(200, "text/html", AP_ADMIN_HTML);
+	Serial.println("[CORE] Captive Portal Displayed");
+}
+
 /**
  * Private methods below
  */
 void Symphony::setupAP() {
+	theMqttHandler.enabled = false;	//disable MQTT
 	Serial.println(F("[CORE] Failed to connect as wifi client, going to softAP."));
 	ap_ssid = "AP_"+hostName;
 	WiFi.mode(WIFI_AP);
@@ -832,21 +839,30 @@ void Symphony::setupAP() {
 #ifdef DEBUG_ONLY
     Serial.printf("[CORE] AP:%s, pk:%s, ip:%s\n",ap_ssid.c_str(),ap_passphrase.c_str(),apIP.toString().c_str());
 #endif
-    WiFi.softAP(ap_ssid.c_str(), ap_passphrase.c_str());
+//    WiFi.softAP(ap_ssid.c_str(), ap_passphrase.c_str());
+    WiFi.softAP(ap_ssid.c_str());
 
     /* Setup the DNS server redirecting all the domains to the apIP */
-	dnsServer.setErrorReplyCode(DNSReplyCode::NoError);
+	dnsServer.setErrorReplyCode(AsyncDNSReplyCode::NoError);
 	dnsServer.start(DNS_PORT, "*", apIP);
-//	webServer.addHandler(new CaptivePortalRequestHandler()).setFilter(ON_AP_FILTER);//only when requested from AP
-	webServer.serveStatic("/generate_204", SPIFFS, "/admin.html");
-	webServer.serveStatic("/fwlink", SPIFFS, "/admin.html");
-
-	webServer.serveStatic("/", SPIFFS, "/admin.html");
-	webServer.serveStatic("/wifi", SPIFFS, "/admin.html");
-	webServer.serveStatic("/0wifi", SPIFFS, "/admin.html");
-	webServer.serveStatic("/wifisave", SPIFFS, "/admin.html");
-	webServer.serveStatic("/i", SPIFFS, "/admin.html");
-	webServer.serveStatic("/r", SPIFFS, "/admin.html");
+	webServer.onNotFound(fnAPHadler);
+	webServer.on("/", fnAPHadler).setFilter(ON_AP_FILTER);
+	webServer.on("/wifi", fnAPHadler).setFilter(ON_AP_FILTER);
+	webServer.on("/0wifi", fnAPHadler).setFilter(ON_AP_FILTER);
+	webServer.on("/wifisave", fnAPHadler).setFilter(ON_AP_FILTER);
+	webServer.on("/i", fnAPHadler).setFilter(ON_AP_FILTER);
+	webServer.on("/r", fnAPHadler).setFilter(ON_AP_FILTER);
+	webServer.on("/generate_204", fnAPHadler).setFilter(ON_AP_FILTER);//Android/Chrome OS captive portal check.
+	webServer.on("/fwlink", fnAPHadler).setFilter(ON_AP_FILTER);  //Microsoft captive portal. Maybe not needed. Might be handled by notFound handler.
+	webServer.begin(); // Web server start
+//	webServer.serveStatic("/generate_204", SPIFFS, "/admin.html");
+//	webServer.serveStatic("/fwlink", SPIFFS, "/admin.html");
+//	webServer.serveStatic("/", SPIFFS, "/admin.html");
+//	webServer.serveStatic("/wifi", SPIFFS, "/admin.html");
+//	webServer.serveStatic("/0wifi", SPIFFS, "/admin.html");
+//	webServer.serveStatic("/wifisave", SPIFFS, "/admin.html");
+//	webServer.serveStatic("/i", SPIFFS, "/admin.html");
+//	webServer.serveStatic("/r", SPIFFS, "/admin.html");
 }
 /**
  * Connect to the AP using the passkey
