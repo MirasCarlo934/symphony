@@ -936,23 +936,26 @@ void Symphony::setRootProperties(String s) {
 /**
  * Will do the actual registration after mqttHandler has been set and product has been set
  *
- *  {
-		"MRN": "1234",			//Message Reference Number
-		"MSN": "register",		//Message Service Name
-		"CID": "abcd",			//Component ID, must be unique to the device; can be left empty to delegate ID assignment to BM
+ *  Complete Registration
+	{
+		"MRN": "1234",
+		"MSN": "register",
+		"CID": "abcd",
 		"name": "deviceName",
 		"product":
-			{
-			"PID": "productID",
-			"properties":
-				[{	name: "On/Off",
+			[
+				{
+					name: "On/Off",
 					index: 0,
-					type: "toggle",
-					minValue: 0,
-					maxValue: 1
-				}]
-			},
-		"room": {
+					type: {
+					  "data": "binary", //binary,enum,number,string
+					  "ui": "toggle"
+					},
+					mode: "O"
+				}
+			],
+		"room":
+		{
 			"RID": "roomID",
 			"name": "roomName"
 		}
@@ -976,28 +979,27 @@ bool Symphony::registerProduct() {
 				regJson["MSN"] = "register";
 				regJson["CID"] = Symphony::nameWithMac;
 				regJson["name"] = product.productName;
-				JsonObject& pJson = regJson.createNestedObject("product");
-				pJson["PID"] = product.productName;
-				JsonArray& proplist = pJson.createNestedArray("properties");
+				JsonArray& pArray = regJson.createNestedArray("product");
 				for (int i=0; i < product.getSize(); i++) {
 					attribStruct a = product.getKeyVal(i);
 					Serial.printf("[CORE] registerProduct ssid=%s label=%s, pintype=%i\n", a.ssid.c_str(), a.gui.label.c_str(), a.gui.pinType);
-					JsonObject& prop1 = proplist.createNestedObject();
-					prop1["ptype"] = "A1";
+					JsonObject& prop1 = pArray.createNestedObject();
 					if (a.gui.pinType == BUTTON_CTL || a.gui.pinType == SLIDER_CTL) {
 						prop1["mode"] = "O";
 					} else {  //a.gui.pinType == BUTTON_SNSR || a.gui.pinType == SLIDER_SNSR
 						prop1["mode"] = "I";
 					}
-
+					JsonObject& theType = prop1.createNestedObject("type");
 					if (a.gui.pinType == BUTTON_CTL || a.gui.pinType == BUTTON_SNSR ) {
-						prop1["type"] = "D";
+						theType["data"] = "binary";
+						theType["ui"] = "toggle";
 //						if (a.gui.pinType == BUTTON_CTL)
 //							prop1["mode"] = "O";
 //						if (a.gui.pinType == BUTTON_SNSR )
 //							prop1["mode"] = "I";
 					} else { //if (a.gui.pinType == SLIDER_CTL || a.gui.pinType == SLIDER_SNSR )
-						prop1["type"] = "A";
+						theType["data"] = "number";
+						theType["ui"] = "slider";
 //						if (a.gui.pinType == SLIDER_CTL)
 //							prop1["mode"] = "O";
 //						if (a.gui.pinType == SLIDER_SNSR )
