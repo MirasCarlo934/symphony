@@ -1,9 +1,9 @@
 FROM nginx
 
-COPY run.sh /
+COPY start-nginx.sh /
 
-COPY html /usr/share/nginx/html
-RUN rm /etc/nginx/conf.d/default.conf
-COPY loadbalance.conf /etc/nginx/conf.d/loadbalance.conf
+COPY usr/share/nginx/html /usr/share/nginx/html
+COPY etc/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY etc/nginx/stream_conf.d /etc/nginx/stream_conf.d
 
-CMD ["./run.sh"]
+CMD ["./start-nginx.sh"]

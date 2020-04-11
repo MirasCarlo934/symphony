@@ -12,7 +12,8 @@
 #include <ESP8266mDNS.h>
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
-#include <DNSServer.h>
+//#include <DNSServer.h>
+#include <ESPAsyncDNSServer.h>
 #include <ArduinoJson.h>
 
 #include "FileManager.h"

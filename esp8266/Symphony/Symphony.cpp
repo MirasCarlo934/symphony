@@ -49,7 +49,7 @@ String homeHtml;
 
 // DNS server
 const byte DNS_PORT = 53;
-DNSServer dnsServer;
+AsyncDNSServer dnsServer;
 String responseHTML = ""
                       "<!DOCTYPE html><html><head><title>CaptivePortal</title></head><body>"
                       "<h1>Hello World!</h1><p>This is a captive portal example. All requests will "
@@ -434,8 +434,8 @@ void onWifiConnect(const WiFiEventStationModeGotIP &event) {
     Serial.println(WiFi.localIP());
 
     // Setup mDNS / DNS-SD
-    char chipId[7] = { 0 };
-    snprintf(chipId, sizeof(chipId), "%06x", ESP.getChipId());
+//    char chipId[7] = { 0 };
+//    snprintf(chipId, sizeof(chipId), "%06x", ESP.getChipId());
 
 
 #ifdef DISCOVERABLE
@@ -735,7 +735,7 @@ bool Symphony::loop() {
 		ESP.restart();
 	} else {
 		//we process other items if it is not reboot mode
-		dnsServer.processNextRequest();
+//		dnsServer.processNextRequest();
 //		webSocketClient.loop();July 13 2019 do we really need this device to be a ws client?
 		registerProduct();//register this product to BM
 		theMqttHandler.reconnect();//reconnect if MQTT is not connected
@@ -819,10 +819,17 @@ void Symphony::readConfigFile() {
 	#endif
 		}
 }
+
+void fnAPHadler(AsyncWebServerRequest *request) {
+	request->send(200, "text/html", AP_ADMIN_HTML);
+	Serial.println("[CORE] Captive Portal Displayed");
+}
+
 /**
  * Private methods below
  */
 void Symphony::setupAP() {
+	theMqttHandler.enabled = false;	//disable MQTT
 	Serial.println(F("[CORE] Failed to connect as wifi client, going to softAP."));
 	ap_ssid = "AP_"+hostName;
 	WiFi.mode(WIFI_AP);
@@ -832,21 +839,30 @@ void Symphony::setupAP() {
 #ifdef DEBUG_ONLY
     Serial.printf("[CORE] AP:%s, pk:%s, ip:%s\n",ap_ssid.c_str(),ap_passphrase.c_str(),apIP.toString().c_str());
 #endif
-    WiFi.softAP(ap_ssid.c_str(), ap_passphrase.c_str());
+//    WiFi.softAP(ap_ssid.c_str(), ap_passphrase.c_str());
+    WiFi.softAP(ap_ssid.c_str());
 
     /* Setup the DNS server redirecting all the domains to the apIP */
-	dnsServer.setErrorReplyCode(DNSReplyCode::NoError);
+	dnsServer.setErrorReplyCode(AsyncDNSReplyCode::NoError);
 	dnsServer.start(DNS_PORT, "*", apIP);
-//	webServer.addHandler(new CaptivePortalRequestHandler()).setFilter(ON_AP_FILTER);//only when requested from AP
-	webServer.serveStatic("/generate_204", SPIFFS, "/admin.html");
-	webServer.serveStatic("/fwlink", SPIFFS, "/admin.html");
-
-	webServer.serveStatic("/", SPIFFS, "/admin.html");
-	webServer.serveStatic("/wifi", SPIFFS, "/admin.html");
-	webServer.serveStatic("/0wifi", SPIFFS, "/admin.html");
-	webServer.serveStatic("/wifisave", SPIFFS, "/admin.html");
-	webServer.serveStatic("/i", SPIFFS, "/admin.html");
-	webServer.serveStatic("/r", SPIFFS, "/admin.html");
+	webServer.onNotFound(fnAPHadler);
+	webServer.on("/", fnAPHadler).setFilter(ON_AP_FILTER);
+	webServer.on("/wifi", fnAPHadler).setFilter(ON_AP_FILTER);
+	webServer.on("/0wifi", fnAPHadler).setFilter(ON_AP_FILTER);
+	webServer.on("/wifisave", fnAPHadler).setFilter(ON_AP_FILTER);
+	webServer.on("/i", fnAPHadler).setFilter(ON_AP_FILTER);
+	webServer.on("/r", fnAPHadler).setFilter(ON_AP_FILTER);
+	webServer.on("/generate_204", fnAPHadler).setFilter(ON_AP_FILTER);//Android/Chrome OS captive portal check.
+	webServer.on("/fwlink", fnAPHadler).setFilter(ON_AP_FILTER);  //Microsoft captive portal. Maybe not needed. Might be handled by notFound handler.
+	webServer.begin(); // Web server start
+//	webServer.serveStatic("/generate_204", SPIFFS, "/admin.html");
+//	webServer.serveStatic("/fwlink", SPIFFS, "/admin.html");
+//	webServer.serveStatic("/", SPIFFS, "/admin.html");
+//	webServer.serveStatic("/wifi", SPIFFS, "/admin.html");
+//	webServer.serveStatic("/0wifi", SPIFFS, "/admin.html");
+//	webServer.serveStatic("/wifisave", SPIFFS, "/admin.html");
+//	webServer.serveStatic("/i", SPIFFS, "/admin.html");
+//	webServer.serveStatic("/r", SPIFFS, "/admin.html");
 }
 /**
  * Connect to the AP using the passkey
@@ -920,23 +936,26 @@ void Symphony::setRootProperties(String s) {
 /**
  * Will do the actual registration after mqttHandler has been set and product has been set
  *
- *  {
-		"MRN": "1234",			//Message Reference Number
-		"MSN": "register",		//Message Service Name
-		"CID": "abcd",			//Component ID, must be unique to the device; can be left empty to delegate ID assignment to BM
+ *  Complete Registration
+	{
+		"MRN": "1234",
+		"MSN": "register",
+		"CID": "abcd",
 		"name": "deviceName",
 		"product":
-			{
-			"PID": "productID",
-			"properties":
-				[{	name: "On/Off",
+			[
+				{
+					name: "On/Off",
 					index: 0,
-					type: "toggle",
-					minValue: 0,
-					maxValue: 1
-				}]
-			},
-		"room": {
+					type: {
+					  "data": "binary", //binary,enum,number,string
+					  "ui": "toggle"
+					},
+					mode: "O"
+				}
+			],
+		"room":
+		{
 			"RID": "roomID",
 			"name": "roomName"
 		}
@@ -960,28 +979,27 @@ bool Symphony::registerProduct() {
 				regJson["MSN"] = "register";
 				regJson["CID"] = Symphony::nameWithMac;
 				regJson["name"] = product.productName;
-				JsonObject& pJson = regJson.createNestedObject("product");
-				pJson["PID"] = product.productName;
-				JsonArray& proplist = pJson.createNestedArray("properties");
+				JsonArray& pArray = regJson.createNestedArray("product");
 				for (int i=0; i < product.getSize(); i++) {
 					attribStruct a = product.getKeyVal(i);
 					Serial.printf("[CORE] registerProduct ssid=%s label=%s, pintype=%i\n", a.ssid.c_str(), a.gui.label.c_str(), a.gui.pinType);
-					JsonObject& prop1 = proplist.createNestedObject();
-					prop1["ptype"] = "A1";
+					JsonObject& prop1 = pArray.createNestedObject();
 					if (a.gui.pinType == BUTTON_CTL || a.gui.pinType == SLIDER_CTL) {
 						prop1["mode"] = "O";
 					} else {  //a.gui.pinType == BUTTON_SNSR || a.gui.pinType == SLIDER_SNSR
 						prop1["mode"] = "I";
 					}
-
+					JsonObject& theType = prop1.createNestedObject("type");
 					if (a.gui.pinType == BUTTON_CTL || a.gui.pinType == BUTTON_SNSR ) {
-						prop1["type"] = "D";
+						theType["data"] = "binary";
+						theType["ui"] = "toggle";
 //						if (a.gui.pinType == BUTTON_CTL)
 //							prop1["mode"] = "O";
 //						if (a.gui.pinType == BUTTON_SNSR )
 //							prop1["mode"] = "I";
 					} else { //if (a.gui.pinType == SLIDER_CTL || a.gui.pinType == SLIDER_SNSR )
-						prop1["type"] = "A";
+						theType["data"] = "number";
+						theType["ui"] = "slider";
 //						if (a.gui.pinType == SLIDER_CTL)
 //							prop1["mode"] = "O";
 //						if (a.gui.pinType == SLIDER_SNSR )

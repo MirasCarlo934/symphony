@@ -1,0 +1,255 @@
+.sortPlaceholder {
+	border: dashed 1px black;
+}
+
+div.roomEditor {
+	margin: 20px;
+}
+
+div.roomEditor .name {
+	margin-right: 30px;
+}
+
+div.overlayPanel div.fields {
+	margin-left: 20px;
+	margin-top: 10px;
+}
+
+div.overlayPanel img.close {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	width: 20px;
+	cursor: pointer;
+}
+
+div.overlayPanel img.close:hover {
+	background-color: red;
+}
+
+div.roomContainerContainer {
+	
+}
+
+div.roomContainer {
+	position: relative;
+	display: inline-block;
+	float: left; 
+	
+	margin-left: 20px;
+	/* margin-right: 30px; */
+	margin-top: 30px;
+	padding: 10px;
+	padding-left: 10px;
+	padding-right: 10px;
+	
+	min-height: 228px;
+	min-width: 180px;
+	
+    border: solid 3px white;
+    
+	border-radius: 15px;
+	-webkit-border-radius: 15px;
+	-moz-border-radius: 15px;
+	/* box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box; */
+}
+
+div.roomContainer::AFTER {
+    content: "";
+    /* clear: both; */
+    /* display: table; */
+}
+
+/* div.roomContainer .header {
+	position: absolute;
+	background-color: inherit;
+	height: 30px;
+	top: -20px;
+	left: 0px;
+	padding: 5px;
+	cursor: pointer;
+	
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+} */
+
+div.roomContainer .header {
+	position: relative;
+	height: 30px;
+	text-align: left;
+	border: solid 1px black;
+}
+
+div.roomContainer div.roomHeader {
+	position: relative;
+	text-align: center;
+	
+	top:-20px;
+	
+	background-color: white;
+	border-radius: 10px;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	
+	transition: all 0.2s;
+}
+
+div.roomContainer div.roomHeader span {
+	margin: 5px;
+}
+
+div.roomContainer div.roomHeader div.overlay {
+	position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    opacity: 0;
+    
+    text-align: right;
+    
+    border-radius: 10px;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+}
+
+div.roomContainer div.roomHeader img.move, div.roomContainer div.roomHeader img.edit {
+	position: relative;
+	right: 5px;
+	top: 5px;
+	filter: opacity(100%) invert(100%);
+	width: 20px;
+	cursor: pointer;
+	
+	z-index: 95;
+}
+
+div.roomContainer div.roomHeader img.move:hover, div.roomContainer div.roomHeader img.edit:hover {
+	filter: invert(50%);
+}
+
+div.deviceContainer {
+	position: relative;
+	display: inline-block;
+	vertical-align: top;
+	width: 150px;
+	background-color: white;
+	cursor: pointer;
+	
+	padding: 0px;
+	margin-left: 15px;
+	margin-top: 15px;
+	
+	-webkit-border-radius: 10px 10px 20px 20px;
+	-moz-border-radius: 10px 10px 20px 20px;
+	border-radius: 10px 10px 20px 20px;
+}
+
+div.deviceContainer h1 {
+	position: relative;
+	background-color: inherit;
+	font-family: Myriad Pro;
+	font-weight: bold;
+	font-size: 16px;
+	text-align: center;
+	color: black;
+	
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	padding-left: 10px;
+	padding-right: 10px;
+	/* width: 100%; */
+	
+	/* border: solid 1px blue;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px; */
+}
+
+div.deviceContainer .info, div.deviceContainer .statusRed, div.deviceContainer .statusGreen {
+	position: relative;
+	background-color: inherit;
+	font-family: Myriad Pro;
+	font-size: 14px;
+	text-align: center;
+	/* color: #999999; */
+	color: black;
+	
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-bottom: 5px;
+	
+	width: 100%;
+	/* border: solid 1px; */
+}
+
+div.deviceContainer .statusRed {
+	font-weight: bold;
+	color: red;
+}
+
+div.deviceContainer .statusGreen {
+	font-weight: bold;
+	color: green;
+}
+
+div.deviceContainer div.icon {
+	position: relative;
+	width: 100%;
+	background-color: black;
+	cursor: pointer;
+	
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+}
+
+div.deviceContainer div.icon img.icon {
+	width: 100%;
+	
+	transition: all 0.2s;
+}
+
+div.deviceContainer div.icon img.move {
+	position: absolute;
+	left: 40%; /*50% - width/2 */
+	top: 40%; /*50% - width/2  */
+	width: 20%;
+	filter: opacity(0%) invert(100%);
+}
+
+div.deviceContainer div.icon img.edit {
+	position: absolute;
+	right: 5px;
+	top: 5px;
+	width: 20px;
+	filter: opacity(0%) invert(100%);
+}
+
+div.deviceContainer div.icon:hover img.move {
+	filter: opacity(100%) invert(100%);
+}
+
+div.deviceContainer div.icon:hover img.icon {
+	filter: blur(5px);
+}
+
+div.deviceContainer div.icon:hover img.edit {
+	filter: opacity(100%) invert(100%);
+}
+
+div.deviceContainer div.icon img.move:hover {
+	filter: opacity(100%) invert(50%);
+}
+
+div.deviceContainer div.icon img.edit:hover {
+	filter: opacity(100%) invert(50%);
+}

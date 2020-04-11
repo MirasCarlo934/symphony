@@ -47,9 +47,21 @@ int8_t Filemanager::updateFirmware(String filename, size_t index, uint8_t *data,
 		pinMode(2, OUTPUT);
 		update_status = UPLOAD_ONGOING;
 		WiFiUDP::stopAll();
+
+		uint32_t realSize = ESP.getFlashChipRealSize();
+		uint32_t ideSize = ESP.getFlashChipSize();
+		FlashMode_t ideMode = ESP.getFlashChipMode();
+
 		Serial.printf("\n\nUpdate: %s\n", filename.c_str());
+
+		Serial.printf("Flash real id:   %08X\n", ESP.getFlashChipId());
+		Serial.printf("Flash real size: %u bytes\n", realSize);
+		Serial.printf("Flash ide  size: %u bytes\n", ideSize);
+		Serial.printf("Flash ide speed: %u Hz\n", ESP.getFlashChipSpeed());
+		Serial.printf("Flash ide mode:  %s\n", (ideMode == FM_QIO ? "QIO" : ideMode == FM_QOUT ? "QOUT" : ideMode == FM_DIO ? "DIO" : ideMode == FM_DOUT ? "DOUT" : "UNKNOWN"));
+
 		uint32_t maxSketchSpace = (ESP.getFreeSketchSpace() - 0x1000) & 0xFFFFF000;
-		Serial.printf("maxSketchSpace: %d\n", maxSketchSpace);
+		Serial.printf("maxSketchSpace: %d\n\n", maxSketchSpace);
 		if(!Update.begin(maxSketchSpace)){//start with max available size
 			Serial.printf("Error: size is zero\n");
 			Update.printError(Serial);

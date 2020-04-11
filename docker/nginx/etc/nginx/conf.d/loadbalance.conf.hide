@@ -1,0 +1,23 @@
+#    upstream bm {
+#        server symphony2-container:8181;
+#	server symphony2-container2:8181;
+#    }
+    server {
+      listen       80;
+      server_name  localhost;
+
+      location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+      }
+      location /proxy {
+#        proxy_pass http://bm/;
+        proxy_set_header X-Real-IP $remote_addr;
+      }
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+  }

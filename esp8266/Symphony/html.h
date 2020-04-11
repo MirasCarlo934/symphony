@@ -77,4 +77,53 @@ function uploadFile() {
 </html>
 )=====";
 
+const char AP_ADMIN_HTML[] PROGMEM = R"=====(
+<html>
+<head>
+<title>Home Symphony</title>
+<script type="text/javascript">
+/*
+ * Function that commits the Ap, passkey and Device name, and the (enabled, ip and port) of mqtt broker
+ */
+function init() {
+	if (typeof websocket === 'undefined' || websocket.readyState != 1) {
+		var wsUri = "ws://"+location.hostname+":8080/ws";
+		websocket = new WebSocket(wsUri);
+	} else {
+		//do nothing, we are already connected
+	}
+}
+function APcommitConfig() {
+	var name = document.getElementById("pName").value;
+	var ssid = document.getElementById("pSSID").value;
+	var pwd = document.getElementById("pPass").value;
+	var obj = { core: 2, 
+			data: {
+				name: name, 
+				ssid: ssid, 
+				pwd: pwd
+			}
+		};
+	websocket.send(JSON.stringify(obj));
+}
+</script>
+</head>
+<body onload="init()">
+<h2>Device Setup</h2>
+<div id="device" class="tabcontent">
+<h3>Manage Device</h3>
+<form action='/config' method='get' id='formDevice'>
+<center><fieldset style="width:300px"><legend><b>Settings</b></legend>
+<table><tr><td>Name:</td><td><input type='text' id='pName' maxlength="8"></td></tr>
+<tr><td>Wifi SSID:</td><td><input type='text' id='pSSID'></td></tr>
+<tr><td>Passkey:</td><td><input type='text' id='pPass'></td></tr>
+<tr><td><input type='button' id='btnCommit' value='Commit' onclick='APcommitConfig()'></td></tr>
+</table>
+</fieldset></center>
+</form>
+</div>
+</body>
+</html>
+)=====";
+
 #endif /* HTML_H_ */
