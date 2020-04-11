@@ -1,0 +1,7 @@
+-------------------------------------------------------------------------------
+Test set: symphony.bm.bm_logic_devices.BMServicesTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.022 s <<< FAILURE! - in symphony.bm.bm_logic_devices.BMServicesTests
+symphony.bm.bm_logic_devices.BMServicesTests  Time elapsed: 0.022 s  <<< ERROR!
+java.lang.IllegalStateException: Unable to find a @SpringBootConfiguration, you need to use @ContextConfiguration or @SpringBootTest(classes=...) with your test
+

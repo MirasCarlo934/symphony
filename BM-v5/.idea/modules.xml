@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/bm-cache-devices/bm-cache-devices.iml" filepath="$PROJECT_DIR$/bm-cache-devices/bm-cache-devices.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bm-comms/bm-comms.iml" filepath="$PROJECT_DIR$/bm-comms/bm-comms.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bm-generics/generics.iml" filepath="$PROJECT_DIR$/bm-generics/generics.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bm-services-registry/bm-services-registry.iml" filepath="$PROJECT_DIR$/bm-services-registry/bm-services-registry.iml" />
+    </modules>
+  </component>
+</project>

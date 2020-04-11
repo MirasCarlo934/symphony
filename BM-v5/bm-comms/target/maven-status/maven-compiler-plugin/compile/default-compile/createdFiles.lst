@@ -1,0 +1,15 @@
+symphony/bm/bm_comms/jeep/exceptions/PrimaryMessageCheckingException.class
+symphony/bm/bm_comms/mqtt/objects/MQTTMessage.class
+symphony/bm/bm_comms/mqtt/MQTTClient.class
+symphony/bm/bm_comms/Protocol.class
+symphony/bm/bm_comms/Listener.class
+symphony/bm/bm_comms/rest/RestMicroserviceCommunicator$ForwardingUnit.class
+symphony/bm/bm_comms/InboundTrafficManager$1.class
+symphony/bm/bm_comms/Sender.class
+symphony/bm/bm_comms/InboundTrafficManager.class
+symphony/bm/bm_comms/mqtt/MQTTListener.class
+symphony/bm/bm_comms/InboundTrafficManager$ProcessingUnit.class
+symphony/bm/bm_comms/mqtt/MQTTClient$MQTTClientReconnector.class
+symphony/bm/bm_comms/BMCommsApplication.class
+symphony/bm/bm_comms/mqtt/MQTTPublisher.class
+symphony/bm/bm_comms/rest/RestMicroserviceCommunicator.class

@@ -1,0 +1,12 @@
+symphony/bm/bmlogicdevices/entities/Room.class
+symphony/bm/bmlogicdevices/entities/Device.class
+symphony/bm/bmlogicdevices/jeep/JeepMessage.class
+symphony/bm/bmlogicdevices/rest/RestMicroserviceCommunicator.class
+symphony/bm/bmlogicdevices/services/RegisterService.class
+symphony/bm/bmlogicdevices/adaptors/RegistryAdaptor.class
+symphony/bm/bmlogicdevices/SymphonyRegistry.class
+symphony/bm/bmlogicdevices/mongodb/MongoDBRegistryAdaptor.class
+symphony/bm/bmlogicdevices/services/UnregisterService.class
+symphony/bm/bmlogicdevices/entities/DeviceProperty.class
+symphony/bm/bmlogicdevices/services/AbstService.class
+symphony/bm/bmlogicdevices/mongodb/MongoDBManager.class

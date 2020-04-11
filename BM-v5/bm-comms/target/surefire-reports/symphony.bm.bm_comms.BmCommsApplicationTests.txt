@@ -1,0 +1,9 @@
+-------------------------------------------------------------------------------
+Test set: symphony.bm.bm_comms.BmCommsApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 3.265 s <<< FAILURE! - in symphony.bm.bm_comms.BmCommsApplicationTests
+contextLoads  Time elapsed: 0.011 s  <<< ERROR!
+java.lang.IllegalStateException: Failed to load ApplicationContext
+Caused by: org.springframework.beans.factory.BeanInitializationException: Could not load properties; nested exception is java.io.FileNotFoundException: Could not open ServletContext resource [/bm.properties]
+Caused by: java.io.FileNotFoundException: Could not open ServletContext resource [/bm.properties]
+

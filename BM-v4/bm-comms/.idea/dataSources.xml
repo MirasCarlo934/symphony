@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="SymphonyCluster@Atlas" uuid="027fa387-19cd-4e42-8242-4db03a51ff70">
+      <driver-ref>mongo</driver-ref>
+      <synchronize>true</synchronize>
+      <configured-by-url>true</configured-by-url>
+      <jdbc-driver>com.dbschema.MongoJdbcDriver</jdbc-driver>
+      <jdbc-url>mongodb://byronicad:mongo1131@symphonycluster-gy7bf.mongodb.net/test?retryWrites=true&amp;w=majority</jdbc-url>
+    </data-source>
+  </component>
+</project>
