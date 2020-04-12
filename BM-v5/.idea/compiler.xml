@@ -7,9 +7,10 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="bm-services-registry" />
         <module name="bm-generics" />
         <module name="bm-cache-devices" />
+        <module name="generics" />
+        <module name="bm-services-registry" />
         <module name="bm-comms" />
       </profile>
     </annotationProcessing>
@@ -18,6 +19,7 @@
       <module name="bm-comms" target="1.8" />
       <module name="bm-generics" target="1.8" />
       <module name="bm-services-registry" target="1.8" />
+      <module name="generics" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">

@@ -85,16 +85,16 @@ public class RestMicroserviceCommunicator {
     public MicroserviceMessage updateDevice(@PathVariable String cid, @RequestBody Device device) throws Exception {
         LOG.info("Updating device " + cid + "...");
         Device existing = superRoom.getDevice(cid);
+        Room oldRoom = superRoom.getRoom(existing.getRID());
         Room newRoom = superRoom.getRoom(device.getRID());
         if (!existing.getName().equals(device.getName())) {
             LOG.info("Updating name of device " + cid + " from " + existing.getName() + " to " + device.getName());
             existing.setName(device.getName());
         }
-        LOG.error(existing.getRID() + " - " + device.getRID());
         if (!existing.getRID().equals(device.getRID())) {
             LOG.info("Device " + cid + " transferring from room " + existing.getRoom().getRID() + " to "
                     + newRoom.getRID());
-            existing.setRoom(newRoom);
+            oldRoom.transferDevice(cid, newRoom);
         }
         return new MicroserviceSuccessfulMessage();
     }
@@ -105,38 +105,38 @@ public class RestMicroserviceCommunicator {
         LOG.info("Updating " + cid + "." + prop_index + "...");
         return new MicroserviceSuccessfulMessage();
     }
-    
-    @PostMapping("/rooms/{rid}")
-    public MicroserviceMessage addRoomToSuperRoom(@PathVariable String rid, @RequestBody Room room) throws Exception {
-        LOG.info("Adding room " + rid + "...");
-        superRoom.addRoom(room);
-        LOG.info("Room " + rid + " added");
-        return new MicroserviceSuccessfulMessage();
-    }
-    
-    @PostMapping("/rooms/{parent_rid}/{new_rid}")
-    public MicroserviceMessage addRoom(@PathVariable String parent_rid, @PathVariable String new_rid,
-                                       @RequestBody Room room) throws Exception {
-        LOG.info("Adding room " + new_rid + " to parent room " + parent_rid + "...");
-        superRoom.getRoom(parent_rid).addRoom(room);
-        LOG.info("Room " + new_rid + " added to parent room " + parent_rid);
-        return new MicroserviceSuccessfulMessage();
-    }
-    
+
     @PostMapping("/rooms/{rid}/devices/{cid}")
     public MicroserviceMessage addDevice(@PathVariable String rid, @PathVariable String cid,
                                          @RequestBody Device device) throws Exception {
         LOG.info("Adding device " + cid + " to room " + rid + "...");
         Room room = superRoom.getRoom(rid);
-        room.addDevice(device);
+        room.addDeviceAndCreateInAdaptors(device);
         LOG.info("Device " + cid + " added to room " + rid);
         return new MicroserviceSuccessfulMessage();
     }
-    
+
+    @PostMapping("/rooms/{rid}")
+    public MicroserviceMessage addRoomToSuperRoom(@PathVariable String rid, @RequestBody Room room) throws Exception {
+        LOG.info("Adding room " + rid + "...");
+        superRoom.addRoomAndCreateInAdaptors(room);
+        LOG.info("Room " + rid + " added");
+        return new MicroserviceSuccessfulMessage();
+    }
+
+    @PostMapping("/rooms/{parent_rid}/{new_rid}")
+    public MicroserviceMessage addRoom(@PathVariable String parent_rid, @PathVariable String new_rid,
+                                       @RequestBody Room room) throws Exception {
+        LOG.info("Adding room " + new_rid + " to parent room " + parent_rid + "...");
+        superRoom.getRoom(parent_rid).addRoomAndCreateInAdaptors(room);
+        LOG.info("Room " + new_rid + " added to parent room " + parent_rid);
+        return new MicroserviceSuccessfulMessage();
+    }
+
     @DeleteMapping("/devices/{cid}")
     public MicroserviceMessage deleteDevice(@PathVariable String cid) throws Exception {
         LOG.info("Deleting device " + cid + "...");
-        superRoom.removeDevice(cid);
+        superRoom.removeDeviceAndDeleteInAdaptors(cid);
         LOG.info("Device " + cid + " deleted");
         return new MicroserviceSuccessfulMessage();
     }
@@ -144,7 +144,7 @@ public class RestMicroserviceCommunicator {
     @DeleteMapping("/rooms/{rid}")
     public MicroserviceMessage deleteRoom(@PathVariable String rid) throws Exception {
         LOG.info("Deleting room " + rid + "...");
-        superRoom.removeRoom(rid);
+        superRoom.removeRoomAndDeleteInAdaptors(rid);
         LOG.info("Room " + rid + " deleted");
         return new MicroserviceSuccessfulMessage();
     }

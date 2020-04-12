@@ -15,6 +15,7 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.web.bind.annotation.*;
 import symphony.bm.cache.devices.adaptors.Adaptor;
+import symphony.bm.cache.devices.adaptors.AdaptorManager;
 import symphony.bm.cache.devices.entities.Device;
 import symphony.bm.cache.devices.entities.Room;
 import symphony.bm.cache.devices.entities.deviceproperty.DeviceProperty;
@@ -40,7 +41,7 @@ public class ServicesController {
     private final Logger LOG = LoggerFactory.getLogger(ServicesController.class);
     private MongoOperations mongo;
     private HttpClient httpClient = HttpClientBuilder.create().build();
-    private List<Adaptor> adaptors;
+    private AdaptorManager adaptorManager;
     
     private String bmURL;
     private String devicesCachePort;
@@ -49,12 +50,13 @@ public class ServicesController {
     public ServicesController(@Value("${http.url.bm}") String bmURL,
                               @Value("${microservices.cache.devices.port}") String devicesCachePort,
                               @Value("${microservices.cache.devices.path.rooms}") String getRoomsPath,
-                              MongoTemplate mongoTemplate, @Qualifier("bmsr.adaptorsList") List<Adaptor> adaptors) {
+                              MongoTemplate mongoTemplate,
+                              @Qualifier("bmsr.adaptorManager") AdaptorManager adaptorManager) {
         this.mongo = mongoTemplate;
         this.bmURL = bmURL;
         this.devicesCachePort = devicesCachePort;
         this.getRoomsPath = getRoomsPath;
-        this.adaptors = adaptors;
+        this.adaptorManager = adaptorManager;
     }
     
     @PostMapping("/registry")
@@ -103,7 +105,7 @@ public class ServicesController {
                     int index = (Integer) map.get("index");
                     String name = (String) map.get("name");
                     DevicePropertyMode mode = DevicePropertyMode.valueOf((String) map.get("mode"));
-                    DeviceProperty prop = new DeviceProperty(index, name,
+                    DeviceProperty prop = new DeviceProperty(index, device.getCID(), name,
                             DevicePropertyType.builder().map((Map<String, Object>) map.get("type")).build(), mode);
                     props.add(prop);
                 }
@@ -112,7 +114,7 @@ public class ServicesController {
             if (newRoom) { // create new room
                 LOG.info(format.format("Creating new room..."));
                 try {
-                    roomObj.createRoomInAdaptors();
+                    adaptorManager.roomCreated(roomObj);
                 } catch (Exception e) {
                     throw new RequestProcessingException("Unable to create new room", e);
                 }
@@ -120,7 +122,7 @@ public class ServicesController {
             try {
                 device = createDeviceObject(request.getCID(), roomObj.getRID(), request.getName(),
                         productObj.getProperties());
-                device.registerDeviceInAdaptors();
+                adaptorManager.deviceCreated(device);
             } catch (Exception e) {
                 throw new RequestProcessingException("Unable to register device", e);
             }
@@ -131,7 +133,7 @@ public class ServicesController {
             if (newRoom) { // create new room
                 LOG.info(format.format("Creating new room..."));
                 try {
-                    roomObj.createRoomInAdaptors();
+                    adaptorManager.roomCreated(roomObj);
                 } catch (Exception e) {
                     throw new RequestProcessingException("Unable to create new room", e);
                 }
@@ -140,13 +142,12 @@ public class ServicesController {
                 if (!device.getRID().equals(roomObj.getRID())) {
                     LOG.info(format.format("Device " + device.getCID() + " transferring from room "
                             + device.getRID() + " to " + roomObj.getRID()));
-                    device.setRoom(roomObj);
                 }
                 if (!device.getName().equals(request.getName())) {
                     LOG.info(format.format("Updating name of device " + device.getCID() + " from "
                             + device.getName() + " to " + request.getName()));
-                    device.setName(request.getName());
                 }
+                adaptorManager.deviceUpdatedDetails(device);
                 LOG.info(format.format("Device " + request.getCID() + " updated"));
             } catch (Exception e) {
                 throw new RequestProcessingException("Unable to update device", e);
@@ -161,7 +162,7 @@ public class ServicesController {
         LOG.info(format.format("Unregister requested"));
         try {
             Device device = getDeviceObject(request.getCID());
-            device.unregisterDeviceInAdaptors();
+            adaptorManager.deviceDeleted(device);
         } catch (Exception e) {
             throw new RequestProcessingException("Unable to get device", e);
         }
@@ -193,33 +194,33 @@ public class ServicesController {
     
     private Room createRoomObject(String rid, String name) {
         Room room = new Room(rid, name);
-        room.setAdaptors(adaptors);
+        room.setAdaptorManager(adaptorManager);
         return room;
     }
     
     private Room createRoomObject(String json) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Room room = mapper.readValue(json, Room.class);
-        room.setAdaptors(adaptors);
+        room.setAdaptorManager(adaptorManager);
         return room;
     }
     
     private Device createDeviceObject(String cid, String rid, String name, List<DeviceProperty> properties) {
         Device device = new Device(cid, rid, name, properties);
-        device.setAdaptors(adaptors);
+        device.setAdaptorManager(adaptorManager);
         return device;
     }
     
     private Device createDeviceObject(String json) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Device device = mapper.readValue(json, Device.class);
-        device.setAdaptors(adaptors);
+        device.setAdaptorManager(adaptorManager);
         return device;
     }
     
     private class RequestLogFormat {
-        private String mrn;
-        private String msn;
+        private final String mrn;
+        private final String msn;
     
         RequestLogFormat(String mrn, String msn) {
             this.mrn = mrn;

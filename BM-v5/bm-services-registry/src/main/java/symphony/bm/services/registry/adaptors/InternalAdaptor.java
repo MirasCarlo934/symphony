@@ -63,7 +63,7 @@ public class InternalAdaptor implements Adaptor {
     }
     
     @Override
-    public void deviceUpdated(Device device) throws Exception {
+    public void deviceUpdatedDetails(Device device) throws Exception {
         LOG.info("Patching device in devices cache...");
         ObjectMapper objectMapper = new ObjectMapper();
         HttpClient httpClient = HttpClientBuilder.create().build();
@@ -100,7 +100,7 @@ public class InternalAdaptor implements Adaptor {
     }
     
     @Override
-    public void propertyUpdated(DeviceProperty property) {
+    public void devicePropertyUpdated(DeviceProperty property) {
     
     }
 }

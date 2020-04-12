@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
 import symphony.bm.cache.devices.adaptors.Adaptor;
+import symphony.bm.cache.devices.adaptors.AdaptorManager;
 
 import java.util.*;
 
@@ -14,12 +15,12 @@ public class SuperRoom extends Room {
     private static final Logger LOG = LoggerFactory.getLogger(SuperRoom.class);
     private MongoOperations mongo;
 
-    public SuperRoom(List<Adaptor> adaptors, MongoTemplate mongoTemplate) {
+    public SuperRoom(AdaptorManager adaptorManager, MongoTemplate mongoTemplate) {
         super("_super", "Super Room");
         this.mongo = mongoTemplate;
 
         reloadAllEntities();
-        setAdaptors(adaptors);
+        setAdaptorManager(adaptorManager);
         setSelfToChildren();
     }
     
@@ -29,7 +30,7 @@ public class SuperRoom extends Room {
     
         for (Room room : roomsList) {
             room.setParentRoom(this);
-            rooms.put(room.getRID(), room);
+            rooms.add(room);
         }
 
         LOG.info(countAllDevices() + " devices and " + countAllRooms() + " rooms reloaded from DB");

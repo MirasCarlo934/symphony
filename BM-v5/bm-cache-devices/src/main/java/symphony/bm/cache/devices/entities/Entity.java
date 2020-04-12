@@ -1,22 +1,20 @@
 package symphony.bm.cache.devices.entities;
 
 import org.springframework.data.annotation.Transient;
-import symphony.bm.cache.devices.adaptors.Adaptor;
-
-import java.util.List;
+import symphony.bm.cache.devices.adaptors.AdaptorManager;
 
 public abstract class Entity {
-    @Transient protected List<Adaptor> adaptors;
+    @Transient protected AdaptorManager adaptorManager;
     
     /**
      * Sets this entity's AND its children's adaptors.
-     * @param adaptors The adaptors list
+     * @param adaptorManager The adaptors list
      */
-    public void setAdaptors(List<Adaptor> adaptors) {
-        this.adaptors = adaptors;
-        setAdaptorsToChildren(adaptors);
+    public void setAdaptorManager(AdaptorManager adaptorManager) {
+        this.adaptorManager = adaptorManager;
+        setAdaptorManagerToChildren(adaptorManager);
     }
     
-    protected abstract void setAdaptorsToChildren(List<Adaptor> adaptors);
+    protected abstract void setAdaptorManagerToChildren(AdaptorManager adaptors);
     protected abstract void setSelfToChildren();
 }

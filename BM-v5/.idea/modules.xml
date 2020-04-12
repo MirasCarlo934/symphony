@@ -4,8 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/bm-cache-devices/bm-cache-devices.iml" filepath="$PROJECT_DIR$/bm-cache-devices/bm-cache-devices.iml" />
       <module fileurl="file://$PROJECT_DIR$/bm-comms/bm-comms.iml" filepath="$PROJECT_DIR$/bm-comms/bm-comms.iml" />
-      <module fileurl="file://$PROJECT_DIR$/bm-generics/generics.iml" filepath="$PROJECT_DIR$/bm-generics/generics.iml" />
       <module fileurl="file://$PROJECT_DIR$/bm-services-registry/bm-services-registry.iml" filepath="$PROJECT_DIR$/bm-services-registry/bm-services-registry.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bm-generics/generics.iml" filepath="$PROJECT_DIR$/bm-generics/generics.iml" />
     </modules>
   </component>
 </project>

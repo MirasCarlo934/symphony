@@ -34,6 +34,10 @@
         <constructor-arg name="mongoOperations" ref="mongoTemplate"/>
     </bean>
 
+    <bean id="adaptorManager" class="symphony.bm.cache.devices.adaptors.AdaptorManager">
+        <constructor-arg name="adaptors" ref="adaptorsList"/>
+    </bean>
+
     <!--<bean id="CORE.controller" class="symphony.bm.bmlogicdevices.controller.Controller">-->
         <!--<constructor-arg name="logDomain" value="${log.logic}"/>-->
         <!--<constructor-arg name="serviceManagers" ref="serviceList"/>-->

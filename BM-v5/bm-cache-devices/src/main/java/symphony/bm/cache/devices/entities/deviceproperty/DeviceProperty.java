@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Transient;
 import symphony.bm.cache.devices.adaptors.Adaptor;
+import symphony.bm.cache.devices.adaptors.AdaptorManager;
 import symphony.bm.cache.devices.entities.Device;
 import symphony.bm.cache.devices.entities.Entity;
 
@@ -16,8 +17,8 @@ import java.util.List;
 
 //@RequiredArgsConstructor
 public class DeviceProperty extends Entity {
-    @Getter private int index;
-    @NonNull @Getter private final String CID;
+    @NonNull @Getter private int index;
+    @JsonProperty("CID") @NonNull @Getter(onMethod_ = {@JsonProperty("CID")}) private final String CID;
     @NonNull @Getter private String name;
     @NonNull @Getter private DevicePropertyType type;
     @NonNull @Getter private DevicePropertyMode mode;
@@ -39,10 +40,9 @@ public class DeviceProperty extends Entity {
     protected void setSelfToChildren() {
     
     }
-    
-    
+
     @Override
-    protected void setAdaptorsToChildren(List<Adaptor> adaptors) {
-    
+    protected void setAdaptorManagerToChildren(AdaptorManager adaptors) {
+
     }
 }
