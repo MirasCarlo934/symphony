@@ -16,7 +16,8 @@ import java.util.List;
 
 //@RequiredArgsConstructor
 public class DeviceProperty extends Entity {
-    @NonNull @Getter private int index;
+    @Getter private int index;
+    @NonNull @Getter private final String CID;
     @NonNull @Getter private String name;
     @NonNull @Getter private DevicePropertyType type;
     @NonNull @Getter private DevicePropertyMode mode;
@@ -24,10 +25,11 @@ public class DeviceProperty extends Entity {
     
     @Transient @JsonIgnore @Setter(onMethod_ = {@JsonIgnore}) @Getter(onMethod_ = {@JsonIgnore}) private Device device;
     
-    public DeviceProperty(@JsonProperty("index") int index, @JsonProperty("name") String name,
-                          @JsonProperty("type") DevicePropertyType type,
+    public DeviceProperty(@JsonProperty("index") int index, @JsonProperty("CID") String CID,
+                          @JsonProperty("name") String name, @JsonProperty("type") DevicePropertyType type,
                           @JsonProperty("mode") DevicePropertyMode mode) {
         this.index = index;
+        this.CID = CID;
         this.name = name;
         this.mode = mode;
         this.type = type;

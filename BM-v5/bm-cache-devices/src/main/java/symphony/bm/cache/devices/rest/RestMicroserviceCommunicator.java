@@ -99,6 +99,13 @@ public class RestMicroserviceCommunicator {
         return new MicroserviceSuccessfulMessage();
     }
     
+    @PatchMapping("/devices/{cid}/{prop_index}")
+    public MicroserviceMessage updateDeviceProperty(@PathVariable String cid, @PathVariable String prop_index,
+                                                    @RequestBody DeviceProperty property) {
+        LOG.info("Updating " + cid + "." + prop_index + "...");
+        return new MicroserviceSuccessfulMessage();
+    }
+    
     @PostMapping("/rooms/{rid}")
     public MicroserviceMessage addRoomToSuperRoom(@PathVariable String rid, @RequestBody Room room) throws Exception {
         LOG.info("Adding room " + rid + "...");
