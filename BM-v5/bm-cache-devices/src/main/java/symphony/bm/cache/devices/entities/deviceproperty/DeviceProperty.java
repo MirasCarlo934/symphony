@@ -17,7 +17,7 @@ import java.util.List;
 
 //@RequiredArgsConstructor
 public class DeviceProperty extends Entity {
-    @NonNull @Getter private int index;
+    @Getter private int index;
     @JsonProperty("CID") @NonNull @Getter(onMethod_ = {@JsonProperty("CID")}) private final String CID;
     @NonNull @Getter private String name;
     @NonNull @Getter private DevicePropertyType type;

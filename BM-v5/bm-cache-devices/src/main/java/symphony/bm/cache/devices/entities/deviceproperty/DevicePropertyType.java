@@ -18,13 +18,13 @@ public class DevicePropertyType {
     
     @Getter DataType data;
     @Getter DevicePropertyInterface ui;
-    @Getter Double minValue;
-    @Getter Double maxValue;
+    @Getter Number minValue;
+    @Getter Number maxValue;
     @Getter List<String> values;
     
     @JsonCreator
     public DevicePropertyType(@JsonProperty("data") DataType data, @JsonProperty("ui") DevicePropertyInterface ui,
-                              @JsonProperty("minValue") Double minValue, @JsonProperty("maxValue") Double maxValue,
+                              @JsonProperty("minValue") Number minValue, @JsonProperty("maxValue") Number maxValue,
                               @JsonProperty("values") List<String> values) {
         this.data = data;
         this.ui = ui;

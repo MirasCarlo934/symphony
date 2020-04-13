@@ -14,7 +14,7 @@ import java.util.Map;
 @EqualsAndHashCode(callSuper = true)
 @Value
 public class RegisterRequest extends JeepMessage {
-    static String[] propertyFields = {"index", "name", "mode", "type"};
+    static String[] propertyFields = {"name", "mode", "type"};
     static String[] roomFields = {"name", "RID"};
     static Logger LOG = LoggerFactory.getLogger(RegisterRequest.class);
     
@@ -29,11 +29,7 @@ public class RegisterRequest extends JeepMessage {
         this.product = product;
         this.room = room;
         if (!product.getClass().equals(String.class)) {
-            try {
-                checkProduct(product);
-            } catch (NullPointerException e) {
-            
-            }
+            checkProduct(product);
         }
         if (!room.getClass().equals(String.class)) {
             checkRoom(room);
@@ -41,7 +37,12 @@ public class RegisterRequest extends JeepMessage {
     }
     
     private void checkProduct(Object product) throws Exception {
-        List<Map<String, Object>> props = (List<Map<String, Object>>) product;
+        List<Map<String, Object>> props;
+        try {
+            props = (List<Map<String, Object>>) product;
+        } catch (ClassCastException e) {
+            throw new ClassCastException("'product' parameter not properly constructed");
+        }
         for (Map<String, Object> prop : props) {
             for (String field : propertyFields) {
                 if (!prop.containsKey(field)) {
@@ -51,13 +52,19 @@ public class RegisterRequest extends JeepMessage {
             if (!Map.class.isAssignableFrom(prop.get("type").getClass())) {
                 throw new Exception("a 'type' field in the properties array is not properly constructed");
             }
-            Map<String, Object> type = (Map<String, Object>) prop.get("type");
+
+            Map<String, Object> type;
+            try {
+                type = (Map<String, Object>) prop.get("type");
+            } catch (ClassCastException e) {
+                throw new ClassCastException("a 'type' field in the properties array is not properly constructed");
+            }
             try {
                 DevicePropertyType.builder().map(type).build();
             } catch (IllegalArgumentException e) {
                 throw e;
             } catch (Exception e) {
-                throw new Exception("a 'type' field in the properties array is not properly constructed", e);
+                throw new Exception("a 'type' field in the properties array does not have appropriate parameters", e);
             }
         }
     }

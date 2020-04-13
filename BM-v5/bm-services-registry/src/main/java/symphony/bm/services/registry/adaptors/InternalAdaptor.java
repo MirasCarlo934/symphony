@@ -77,7 +77,12 @@ public class InternalAdaptor implements Adaptor {
         }
         LOG.info("Device patched");
     }
-    
+
+    @Override
+    public void deviceTransferredRoom(Device device, Room from, Room to) throws Exception {
+
+    }
+
     @Override
     public void roomCreated(Room room) throws Exception {
         LOG.info("Posting new room in devices cache...");
@@ -98,7 +103,17 @@ public class InternalAdaptor implements Adaptor {
     public void roomDeleted(Room room) throws Exception {
     
     }
-    
+
+    @Override
+    public void roomUpdatedDetails(Room room) throws Exception {
+
+    }
+
+    @Override
+    public void roomTransferredRoom(Room room, Room from, Room to) throws Exception {
+
+    }
+
     @Override
     public void devicePropertyUpdated(DeviceProperty property) {
     

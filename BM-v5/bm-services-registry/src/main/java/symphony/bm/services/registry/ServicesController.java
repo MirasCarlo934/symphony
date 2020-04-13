@@ -101,13 +101,15 @@ public class ServicesController {
                 ObjectMapper objectMapper = new ObjectMapper();
                 Vector<DeviceProperty> props = new Vector<>();
                 List<Map<String, Object>> propList = (List<Map<String, Object>>) request.getProduct();
+                int index = 0;
                 for (Map<String, Object> map : propList) {
-                    int index = (Integer) map.get("index");
+//                    int index = (Integer) map.get("index");
                     String name = (String) map.get("name");
                     DevicePropertyMode mode = DevicePropertyMode.valueOf((String) map.get("mode"));
                     DeviceProperty prop = new DeviceProperty(index, device.getCID(), name,
                             DevicePropertyType.builder().map((Map<String, Object>) map.get("type")).build(), mode);
                     props.add(prop);
+                    index++;
                 }
                 productObj = new Product(props);
             }
