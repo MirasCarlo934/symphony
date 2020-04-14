@@ -51,12 +51,13 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency>
-            <groupId>symphony.bm</groupId>
-            <artifactId>bm-generics</artifactId>
-            <version>0.0.4-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
+        <!-- THIS DEPENDENCY IS FOR DEVELOPMENT ONLY! -->
+<!--        <dependency>-->
+<!--            <groupId>symphony.bm</groupId>-->
+<!--            <artifactId>bm-generics</artifactId>-->
+<!--            <version>0.0.4-SNAPSHOT</version>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
     </dependencies>
 
     <build>
@@ -65,6 +66,19 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-jar-plugin</artifactId>-->
+<!--                <configuration>-->
+<!--                    <archive>-->
+<!--                        <manifest>-->
+<!--                            &lt;!&ndash;<addClasspath>false</addClasspath>&ndash;&gt;-->
+<!--                            <mainClass>symphony.bm.cache.devices.BMCacheDevicesApplication</mainClass>-->
+<!--                            &lt;!&ndash;<classpathPrefix>lib/</classpathPrefix>&ndash;&gt;-->
+<!--                        </manifest>-->
+<!--                    </archive>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>

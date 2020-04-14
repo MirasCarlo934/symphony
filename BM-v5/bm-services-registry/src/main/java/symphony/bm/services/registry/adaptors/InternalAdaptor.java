@@ -19,8 +19,14 @@ import symphony.bm.cache.devices.entities.Room;
 import symphony.bm.cache.devices.entities.deviceproperty.DeviceProperty;
 import symphony.bm.services.registry.exceptions.RequestProcessingException;
 
+import java.util.Queue;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.LinkedBlockingQueue;
+
 public class InternalAdaptor implements Adaptor {
     private final Logger LOG = LoggerFactory.getLogger(InternalAdaptor.class);
+    private Queue<Device> devicesToUpdate = new LinkedBlockingQueue<>();
     
     private String bmURL;
     private String devicesCachePort;
@@ -80,7 +86,7 @@ public class InternalAdaptor implements Adaptor {
 
     @Override
     public void deviceTransferredRoom(Device device, Room from, Room to) throws Exception {
-
+        deviceUpdatedDetails(device);
     }
 
     @Override

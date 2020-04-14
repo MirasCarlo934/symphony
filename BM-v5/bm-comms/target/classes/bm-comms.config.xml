@@ -1,70 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:util="http://www.springframework.org/schema/util"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
 
     <context:property-placeholder location="bm.properties"/>
 
-    <util:list id="msnList" list-class="java.util.Vector">
-        <value>${services.register.msn}</value>
-        <value>${services.unreg.msn}</value>
-        <value>${services.poop.msn}</value>
+    <util:list id="serviceLocators" list-class="java.util.Vector">
+        <ref bean="register"/>
+        <ref bean="unreg"/>
     </util:list>
 
-    <util:map id="servicePorts" map-class="java.util.HashMap">
-        <entry key="${services.register.msn}" value="${services.register.url.port}"/>
-        <entry key="${services.unreg.msn}" value="${services.register.url.port}"/>
-        <entry key="poop" value="${services.poop.url.port}"/>
-    </util:map>
-
-    <bean id="DB.MongoManager" class="symphony.bm.bm_comms.mongodb.BMCommsMongoDBManager">
-        <constructor-arg name="logDomain" value="${log.db}"/>
-        <constructor-arg name="logName" value="MongoClient"/>
-        <constructor-arg name="uri" value="${mongo.serverURI}"/>
-        <constructor-arg name="bmCommsDatabase" value="${mongo.database.devices}"/>
-        <constructor-arg name="devicesCollectionName" value="${mongo.collection.devices}"/>
+    <bean id="register" class="symphony.bm.comms.rest.ServiceLocator">
+        <constructor-arg name="httpMethod" value="POST"/>
+        <constructor-arg name="MSN" value="${services.register.msn}"/>
+        <constructor-arg name="path" value="${microservices.services.registry.path}"/>
+        <constructor-arg name="port" value="${microservices.services.registry.port}"/>
+        <constructor-arg name="URL" value="${http.url.bm}"/>
     </bean>
 
-    <bean id="MQTT.client" class="symphony.bm.bm_comms.mqtt.MQTTClient">
-        <constructor-arg name="logDomain" value="${log.mqtt}"/>
-        <constructor-arg name="logName" value="client"/>
-        <constructor-arg name="protocolName" value="MQTT"/>
-        <constructor-arg name="serverURI" value="${mqtt.serverURI}"/>
-        <constructor-arg name="clientId" value="${mqtt.clientID}"/>
-        <constructor-arg name="BM_topic" value="${mqtt.topic.bm}"/>
-        <constructor-arg name="default_topic" value="${mqtt.topic.universal}"/>
-        <constructor-arg name="listener" ref="MQTT.listener"/>
-        <constructor-arg name="publisher" ref="MQTT.publisher"/>
-        <constructor-arg name="reconnectPeriod" value="${mqtt.reconnect.timeout}"/>
+    <bean id="unreg" class="symphony.bm.comms.rest.ServiceLocator">
+        <constructor-arg name="httpMethod" value="DELETE"/>
+        <constructor-arg name="MSN" value="${services.unreg.msn}"/>
+        <constructor-arg name="path" value="${microservices.services.registry.path}"/>
+        <constructor-arg name="port" value="${microservices.services.registry.port}"/>
+        <constructor-arg name="URL" value="${http.url.bm}"/>
     </bean>
-
-    <bean id="MQTT.publisher" class="symphony.bm.bm_comms.mqtt.MQTTPublisher">
-        <constructor-arg name="logDomain" value="${log.mqtt}"/>
-        <constructor-arg name="logName" value="sender"/>
-        <constructor-arg name="devices_topic" value="${mqtt.topic.devices}"/>
-        <constructor-arg name="universal_topic" value="${mqtt.topic.universal}"/>
-        <constructor-arg name="error_topic" value="${mqtt.topic.error}"/>
-        <constructor-arg name="msn_register" value="${services.register.msn}"/>
-    </bean>
-
-    <bean id="MQTT.listener" class="symphony.bm.bm_comms.mqtt.MQTTListener">
-        <constructor-arg name="logDomain" value="${log.mqtt}"/>
-        <constructor-arg name="logName" value="listener"/>
-        <constructor-arg name="universal_topic" value="${mqtt.topic.universal}"/>
-        <constructor-arg name="error_topic" value="${mqtt.topic.error}"/>
-        <constructor-arg name="inboundTrafficManager" ref="CORE.inboundTrafficManager"/>
-    </bean>
-
-    <bean id="CORE.inboundTrafficManager" class="symphony.bm.bm_comms.InboundTrafficManager">
-        <constructor-arg name="logDomain" value="${log.comms}"/>
-        <constructor-arg name="logName" value="inboundTrafficManager"/>
-        <constructor-arg name="rest" ref="restMicroserviceCommunicator"/>
-        <constructor-arg name="mongoDBManager" ref="DB.MongoManager"/>
-        <constructor-arg name="devicesDBCollection" value="${mongo.collection.devices}"/>
-        <constructor-arg name="msn_register" value="${services.register.msn}"/>
-        <constructor-arg name="msnList" ref="msnList"/>
-    </bean>
-
 </beans>

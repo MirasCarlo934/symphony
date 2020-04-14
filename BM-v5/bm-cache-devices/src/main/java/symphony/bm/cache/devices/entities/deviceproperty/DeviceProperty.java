@@ -22,7 +22,7 @@ public class DeviceProperty extends Entity {
     @NonNull @Getter private String name;
     @NonNull @Getter private DevicePropertyType type;
     @NonNull @Getter private DevicePropertyMode mode;
-    @JsonIgnore @Getter private String value = null;
+    @Getter private String value = "";
     
     @Transient @JsonIgnore @Setter(onMethod_ = {@JsonIgnore}) @Getter(onMethod_ = {@JsonIgnore}) private Device device;
     

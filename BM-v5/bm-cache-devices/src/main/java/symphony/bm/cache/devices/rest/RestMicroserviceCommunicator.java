@@ -87,12 +87,13 @@ public class RestMicroserviceCommunicator {
         Device existing = superRoom.getDevice(cid);
         Room oldRoom = superRoom.getRoom(existing.getRID());
         Room newRoom = superRoom.getRoom(device.getRID());
+        LOG.error(oldRoom.getRID() + " - " + newRoom.getRID());
         if (!existing.getName().equals(device.getName())) {
             LOG.info("Updating name of device " + cid + " from " + existing.getName() + " to " + device.getName());
             existing.setName(device.getName());
         }
         if (!existing.getRID().equals(device.getRID())) {
-            LOG.info("Device " + cid + " transferring from room " + existing.getRoom().getRID() + " to "
+            LOG.info("Device " + cid + " transferring from room " + oldRoom.getRID() + " to "
                     + newRoom.getRID());
             oldRoom.transferDevice(cid, newRoom);
         }

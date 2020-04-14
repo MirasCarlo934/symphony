@@ -32,6 +32,7 @@
 
     <bean id="adaptor.mongodb" class="symphony.bm.cache.devices.adaptors.MongoAdaptor">
         <constructor-arg name="mongoOperations" ref="mongoTemplate"/>
+        <constructor-arg name="timeBetweenPersists" value="${mongo.timeBetweenPersists}"/>
     </bean>
 
     <bean id="adaptorManager" class="symphony.bm.cache.devices.adaptors.AdaptorManager">

@@ -14,6 +14,7 @@
     <bean id="bmsr.adaptor.internal" class="symphony.bm.services.registry.adaptors.InternalAdaptor">
         <constructor-arg name="bmURL" value="${http.url.bm}"/>
         <constructor-arg name="devicesCachePort" value="${microservices.cache.devices.port}"/>
+<!--        <constructor-arg name="timeBetweenUpdates" value="${internal.timeBetweenUpdates}"/>-->
     </bean>
 
     <bean id="bmsr.adaptorManager" class="symphony.bm.cache.devices.adaptors.AdaptorManager">

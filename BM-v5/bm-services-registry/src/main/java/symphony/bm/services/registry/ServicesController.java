@@ -106,7 +106,7 @@ public class ServicesController {
 //                    int index = (Integer) map.get("index");
                     String name = (String) map.get("name");
                     DevicePropertyMode mode = DevicePropertyMode.valueOf((String) map.get("mode"));
-                    DeviceProperty prop = new DeviceProperty(index, device.getCID(), name,
+                    DeviceProperty prop = new DeviceProperty(index, request.getCID(), name,
                             DevicePropertyType.builder().map((Map<String, Object>) map.get("type")).build(), mode);
                     props.add(prop);
                     index++;
@@ -141,15 +141,18 @@ public class ServicesController {
                 }
             }
             try {
-                if (!device.getRID().equals(roomObj.getRID())) {
-                    LOG.info(format.format("Device " + device.getCID() + " transferring from room "
-                            + device.getRID() + " to " + roomObj.getRID()));
-                }
+                // NOTE: DO NOT CHANGE THE ORDER! SET NAME FIRST BEFORE CHANGE ROOM!
                 if (!device.getName().equals(request.getName())) {
                     LOG.info(format.format("Updating name of device " + device.getCID() + " from "
                             + device.getName() + " to " + request.getName()));
+                    device.setName(request.getName());
                 }
-                adaptorManager.deviceUpdatedDetails(device);
+                if (!device.getRID().equals(roomObj.getRID())) {
+                    LOG.info(format.format("Device " + device.getCID() + " transferring from room "
+                            + device.getRID() + " to " + roomObj.getRID()));
+                    Room currentRoom = getRoomObject(device.getRID());
+                    currentRoom.transferDevice(device.getCID(), roomObj);
+                }
                 LOG.info(format.format("Device " + request.getCID() + " updated"));
             } catch (Exception e) {
                 throw new RequestProcessingException("Unable to update device", e);

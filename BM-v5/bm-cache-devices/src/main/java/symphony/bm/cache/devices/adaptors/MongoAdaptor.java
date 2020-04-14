@@ -10,15 +10,26 @@ import symphony.bm.cache.devices.entities.deviceproperty.DeviceProperty;
 import symphony.bm.cache.devices.entities.Room;
 
 import java.util.HashMap;
+import java.util.Queue;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 import static org.springframework.data.mongodb.core.query.Update.update;
 
-@AllArgsConstructor
-public class MongoAdaptor implements Adaptor {
+public class MongoAdaptor extends TimerTask implements Adaptor {
     private static final Logger LOG = LoggerFactory.getLogger(MongoAdaptor.class);
     private final MongoOperations mongoOperations;
+    private Queue<Room> roomsToSave = new LinkedBlockingQueue<>();
+    
+    public MongoAdaptor(MongoOperations mongoOperations, long timeBetweenPersists) {
+        this.mongoOperations = mongoOperations;
+        
+        Timer runner = new Timer(MongoAdaptor.class.getSimpleName() + "Updater");
+        runner.schedule(this, 0, timeBetweenPersists);
+    }
     
     @Override
     public void deviceCreated(Device device) throws Exception {
@@ -74,22 +85,26 @@ public class MongoAdaptor implements Adaptor {
 
     @Override
     public void devicePropertyUpdated(DeviceProperty property) {
-        LOG.info("Updating property " + property.getDevice().getCID() + "." + property.getIndex() + " in MongoDB...");
-        mongoOperations.updateFirst(query(where("properties")), update(String.valueOf(property.getIndex()), property),
-                HashMap.class);
-        LOG.info("Property " + property.getDevice().getCID() + "." + property.getIndex() + " updated in MongoDB");
+//        LOG.info("Updating property " + property.getDevice().getCID() + "." + property.getIndex() + " in MongoDB...");
+//        mongoOperations.updateFirst(query(where("properties")), update(String.valueOf(property.getIndex()), property),
+//                HashMap.class);
+//        LOG.info("Property " + property.getDevice().getCID() + "." + property.getIndex() + " updated in MongoDB");
     }
     
     private void updateRoom(Room room) {
         Room ancestor = room.getFirstAncestorRoom();
-        mongoOperations.save(ancestor);
-//        if (ancestor == room) {
-//            LOG.error("Saving room...");
-//            mongoOperations.save(room);
-//        } else {
-//            LOG.error("Updating room...");
-//            mongoOperations.updateFirst(query(where("RID").is(ancestor.getRID())), new Update().set("rooms", ancestor.getRooms()),
-//                    Room.class);
-//        }
+        if (!roomsToSave.contains(ancestor)) {
+            roomsToSave.offer(ancestor);
+        }
+    }
+    
+    @Override
+    public void run() {
+        if (!roomsToSave.isEmpty()) {
+            Room r = roomsToSave.poll();
+            LOG.info("Saving ancestor " + r.getRID() + " in MongoDB...");
+            mongoOperations.save(r);
+            LOG.info("Ancestor " + r.getRID() + " saved");
+        }
     }
 }

@@ -63,8 +63,8 @@ public class DevicePropertyType {
                     }
                 }
                 ui = DevicePropertyInterface.valueOf((String) map.get("ui"));
-                return new DevicePropertyType(DataType.number, ui, (Double) map.get("minValue"),
-                        (Double) map.get("maxValue"), null);
+                return new DevicePropertyType(DataType.number, ui, (Number) map.get("minValue"),
+                        (Number) map.get("maxValue"), null);
             case "string":
                 for (String param : stringMapParams) {
                     if (!map.containsKey(param)) {

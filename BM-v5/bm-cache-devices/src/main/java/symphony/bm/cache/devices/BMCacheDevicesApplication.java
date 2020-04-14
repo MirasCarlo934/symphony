@@ -5,11 +5,18 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 
 @SpringBootApplication
-@PropertySource("classpath:bm.properties")
-@ImportResource("classpath:bm-cache-devices.config.xml")
+@PropertySources({
+        @PropertySource(value = "file:resources/bm.properties", ignoreResourceNotFound = true),
+        @PropertySource(value = "classpath:bm.properties", ignoreResourceNotFound = true)
+})
+@ImportResource(locations = {
+//        "classpath:bm-cache-devices.config.xml",
+        "file:resources/bm-cache-devices.config.xml"
+})
 public class BMCacheDevicesApplication {
     
     public static void main(String[] args) {
@@ -21,3 +28,4 @@ public class BMCacheDevicesApplication {
         return new MongoMappingContext();
     }
 }
+
