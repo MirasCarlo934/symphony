@@ -161,18 +161,31 @@ public class ServicesController {
         }
     }
     
-    @DeleteMapping("/registry")
-    public JeepResponse unregister(@RequestBody UnregisterRequest request) throws RequestProcessingException {
-        RequestLogFormat format = new RequestLogFormat(request.getMRN(), request.getMSN());
-        LOG.info(format.format("Unregister requested"));
+    @DeleteMapping("/registry/{cid}")
+    public JeepResponse unregister(@PathVariable String cid) throws RequestProcessingException {
+//        RequestLogFormat format = new RequestLogFormat(request.getMRN(), request.getMSN());
+        LOG.info("Unregister requested for device " + cid);
         try {
-            Device device = getDeviceObject(request.getCID());
+            Device device = getDeviceObject(cid);
             adaptorManager.deviceDeleted(device);
         } catch (Exception e) {
             throw new RequestProcessingException("Unable to get device", e);
         }
-        return new JeepSuccessResponse("Device deleted");
+        return new JeepSuccessResponse("Device unregistered");
     }
+    
+//    @DeleteMapping("/registry")
+//    public JeepResponse unregister(@RequestBody UnregisterRequest request) throws RequestProcessingException {
+//        RequestLogFormat format = new RequestLogFormat(request.getMRN(), request.getMSN());
+//        LOG.info(format.format("Unregister requested"));
+//        try {
+//            Device device = getDeviceObject(request.getCID());
+//            adaptorManager.deviceDeleted(device);
+//        } catch (Exception e) {
+//            throw new RequestProcessingException("Unable to get device", e);
+//        }
+//        return new JeepSuccessResponse("Device deleted");
+//    }
     
     private Room getRoomObject(String rid) throws RequestProcessingException, IOException {
         HttpGet getRoom = new HttpGet(bmURL + ":" + devicesCachePort + "/rooms/" + rid);

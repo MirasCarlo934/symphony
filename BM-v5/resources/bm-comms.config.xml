@@ -4,7 +4,7 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:property-placeholder location="bm.properties"/>
+    <context:property-placeholder location="file:${bm.resources.home}/bm.properties"/>
 
     <util:list id="serviceLocators" list-class="java.util.Vector">
         <ref bean="register"/>
@@ -12,26 +12,39 @@
     </util:list>
 
     <bean id="register" class="symphony.bm.comms.rest.ServiceLocator">
+        <constructor-arg name="bmURL" value="${http.url.bm}"/>
         <constructor-arg name="httpMethod" value="POST"/>
         <constructor-arg name="MSN" value="${services.register.msn}"/>
         <constructor-arg name="path" value="${microservices.services.registry.path}"/>
         <constructor-arg name="port" value="${microservices.services.registry.port}"/>
-        <constructor-arg name="URL" value="${http.url.bm}"/>
+        <constructor-arg name="variablePaths">
+            <list>
+            </list>
+        </constructor-arg>
     </bean>
 
     <bean id="unreg" class="symphony.bm.comms.rest.ServiceLocator">
+        <constructor-arg name="bmURL" value="${http.url.bm}"/>
         <constructor-arg name="httpMethod" value="DELETE"/>
         <constructor-arg name="MSN" value="${services.unreg.msn}"/>
         <constructor-arg name="path" value="${microservices.services.registry.path}"/>
         <constructor-arg name="port" value="${microservices.services.registry.port}"/>
-        <constructor-arg name="URL" value="${http.url.bm}"/>
+        <constructor-arg name="variablePaths">
+            <list>
+                <value>CID</value>
+            </list>
+        </constructor-arg>
     </bean>
 
     <bean id="poop" class="symphony.bm.comms.rest.ServiceLocator">
+        <constructor-arg name="bmURL" value="${http.url.bm}"/>
         <constructor-arg name="httpMethod" value="POST"/>
         <constructor-arg name="MSN" value="${services.poop.msn}"/>
         <constructor-arg name="path" value="${microservices.services.poop.path}"/>
         <constructor-arg name="port" value="${microservices.services.poop.port}"/>
-        <constructor-arg name="URL" value="${http.url.bm}"/>
+        <constructor-arg name="variablePaths">
+            <list>
+            </list>
+        </constructor-arg>
     </bean>
 </beans>

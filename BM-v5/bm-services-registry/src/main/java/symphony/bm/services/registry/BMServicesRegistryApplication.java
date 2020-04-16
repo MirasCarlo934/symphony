@@ -5,13 +5,18 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 @SpringBootApplication
-@PropertySource("classpath:bm.properties")
-@ImportResource("classpath:bm-services-registry.config.xml")
+@PropertySources({
+        @PropertySource("file:${bm.resources.home}/bm.properties")
+})
+@ImportResource(locations = {
+        "file:${bm.resources.home}/bm-services-registry.config.xml"
+})
 public class BMServicesRegistryApplication {
     
     private ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newCachedThreadPool();

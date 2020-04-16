@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.SynchronousQueue;
 
 @Component
 public class MQTTManager implements MqttCallback, Runnable {
@@ -148,42 +147,47 @@ public class MQTTManager implements MqttCallback, Runnable {
             return;
         }
     
+        String uri = locator.getServiceURL();
+        for (String var : locator.getVariablePaths()) {
+            uri += "/" + jsonReq.getString(var);
+        }
         switch (locator.getHttpMethod()) {
             case DELETE:
-                httpMessage = new HttpDelete(locator.getURL() + ":" + locator.getPort() + "/" + locator.getPath());
+                httpMessage = new HttpDelete(uri);
                 break;
             case GET:
-                httpMessage = new HttpGet(locator.getURL() + ":" + locator.getPort() + "/" + locator.getPath());
+                httpMessage = new HttpGet(uri);
                 break;
             case HEAD:
-                httpMessage = new HttpHead(locator.getURL() + ":" + locator.getPort() + "/" + locator.getPath());
+                httpMessage = new HttpHead(uri);
                 break;
             case OPTIONS:
-                httpMessage = new HttpOptions(locator.getURL() + ":" + locator.getPort() + "/" + locator.getPath());
+                httpMessage = new HttpOptions(uri);
                 break;
             case PATCH:
-                HttpPatch patch = new HttpPatch(locator.getURL() + ":" + locator.getPort() + "/" + locator.getPath());
+                HttpPatch patch = new HttpPatch(uri);
                 patch.setEntity(new StringEntity(mqttMessage.toString(), ContentType.APPLICATION_JSON));
-                httpMessage = new HttpPatch(locator.getURL() + ":" + locator.getPort() + "/" + locator.getPath());
+                httpMessage = patch;
                 break;
             case PUT:
-                HttpPut put = new HttpPut(locator.getURL() + ":" + locator.getPort() + "/" + locator.getPath());
+                HttpPut put = new HttpPut(uri);
                 put.setEntity(new StringEntity(mqttMessage.toString(), ContentType.APPLICATION_JSON));
-                httpMessage = new HttpPut(locator.getURL() + ":" + locator.getPort() + "/" + locator.getPath());
+                httpMessage = put;
                 break;
             case POST:
-                HttpPost post = new HttpPost(locator.getURL() + ":" + locator.getPort() + "/" + locator.getPath());
+                HttpPost post = new HttpPost(uri);
                 post.setEntity(new StringEntity(mqttMessage.toString(), ContentType.APPLICATION_JSON));
                 httpMessage = post;
                 break;
             default: // TRACE
-                httpMessage = new HttpTrace(locator.getURL() + ":" + locator.getPort() + "/" + locator.getPath());
+                httpMessage = new HttpTrace(locator.getBmURL() + ":" + locator.getPort() + "/" + locator.getPath());
         }
     
         try {
             HttpResponse response = httpClient.execute(httpMessage);
-            JSONObject jsonRsp = new JSONObject(EntityUtils.toString(response.getEntity()));
-            LOG.error(jsonRsp.toString());
+            String rspStr = EntityUtils.toString(response.getEntity());
+            LOG.info("Response from service: " + rspStr);
+            JSONObject jsonRsp = new JSONObject(rspStr);
             String cid;
             try {
                 cid = jsonRsp.getString("CID");

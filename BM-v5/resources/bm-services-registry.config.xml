@@ -5,7 +5,7 @@
        xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util.xsd">
 
-    <context:property-placeholder location="bm.properties"/>
+    <context:property-placeholder location="file:${bm.resources.home}/bm.properties"/>
 
     <util:list id="bmsr.adaptorsList" list-class="java.util.Vector">
         <ref bean="bmsr.adaptor.internal"/>

@@ -6,7 +6,6 @@
         <option value="$PROJECT_DIR$/bm-cache-devices/pom.xml" />
         <option value="$PROJECT_DIR$/bm-comms/pom.xml" />
         <option value="$PROJECT_DIR$/bm-services-registry/pom.xml" />
-        <option value="$PROJECT_DIR$/bm-generics/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

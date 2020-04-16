@@ -8,10 +8,9 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="bm-generics" />
-        <module name="bm-comms" />
         <module name="bm-cache-devices" />
-        <module name="generics" />
         <module name="bm-services-registry" />
+        <module name="bm-comms" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
