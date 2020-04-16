@@ -137,8 +137,13 @@ public class RestMicroserviceCommunicator {
     @DeleteMapping("/devices/{cid}")
     public MicroserviceMessage deleteDevice(@PathVariable String cid) throws Exception {
         LOG.info("Deleting device " + cid + "...");
-        superRoom.removeDeviceAndDeleteInAdaptors(cid);
+        Device d = superRoom.getDevice(cid);
+        if (d == null) {
+            throw new NullPointerException("No device with CID " + cid + " exists");
+        }
+        d.getRoom().removeDeviceAndDeleteInAdaptors(cid);
         LOG.info("Device " + cid + " deleted");
+        superRoom.printAllEntities();
         return new MicroserviceSuccessfulMessage();
     }
     

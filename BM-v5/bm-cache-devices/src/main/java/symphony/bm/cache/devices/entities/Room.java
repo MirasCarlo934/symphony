@@ -34,6 +34,11 @@ public class Room extends Entity {
         rooms = new Vector<>();
     }
     
+    /**
+     * Gets the Device object with the specified cid in this room and its subrooms.
+     * @param cid The Device CID
+     * @return A Device object or <i>null</i> if nonexistent.
+     */
     public Device getDevice(String cid) {
         for (Device d : devices) {
             if (d.getCID().equals(cid)) return d;
