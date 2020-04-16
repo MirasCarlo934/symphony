@@ -150,8 +150,13 @@ public class RestMicroserviceCommunicator {
     @DeleteMapping("/rooms/{rid}")
     public MicroserviceMessage deleteRoom(@PathVariable String rid) throws Exception {
         LOG.info("Deleting room " + rid + "...");
-        superRoom.removeRoomAndDeleteInAdaptors(rid);
+        Room r = superRoom.getRoom(rid);
+        if (r == null) {
+            throw new NullPointerException("No room with RID " + rid + " exists");
+        }
+        r.getParentRoom().removeRoomAndDeleteInAdaptors(rid);
         LOG.info("Room " + rid + " deleted");
+        superRoom.printAllEntities();
         return new MicroserviceSuccessfulMessage();
     }
 
