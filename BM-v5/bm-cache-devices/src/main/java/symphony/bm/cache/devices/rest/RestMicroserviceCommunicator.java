@@ -1,5 +1,6 @@
 package symphony.bm.cache.devices.rest;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import symphony.bm.cache.devices.rest.messages.MicroserviceSuccessfulMessage;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import java.util.Vector;
 
 @RestController
@@ -27,6 +29,14 @@ public class RestMicroserviceCommunicator {
     public SuperRoom getAll() {
         LOG.info("Returning all entities in the Symphony Network...");
         return superRoom;
+    }
+    
+    @GetMapping("/devices/newcid")
+    public String getNewDeviceCID() {
+        LOG.info("Generating new device CID...");
+        String cid = generateNewCID();
+        LOG.info("New CID " + cid + " generated");
+        return cid;
     }
     
     @GetMapping("/devices/{cid}")
@@ -158,6 +168,14 @@ public class RestMicroserviceCommunicator {
         LOG.info("Room " + rid + " deleted");
         superRoom.printAllEntities();
         return new MicroserviceSuccessfulMessage();
+    }
+    
+    private String generateNewCID() {
+        String newCID;
+        do {
+            newCID = RandomStringUtils.random(8, true, true);
+        } while (superRoom.getDevice(newCID) != null);
+        return newCID;
     }
 
 //    @RequestMapping("internal/reload")

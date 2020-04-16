@@ -59,7 +59,7 @@ public class ServicesController {
         this.adaptorManager = adaptorManager;
     }
     
-    @PostMapping("/registry")
+    @PutMapping("/registry")
     public JeepResponse register(@RequestBody RegisterRequest request) throws RequestProcessingException {
         RequestLogFormat format = new RequestLogFormat(request.getMRN(), request.getMSN());
         LOG.info(format.format("Register requested"));
@@ -70,10 +70,14 @@ public class ServicesController {
         Device device;
         boolean newRoom = false;
         
-        try {
-            device = getDeviceObject(request.getCID());
-        } catch (Exception e) {
-            throw new RequestProcessingException("Error in checking if device already exists", e);
+        if (request.getCID().isEmpty()) {
+            device = null;
+        } else {
+            try {
+                device = getDeviceObject(request.getCID());
+            } catch (Exception e) {
+                throw new RequestProcessingException("Error in checking if device already exists", e);
+            }
         }
     
         try {
