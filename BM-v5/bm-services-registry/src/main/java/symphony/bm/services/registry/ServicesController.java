@@ -26,6 +26,7 @@ import symphony.bm.services.registry.jeep.request.UnregisterRequest;
 import symphony.bm.services.registry.jeep.response.JeepResponse;
 import symphony.bm.services.registry.jeep.request.RegisterRequest;
 import symphony.bm.services.registry.jeep.response.JeepSuccessResponse;
+import symphony.bm.services.registry.jeep.response.RegisterResponse;
 import symphony.bm.services.registry.models.Product;
 
 import java.io.IOException;
@@ -65,14 +66,22 @@ public class ServicesController {
         LOG.info(format.format("Register requested"));
         Object product = request.getProduct();
         Object room = request.getRoom();
+        String CID;
         Product productObj;
         Room roomObj;
         Device device;
         boolean newRoom = false;
         
+        // check if CID is supplied in request
         if (request.getCID().isEmpty()) {
             device = null;
+            try {
+                CID = getNewCID();
+            } catch (IOException e) {
+                throw new RequestProcessingException("Error in requesting for a new generated CID", e);
+            }
         } else {
+            CID = request.getCID();
             try {
                 device = getDeviceObject(request.getCID());
             } catch (Exception e) {
@@ -80,6 +89,7 @@ public class ServicesController {
             }
         }
     
+        // get/create room object for device
         try {
             if (room.getClass().equals(String.class)) {
                 roomObj = getRoomObject((String) room);
@@ -110,14 +120,14 @@ public class ServicesController {
 //                    int index = (Integer) map.get("index");
                     String name = (String) map.get("name");
                     DevicePropertyMode mode = DevicePropertyMode.valueOf((String) map.get("mode"));
-                    DeviceProperty prop = new DeviceProperty(index, request.getCID(), name,
+                    DeviceProperty prop = new DeviceProperty(index, CID, name,
                             DevicePropertyType.builder().map((Map<String, Object>) map.get("type")).build(), mode);
                     props.add(prop);
                     index++;
                 }
                 productObj = new Product(props);
             }
-            if (newRoom) { // create new room
+            if (newRoom) { // persist new room
                 LOG.info(format.format("Creating new room..."));
                 try {
                     adaptorManager.roomCreated(roomObj);
@@ -126,16 +136,16 @@ public class ServicesController {
                 }
             }
             try {
-                device = createDeviceObject(request.getCID(), roomObj.getRID(), request.getName(),
+                device = createDeviceObject(CID, roomObj.getRID(), request.getName(),
                         productObj.getProperties());
                 adaptorManager.deviceCreated(device);
             } catch (Exception e) {
                 throw new RequestProcessingException("Unable to register device", e);
             }
             LOG.info(format.format("Device registered successfully"));
-            return new JeepSuccessResponse("Device registered");
+            return new RegisterResponse(CID);
         } else { // update device
-            LOG.warn(format.format("Device " + request.getCID() + " already exists. Updating..."));
+            LOG.warn(format.format("Device " + CID + " already exists. Updating..."));
             if (newRoom) { // create new room
                 LOG.info(format.format("Creating new room..."));
                 try {
@@ -157,11 +167,12 @@ public class ServicesController {
                     Room currentRoom = getRoomObject(device.getRID());
                     currentRoom.transferDevice(device.getCID(), roomObj);
                 }
-                LOG.info(format.format("Device " + request.getCID() + " updated"));
+                LOG.info(format.format("Device " + CID + " updated"));
+                return new JeepSuccessResponse("Device updated");
             } catch (Exception e) {
                 throw new RequestProcessingException("Unable to update device", e);
             }
-            return new JeepSuccessResponse("Device updated");
+//            return new JeepSuccessResponse("Device updated");
         }
     }
     
@@ -190,6 +201,13 @@ public class ServicesController {
 //        }
 //        return new JeepSuccessResponse("Device deleted");
 //    }
+    
+    private String getNewCID() throws IOException {
+        HttpGet getNewCID = new HttpGet(bmURL + ":" + devicesCachePort + "/devices/newcid");
+        HttpResponse response = httpClient.execute(getNewCID);
+        String cid = EntityUtils.toString(response.getEntity());
+        return cid;
+    }
     
     private Room getRoomObject(String rid) throws RequestProcessingException, IOException {
         HttpGet getRoom = new HttpGet(bmURL + ":" + devicesCachePort + "/rooms/" + rid);
