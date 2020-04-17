@@ -230,6 +230,7 @@ function renderPage(xhttp) {
 	hiddenName.value = splitStr[0];
 	mac = splitStr[1];
 	document.getElementById("theName").innerHTML = jsonResponse["name_mac"];
+	document.getElementById("title").innerHTML = jsonResponse["name_mac"];
     getFirmwareVersion();	//we get the firmware version and show it in the header
 	//we will create a new array within an array grouped according to temp[i].grp
 	//[ 
@@ -483,8 +484,8 @@ function handleWsMessage(evt) {
   	switch(core) {
   		case CORE_TO_CALLBACK://data from server to the child javascript
   			{
-	  			var msg = document.getElementById("msg");//comment this out later
-	  			msg.innerHTML = JSON.stringify(jsonResponse);//comment this out later
+//	  			var msg = document.getElementById("msg");//comment this out later
+//	  			msg.innerHTML = JSON.stringify(jsonResponse);//comment this out later
 				if (serverResponseHandler!=null) {//serverResponseHandler method can be defined in the child's javascript
 					serverResponseHandler(jsonResponse);//pass the jsonResponse to the child's javascript
 				}
@@ -585,7 +586,7 @@ function handleWsMessage(evt) {
  * @returns
  */
 function getDeviceInfoHandler(xhttp) {
-	document.getElementById("msg").innerHTML = xhttp.responseText;
+	//document.getElementById("msg").innerHTML = xhttp.responseText;
 	var jsonResponse = JSON.parse(xhttp.responseText);
 	document.getElementById("pName").value = jsonResponse.name;
 	document.getElementById("pSSID").value = jsonResponse.ssid;
