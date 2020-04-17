@@ -13,7 +13,7 @@
 const char CONTROL_HTML1[] PROGMEM = R"=====(
 <html>
 <head>
-<title>Home Symphony</title>
+<title id="title">Home Symphony</title>
 </head>
 <link rel="stylesheet" type="text/css" href="symphony.css">
 <script type="text/javascript" src="symphony.js"></script>
@@ -33,7 +33,7 @@ const char CONTROL_HTML1[] PROGMEM = R"=====(
 const char UPLOAD_HTML[] PROGMEM = R"=====(
 <!DOCTYPE html>
 <head>
-  <title>Home Symphony</title>
+  <title id="title">Home Symphony</title>
 <link rel="stylesheet" type="text/css" href="symphony.css">
 <script type="text/javascript">
 function uploadFile() {
@@ -80,7 +80,7 @@ function uploadFile() {
 const char AP_ADMIN_HTML[] PROGMEM = R"=====(
 <html>
 <head>
-<title>Home Symphony</title>
+<title id="title">Home Symphony</title>
 <script type="text/javascript">
 /*
  * Function that commits the Ap, passkey and Device name, and the (enabled, ip and port) of mqtt broker
