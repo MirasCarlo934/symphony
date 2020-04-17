@@ -121,7 +121,7 @@ public class InternalAdaptor implements Adaptor {
     }
 
     @Override
-    public void devicePropertyUpdated(DeviceProperty property) {
+    public void devicePropertyUpdatedValue(DeviceProperty property) {
     
     }
 }

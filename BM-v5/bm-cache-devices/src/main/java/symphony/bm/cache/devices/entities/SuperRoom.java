@@ -32,7 +32,11 @@ public class SuperRoom extends Room {
             room.setParentRoom(this);
             rooms.add(room);
         }
-
-        LOG.info(countAllDevices() + " devices and " + countAllRooms() + " rooms reloaded from DB");
+        
+        printAllEntities();
+    }
+    
+    public void printAllEntities() {
+        LOG.info(countAllDevices() + " devices and " + countAllRooms() + " rooms currently in registry");
     }
 }

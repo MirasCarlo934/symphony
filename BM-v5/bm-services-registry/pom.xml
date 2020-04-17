@@ -66,13 +66,14 @@
             <artifactId>bm-cache-devices</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>
+            <classifier>generics</classifier>
         </dependency>
-        <dependency>
-            <groupId>symphony.bm</groupId>
-            <artifactId>bm-generics</artifactId>
-            <version>0.0.4-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>symphony.bm</groupId>-->
+<!--            <artifactId>bm-generics</artifactId>-->
+<!--            <version>0.0.4-SNAPSHOT</version>-->
+<!--            <scope>compile</scope>-->
+<!--        </dependency>-->
     </dependencies>
 
     <build>

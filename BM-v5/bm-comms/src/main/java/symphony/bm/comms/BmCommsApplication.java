@@ -4,10 +4,15 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 
 @SpringBootApplication
-@PropertySource("classpath:bm.properties")
-@ImportResource("classpath:bm-comms.config.xml")
+@PropertySources({
+        @PropertySource("file:${bm.resources.home}/bm.properties")
+})
+@ImportResource(locations = {
+        "file:${bm.resources.home}/bm-comms.config.xml"
+})
 public class BmCommsApplication {
     
     public static void main(String[] args) {
