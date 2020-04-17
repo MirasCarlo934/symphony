@@ -66,11 +66,18 @@ public class AdaptorManager implements Adaptor {
             adaptor.roomTransferredRoom(room, from, to);
         }
     }
-
+    
     @Override
-    public void devicePropertyUpdated(DeviceProperty property) {
+    public void devicePropertyUpdatedDetails(DeviceProperty property) {
         for(Adaptor adaptor: adaptors) {
-            adaptor.devicePropertyUpdated(property);
+            adaptor.devicePropertyUpdatedDetails(property);
+        }
+    }
+    
+    @Override
+    public void devicePropertyUpdatedValue(DeviceProperty property) {
+        for(Adaptor adaptor: adaptors) {
+            adaptor.devicePropertyUpdatedValue(property);
         }
     }
 }

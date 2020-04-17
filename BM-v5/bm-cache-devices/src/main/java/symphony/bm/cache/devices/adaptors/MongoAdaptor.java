@@ -23,6 +23,7 @@ public class MongoAdaptor extends TimerTask implements Adaptor {
     private static final Logger LOG = LoggerFactory.getLogger(MongoAdaptor.class);
     private final MongoOperations mongoOperations;
     private Queue<Room> roomsToSave = new LinkedBlockingQueue<>();
+    private Queue<String> logsUponPersist = new LinkedBlockingQueue<>();
     
     public MongoAdaptor(MongoOperations mongoOperations, long timeBetweenPersists) {
         this.mongoOperations = mongoOperations;
@@ -35,21 +36,21 @@ public class MongoAdaptor extends TimerTask implements Adaptor {
     public void deviceCreated(Device device) throws Exception {
         LOG.info("Inserting device " + device.getCID() + " in MongoDB...");
         updateRoom(device.getRoom());
-        LOG.info("Device " + device.getCID() + " inserted in MongoDB");
+        logsUponPersist.offer("Device " + device.getCID() + " inserted in MongoDB");
     }
     
     @Override
     public void deviceDeleted(Device device) throws Exception {
         LOG.info("Deleting device " + device.getCID() + " in MongoDB...");
         updateRoom(device.getRoom());
-        LOG.info("Device " + device.getCID() + " deleted in MongoDB");
+        logsUponPersist.offer("Device " + device.getCID() + " deleted in MongoDB");
     }
     
     @Override
     public void deviceUpdatedDetails(Device device) {
         LOG.info("Updating device " + device.getCID() + " in MongoDB...");
         updateRoom(device.getRoom());
-        LOG.info("Device " + device.getCID() + " updated in MongoDB");
+        logsUponPersist.offer("Device " + device.getCID() + " updated in MongoDB");
     }
 
     @Override
@@ -61,30 +62,37 @@ public class MongoAdaptor extends TimerTask implements Adaptor {
     public void roomCreated(Room room) throws Exception {
         LOG.info("Inserting room " + room.getRID() + " in MongoDB...");
         updateRoom(room);
-        LOG.info("Room " + room.getRID() + " inserted in MongoDB");
+        logsUponPersist.offer("Room " + room.getRID() + " inserted in MongoDB");
     }
     
     @Override
     public void roomDeleted(Room room) throws Exception {
         LOG.info("Deleting room " + room.getRID() + " in MongoDB...");
         updateRoom(room);
-        LOG.info("Room " + room.getRID() + " deleted in MongoDB");
+        logsUponPersist.offer("Room " + room.getRID() + " deleted in MongoDB");
     }
 
     @Override
     public void roomUpdatedDetails(Room room) throws Exception {
         LOG.info("Updating room " + room.getRID() + " in MongoDB...");
         updateRoom(room);
-        LOG.info("Room " + room.getRID() + " updated in MongoDB");
+        logsUponPersist.offer("Room " + room.getRID() + " updated in MongoDB");
     }
 
     @Override
     public void roomTransferredRoom(Room room, Room from, Room to) throws Exception {
         roomUpdatedDetails(room);
     }
-
+    
     @Override
-    public void devicePropertyUpdated(DeviceProperty property) {
+    public void devicePropertyUpdatedDetails(DeviceProperty property) {
+        LOG.info("Updating property " + property.getID() + " in MongoDB...");
+        updateRoom(property.getDevice().getFirstAncestorRoom());
+        logsUponPersist.offer("Property " + property.getID() + " updated in MongoDB");
+    }
+    
+    @Override
+    public void devicePropertyUpdatedValue(DeviceProperty property) {
 //        LOG.info("Updating property " + property.getDevice().getCID() + "." + property.getIndex() + " in MongoDB...");
 //        mongoOperations.updateFirst(query(where("properties")), update(String.valueOf(property.getIndex()), property),
 //                HashMap.class);
@@ -104,6 +112,9 @@ public class MongoAdaptor extends TimerTask implements Adaptor {
             Room r = roomsToSave.poll();
             LOG.info("Saving ancestor " + r.getRID() + " in MongoDB...");
             mongoOperations.save(r);
+            while (!logsUponPersist.isEmpty()) {
+                LOG.info(logsUponPersist.poll());
+            }
             LOG.info("Ancestor " + r.getRID() + " saved");
         }
     }

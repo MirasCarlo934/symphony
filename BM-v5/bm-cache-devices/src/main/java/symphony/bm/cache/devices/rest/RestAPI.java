@@ -13,15 +13,14 @@ import symphony.bm.cache.devices.rest.messages.MicroserviceSuccessfulMessage;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 import java.util.Vector;
 
 @RestController
-public class RestMicroserviceCommunicator {
-    private static final Logger LOG = LoggerFactory.getLogger(RestMicroserviceCommunicator.class);
+public class RestAPI {
+    private static final Logger LOG = LoggerFactory.getLogger(RestAPI.class);
     private SuperRoom superRoom;
 
-    public RestMicroserviceCommunicator(SuperRoom superRoom) {
+    public RestAPI(SuperRoom superRoom) {
         this.superRoom = superRoom;
     }
     
@@ -110,10 +109,28 @@ public class RestMicroserviceCommunicator {
         return new MicroserviceSuccessfulMessage();
     }
     
-    @PatchMapping("/devices/{cid}/{prop_index}")
-    public MicroserviceMessage updateDeviceProperty(@PathVariable String cid, @PathVariable String prop_index,
-                                                    @RequestBody DeviceProperty property) {
+    @PatchMapping("/devices/{cid}/properties/{prop_index}")
+    public MicroserviceMessage updateDeviceProperty(@PathVariable String cid, @PathVariable int prop_index,
+                                                    @RequestBody DeviceProperty property) throws Exception {
         LOG.info("Updating " + cid + "." + prop_index + "...");
+        Device device = superRoom.getDevice(cid);
+        if (device == null) {
+            throw new NullPointerException("No device with CID " + cid + " exists");
+        }
+        DeviceProperty existing = device.getProperty(prop_index);
+        if (existing == null) {
+            throw new NullPointerException("Property " + cid + "." + prop_index + " does not exist");
+        }
+        if (!existing.getName().equals(property.getName())) {
+            LOG.info("Updating name of " + existing.getID() + " from " + existing.getName() + " to "
+                    + property.getName());
+            existing.setName(property.getName());
+        }
+        if (!existing.getValue().equals(property.getValue())) {
+            LOG.info("Updating value of " + existing.getID() + " from " + existing.getValue() + " to "
+                    + property.getValue());
+            existing.setValue(property.getValue());
+        }
         return new MicroserviceSuccessfulMessage();
     }
 
@@ -177,33 +194,4 @@ public class RestMicroserviceCommunicator {
         } while (superRoom.getDevice(newCID) != null);
         return newCID;
     }
-
-//    @RequestMapping("internal/reload")
-//    public boolean reload(@RequestParam(value = "cid", required = false) String cid,
-//                          @RequestParam(value = "propindex", required = false) Integer prop_index) {
-//        if (cid != null) {
-//            if (prop_index != null) {
-//                LOG.info("Reloading device " + cid + " property " + prop_index + " from DB...");
-//                registry.reloadDevicePropertyFromDB(cid, prop_index);
-//                Device d = registry.getDeviceObject(cid);
-//                LOG.error(String.valueOf(d.getPropertyValue(prop_index)));
-//                LOG.info("Device reloaded successfully");
-//            }
-//        }
-//        return true;
-//    }
-//
-//    private String receiveJeepMessage(String msgStr, AbstService service) {
-//        LOG.debug("Message arrived: " + msgStr);
-//        JeepMessage msg = new JeepMessage(msgStr);
-//        try {
-//            JeepMessage m = service.processMessage(msg);
-//            return m.toString();
-//        }
-//        catch (MessageParameterCheckingException e) {
-//            LOG.error("Unable to process message!", e);
-//            JeepResponse error = new JeepResponse(msg, e.getMessage());
-//            return error.toString();
-//        }
-//    }
 }

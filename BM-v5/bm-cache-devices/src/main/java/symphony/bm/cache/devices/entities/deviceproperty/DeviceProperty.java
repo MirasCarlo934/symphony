@@ -1,19 +1,14 @@
 package symphony.bm.cache.devices.entities.deviceproperty;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Transient;
-import symphony.bm.cache.devices.adaptors.Adaptor;
 import symphony.bm.cache.devices.adaptors.AdaptorManager;
 import symphony.bm.cache.devices.entities.Device;
 import symphony.bm.cache.devices.entities.Entity;
-
-import java.util.List;
 
 //@RequiredArgsConstructor
 public class DeviceProperty extends Entity {
@@ -28,12 +23,28 @@ public class DeviceProperty extends Entity {
     
     public DeviceProperty(@JsonProperty("index") int index, @JsonProperty("CID") String CID,
                           @JsonProperty("name") String name, @JsonProperty("type") DevicePropertyType type,
-                          @JsonProperty("mode") DevicePropertyMode mode) {
+                          @JsonProperty("mode") DevicePropertyMode mode, @JsonProperty("value") String value) {
         this.index = index;
         this.CID = CID;
         this.name = name;
         this.mode = mode;
         this.type = type;
+        this.value = value;
+    }
+    
+    @JsonIgnore
+    public String getID() {
+        return device.getCID() + "." + index;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
+        adaptorManager.devicePropertyUpdatedDetails(this);
+    }
+    
+    public void setValue(String value) {
+        this.value = value;
+        adaptorManager.devicePropertyUpdatedValue(this);
     }
     
     @Override

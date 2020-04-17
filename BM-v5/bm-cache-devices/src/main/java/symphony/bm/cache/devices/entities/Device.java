@@ -61,6 +61,13 @@ public class Device extends Entity {
         return properties.get(index);
     }
     
+//    public void updateProperty(DeviceProperty property) throws NullPointerException {
+//        DeviceProperty p = getProperty(property.getIndex());
+//        if (p == null) {
+//            throw new NullPointerException("Property " + property.getIndex() + " does not exist");
+//        }
+//    }
+    
     @JsonIgnore
     public Room getFirstAncestorRoom() {
         return room.getFirstAncestorRoom();
