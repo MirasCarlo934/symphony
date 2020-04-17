@@ -119,7 +119,12 @@ public class InternalAdaptor implements Adaptor {
     public void roomTransferredRoom(Room room, Room from, Room to) throws Exception {
 
     }
-
+    
+    @Override
+    public void devicePropertyUpdatedDetails(DeviceProperty property) {
+    
+    }
+    
     @Override
     public void devicePropertyUpdatedValue(DeviceProperty property) {
     

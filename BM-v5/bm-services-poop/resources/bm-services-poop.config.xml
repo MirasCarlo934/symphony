@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:property-placeholder location="file:${bm.resources.home}/bm.properties"/>
+
+    <util:list id="bmsp.adaptorsList" list-class="java.util.Vector">
+
+    </util:list>
+
+    <bean id="bmsp.adaptorManager" class="symphony.bm.cache.devices.adaptors.AdaptorManager">
+        <constructor-arg name="adaptors" ref="bmsp.adaptorsList"/>
+    </bean>
+
+    <bean id="bmsp.adaptors.internal" class="symphony.bm.services.poop.adaptors.InternalAdaptor">
+        <constructor-arg name="bmURL" value="${http.url.bm}"/>
+        <constructor-arg name="devicesCachePort" value="${microservices.cache.devices.port}"/>
+    </bean>
+</beans>

@@ -121,7 +121,7 @@ public class ServicesController {
                     String name = (String) map.get("name");
                     DevicePropertyMode mode = DevicePropertyMode.valueOf((String) map.get("mode"));
                     DeviceProperty prop = new DeviceProperty(index, CID, name,
-                            DevicePropertyType.builder().map((Map<String, Object>) map.get("type")).build(), mode);
+                            DevicePropertyType.builder().map((Map<String, Object>) map.get("type")).build(), mode, null);
                     props.add(prop);
                     index++;
                 }

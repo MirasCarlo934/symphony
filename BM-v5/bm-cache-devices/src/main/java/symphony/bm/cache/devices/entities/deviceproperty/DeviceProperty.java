@@ -37,12 +37,12 @@ public class DeviceProperty extends Entity {
         return device.getCID() + "." + index;
     }
     
-    public void setName(String name) {
+    public void setName(String name) throws Exception {
         this.name = name;
         adaptorManager.devicePropertyUpdatedDetails(this);
     }
     
-    public void setValue(String value) {
+    public void setValue(String value) throws Exception {
         this.value = value;
         adaptorManager.devicePropertyUpdatedValue(this);
     }

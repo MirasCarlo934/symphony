@@ -17,6 +17,7 @@ import java.util.Vector;
 
 @RestController
 public class RestAPI {
+    private static String msgToAneya = "Luv u bb <3";
     private static final Logger LOG = LoggerFactory.getLogger(RestAPI.class);
     private SuperRoom superRoom;
 
@@ -48,7 +49,7 @@ public class RestAPI {
         return d;
     }
     
-    @GetMapping("/devices/{cid}/{prop_index}")
+    @GetMapping("/devices/{cid}/properties/{prop_index}")
     public DeviceProperty getDeviceProperty(@PathVariable String cid, @PathVariable int prop_index) {
         LOG.info("Getting device property " + cid + "." + prop_index);
         Device d = getDevice(cid);
@@ -185,6 +186,17 @@ public class RestAPI {
         LOG.info("Room " + rid + " deleted");
         superRoom.printAllEntities();
         return new MicroserviceSuccessfulMessage();
+    }
+    
+    @RequestMapping("/aneya")
+    public String aneya() {
+        return msgToAneya;
+    }
+    
+    @RequestMapping("/aneya/set")
+    public String aneya(@RequestParam("msg") String msg) {
+        msgToAneya = msg;
+        return "Message set!";
     }
     
     private String generateNewCID() {

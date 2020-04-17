@@ -13,7 +13,7 @@ import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
         @PropertySource("file:${bm.resources.home}/bm.properties")
 })
 @ImportResource(locations = {
-        "file:${bm.resources.home}/bm-cache-devices.config.xml"
+        "file:${bm.config.home}/bm-cache-devices.config.xml"
 })
 public class BMCacheDevicesApplication {
     

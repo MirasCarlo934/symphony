@@ -11,7 +11,7 @@ import org.springframework.context.annotation.PropertySources;
         @PropertySource("file:${bm.resources.home}/bm.properties")
 })
 @ImportResource(locations = {
-        "file:${bm.resources.home}/bm-comms.config.xml"
+        "file:${bm.config.home}/bm-comms.config.xml"
 })
 public class BmCommsApplication {
     

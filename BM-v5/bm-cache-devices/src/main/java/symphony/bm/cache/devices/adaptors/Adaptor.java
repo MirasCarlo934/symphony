@@ -15,6 +15,6 @@ public interface Adaptor {
     void roomUpdatedDetails(Room room) throws Exception;
     void roomTransferredRoom(Room room, Room from, Room to) throws Exception;
     
-    void devicePropertyUpdatedDetails(DeviceProperty property);
-    void devicePropertyUpdatedValue(DeviceProperty property);
+    void devicePropertyUpdatedDetails(DeviceProperty property) throws Exception;
+    void devicePropertyUpdatedValue(DeviceProperty property) throws Exception;
 }

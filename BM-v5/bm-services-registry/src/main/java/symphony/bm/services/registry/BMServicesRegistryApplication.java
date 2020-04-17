@@ -15,7 +15,7 @@ import java.util.concurrent.ThreadPoolExecutor;
         @PropertySource("file:${bm.resources.home}/bm.properties")
 })
 @ImportResource(locations = {
-        "file:${bm.resources.home}/bm-services-registry.config.xml"
+        "file:${bm.config.home}/bm-services-registry.config.xml"
 })
 public class BMServicesRegistryApplication {
     

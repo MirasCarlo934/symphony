@@ -68,14 +68,14 @@ public class AdaptorManager implements Adaptor {
     }
     
     @Override
-    public void devicePropertyUpdatedDetails(DeviceProperty property) {
+    public void devicePropertyUpdatedDetails(DeviceProperty property) throws Exception {
         for(Adaptor adaptor: adaptors) {
             adaptor.devicePropertyUpdatedDetails(property);
         }
     }
     
     @Override
-    public void devicePropertyUpdatedValue(DeviceProperty property) {
+    public void devicePropertyUpdatedValue(DeviceProperty property) throws Exception {
         for(Adaptor adaptor: adaptors) {
             adaptor.devicePropertyUpdatedValue(property);
         }
