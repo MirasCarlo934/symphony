@@ -230,7 +230,7 @@ function renderPage(xhttp) {
 	hiddenName.value = splitStr[0];
 	mac = splitStr[1];
 	document.getElementById("theName").innerHTML = jsonResponse["name_mac"];
-	document.getElementById("title").innerHTML = jsonResponse["name_mac"];
+	document.getElementById("title").innerHTML = hiddenName.value +" - Home Symphony";
     getFirmwareVersion();	//we get the firmware version and show it in the header
 	//we will create a new array within an array grouped according to temp[i].grp
 	//[ 
