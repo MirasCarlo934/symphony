@@ -1,5 +1,6 @@
 package symphony.bm.cache.rules;
 
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoOperations;
@@ -14,12 +15,22 @@ public class RulesManager {
     private static final Logger LOG = LoggerFactory.getLogger(RulesManager.class);
     private MongoOperations mongo;
     
-    private List<Rule> rulesList = new Vector<>();
+    @Getter private List<Rule> rulesList = new Vector<>();
     
     public RulesManager(MongoOperations mongo) {
         this.mongo = mongo;
         
         loadRulesFromDB();
+    }
+    
+    public List<Rule> getRulesTriggerable(String cid, int prop_index) {
+        List<Rule> rules = new Vector<>();
+        for (Rule rule : rulesList) {
+            if (rule.isTriggerable(cid, prop_index)) {
+                rules.add(rule);
+            }
+        }
+        return rules;
     }
     
     public void loadRulesFromDB() {
