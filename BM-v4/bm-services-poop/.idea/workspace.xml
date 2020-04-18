@@ -2,182 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="05988544-b390-4818-9308-33aa91825229" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../bm-services-registration/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/resources/bm-comms.config.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/src/main/resources/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/target/classes/symphony/bm/bm_comms/BMCommsApplication.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/target/classes/symphony/bm/bm_comms/rest/RestMicroserviceCommunicator$ForwardingUnit.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms/.mvn/wrapper/MavenWrapperDownloader.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms/.mvn/wrapper/maven-wrapper.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms/mvnw" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms/mvnw.cmd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms/src/main/java/symphony/bm/comms/BmCommsApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms/src/main/java/symphony/bm/comms/mqtt/MQTTManager.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms/src/main/java/symphony/bm/comms/rest/ServiceLocator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms/src/test/java/symphony/bm/comms/BmCommsApplicationTests.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bm-services-poop.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-cache-devices/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-cache-devices/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-cache-devices/resources/bm-cache-devices.config.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-cache-devices/resources/bm-cache-devices.config.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-cache-devices/src/main/java/symphony/bm/cache/devices/BMCacheDevicesApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-cache-devices/src/main/java/symphony/bm/cache/devices/BMCacheDevicesApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-cache-devices/src/main/java/symphony/bm/cache/devices/adaptors/MongoAdaptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-cache-devices/src/main/java/symphony/bm/cache/devices/adaptors/MongoAdaptor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-cache-devices/src/main/java/symphony/bm/cache/devices/entities/deviceproperty/DeviceProperty.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-cache-devices/src/main/java/symphony/bm/cache/devices/entities/deviceproperty/DeviceProperty.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-cache-devices/src/main/java/symphony/bm/cache/devices/entities/deviceproperty/DevicePropertyType.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-cache-devices/src/main/java/symphony/bm/cache/devices/entities/deviceproperty/DevicePropertyType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-cache-devices/src/main/java/symphony/bm/cache/devices/rest/RestMicroserviceCommunicator.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-cache-devices/src/main/java/symphony/bm/cache/devices/rest/RestMicroserviceCommunicator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/.idea-backup/$PRODUCT_WORKSPACE_FILE$" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/.idea-backup/$PRODUCT_WORKSPACE_FILE$" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/.idea-backup/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/.idea-backup/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/.idea-backup/uiDesigner.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/.idea-backup/uiDesigner.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/.idea-backup/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/.idea-backup/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/.idea/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/.idea/bm-comms.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/.idea/bm-comms.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/.idea/dataSources.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/.idea/uiDesigner.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/.idea/uiDesigner.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/bm-comms.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/bm-comms-backup1.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/bm-comms.log" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/bm-comms.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/logs/bm-comms.log" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/logs/bm-comms.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/resources/bm-comms.config.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms/resources/bm-comms.config.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/resources/bm.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-cache-devices/resources/bm.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/src/main/java/symphony/bm/bm_comms/BMCommsApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/src/main/java/symphony/bm/bm_comms/BMCommsApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/src/main/java/symphony/bm/bm_comms/InboundTrafficManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/src/main/java/symphony/bm/bm_comms/InboundTrafficManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/src/main/java/symphony/bm/bm_comms/Listener.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/src/main/java/symphony/bm/bm_comms/Listener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/src/main/java/symphony/bm/bm_comms/Protocol.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/src/main/java/symphony/bm/bm_comms/Protocol.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/src/main/java/symphony/bm/bm_comms/Sender.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/src/main/java/symphony/bm/bm_comms/Sender.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/src/main/java/symphony/bm/bm_comms/jeep/JeepMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/src/main/java/symphony/bm/bm_comms/jeep/JeepMessage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/src/main/java/symphony/bm/bm_comms/jeep/RawMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/src/main/java/symphony/bm/bm_comms/jeep/RawMessage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/src/main/java/symphony/bm/bm_comms/jeep/exceptions/PrimaryMessageCheckingException.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/src/main/java/symphony/bm/bm_comms/jeep/exceptions/PrimaryMessageCheckingException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/src/main/java/symphony/bm/bm_comms/mongodb/BMCommsMongoDBManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/src/main/java/symphony/bm/bm_comms/mongodb/BMCommsMongoDBManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/src/main/java/symphony/bm/bm_comms/mqtt/MQTTClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/src/main/java/symphony/bm/bm_comms/mqtt/MQTTClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/src/main/java/symphony/bm/bm_comms/mqtt/MQTTListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/src/main/java/symphony/bm/bm_comms/mqtt/MQTTListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/src/main/java/symphony/bm/bm_comms/mqtt/MQTTPublisher.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/src/main/java/symphony/bm/bm_comms/mqtt/MQTTPublisher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/src/main/java/symphony/bm/bm_comms/mqtt/objects/MQTTMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/src/main/java/symphony/bm/bm_comms/mqtt/objects/MQTTMessage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/src/main/java/symphony/bm/bm_comms/rest/RestMicroserviceCommunicator.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/src/main/java/symphony/bm/bm_comms/rest/RestMicroserviceCommunicator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/bm-comms-0.0.1-SNAPSHOT.jar.original" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/target/bm-comms-0.0.1-SNAPSHOT.jar.original" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/bm-comms-1.0.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/target/bm-comms-1.0.0-SNAPSHOT.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/bm-comms-1.0.0-SNAPSHOT.jar.original" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms-backup1/target/bm-comms-1.0.0-SNAPSHOT.jar.original" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/classes/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/classes/bm-comms.config.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/classes/bm-comms.config.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/classes/bm.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/classes/symphony/bm/bm_comms/BMCommsApplication.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/classes/symphony/bm/bm_comms/InboundTrafficManager$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/classes/symphony/bm/bm_comms/InboundTrafficManager$ProcessingUnit.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/classes/symphony/bm/bm_comms/InboundTrafficManager.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/classes/symphony/bm/bm_comms/Listener.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/classes/symphony/bm/bm_comms/Protocol.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/classes/symphony/bm/bm_comms/Sender.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/classes/symphony/bm/bm_comms/jeep/JeepMessage.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/classes/symphony/bm/bm_comms/jeep/RawMessage.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/classes/symphony/bm/bm_comms/jeep/exceptions/PrimaryMessageCheckingException.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/classes/symphony/bm/bm_comms/mongodb/BMCommsMongoDBManager.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/classes/symphony/bm/bm_comms/mqtt/MQTTClient$MQTTClientReconnector.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/classes/symphony/bm/bm_comms/mqtt/MQTTClient.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/classes/symphony/bm/bm_comms/mqtt/MQTTListener.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/classes/symphony/bm/bm_comms/mqtt/MQTTPublisher.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/classes/symphony/bm/bm_comms/mqtt/objects/MQTTMessage.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/classes/symphony/bm/bm_comms/rest/RestMicroserviceCommunicator$ForwardingUnit.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/classes/symphony/bm/bm_comms/rest/RestMicroserviceCommunicator.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/accessors-smart-1.2.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/android-json-0.0.20131108.vaadin1.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/apiguardian-api-1.1.0.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/asm-5.0.4.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/assertj-core-3.13.2.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/byte-buddy-1.10.8.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/byte-buddy-agent-1.10.8.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/classmate-1.5.1.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/commons-codec-1.13.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/hamcrest-2.1.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/hibernate-validator-6.0.18.Final.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/httpclient-4.5.12.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/httpcore-4.4.13.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/jackson-annotations-2.10.2.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/jackson-core-2.10.2.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/jackson-databind-2.10.2.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/jackson-datatype-jdk8-2.10.2.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/jackson-datatype-jsr310-2.10.2.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/jackson-module-parameter-names-2.10.2.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/jakarta.activation-api-1.2.2.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/jakarta.annotation-api-1.3.5.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/jakarta.validation-api-2.0.2.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/jakarta.xml.bind-api-2.3.2.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/jboss-logging-3.4.1.Final.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/json-20190722.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/json-path-2.4.0.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/json-smart-2.3.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/jsonassert-1.5.0.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/jul-to-slf4j-1.7.30.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/junit-jupiter-5.5.2.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/junit-jupiter-api-5.5.2.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/junit-jupiter-engine-5.5.2.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/junit-jupiter-params-5.5.2.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/junit-platform-commons-1.5.2.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/junit-platform-engine-1.5.2.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/log4j-api-2.12.1.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/log4j-to-slf4j-2.12.1.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/logback-classic-1.2.3.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/logback-core-1.2.3.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/mockito-core-3.1.0.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/mockito-junit-jupiter-3.1.0.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/mongo-java-driver-3.12.1.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/objenesis-2.6.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/opentest4j-1.2.0.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/org.eclipse.paho.client.mqttv3-1.2.2.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/slf4j-api-1.7.30.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/snakeyaml-1.25.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/spring-aop-5.2.4.RELEASE.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/spring-beans-5.2.4.RELEASE.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/spring-boot-2.2.5.RELEASE.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/spring-boot-autoconfigure-2.2.5.RELEASE.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/spring-boot-devtools-2.2.5.RELEASE.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/spring-boot-starter-2.2.5.RELEASE.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/spring-boot-starter-json-2.2.5.RELEASE.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/spring-boot-starter-logging-2.2.5.RELEASE.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/spring-boot-starter-test-2.2.5.RELEASE.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/spring-boot-starter-tomcat-2.2.5.RELEASE.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/spring-boot-starter-validation-2.2.5.RELEASE.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/spring-boot-starter-web-2.2.5.RELEASE.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/spring-boot-test-2.2.5.RELEASE.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/spring-boot-test-autoconfigure-2.2.5.RELEASE.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/spring-context-5.2.4.RELEASE.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/spring-core-5.2.4.RELEASE.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/spring-expression-5.2.4.RELEASE.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/spring-jcl-5.2.4.RELEASE.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/spring-test-5.2.4.RELEASE.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/spring-web-5.2.4.RELEASE.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/spring-webmvc-5.2.4.RELEASE.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/tomcat-embed-core-9.0.31.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/tomcat-embed-el-9.0.31.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/tomcat-embed-websocket-9.0.31.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/lib/xmlunit-core-2.6.3.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/maven-archiver/pom.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/resources/application.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/resources/bm-comms.config.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/resources/bm-comms.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/resources/bm.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/surefire-reports/TEST-symphony.bm.bm_comms.BmCommsApplicationTests.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-comms/target/surefire-reports/symphony.bm.bm_comms.BmCommsApplicationTests.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-generics/src/main/resources/bm.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-generics/src/main/resources/bm.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-generics/target/classes/bm.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-generics/target/classes/bm.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-services-registry/resources/bm-services-registry.config.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-services-registry/resources/bm-services-registry.config.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-services-registry/src/main/java/symphony/bm/services/registry/ServicesController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-services-registry/src/main/java/symphony/bm/services/registry/ServicesController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-services-registry/src/main/java/symphony/bm/services/registry/adaptors/InternalAdaptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-services-registry/src/main/java/symphony/bm/services/registry/adaptors/InternalAdaptor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../docker/springboot/runSB_dev.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../../docker/springboot/runSB_dev.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../BM-v5/bm-cache-rules/resources/bm-cache-rules.config.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../BM-v5/bm-cache-rules/src/main/java/symphony/bm/cache/rules/RulesManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../BM-v5/bm-cache-rules/src/main/java/symphony/bm/cache/rules/rest/RestAPI.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../BM-v5/bm-cache-rules/src/main/java/symphony/bm/cache/rules/vo/Rule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-cache-rules/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-cache-rules/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-cache-rules/src/main/java/symphony/bm/cache/rules/BmCacheRulesApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-cache-rules/src/main/java/symphony/bm/cache/rules/BmCacheRulesApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../BM-v5/bm-cache-rules/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../../BM-v5/bm-cache-rules/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -198,6 +29,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="reference.settings.project.maven.importing" />
@@ -213,6 +45,7 @@
       <option name="presentableId" value="Default" />
       <updated>1586849098145</updated>
       <workItem from="1586849099618" duration="13000" />
+      <workItem from="1587217429223" duration="14000" />
     </task>
     <servers />
   </component>
