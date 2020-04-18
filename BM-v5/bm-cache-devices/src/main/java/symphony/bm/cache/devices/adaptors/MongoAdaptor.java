@@ -93,10 +93,7 @@ public class MongoAdaptor extends TimerTask implements Adaptor {
     
     @Override
     public void devicePropertyUpdatedValue(DeviceProperty property) {
-//        LOG.info("Updating property " + property.getDevice().getCID() + "." + property.getIndex() + " in MongoDB...");
-//        mongoOperations.updateFirst(query(where("properties")), update(String.valueOf(property.getIndex()), property),
-//                HashMap.class);
-//        LOG.info("Property " + property.getDevice().getCID() + "." + property.getIndex() + " updated in MongoDB");
+        devicePropertyUpdatedDetails(property);
     }
     
     private void updateRoom(Room room) {

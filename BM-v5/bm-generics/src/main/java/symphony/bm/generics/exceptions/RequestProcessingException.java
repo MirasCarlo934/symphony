@@ -1,4 +1,4 @@
-package symphony.bm.cache.devices.exceptions;
+package symphony.bm.generics.exceptions;
 
 public class RequestProcessingException extends Exception {
     public RequestProcessingException(String message) {

@@ -6,7 +6,7 @@ import lombok.Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import symphony.bm.cache.devices.entities.deviceproperty.DevicePropertyType;
-import symphony.bm.services.registry.jeep.JeepMessage;
+import symphony.bm.generics.jeep.JeepMessage;
 
 import java.util.List;
 import java.util.Map;

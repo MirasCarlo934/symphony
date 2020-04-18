@@ -21,12 +21,11 @@ import symphony.bm.cache.devices.entities.Room;
 import symphony.bm.cache.devices.entities.deviceproperty.DeviceProperty;
 import symphony.bm.cache.devices.entities.deviceproperty.DevicePropertyMode;
 import symphony.bm.cache.devices.entities.deviceproperty.DevicePropertyType;
-import symphony.bm.services.registry.exceptions.RequestProcessingException;
-import symphony.bm.services.registry.jeep.request.UnregisterRequest;
-import symphony.bm.services.registry.jeep.response.JeepResponse;
+import symphony.bm.generics.exceptions.RequestProcessingException;
+import symphony.bm.generics.jeep.response.JeepResponse;
+import symphony.bm.generics.jeep.response.JeepSuccessResponse;
+import symphony.bm.generics.jeep.response.RegisterResponse;
 import symphony.bm.services.registry.jeep.request.RegisterRequest;
-import symphony.bm.services.registry.jeep.response.JeepSuccessResponse;
-import symphony.bm.services.registry.jeep.response.RegisterResponse;
 import symphony.bm.services.registry.models.Product;
 
 import java.io.IOException;
@@ -205,8 +204,7 @@ public class ServicesController {
     private String getNewCID() throws IOException {
         HttpGet getNewCID = new HttpGet(bmURL + ":" + devicesCachePort + "/devices/newcid");
         HttpResponse response = httpClient.execute(getNewCID);
-        String cid = EntityUtils.toString(response.getEntity());
-        return cid;
+        return EntityUtils.toString(response.getEntity());
     }
     
     private Room getRoomObject(String rid) throws RequestProcessingException, IOException {

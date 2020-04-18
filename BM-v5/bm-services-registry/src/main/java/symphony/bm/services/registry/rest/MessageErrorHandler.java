@@ -10,8 +10,8 @@ import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import symphony.bm.services.registry.exceptions.RequestProcessingException;
-import symphony.bm.services.registry.jeep.response.JeepErrorResponse;
+import symphony.bm.generics.exceptions.RequestProcessingException;
+import symphony.bm.generics.jeep.response.JeepErrorResponse;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice

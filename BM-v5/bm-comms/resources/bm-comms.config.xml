@@ -9,6 +9,7 @@
     <util:list id="serviceLocators" list-class="java.util.Vector">
         <ref bean="register"/>
         <ref bean="unreg"/>
+        <ref bean="poop"/>
     </util:list>
 
     <bean id="register" class="symphony.bm.comms.rest.ServiceLocator">
@@ -38,7 +39,7 @@
 
     <bean id="poop" class="symphony.bm.comms.rest.ServiceLocator">
         <constructor-arg name="bmURL" value="${http.url.bm}"/>
-        <constructor-arg name="httpMethod" value="POST"/>
+        <constructor-arg name="httpMethod" value="PATCH"/>
         <constructor-arg name="MSN" value="${services.poop.msn}"/>
         <constructor-arg name="path" value="${microservices.services.poop.path}"/>
         <constructor-arg name="port" value="${microservices.services.poop.port}"/>

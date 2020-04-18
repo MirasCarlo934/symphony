@@ -188,6 +188,7 @@ public class MQTTManager implements MqttCallback, Runnable {
             String rspStr = EntityUtils.toString(response.getEntity());
             LOG.info("Response from service: " + rspStr);
             JSONObject jsonRsp = new JSONObject(rspStr);
+            jsonRsp.put("MRN", jsonReq.get("MRN"));
             String cid;
             try {
                 cid = jsonRsp.getString("CID");

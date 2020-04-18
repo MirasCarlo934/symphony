@@ -10,15 +10,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import symphony.bm.cache.devices.adaptors.AdaptorManager;
-import symphony.bm.cache.devices.entities.deviceproperty.DataType;
 import symphony.bm.cache.devices.entities.deviceproperty.DeviceProperty;
 import symphony.bm.cache.devices.entities.deviceproperty.DevicePropertyType;
-import symphony.bm.cache.devices.exceptions.RequestProcessingException;
+import symphony.bm.generics.exceptions.RequestProcessingException;
 import symphony.bm.services.poop.jeep.POOPRequest;
 import symphony.bm.services.poop.jeep.POOPSuccessResponse;
 

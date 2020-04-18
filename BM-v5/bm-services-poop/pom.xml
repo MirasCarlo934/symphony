@@ -53,6 +53,13 @@
             <scope>compile</scope>
             <classifier>generics</classifier>
         </dependency>
+        <dependency>
+            <groupId>symphony.bm</groupId>
+            <artifactId>bm-generics</artifactId>
+            <version>0.0.4-SNAPSHOT</version>
+            <scope>compile</scope>
+            <classifier>generics</classifier>
+        </dependency>
     </dependencies>
 
     <build>

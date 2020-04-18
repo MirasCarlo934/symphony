@@ -17,7 +17,7 @@ import symphony.bm.cache.devices.adaptors.Adaptor;
 import symphony.bm.cache.devices.entities.Device;
 import symphony.bm.cache.devices.entities.Room;
 import symphony.bm.cache.devices.entities.deviceproperty.DeviceProperty;
-import symphony.bm.services.registry.exceptions.RequestProcessingException;
+import symphony.bm.generics.exceptions.RequestProcessingException;
 
 import java.util.Queue;
 import java.util.Timer;

@@ -34,7 +34,7 @@ public class DeviceProperty extends Entity {
     
     @JsonIgnore
     public String getID() {
-        return device.getCID() + "." + index;
+        return CID + "." + index;
     }
     
     public void setName(String name) throws Exception {
