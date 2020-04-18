@@ -30,7 +30,8 @@ public class MQTTManager implements MqttCallback, Runnable {
     private Queue<MqttMessage> messageQueue = new LinkedBlockingQueue<>();
     
     private final int qos;
-    private final String serverURI, clientID, bmTopic, univTopic, devicesTopic, errorTopic;
+    private final String serverURI, clientID, bmTopic, univTopic, devicesTopic, registerTopic, errorTopic;
+    private final String registerMSN;
     private final List<ServiceLocator> serviceLocators;
     
     private int messages = 0;
@@ -39,15 +40,19 @@ public class MQTTManager implements MqttCallback, Runnable {
                        @Value("${mqtt.topic.bm}") String bmTopic, @Value("${mqtt.topic.universal}") String univTopic,
                        @Value("${mqtt.topic.devices}") String devicesTopic,
                        @Value("${mqtt.topic.error}") String errorTopic,
+                       @Value("${mqtt.topic.bm.register}") String registerTopic,
                        @Value("${mqtt.qos}") int qos,
+                       @Value("${services.register.msn}") String registerMSN,
                        @Qualifier("serviceLocators") List<ServiceLocator> serviceLocators) {
         this.serverURI = serverURI;
         this.clientID = clientID;
         this.bmTopic = bmTopic;
         this.univTopic = univTopic;
         this.devicesTopic = devicesTopic;
+        this.registerTopic = registerTopic;
         this.errorTopic = errorTopic;
         this.qos = qos;
+        this.registerMSN = registerMSN;
         this.serviceLocators = serviceLocators;
         
         connectToMQTT();
@@ -196,6 +201,9 @@ public class MQTTManager implements MqttCallback, Runnable {
                 cid = jsonReq.getString("CID");
             }
             try {
+                if (jsonReq.getString("MSN").equals(registerMSN)) {
+                    publishToRegisterTopic(jsonRsp.toString());
+                }
                 publishToDevice(cid, jsonRsp.toString());
             } catch (MqttException e) {
                 LOG.error("Unable to publish to device " + cid, e);
@@ -207,16 +215,24 @@ public class MQTTManager implements MqttCallback, Runnable {
     
     private void publishToDevice(String cid, String msg) throws MqttException {
         String topic = devicesTopic + "/" + cid;
-        LOG.info("Publishing to topic " + topic);
-        LOG.info("Message: " + msg);
-        mqttClient.publish(topic, msg.getBytes(), qos, false);
+        publish(topic, msg.getBytes(), qos, false);
+    }
+    
+    private void publishToRegisterTopic(String msg) throws MqttException {
+        String topic = univTopic + "/" + registerTopic;
+        publish(topic, msg.getBytes(), qos, false);
     }
     
     private void publishToErrorTopic(String msg) throws MqttException {
-        LOG.info("Publishing to error topic");
-        LOG.info("Message: " + msg);
         String topic = univTopic + "/" + errorTopic;
-        mqttClient.publish(topic, msg.getBytes(), qos, false);
+        publish(topic, msg.getBytes(), qos, false);
+    }
+    
+    private void publish(String topic, byte[] payload, int qos, boolean retained) throws MqttException {
+        LOG.info("Publishing to " + topic + " topic");
+        LOG.info("Message: " + payload);
+        mqttClient.publish(topic, payload, qos, false);
+        mqttClient.publish(univTopic, payload, qos, false);
     }
     
     private ServiceLocator getServiceLocator(String msn) {
