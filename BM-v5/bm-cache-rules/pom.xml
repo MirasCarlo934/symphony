@@ -56,9 +56,24 @@
             <version>0.0.1-SNAPSHOT</version>
             <classifier>generics</classifier>
         </dependency>
+        <dependency>
+            <groupId>symphony.bm</groupId>
+            <artifactId>bm-generics</artifactId>
+            <version>0.0.4-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>resources</directory>
+                <excludes>
+                    <exclude>*.xml</exclude>
+                </excludes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

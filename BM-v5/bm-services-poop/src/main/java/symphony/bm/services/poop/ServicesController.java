@@ -56,7 +56,7 @@ public class ServicesController {
     }
     
     @PatchMapping("/poop")
-    public Object poop(@RequestBody POOPRequest request) throws RequestProcessingException {
+    public List<JeepMessage> poop(@RequestBody POOPRequest request) throws RequestProcessingException {
         List<JeepMessage> messages = new Vector<>();
         DeviceProperty property;
         LOG.info("POOP requested by device " + request.getCID() + " property "
@@ -79,6 +79,7 @@ public class ServicesController {
         // set the property value in registry
         try {
             property.setValue(request.getPropValue());
+            LOG.info(property.getID() + " set value to " + request.getPropValue());
             messages.add(new POOPSuccessResponse(request.getMRN()));
         } catch (Exception e) {
             throw new RequestProcessingException("Unable to set value of + " + property.getID() + " to "
@@ -86,9 +87,20 @@ public class ServicesController {
         }
         
         // check rules
+        evaluatePOOP(property, messages);
+        
+        return messages;
+    }
+    
+    private void evaluatePOOP(DeviceProperty property, List<JeepMessage> messagesToReturn)
+            throws RequestProcessingException {
         List<Rule> rulesTriggerable;
+        LOG.info("Retrieving rules triggerable by " + property.getID() + "...");
         try {
             rulesTriggerable = getRulesTriggerable(property);
+            if (rulesTriggerable.isEmpty()) {
+                LOG.info("No triggerable rules found");
+            }
             for (Rule rule : rulesTriggerable) {
                 LOG.info("Checking if rule " + rule.getRuleID() + " (" + rule.getRuleName() + ") is triggered...");
                 List<DeviceProperty> triggerProperties = getDeviceProperties(rule.getTriggerProperties());
@@ -99,10 +111,14 @@ public class ServicesController {
                         try {
                             String actionValue = rule.getPropertyActionValue(action.getCID(), action.getIndex());
                             action.setValue(actionValue);
-                            messages.add(new POOPRequest(generateRandomMRN(), poopMSN, action.getCID(),
+                            messagesToReturn.add(new POOPRequest(generateRandomMRN(), poopMSN, action.getCID(),
                                     action.getIndex(), action.getValue()));
-                            LOG.info(action.getID() + " set value to " + actionValue + " (Rule "
+                            LOG.info(action.getID() + " set value to " + actionValue + " (Rule ID: "
                                     + rule.getRuleID() + ")");
+                            if (rule.isCascading()) {
+                                LOG.info("Rule " + rule.getRuleID() + " is cascading!");
+                                evaluatePOOP(action, messagesToReturn);
+                            }
                         } catch (Exception e) {
                             throw new RequestProcessingException("Unable to set value to " + action.getID()
                                     + " from rule " + rule.getRuleID());
@@ -115,7 +131,6 @@ public class ServicesController {
         } catch (IOException e) {
             throw new RequestProcessingException("Unable to process rules", e);
         }
-        return messages;
     }
     
     private List<Rule> getRulesTriggerable(DeviceProperty property) throws IOException {
@@ -127,6 +142,7 @@ public class ServicesController {
         
         HttpResponse response = httpClient.execute(get);
         String responseStr = EntityUtils.toString(response.getEntity());
+        LOG.debug(responseStr);
         Rule[] rules = mapper.readValue(responseStr, Rule[].class);
         return Arrays.asList(rules);
     }

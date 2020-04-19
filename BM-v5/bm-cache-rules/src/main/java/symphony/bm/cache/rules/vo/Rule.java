@@ -2,9 +2,11 @@ package symphony.bm.cache.rules.vo;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NonNull;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -23,18 +25,22 @@ import java.util.Vector;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class Rule {
+    @Id @JsonIgnore private String _id;
     @NonNull @Field("rule_id") @JsonProperty("rule_id") @Getter private String ruleID;
     @NonNull @Field("rule_name") @JsonProperty("rule_name") @Getter private String ruleName;
     @NonNull private HashMap<String, Object> trigger;
     @NonNull private HashMap<String, HashMap<Integer, String>> action;
-    private boolean cascading;
+    @Getter private boolean cascading;
     
-    @Transient @Getter private HashMap<String, List<Integer>> triggerProperties = new HashMap<>();
-    @Transient @Getter private HashMap<String, List<Integer>> actionProperties = new HashMap<>();
+    @Transient @Getter @JsonIgnore private HashMap<String, List<Integer>> triggerProperties = new HashMap<>();
+    @Transient @Getter @JsonIgnore private HashMap<String, List<Integer>> actionProperties = new HashMap<>();
     
     @PersistenceConstructor
-    public Rule(@NonNull String ruleID, @NonNull String ruleName, @NonNull HashMap<String, Object> trigger,
-                @NonNull HashMap<String, HashMap<Integer, String>> action, boolean cascading) {
+    @JsonCreator
+    public Rule(@NonNull @JsonProperty("rule_id") String ruleID, @NonNull @JsonProperty("rule_name") String ruleName,
+                @NonNull @JsonProperty("trigger") HashMap<String, Object> trigger,
+                @NonNull @JsonProperty("action") HashMap<String, HashMap<Integer, String>> action,
+                @JsonProperty("cascading") boolean cascading) {
         this.ruleID = ruleID;
         this.ruleName = ruleName;
         this.trigger = trigger;
@@ -53,20 +59,18 @@ public class Rule {
     }
     
     @JsonCreator
-    public Rule(@NonNull @JsonProperty("rule_id") String ruleID, @NonNull @JsonProperty("rule_name") String ruleName,
-                @NonNull @JsonProperty("trigger") HashMap<String, Object> trigger,
-                @NonNull @JsonProperty("action") HashMap<String, HashMap<Integer, String>> action,
-                @NonNull @JsonProperty("triggerProperties") HashMap<String, List<Integer>> triggerProperties,
-                @NonNull @JsonProperty("actionProperties") HashMap<String, List<Integer>> actionProperties,
-                @JsonProperty("cascading") boolean cascading) {
-        this.ruleID = ruleID;
-        this.ruleName = ruleName;
-        this.trigger = trigger;
-        this.action = action;
-        this.cascading = cascading;
-        this.triggerProperties = triggerProperties;
-        this.actionProperties = actionProperties;
-    }
+//    public Rule(@NonNull @JsonProperty("rule_id") String ruleID, @NonNull @JsonProperty("rule_name") String ruleName,
+//                @NonNull @JsonProperty("trigger") HashMap<String, Object> trigger,
+//                @NonNull @JsonProperty("action") HashMap<String, HashMap<Integer, String>> action,
+//                @JsonProperty("cascading") boolean cascading) {
+//        this.ruleID = ruleID;
+//        this.ruleName = ruleName;
+//        this.trigger = trigger;
+//        this.action = action;
+//        this.cascading = cascading;
+//        this.triggerProperties = triggerProperties;
+//        this.actionProperties = actionProperties;
+//    }
     
     public boolean isTriggerable(String cid, int prop_index) {
         if (triggerProperties.containsKey(cid)) {

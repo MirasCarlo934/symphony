@@ -243,7 +243,7 @@ public class MQTTManager implements MqttCallback, Runnable {
     
     private void publish(String topic, byte[] payload, int qos, boolean retained) throws MqttException {
         LOG.info("Publishing to " + topic + " topic");
-        LOG.info("Message: " + payload.toString());
+        LOG.info("Message: " + payload);
         mqttClient.publish(topic, payload, qos, false);
         mqttClient.publish(univTopic, payload, qos, false);
     }

@@ -1,6 +1,7 @@
-/Users/carlomiras/Documents/Symphony/git/symphony/BM-v5/bm-generics/src/main/java/symphony/bm/generics/jeep/response/RegisterResponse.java
 /Users/carlomiras/Documents/Symphony/git/symphony/BM-v5/bm-generics/src/main/java/symphony/bm/generics/jeep/response/JeepSuccessResponse.java
+/Users/carlomiras/Documents/Symphony/git/symphony/BM-v5/bm-generics/src/main/java/symphony/bm/generics/jeep/response/RegisterSuccessResponse.java
 /Users/carlomiras/Documents/Symphony/git/symphony/BM-v5/bm-generics/src/main/java/symphony/bm/generics/jeep/response/JeepResponse.java
+/Users/carlomiras/Documents/Symphony/git/symphony/BM-v5/bm-generics/src/main/java/symphony/bm/generics/jeep/request/JeepRequest.java
 /Users/carlomiras/Documents/Symphony/git/symphony/BM-v5/bm-generics/src/main/java/symphony/bm/generics/jeep/JeepMessage.java
-/Users/carlomiras/Documents/Symphony/git/symphony/BM-v5/bm-generics/src/main/java/symphony/bm/generics/jeep/response/JeepErrorResponse.java
+/Users/carlomiras/Documents/Symphony/git/symphony/BM-v5/bm-generics/src/main/java/symphony/bm/generics/jeep/response/JeepMicroserviceErrorMessage.java
 /Users/carlomiras/Documents/Symphony/git/symphony/BM-v5/bm-generics/src/main/java/symphony/bm/generics/exceptions/RequestProcessingException.java
