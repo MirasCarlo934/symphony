@@ -334,6 +334,8 @@ function groups() {
 }
 function getRange(e) {
   var tdiv = document.getElementById("lbl_"+e.id+":rng");
+  var theParent = tdiv.parentNode;
+  var rect = theParent.getBoundingClientRect();
   var rangeVal = 0;
   if (tdiv.textContent.length>0) {
     rangeVal = tdiv.textContent;
@@ -343,15 +345,39 @@ function getRange(e) {
     popup.remove()
   }
   var divRange = document.createElement('div');
+  divRange.style.left = Math.round(rect.right)+"px";
+  divRange.style.top = Math.round(rect.top)+"px";
   divRange.setAttribute('class', "init popup");
   divRange.setAttribute('id', "popup");
   divRange.setAttribute('onclick','closeIt()');
-  divRange.innerHTML = "<label class='rng barrng'><div class='lbl'>"+e.getAttribute("lbl")+
-    "</div><div class='slider'><input type='range' id='"+ e.id + "_" + 
-    "rng' parent='"+e.id+"' min='"+e.getAttribute("min")+"' max='"+e.getAttribute("max")+
-    "' onchange='sendRangeWs(this)' value="+rangeVal+"></div></label><br>";
+  var rngContainer1 = document.createElement('label');
+  rngContainer1.setAttribute('class', "rng barrng");
+  var rngInput = document.createElement('input');
+  rngInput.setAttribute('type',"range");
+  rngInput.setAttribute('id',e.id+ "_" +"rng");
+  rngInput.setAttribute('parent',e.id);
+  rngInput.setAttribute('min',e.getAttribute("min"));
+  rngInput.setAttribute('max',e.getAttribute("max"));
+  rngInput.setAttribute('onchange',"sendRangeWs(this)");
+  rngInput.value = rangeVal;
+  rngInput.addEventListener("input", 
+	function(e){
+	  showRangeValue(rngInput);
+	});
+  divRange.appendChild(rngContainer1);
+  rngContainer1.appendChild(rngInput);
   document.body.appendChild(divRange);
 }
+/**
+ * Shows the value of the slider in the parent label element
+ * @param slider
+ * @returns
+ */
+function showRangeValue(slider) {
+	var tdiv = document.getElementById("lbl_"+slider.getAttribute("parent")+":rng");
+  	tdiv.textContent = slider.value;
+}
+
 /**
  * Generic function to send data to server using websocket
  * @param is the command to be sent to the server
@@ -387,7 +413,7 @@ function sendOnOffWs(e) {
 function sendRangeWs(e) {
 //  var txt = document.getElementById("txt1");
 //  txt.value="range " +e.id+ "=" +e.value;
-	document.getElementById("popup").remove();
+//	document.getElementById("popup").remove();
   	var tdiv = document.getElementById("lbl_"+e.getAttribute("parent")+":rng");
   	tdiv.textContent = e.value;
   	var jsonResponse = {"core":CONTROL_DEVICE, "cmd":CMD_DEVICE_PIN_CONTROL};// core:7 - this transaction is to control the device
