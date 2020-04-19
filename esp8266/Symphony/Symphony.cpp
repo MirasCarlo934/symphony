@@ -1000,6 +1000,8 @@ bool Symphony::registerProduct() {
 					} else { //if (a.gui.pinType == SLIDER_CTL || a.gui.pinType == SLIDER_SNSR )
 						theType["data"] = "number";
 						theType["ui"] = "slider";
+						theType["minValue"] = a.gui.min;
+						theType["maxValue"] = a.gui.max;
 //						if (a.gui.pinType == SLIDER_CTL)
 //							prop1["mode"] = "O";
 //						if (a.gui.pinType == SLIDER_SNSR )
@@ -1007,8 +1009,6 @@ bool Symphony::registerProduct() {
 					}
 					prop1["name"] = a.gui.label;
 					prop1["index"] = i;
-					prop1["minValue"] = a.gui.min;
-					prop1["maxValue"] = a.gui.max;
 				}
 				JsonObject& rJson = regJson.createNestedObject("room");
 				rJson["RID"] = "1";

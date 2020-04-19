@@ -40,13 +40,16 @@
  * 		all sensors have value greater than or equal to 50
  *
  */
-#define RADIO_CTL 10
-#define BUTTON_CTL 20
-#define SLIDER_CTL 30
-#define RADIO_SNSR 50
-#define BUTTON_SNSR 60
-#define SLIDER_SNSR 70
-#define UNDEF #define 99
+#define RADIO_CTL 10		//displays a radio button, enabled
+#define BUTTON_CTL 20		//displays a checkbox button, enabled
+#define SLIDER_CTL 30		//displays a slider button that opens a slider element, enabled
+#define RADIO_SNSR 50		//displays a radio button, disabled
+#define BUTTON_SNSR 60		//displays a checkbox button, disabled
+#define SLIDER_SNSR 70		//displays a slider button that opens a slider element, disabled
+#define RADIO_SUBMIT 80		//displays a radio button that (does not immediately send WS data), enabled
+#define BUTTON_SUBMIT 81	//displays a checkbox button (does not immediately send WS data), enabled
+#define SLIDER_SUBMIT 82	//displays a slider button that opens a slider element (does not immediately send WS data), enabled
+#define SUBMIT 83			//displays a true button (submits data from all the _SUBMIT elements), enabled
 
 /*
  * This is for the display of the component in the html
