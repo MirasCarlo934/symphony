@@ -4,8 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -16,11 +21,17 @@ import org.springframework.web.bind.annotation.RestController;
 import symphony.bm.cache.devices.adaptors.AdaptorManager;
 import symphony.bm.cache.devices.entities.deviceproperty.DeviceProperty;
 import symphony.bm.cache.devices.entities.deviceproperty.DevicePropertyType;
+import symphony.bm.cache.rules.vo.Rule;
 import symphony.bm.generics.exceptions.RequestProcessingException;
+import symphony.bm.generics.jeep.JeepMessage;
 import symphony.bm.services.poop.jeep.POOPRequest;
 import symphony.bm.services.poop.jeep.POOPSuccessResponse;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Vector;
 
 @RestController
 public class ServicesController {
@@ -29,17 +40,21 @@ public class ServicesController {
     
     private String bmURL;
     private String devicesCachePort;
+    private String rulesCachePort;
     
     public ServicesController(@Value("${http.url.bm}") String bmURL,
                               @Value("${microservices.cache.devices.port}") String devicesCachePort,
+                              @Value("${microservices.cache.rules.port}") String rulesCachePort,
                               @Qualifier("bmsp.adaptorManager") AdaptorManager adaptorManager) {
         this.bmURL = bmURL;
         this.devicesCachePort = devicesCachePort;
         this.adaptorManager = adaptorManager;
+        this.rulesCachePort = rulesCachePort;
     }
     
     @PatchMapping("/poop")
     public Object poop(@RequestBody POOPRequest request) throws RequestProcessingException {
+        List<JeepMessage> messages = new Vector<>();
         DeviceProperty property;
         LOG.info("POOP requested by device " + request.getCID() + " property "
                 + request.getPropIndex());
@@ -51,46 +66,63 @@ public class ServicesController {
             throw new RequestProcessingException("Error in processing request", e);
         }
         
+        // check if value supplied is valid
         DevicePropertyType propType = property.getType();
-        switch(propType.getData()) {
-            case binary:
-                try {
-                    int value = Integer.parseInt(request.getPropValue());
-                    if (value < 0 || value > 1) {
-                        throw new NumberFormatException();
-                    }
-                } catch (NumberFormatException e) {
-                    throw new RequestProcessingException("Binary property value must only either be 1 or 0");
-                }
-                break;
-            case number:
-                double min = propType.getMinValue().doubleValue();
-                double max = propType.getMaxValue().doubleValue();
-                try {
-                    double value = Double.parseDouble(request.getPropValue());
-                    if (value < min || value > max) {
-                        throw new NumberFormatException();
-                    }
-                } catch (NumberFormatException e) {
-                    throw new RequestProcessingException("Number property value must only be from " + min + " to "
-                            + max);
-                }
-                break;
-            case enumeration:
-                String value = request.getPropValue();
-                if (!propType.getValues().contains(value)) {
-                    String values = String.join(",", propType.getValues());
-                    throw new RequestProcessingException("Enumeration property value must only be [" + values + "]");
-                }
+        if (!propType.checkIfValueIsValid(request.getPropValue())) {
+            throw new RequestProcessingException("'" + request.getPropValue() + "' is invalid for the specified " +
+                    "property " + property.getID());
         }
         
+        // set the property value in registry
         try {
             property.setValue(request.getPropValue());
         } catch (Exception e) {
-            throw new RequestProcessingException("Unable to set value to " + request.getCID() + "."
-                    + request.getPropIndex(), e);
+            throw new RequestProcessingException("Unable to set value of + " + property.getID() + " to "
+                    + request.getPropValue(), e);
+        }
+        
+        // check rules
+        List<Rule> rulesTriggerable;
+        try {
+            rulesTriggerable = getRulesTriggerable(property);
+            for (Rule rule : rulesTriggerable) {
+                LOG.info("Checking if rule " + rule.getRuleID() + " (" + rule.getRuleName() + ") is triggered...");
+                List<DeviceProperty> triggerProperties = getDeviceProperties(rule.getTriggerProperties());
+                if (rule.isTriggered(triggerProperties)) {
+                    LOG.info("Rule "+ rule.getRuleID() + " (" + rule.getRuleName() + ") triggered!");
+                    List<DeviceProperty> actionProperties = getDeviceProperties(rule.getActionProperties());
+                    for (DeviceProperty action : actionProperties) {
+                        try {
+                            String actionValue = rule.getPropertyActionValue(action.getCID(), action.getIndex());
+                            action.setValue(actionValue);
+                            LOG.info(action.getID() + " set value to " + actionValue + " (Rule "
+                                    + rule.getRuleID() + ")");
+                        } catch (Exception e) {
+                            throw new RequestProcessingException("Unable to set value to " + action.getID()
+                                    + " from rule " + rule.getRuleID());
+                        }
+                    }
+                } else {
+                    LOG.info("Rule "+ rule.getRuleID() + " (" + rule.getRuleName() + ") not triggered");
+                }
+            }
+        } catch (IOException e) {
+            throw new RequestProcessingException("Unable to process rules", e);
         }
         return new POOPSuccessResponse();
+    }
+    
+    private List<Rule> getRulesTriggerable(DeviceProperty property) throws IOException {
+        String cid = property.getCID();
+        ObjectMapper mapper = new ObjectMapper();
+        int prop_index = property.getIndex();
+        HttpClient httpClient = HttpClientBuilder.create().build();
+        HttpGet get = new HttpGet(bmURL + ":" + rulesCachePort + "/" + cid + "/" + prop_index);
+        
+        HttpResponse response = httpClient.execute(get);
+        String responseStr = EntityUtils.toString(response.getEntity());
+        Rule[] rules = mapper.readValue(responseStr, Rule[].class);
+        return Arrays.asList(rules);
     }
     
     private DeviceProperty getDeviceProperty(String CID, String index) throws NullPointerException, IOException {
@@ -102,6 +134,21 @@ public class ServicesController {
             throw new NullPointerException("Empty response from devices cache");
         }
         return injectAdaptorsInDeviceProperty(new ObjectMapper().readValue(json, DeviceProperty.class));
+    }
+    
+    private List<DeviceProperty> getDeviceProperties(HashMap<String, List<Integer>> propertiesToGet) throws IOException {
+        HttpClient httpClient = HttpClientBuilder.create().build();
+        ObjectMapper mapper = new ObjectMapper();
+        HttpPost post = new HttpPost(bmURL + ":" + devicesCachePort + "/query/propertylist");
+        post.setEntity(new StringEntity(mapper.writeValueAsString(propertiesToGet), ContentType.APPLICATION_JSON));
+        
+        HttpResponse response = httpClient.execute(post);
+        String responseStr = EntityUtils.toString(response.getEntity());
+        DeviceProperty[] properties = mapper.readValue(responseStr, DeviceProperty[].class);
+        for (DeviceProperty property : properties) {
+            injectAdaptorsInDeviceProperty(property);
+        }
+        return Arrays.asList(properties);
     }
     
     private DeviceProperty injectAdaptorsInDeviceProperty(DeviceProperty property) {

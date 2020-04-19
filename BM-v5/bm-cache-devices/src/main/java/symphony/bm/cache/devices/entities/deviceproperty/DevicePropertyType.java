@@ -33,6 +33,10 @@ public class DevicePropertyType {
         this.values = values;
     }
     
+    public boolean checkIfValueIsValid(String value) {
+        return data.checkIfValueIsValid(value, this);
+    }
+    
     @Builder()
     public static DevicePropertyType parseDevicePropertyType(Map<String, Object> map) throws IllegalArgumentException,
             NullPointerException, ClassCastException {
@@ -46,7 +50,7 @@ public class DevicePropertyType {
                     }
                 }
                 ui = DevicePropertyInterface.valueOf((String) map.get("ui"));
-                return new DevicePropertyType(DataType.binary, ui, null, null, null);
+                return new DevicePropertyType(DataType.binary, ui, 0, 1, null);
             case "enumeration":
                 for (String param : enumMapParams) {
                     if (!map.containsKey(param)) {

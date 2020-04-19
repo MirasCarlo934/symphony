@@ -64,15 +64,14 @@ public class RestAPI {
     }
     
     @PostMapping("/query/propertylist")
-    public HashMap<String, List<DeviceProperty>> getDeviceProperties(@RequestBody HashMap<String, List<Integer>> requestBody) {
+    public List<DeviceProperty> getDeviceProperties(@RequestBody HashMap<String, List<Integer>> requestBody) {
         LOG.info("Getting device properties...");
-        HashMap<String, List<DeviceProperty>> response = new HashMap<>();
+        List<DeviceProperty> response = new Vector<>();
         int n = 0;
         for (String cid : requestBody.keySet()) {
-            response.put(cid, new Vector<>());
             Device d = superRoom.getDevice(cid);
             for (int prop_index : requestBody.get(cid)) {
-                response.get(cid).add(d.getProperty(prop_index));
+                response.add(d.getProperty(prop_index));
                 n++;
                 LOG.info(cid + "." + prop_index + " retrieved");
             }

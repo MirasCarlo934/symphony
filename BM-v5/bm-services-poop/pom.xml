@@ -60,6 +60,13 @@
             <scope>compile</scope>
             <classifier>generics</classifier>
         </dependency>
+        <dependency>
+            <groupId>symphony.bm</groupId>
+            <artifactId>bm-cache-rules</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+            <classifier>generics</classifier>
+        </dependency>
     </dependencies>
 
     <build>
