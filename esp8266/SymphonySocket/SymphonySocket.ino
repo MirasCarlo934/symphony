@@ -32,10 +32,8 @@ uint8_t isE131Enabled = 0;
 struct timerStruct {
 	bool enabled = false;
 	uint8_t hour;
-	uint8_t secs1;
-	uint8_t secs2;
-	uint8_t mins1;
-	uint8_t mins2;
+	uint8_t secs;
+	uint8_t mins;
 	long millis;
 	long startMillis;
 };
@@ -81,10 +79,8 @@ void sendTimerData(AsyncWebSocketClient *client, JsonObject& json) {
 	json["cmd"] = 1;
 	json["e"] = timerData.enabled?1:0;
 	json["hrs"] = timerData.hour;
-	json["mins1"] = timerData.mins1;
-	json["mins2"] = timerData.mins2;
-	json["secs1"] = timerData.secs1;
-	json["secs2"] = timerData.secs2;
+	json["mins"] = timerData.mins;
+	json["secs"] = timerData.secs;
 	json["value"] = timerData.enabled?timerData.startMillis + timerData.millis - millis():0;
 	String responseData;
 	json.printTo(responseData);
@@ -108,14 +104,27 @@ int wsHandler(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json)
 			{
 				timerData.enabled = true;
 				timerData.startMillis = millis();
-				timerData.hour = json["hrs"].as<int>();
-				timerData.mins1 = json["mins1"].as<int>();
-				timerData.mins2 = json["mins2"].as<int>();
-				timerData.secs1 = json["secs1"].as<int>();
-				timerData.secs2 = json["secs2"].as<int>();
+				JsonArray& arr = json["data"];
+				for(JsonVariant v : arr) {
+					Serial.printf(" ssid=%i lbl=%s, val=%i\n", v["ssid"].as<int>(), v["lbl"].as<String>().c_str(), v["val"].as<int>());
+					if (v["ssid"].as<int>() == 13)
+						timerData.hour = v["val"].as<int>();
+					if (v["ssid"].as<int>() == 14)
+						timerData.mins = v["val"].as<int>();
+					if (v["ssid"].as<int>() == 15)
+						timerData.secs = v["val"].as<int>();
+				}
 				timerData.millis = timerData.hour * 3600000 +  // 3600000 milliseconds in an hour
-						(timerData.mins1*10 + timerData.mins2) * 60000 + // 60000 milliseconds in a minute
-						(timerData.secs1*10 + timerData.secs2) * 1000; // 1000 milliseconds in a second
+						(timerData.mins) * 60000 + // 60000 milliseconds in a minute
+						(timerData.secs) * 1000; // 1000 milliseconds in a second
+//				timerData.hour = json["hrs"].as<int>();
+//				timerData.mins1 = json["mins1"].as<int>();
+//				timerData.mins2 = json["mins2"].as<int>();
+//				timerData.secs1 = json["secs1"].as<int>();
+//				timerData.secs2 = json["secs2"].as<int>();
+//				timerData.millis = timerData.hour * 3600000 +  // 3600000 milliseconds in an hour
+//						(timerData.mins1*10 + timerData.mins2) * 60000 + // 60000 milliseconds in a minute
+//						(timerData.secs1*10 + timerData.secs2) * 1000; // 1000 milliseconds in a second
 				sendTimerData(client, json);
 #ifdef DEBUG_SOCKET
 				Serial.printf("\nhour: %i, millis:",timerData.hour);
@@ -137,19 +146,15 @@ int wsHandler(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json)
 				break;
 			}
 			case 10://on-off command
-				socketState = json["val"].as<int>();
-				product.setValue(json["ssid"].as<String>(), socketState, true);	//even if the property is virtual, we are setting its value here
-//				DynamicJsonBuffer jsonBuffer;
-//				JsonObject& poopJson = jsonBuffer.createObject();
-//				poopJson["RID"] = Symphony::mac;
-//				poopJson["CID"] = "0000";
-//				poopJson["RTY"] = "poop";
-//				poopJson["property"] = json["val"].as<String>();
-//				poopJson["value"] = socketState;
-//				String strReg;
-//				poopJson.printTo(strReg);
-//				s.transmit(strReg.c_str());
-				Serial.printf("wsHandler Pin%i set to %i\n",SOCKET_PIN, socketState);
+				int ssid = json["ssid"].as<int>();
+				if (ssid==1) {
+					socketState = json["val"].as<int>();
+					product.setValue(json["ssid"].as<String>(), socketState, true);	//even if the property is virtual, we are setting its value here
+					Serial.printf("wsHandler Pin%i set to %i\n",SOCKET_PIN, socketState);
+				} else {
+					attribStruct a = s.product.getProperty(json["ssid"].as<String>());
+					Serial.printf("wsHandler timer %s=%i\n", a.gui.label.c_str(), json["val"].as<int>());
+				}
 				break;
 			}
 	}
@@ -187,10 +192,24 @@ void setup()
 	s.on("/getConfig", HTTP_GET, handleGetConfig);
 
 	product = Product(s.nameWithMac, "Kitchen", "Socket");
+	//gui1 and gui2 for the switch control
 	Gui gui1 = Gui("Socket Control", BUTTON_CTL, "On/Off", 0, 1, socketState);
-	product.addCallableProperty("0001", SOCKET_PIN, gui1);//add a property that has an attached pin
+	product.addCallableProperty("01", SOCKET_PIN, gui1);//add a property that has an attached pin
 	Gui gui2 = Gui("Socket Control", BUTTON_SNSR, "Indicator", 0, 1, socketState);
-	product.addVirtualProperty("0002", gui2);//add a logical property that has no attached pin
+	product.addVirtualProperty("02", gui2);//add a logical property that has no attached pin
+	//gui3-7 for the timer control
+	Gui gui3 = Gui("Timer", BUTTON_SNSR, "Enabled", 0, 1, 0);
+	product.addVirtualProperty("11", gui3);//add a logical property that has no attached pin
+	Gui gui4 = Gui("Timer", SLIDER_SNSR, "Timer", 0, 24, 0);
+	product.addVirtualProperty("12", gui4);//add a logical property that has no attached pin
+	Gui gui5 = Gui("Timer", SLIDER_SUBMIT, "Hours", 0, 23, 0);
+	product.addVirtualProperty("13", gui5);//add a logical property that has no attached pin
+	Gui gui6 = Gui("Timer", SLIDER_SUBMIT, "Mins", 0, 59, 0);
+	product.addVirtualProperty("14", gui6);//add a logical property that has no attached pin
+	Gui gui7 = Gui("Timer", SLIDER_SUBMIT, "Secs", 0, 59, 0);
+	product.addVirtualProperty("15", gui7);//add a logical property that has no attached pin
+	Gui gui8 = Gui("Timer", SUBMIT, "Submit", 0, 1, 0);
+	product.addVirtualProperty("16", gui8);//add a logical property that has no attached pin
 	s.setProduct(product);
 
 	if (e131.begin(E131_MULTICAST, UNIVERSE_START, UNIVERSE_COUNT))   // Listen via Multicast
@@ -229,8 +248,9 @@ void loop() {
 			//let us look at the timer
 			if (timerData.enabled) {
 				if (millis() >= (timerData.startMillis + timerData.millis)) {
+					//timer has elapsed, let us toggle the socketState
 					socketState = !socketState;
-					product.setValue("0001", socketState, true);
+					product.setValue("01", socketState, true);
 					timerData.enabled = false;		//disable timer
 					DynamicJsonBuffer jsonBuffer;
 					JsonObject& json = jsonBuffer.createObject();
@@ -238,10 +258,8 @@ void loop() {
 					json["cmd"] = 1;
 					json["e"] = 0;
 					json["hrs"] = timerData.hour;
-					json["mins1"] = timerData.mins1;
-					json["mins2"] = timerData.mins2;
-					json["secs1"] = timerData.secs1;
-					json["secs2"] = timerData.secs2;
+					json["mins"] = timerData.mins;
+					json["secs"] = timerData.secs;
 					json["value"] = timerData.enabled?timerData.startMillis + timerData.millis - millis():0;
 					s.textAll(json);
 				}
