@@ -1,21 +1,15 @@
 .init {
   background-color: white;
   color: blue;
-  width: 15em;
-  padding: 5px 5px;
-  border: 1px solid green;
-  text-align: center;
+  border: none;
   font-family: Arial;
-  font-weight: bold; 
   font-size: 1em;
 }
 .popup {
   position: absolute;
-  top: 100px;
-  left: 50%;
-  transform: translate(-50%, 0);
+  left: 95px;
   z-index: 99;
-  width: 85%;
+  width: 95%;
 }
 .barrng {
   position: relative;
@@ -39,7 +33,6 @@
 }
 .rng {
   display: inline-block;
-  width: 80%;
 }
 .bar input {display:none;}
 .slider {
@@ -47,7 +40,7 @@
   width: 100%;
   display: inline-block;
   text-align: right;
-  right: 20px;
+;
 }
 .btntxt {
   position: absolute;
@@ -73,6 +66,8 @@
   text-align: center;
   color: BLUE;
   line-height: 25px;
+  -webkit-transition: .5s;
+  transition: .5s;
 }
 .lbl {
   position: relative;
@@ -99,15 +94,15 @@ input:focus + .btn {
 }
 input:checked + .btn:before {
   content: "";
-  background-color: #ffff00;
 }
 input[type=range] {
   display: inline-block;
   position: relative;
-  top: -40px;
+  top: -6px;
   -webkit-appearance: none;
   margin: 18px 0;
-  width: 80%;
+  width: 90%;
+  left: 5%;
   background: none;
 }
 input[type=range]:focus {
@@ -135,4 +130,19 @@ input[type=range]::-webkit-slider-runnable-track {
 }
 input[type=range]:focus::-webkit-slider-runnable-track {
   background: white;
+}
+.truebutton {
+  position: relative;
+  height: 30px;
+  border-radius: 30px;
+  line-height: 30px;
+  border: 2px solid lightgray;
+  background-color: gray;
+  text-align: center;
+  color: white;
+  text-shadow: -1px -1px 1px #000;
+  font-family: Arial;
+}
+.truebutton:hover {
+	background-color: darkgray;
 }

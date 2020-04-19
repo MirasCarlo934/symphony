@@ -209,6 +209,16 @@ function loadControlPage() {
 }
 /**
  * Renders the control page returned by /properties.html
+ * RADIO_CTL 10		//displays a radio button, enabled
+ * BUTTON_CTL 20		//displays a checkbox button, enabled
+ * SLIDER_CTL 30		//displays a slider button that opens a slider element, enabled
+ * RADIO_SNSR 50		//displays a radio button, disabled
+ * BUTTON_SNSR 60		//displays a checkbox button, disabled
+ * SLIDER_SNSR 70		//displays a slider button that opens a slider element, disabled
+ * RADIO_SUBMIT 80		//displays a radio button that (does not immediately send WS data), enabled
+ * BUTTON_SUBMIT 81		//displays a checkbox button (does not immediately send WS data), enabled
+ * SLIDER_SUBMIT 82		//displays a slider button that opens a slider element (does not immediately send WS data), enabled
+ * BUTTON_SUBMIT 83		//displays a true button (submits data from all the _SUBMIT elements), enabled
  * @param xhttp
  * @returns
  */
@@ -265,56 +275,75 @@ function renderPage(xhttp) {
     for (var k in grp) {
     	var fs = document.createElement('fieldset');
     	fs.setAttribute('style', 'width:290px;text-align:center;')
+    	fs.setAttribute('id', "fs_" + k);
     	var legend = document.createElement('legend');
     	legend.innerHTML = k;
     	fs.appendChild(legend);
+    	
     	cntr.appendChild(fs);
     	for (var j = 0; j < grp[k].ctr; j++) {
     		var p = grp[k].properties[j];
-    		var lbl = document.createElement('label');
-    		lbl.setAttribute('class', "bar barrng");
-    		fs.appendChild(lbl);
-    		var div1 = document.createElement('div');
-    		div1.setAttribute('class', "lbl");
-    		div1.innerHTML = p.lbl;
-    		var div2 = document.createElement('div');
-    		div2.setAttribute('class', "btn btntxt");
-    		var input = document.createElement('input');
-    		input.setAttribute('onclick',"sendOnOffWs(this)");
-    		input.setAttribute('lbl',p.lbl);
-//    		input.setAttribute('id',name+":"+p.val);
-    		input.setAttribute('id',p.id);
-    		input.setAttribute('hasPin',p.hasPin);
-    		input.setAttribute('name', k);
-    		if (p.typ == 10 || p.typ == 50) { //RADIO_CTL = 10, RADIO_SNSR = 50    			
-    			input.setAttribute('type',"radio");
-    			if (p.val == 1)
-    				input.checked=true;
-    		} else if (p.typ == 30 || p.typ == 70) { //SLIDER_CTL = 30 , SLIDER_SNSR = 70
-        		input.setAttribute('type',"text");
-        		input.setAttribute('min',p.min);
-        		input.setAttribute('max',p.max);
-        		input.setAttribute('onclick',"getRange(this)");
-        		input.value = p.val;
-        		div2.setAttribute('class', "txt btntxt");
-        		div2.setAttribute('id', "lbl_"+p.id+":rng");
-        		div2.innerHTML = p.val;
-    		} else {  //BUTTON_CTL = 20, BUTTON_SNSR = 60, UNDEF = 99
-    			lbl.setAttribute('class', "bar barchkbox");
-    			input.setAttribute('type',"checkbox");
-    			if (p.val==1)
-	              input.checked=true;
-	            else
-	              input.checked=false;
+    		if (p.typ == 83) {  //BUTTON_SUBMIT 83
+    			//<label class="truebutton">Button1</label><br>
+    			var btn = document.createElement('label');
+    			btn.setAttribute('class', "truebutton");
+    			btn.innerHTML = p.lbl;
+    			btn.setAttribute('onclick',"sendSubmit('fs_"+k+"')");
+    			fs.appendChild(btn);
+    		} else {
+    			var lbl = document.createElement('label');
+        		lbl.setAttribute('class', "bar barrng");
+        		fs.appendChild(lbl);
+        		var div1 = document.createElement('div');
+        		div1.setAttribute('class', "lbl");
+        		div1.innerHTML = p.lbl;
+        		var div2 = document.createElement('div');
+        		div2.setAttribute('class', "btn btntxt");
+        		var input = document.createElement('input');
+        		if (p.typ == 10 || p.typ == 20 || p.typ == 50 || p.typ == 60) { //RADIO_CTL = 10, RADIO_SNSR = 50, BUTTON_CTL = 20, BUTTON_SNSR = 60
+        			//we only set a send to WS if the element is not part of a SUBMIT group
+        			input.setAttribute('onclick',"sendOnOffWs(this)");
+        		}
+        		input.setAttribute('lbl',p.lbl);
+        		console.log("input.setAttribute('lbl',"+input.getAttribute("lbl")+");" +" id="+p.id)
+//        		input.setAttribute('id',name+":"+p.val);
+        		input.setAttribute('id',p.id);
+        		input.setAttribute('hasPin',p.hasPin);
+        		input.setAttribute('name', k);
+        		if (p.typ == 10 || p.typ == 50 || p.typ == 80) { //RADIO_CTL = 10, RADIO_SNSR = 50, RADIO_SUBMIT = 80   			
+        			input.setAttribute('type',"radio");
+        			if (p.val == 1)
+        				input.checked=true;
+        		} else if (p.typ == 30 || p.typ == 70 || p.typ == 82) { //SLIDER_CTL = 30 , SLIDER_SNSR = 70, SLIDER_SUBMIT = 82
+            		input.setAttribute('type',"text");
+            		input.setAttribute('min',p.min);
+            		input.setAttribute('max',p.max);
+            		if (p.typ == 82)
+            			input.setAttribute('isSubmit', 1);
+            		else
+            			input.setAttribute('isSubmit', 0);
+            		input.setAttribute('onclick',"getRange(this)");
+            		input.value = p.val;
+            		div2.setAttribute('class', "txt btntxt");
+            		div2.setAttribute('id', "lbl_"+p.id+":rng");
+            		div2.innerHTML = p.val;
+        		} else if (p.typ == 20 || p.typ == 60 || p.typ == 81 || p.typ == 99) {  //BUTTON_CTL = 20, BUTTON_SNSR = 60,  BUTTON_SUBMIT = 81, UNDEF = 99
+        			lbl.setAttribute('class', "bar barchkbox");
+        			input.setAttribute('type',"checkbox");
+        			if (p.val==1)
+    	              input.checked=true;
+    	            else
+    	              input.checked=false;
+        		}
+        		if (p.typ == 50 || p.typ == 60 || p.typ == 70 ) {	//this is a sensor property
+        			input.disabled = true;
+        			div2.setAttribute('style','cursor:not-allowed;');
+        			lbl.setAttribute('style','opacity:.7;cursor:not-allowed;');
+        		}
+        		lbl.appendChild(div1);
+        		lbl.appendChild(input);
+        		lbl.appendChild(div2);	
     		}
-    		if (p.typ >= 50 ) {	//this is a sensor property
-    			input.disabled = true;
-    			div2.setAttribute('style','cursor:not-allowed;');
-    			lbl.setAttribute('style','opacity:.7;cursor:not-allowed;');
-    		}
-    		lbl.appendChild(div1);
-    		lbl.appendChild(input);
-    		lbl.appendChild(div2);
     		br = document.createElement('br');
     		fs.appendChild(br);
         } 
@@ -358,7 +387,8 @@ function getRange(e) {
   rngInput.setAttribute('parent',e.id);
   rngInput.setAttribute('min',e.getAttribute("min"));
   rngInput.setAttribute('max',e.getAttribute("max"));
-  rngInput.setAttribute('onchange',"sendRangeWs(this)");
+  if (!parseInt(e.getAttribute("isSubmit")))		//we do not set a send to WS if the element is part of a SUBMIT group
+	  rngInput.setAttribute('onchange',"sendRangeWs(this)");
   rngInput.value = rangeVal;
   rngInput.addEventListener("input", 
 	function(e){
@@ -376,6 +406,9 @@ function getRange(e) {
 function showRangeValue(slider) {
 	var tdiv = document.getElementById("lbl_"+slider.getAttribute("parent")+":rng");
   	tdiv.textContent = slider.value;
+  	var input = document.getElementById(slider.getAttribute("parent"));
+  	input.value = slider.value;
+//  	console.log("input value="+input.value);
 }
 
 /**
@@ -397,6 +430,43 @@ function sendWSRequestToServer(cmd, formId) {
 	}
 	websocket.send(JSON.stringify(jsonRequest));
 }
+/**
+ * Submits the values of the _SUBMIT elements in the fieldset where the submit button belongs
+ * @param e
+ * @returns
+ */
+function sendSubmit(fsId) {
+	var jsonResponse = {"core":CONTROL_DEVICE, "cmd":3};// core:7 - this transaction is to control the device	
+	jsonResponse["mac"] = mac;
+	jsonResponse["cid"] = cid;
+	jsonResponse["data"] = [];
+	var fs = document.getElementById(fsId);
+	var input = fs.getElementsByTagName("input");
+	for(i=0;i<input.length;i++){
+		jsonResponse["data"][i] = {};
+		jsonResponse["data"][i]["ssid"] = input[i].id;
+		jsonResponse["data"][i]["lbl"] = input[i].getAttribute("lbl");
+		if (input[i].type == "checkbox" || input[i].type == "radio") {
+			console.log("id="+ input[i].id + " value="+input[i].checked +" type=" +input[i].type +" lbl=" +input[i].getAttribute("lbl")) ;
+			if (input[i].checked) {
+				jsonResponse["data"][i]["val"] = 1;
+			} else {
+				jsonResponse["data"][i]["val"] = 0;
+			}			  
+		} else {
+			console.log("id="+ input[i].id + " value="+input[i].value +" type=" +input[i].type +" lbl=" +input[i].getAttribute("lbl")) ;
+			jsonResponse["data"][i]["val"] = input[i].value;
+		}
+	}
+	console.log(JSON.stringify(jsonResponse));
+	websocket.send(JSON.stringify(jsonResponse));
+	
+}
+/**
+ * Sends the state of the on/off element
+ * @param e
+ * @returns
+ */
 function sendOnOffWs(e) {
 	var jsonResponse = {"core":CONTROL_DEVICE, "cmd":CMD_DEVICE_PIN_CONTROL};// core:7 - this transaction is to control the device
 	
@@ -410,6 +480,11 @@ function sendOnOffWs(e) {
 	}
 	websocket.send(JSON.stringify(jsonResponse));
 }
+/**
+ * Sends the value of the slider element
+ * @param e
+ * @returns
+ */
 function sendRangeWs(e) {
 //  var txt = document.getElementById("txt1");
 //  txt.value="range " +e.id+ "=" +e.value;
