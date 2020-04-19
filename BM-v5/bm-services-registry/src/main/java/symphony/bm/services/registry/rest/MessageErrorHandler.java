@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import symphony.bm.generics.exceptions.RequestProcessingException;
-import symphony.bm.generics.jeep.response.JeepErrorResponse;
+import symphony.bm.generics.jeep.response.JeepMicroserviceErrorMessage;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
@@ -19,20 +19,20 @@ public class MessageErrorHandler extends ResponseEntityExceptionHandler {
     private final Logger LOG = LoggerFactory.getLogger(MessageErrorHandler.class);
     
     @ExceptionHandler(HttpMessageConversionException.class)
-    protected ResponseEntity<JeepErrorResponse> handleRequestBodyConversionException(HttpMessageConversionException e) {
+    protected ResponseEntity<JeepMicroserviceErrorMessage> handleRequestBodyConversionException(HttpMessageConversionException e) {
         String error = e.getCause().getCause().getMessage();
         LOG.error("Request Error: " + error, e);
-        return buildResponseEntity(new JeepErrorResponse(HttpStatus.BAD_REQUEST, error));
+        return buildResponseEntity(new JeepMicroserviceErrorMessage(HttpStatus.BAD_REQUEST, error));
     }
     
     @ExceptionHandler(RequestProcessingException.class)
-    protected ResponseEntity<JeepErrorResponse> handleRequestProcessingException(RequestProcessingException e) {
+    protected ResponseEntity<JeepMicroserviceErrorMessage> handleRequestProcessingException(RequestProcessingException e) {
         String error = e.getMessage();
         LOG.error("Request Error: " + error, e);
-        return buildResponseEntity(new JeepErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage()));
+        return buildResponseEntity(new JeepMicroserviceErrorMessage(HttpStatus.BAD_REQUEST, e.getMessage()));
     }
     
-    private ResponseEntity<JeepErrorResponse> buildResponseEntity(JeepErrorResponse error) {
+    private ResponseEntity<JeepMicroserviceErrorMessage> buildResponseEntity(JeepMicroserviceErrorMessage error) {
         return new ResponseEntity<>(error, error.getStatus());
     }
 }

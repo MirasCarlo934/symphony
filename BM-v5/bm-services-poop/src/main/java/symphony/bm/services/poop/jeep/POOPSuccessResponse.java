@@ -1,7 +1,9 @@
 package symphony.bm.services.poop.jeep;
 
-public class POOPSuccessResponse extends POOPResponse {
-    public POOPSuccessResponse() {
-        super(true, "POOP successful");
+import symphony.bm.generics.jeep.response.JeepResponse;
+
+public class POOPSuccessResponse extends JeepResponse {
+    public POOPSuccessResponse(String MRN) {
+        super(MRN, true, "POOP successful");
     }
 }

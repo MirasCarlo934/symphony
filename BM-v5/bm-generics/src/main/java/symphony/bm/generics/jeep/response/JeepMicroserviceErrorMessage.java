@@ -9,14 +9,14 @@ import java.time.LocalDateTime;
 
 @Value
 @EqualsAndHashCode(callSuper = false)
-public class JeepErrorResponse extends JeepResponse {
+public class JeepMicroserviceErrorMessage extends JeepResponse {
     HttpStatus status;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     String message;
     LocalDateTime timestamp;
     
-    public JeepErrorResponse(HttpStatus status, String msgStr) {
-        super(false, msgStr);
+    public JeepMicroserviceErrorMessage(HttpStatus status, String msgStr) {
+        super(null, false, msgStr);
         this.status = status;
         this.message = msgStr;
         timestamp = LocalDateTime.now();

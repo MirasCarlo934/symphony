@@ -1,6 +1,7 @@
 package symphony.bm.services.poop;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -9,8 +10,6 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -24,6 +23,7 @@ import symphony.bm.cache.devices.entities.deviceproperty.DevicePropertyType;
 import symphony.bm.cache.rules.vo.Rule;
 import symphony.bm.generics.exceptions.RequestProcessingException;
 import symphony.bm.generics.jeep.JeepMessage;
+import symphony.bm.generics.jeep.request.JeepRequest;
 import symphony.bm.services.poop.jeep.POOPRequest;
 import symphony.bm.services.poop.jeep.POOPSuccessResponse;
 
@@ -41,15 +41,18 @@ public class ServicesController {
     private String bmURL;
     private String devicesCachePort;
     private String rulesCachePort;
+    private String poopMSN;
     
     public ServicesController(@Value("${http.url.bm}") String bmURL,
                               @Value("${microservices.cache.devices.port}") String devicesCachePort,
                               @Value("${microservices.cache.rules.port}") String rulesCachePort,
+                              @Value("${services.poop.msn}") String poopMSN,
                               @Qualifier("bmsp.adaptorManager") AdaptorManager adaptorManager) {
         this.bmURL = bmURL;
         this.devicesCachePort = devicesCachePort;
-        this.adaptorManager = adaptorManager;
         this.rulesCachePort = rulesCachePort;
+        this.poopMSN = poopMSN;
+        this.adaptorManager = adaptorManager;
     }
     
     @PatchMapping("/poop")
@@ -76,6 +79,7 @@ public class ServicesController {
         // set the property value in registry
         try {
             property.setValue(request.getPropValue());
+            messages.add(new POOPSuccessResponse(request.getMRN()));
         } catch (Exception e) {
             throw new RequestProcessingException("Unable to set value of + " + property.getID() + " to "
                     + request.getPropValue(), e);
@@ -95,6 +99,8 @@ public class ServicesController {
                         try {
                             String actionValue = rule.getPropertyActionValue(action.getCID(), action.getIndex());
                             action.setValue(actionValue);
+                            messages.add(new POOPRequest(generateRandomMRN(), poopMSN, action.getCID(),
+                                    action.getIndex(), action.getValue()));
                             LOG.info(action.getID() + " set value to " + actionValue + " (Rule "
                                     + rule.getRuleID() + ")");
                         } catch (Exception e) {
@@ -109,7 +115,7 @@ public class ServicesController {
         } catch (IOException e) {
             throw new RequestProcessingException("Unable to process rules", e);
         }
-        return new POOPSuccessResponse();
+        return messages;
     }
     
     private List<Rule> getRulesTriggerable(DeviceProperty property) throws IOException {
@@ -125,7 +131,7 @@ public class ServicesController {
         return Arrays.asList(rules);
     }
     
-    private DeviceProperty getDeviceProperty(String CID, String index) throws NullPointerException, IOException {
+    private DeviceProperty getDeviceProperty(String CID, int index) throws NullPointerException, IOException {
         HttpClient httpClient = HttpClientBuilder.create().build();
         HttpGet get = new HttpGet(bmURL + ":" + devicesCachePort + "/devices/" + CID + "/properties/" + index);
         HttpResponse response = httpClient.execute(get);
@@ -154,5 +160,9 @@ public class ServicesController {
     private DeviceProperty injectAdaptorsInDeviceProperty(DeviceProperty property) {
         property.setAdaptorManager(adaptorManager);
         return property;
+    }
+    
+    private String generateRandomMRN() {
+        return RandomStringUtils.random(8, false, true);
     }
 }

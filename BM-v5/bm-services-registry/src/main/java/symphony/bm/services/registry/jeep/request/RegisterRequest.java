@@ -6,14 +6,14 @@ import lombok.Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import symphony.bm.cache.devices.entities.deviceproperty.DevicePropertyType;
-import symphony.bm.generics.jeep.JeepMessage;
+import symphony.bm.generics.jeep.request.JeepRequest;
 
 import java.util.List;
 import java.util.Map;
 
 @EqualsAndHashCode(callSuper = true)
 @Value
-public class RegisterRequest extends JeepMessage {
+public class RegisterRequest extends JeepRequest {
     static String[] propertyFields = {"name", "mode", "type"};
     static String[] roomFields = {"name", "RID"};
     static Logger LOG = LoggerFactory.getLogger(RegisterRequest.class);

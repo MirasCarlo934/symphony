@@ -9,6 +9,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -21,6 +22,7 @@ import symphony.bm.comms.rest.ServiceLocator;
 import java.io.IOException;
 import java.util.List;
 import java.util.Queue;
+import java.util.Vector;
 import java.util.concurrent.LinkedBlockingQueue;
 
 @Component
@@ -190,23 +192,34 @@ public class MQTTManager implements MqttCallback, Runnable {
     
         try {
             HttpResponse response = httpClient.execute(httpMessage);
+            List<JSONObject> rspJsons = new Vector<>();
             String rspStr = EntityUtils.toString(response.getEntity());
             LOG.info("Response from service: " + rspStr);
-            JSONObject jsonRsp = new JSONObject(rspStr);
-            jsonRsp.put("MRN", jsonReq.get("MRN"));
-            String cid;
             try {
-                cid = jsonRsp.getString("CID");
-            } catch (JSONException e) {
-                cid = jsonReq.getString("CID");
-            }
-            try {
-                if (jsonReq.getString("MSN").equals(registerMSN)) {
-                    publishToRegisterTopic(jsonRsp.toString());
+                JSONArray rspJsonArray = new JSONArray(rspStr);
+                for (int i = 0; i < rspJsonArray.length(); i++) {
+                    rspJsons.add(rspJsonArray.getJSONObject(i));
                 }
-                publishToDevice(cid, jsonRsp.toString());
-            } catch (MqttException e) {
-                LOG.error("Unable to publish to device " + cid, e);
+            } catch (JSONException e) {
+                rspJsons.add(new JSONObject(rspStr));
+            }
+    
+            for (JSONObject jsonRsp : rspJsons) {
+                String cid;
+                try { // message is a JEEP request
+                    cid = jsonRsp.getString("CID");
+                } catch (JSONException e) { // message is a JEEP response
+                    cid = jsonReq.getString("CID");
+                    jsonRsp.put("MRN", jsonReq.get("MRN"));
+                }
+                try {
+                    if (jsonReq.getString("MSN").equals(registerMSN)) {
+                        publishToRegisterTopic(jsonRsp.toString());
+                    }
+                    publishToDevice(cid, jsonRsp.toString());
+                } catch (MqttException e) {
+                    LOG.error("Unable to publish to device " + cid, e);
+                }
             }
         } catch (IOException e) {
             LOG.error("IOException in message forwarding", e);
@@ -230,7 +243,7 @@ public class MQTTManager implements MqttCallback, Runnable {
     
     private void publish(String topic, byte[] payload, int qos, boolean retained) throws MqttException {
         LOG.info("Publishing to " + topic + " topic");
-        LOG.info("Message: " + payload);
+        LOG.info("Message: " + payload.toString());
         mqttClient.publish(topic, payload, qos, false);
         mqttClient.publish(univTopic, payload, qos, false);
     }

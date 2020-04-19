@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.web.bind.annotation.*;
-import symphony.bm.cache.devices.adaptors.Adaptor;
 import symphony.bm.cache.devices.adaptors.AdaptorManager;
 import symphony.bm.cache.devices.entities.Device;
 import symphony.bm.cache.devices.entities.Room;
@@ -24,7 +23,7 @@ import symphony.bm.cache.devices.entities.deviceproperty.DevicePropertyType;
 import symphony.bm.generics.exceptions.RequestProcessingException;
 import symphony.bm.generics.jeep.response.JeepResponse;
 import symphony.bm.generics.jeep.response.JeepSuccessResponse;
-import symphony.bm.generics.jeep.response.RegisterResponse;
+import symphony.bm.generics.jeep.response.RegisterSuccessResponse;
 import symphony.bm.services.registry.jeep.request.RegisterRequest;
 import symphony.bm.services.registry.models.Product;
 
@@ -142,7 +141,7 @@ public class ServicesController {
                 throw new RequestProcessingException("Unable to register device", e);
             }
             LOG.info(format.format("Device registered successfully"));
-            return new RegisterResponse(CID);
+            return new RegisterSuccessResponse(request.getMRN(), CID);
         } else { // update device
             LOG.warn(format.format("Device " + CID + " already exists. Updating..."));
             if (newRoom) { // create new room
@@ -167,7 +166,7 @@ public class ServicesController {
                     currentRoom.transferDevice(device.getCID(), roomObj);
                 }
                 LOG.info(format.format("Device " + CID + " updated"));
-                return new JeepSuccessResponse("Device updated");
+                return new JeepSuccessResponse(request.getMRN(), "Device updated");
             } catch (Exception e) {
                 throw new RequestProcessingException("Unable to update device", e);
             }
@@ -185,7 +184,7 @@ public class ServicesController {
         } catch (Exception e) {
             throw new RequestProcessingException("Unable to get device", e);
         }
-        return new JeepSuccessResponse("Device unregistered");
+        return new JeepSuccessResponse(null, "Device unregistered");
     }
     
 //    @DeleteMapping("/registry")
