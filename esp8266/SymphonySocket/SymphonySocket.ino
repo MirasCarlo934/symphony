@@ -166,6 +166,19 @@ int wsHandler(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json)
 int mqttHandler(JsonObject& json) {
 	Serial.println("SymphonySocket mqtt callback executed start");
 	json.prettyPrintTo(Serial);Serial.println();
+//	{
+//	  "prop-index": 0,
+//	  "MRN": "35027136",
+//	  "MSN": "poop",
+//	  "prop-value": "0",
+//	  "CID": "wemos1_502914e722c"
+//	}
+	attribStruct a = product.getKeyVal(json["prop-index"].as<int>());
+	product.setValue(a.ssid, json["prop-value"].as<int>(), false);
+	int ssid = a.ssid.toInt();
+	if (ssid==1) {
+		socketState = json["prop-value"].as<int>();
+	}
 	Serial.println("SymphonySocket mqtt callback executed end");
 }
 void setup()
