@@ -79,15 +79,15 @@ void setup()
 	pinMode(LED_PIN1, OUTPUT);
 	digitalWrite(LED_PIN1, 1);
 	Gui gui1 = Gui("Mode", BUTTON_CTL, "Latch", 0, 1, 0);
-	product.addCallableProperty("0025", LED_PIN1, gui1);
+	product.addCallableProperty("25", LED_PIN1, gui1);
 	Gui gui2 = Gui("Mode", BUTTON_SNSR, "Sensor", 0, 1, 0);
-	product.addProperty("0026", INPUT_PIN, gui2);
+	product.addProperty("26", INPUT_PIN, gui2);
 	Gui gui3 = Gui("Mode", BUTTON_SNSR, "Controller", 0, 1, 1);
-	product.addVirtualProperty("0027", gui3);	//add a logical property that has no attached pin
+	product.addVirtualProperty("27", gui3);	//add a logical property that has no attached pin
 	Gui gui4 = Gui("State", BUTTON_CTL, "State", 0, 1, 0);
-	product.addVirtualProperty("0060", gui4);	//add a logical property that has no attached pin
+	product.addVirtualProperty("60", gui4);	//add a logical property that has no attached pin
 	Gui gui5 = Gui("State", SLIDER_CTL, "Test", 0, 100, 50);
-	product.addVirtualProperty("0070", gui5);	//add a logical property that has no attached pin
+	product.addVirtualProperty("70", gui5);	//add a logical property that has no attached pin
 	Gui gui6 = Gui("State", SLIDER_SNSR, "SnSR", 0, 100, 70);
 	product.addVirtualProperty("0080", gui6);	//add a logical property that has no attached pin
 	s.setProduct(product);
@@ -109,7 +109,7 @@ void loop()
 			if (isLatchSwitch) {
 				if (inputState) {
 					oldInputState = !oldInputState;
-					product.setValue("0026", oldInputState, true);//sending this to hub
+					product.setValue("26", oldInputState, true);//sending this to hub
 					digitalWrite(LED_PIN1, !oldInputState);
 //					if (isController) {
 //						sendSensorData(oldInputState?1:0);
@@ -120,7 +120,7 @@ void loop()
 			} else {
 				char state[2];
 				sprintf(state, "%d", inputState);
-				product.setValue("0026", inputState, true);//sending this to hub
+				product.setValue("26", inputState, true);//sending this to hub
 				digitalWrite(LED_PIN1, !inputState);
 //				if (isController) {
 //					sendSensorData(inputState);
