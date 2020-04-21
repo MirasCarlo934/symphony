@@ -6,7 +6,7 @@ import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"symphony.bm.cache.rules", "symphony.bm.generics"})
 @PropertySources({
         @PropertySource("file:${bm.resources.home}/bm.properties")
 })

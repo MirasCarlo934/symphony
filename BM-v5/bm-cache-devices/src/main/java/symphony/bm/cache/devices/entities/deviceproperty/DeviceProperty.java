@@ -17,13 +17,15 @@ public class DeviceProperty extends Entity {
     @NonNull @Getter private String name;
     @NonNull @Getter private DevicePropertyType type;
     @NonNull @Getter private DevicePropertyMode mode;
-    @Getter private String value;
+    @NonNull @Getter private String value;
     
     @Transient @JsonIgnore @Setter(onMethod_ = {@JsonIgnore}) @Getter(onMethod_ = {@JsonIgnore}) private Device device;
     
-    public DeviceProperty(@JsonProperty("index") int index, @JsonProperty("CID") String CID,
-                          @JsonProperty("name") String name, @JsonProperty("type") DevicePropertyType type,
-                          @JsonProperty("mode") DevicePropertyMode mode, @JsonProperty("value") String value) {
+    public DeviceProperty(@NonNull @JsonProperty("index") int index, @NonNull @JsonProperty("CID") String CID,
+                          @NonNull@JsonProperty("name") String name,
+                          @NonNull @JsonProperty("type") DevicePropertyType type,
+                          @NonNull @JsonProperty("mode") DevicePropertyMode mode,
+                          @NonNull @JsonProperty("value") String value) {
         this.index = index;
         this.CID = CID;
         this.name = name;

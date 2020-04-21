@@ -4,22 +4,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import symphony.bm.cache.devices.rest.messages.MicroserviceMessage;
-import symphony.bm.cache.devices.rest.messages.MicroserviceSuccessfulMessage;
+import symphony.bm.generics.messages.MicroserviceMessage;
+import symphony.bm.generics.messages.MicroserviceSuccessfulMessage;
 import symphony.bm.cache.rules.RulesManager;
 import symphony.bm.cache.rules.vo.Rule;
-import symphony.bm.generics.jeep.JeepMessage;
-import symphony.bm.generics.jeep.response.JeepSuccessResponse;
 
 import java.util.List;
 
 @RestController
-public class RestAPI {
-    private final static Logger LOG = LoggerFactory.getLogger(RestAPI.class);
+public class RulesController {
+    private final static Logger LOG = LoggerFactory.getLogger(RulesController.class);
     
     private final RulesManager rulesManager;
     
-    public RestAPI(@Autowired RulesManager rulesManager) {
+    public RulesController(@Autowired RulesManager rulesManager) {
         this.rulesManager = rulesManager;
     }
     
@@ -53,7 +51,7 @@ public class RestAPI {
             rulesManager.printRulesListSize();
             LOG.info("Rule " + rule_id + " added");
         }
-        return new MicroserviceSuccessfulMessage();
+        return new MicroserviceSuccessfulMessage("Rule added");
     }
     
     @DeleteMapping("/rules/{rule_id}")
@@ -65,6 +63,6 @@ public class RestAPI {
         } else {
             LOG.info("Rule " + rule_id + " does not exist");
         }
-        return new MicroserviceSuccessfulMessage();
+        return new MicroserviceSuccessfulMessage("Rule deleted");
     }
 }

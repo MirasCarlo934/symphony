@@ -8,7 +8,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"symphony.bm.cache.devices", "symphony.bm.generics"})
 @PropertySources({
         @PropertySource("file:${bm.resources.home}/bm.properties")
 })
