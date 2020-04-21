@@ -12,6 +12,7 @@
         <module name="bm-generics" />
         <module name="bm-services-poop" />
         <module name="bm-comms" />
+        <module name="bm-cache-rules" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

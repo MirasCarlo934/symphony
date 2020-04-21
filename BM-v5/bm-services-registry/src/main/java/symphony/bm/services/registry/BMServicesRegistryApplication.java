@@ -10,7 +10,7 @@ import org.springframework.context.annotation.PropertySources;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"symphony.bm.services.registry", "symphony.bm.generics"})
 @PropertySources({
         @PropertySource("file:${bm.resources.home}/bm.properties")
 })

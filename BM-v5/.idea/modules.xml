@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/bm-cache-devices/bm-cache-devices.iml" filepath="$PROJECT_DIR$/bm-cache-devices/bm-cache-devices.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bm-cache-rules/bm-cache-rules.iml" filepath="$PROJECT_DIR$/bm-cache-rules/bm-cache-rules.iml" />
       <module fileurl="file://$PROJECT_DIR$/bm-comms/bm-comms.iml" filepath="$PROJECT_DIR$/bm-comms/bm-comms.iml" />
       <module fileurl="file://$PROJECT_DIR$/bm-generics/bm-generics.iml" filepath="$PROJECT_DIR$/bm-generics/bm-generics.iml" />
       <module fileurl="file://$PROJECT_DIR$/bm-services-poop/bm-services-poop.iml" filepath="$PROJECT_DIR$/bm-services-poop/bm-services-poop.iml" />
