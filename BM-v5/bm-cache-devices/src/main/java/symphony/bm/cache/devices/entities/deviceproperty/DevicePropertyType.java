@@ -2,7 +2,6 @@ package symphony.bm.cache.devices.entities.deviceproperty;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -13,7 +12,8 @@ import java.util.Map;
 public class DevicePropertyType {
     private static String[] binaryMapParams = {"data", "ui"};
     private static String[] enumMapParams = {"data", "ui", "values"};
-    private static String[] numberMapParams = {"data", "ui", "minValue", "maxValue"};
+    private static String[] boundedNumberMapParams = {"data", "ui", "minValue", "maxValue"};
+    private static String[] numberMapParams = {"data", "ui"};
     private static String[] stringMapParams = {"data"};
     
     @Getter DataType data;
@@ -41,41 +41,71 @@ public class DevicePropertyType {
     public static DevicePropertyType parseDevicePropertyType(Map<String, Object> map) throws IllegalArgumentException,
             NullPointerException, ClassCastException {
         String data = (String) map.get("data");
+        DataType dataType;
         DevicePropertyInterface ui;
         switch (data) {
             case "binary":
+                dataType = DataType.binary;
                 for (String param : binaryMapParams) {
                     if (!map.containsKey(param)) {
                         throw new NullPointerException("'" + param + "' must exist when declaring a " + data + " property type!");
                     }
                 }
                 ui = DevicePropertyInterface.valueOf((String) map.get("ui"));
-                return new DevicePropertyType(DataType.binary, ui, 0, 1, null);
+                if (!dataType.getValidUI().contains(ui)) {
+                    throw new IllegalArgumentException(ui + " not a valid UI for " + dataType);
+                }
+                return new DevicePropertyType(dataType, ui, 0, 1, null);
             case "enumeration":
+                dataType = DataType.enumeration;
                 for (String param : enumMapParams) {
                     if (!map.containsKey(param)) {
                         throw new NullPointerException("'" + param + "' must exist when declaring a " + data + " property type!");
                     }
                 }
                 ui = DevicePropertyInterface.valueOf((String) map.get("ui"));
-                return new DevicePropertyType(DataType.enumeration, ui, null, null,
+                if (!dataType.getValidUI().contains(ui)) {
+                    throw new IllegalArgumentException(ui + " not a valid UI for " + dataType);
+                }
+                return new DevicePropertyType(dataType, ui, null, null,
                         (List<String>) map.get("values"));
+            case "boundednumber":
+                dataType = DataType.boundednumber;
+                for (String param : boundedNumberMapParams) {
+                    if (!map.containsKey(param)) {
+                        throw new NullPointerException("'" + param + "' must exist when declaring a " + data + " property type!");
+                    }
+                }
+                ui = DevicePropertyInterface.valueOf((String) map.get("ui"));
+                if (!dataType.getValidUI().contains(ui)) {
+                    throw new IllegalArgumentException(ui + " not a valid UI for " + dataType);
+                }
+                return new DevicePropertyType(dataType, ui, (Number) map.get("minValue"),
+                        (Number) map.get("maxValue"), null);
             case "number":
+                dataType = DataType.number;
                 for (String param : numberMapParams) {
                     if (!map.containsKey(param)) {
                         throw new NullPointerException("'" + param + "' must exist when declaring a " + data + " property type!");
                     }
                 }
                 ui = DevicePropertyInterface.valueOf((String) map.get("ui"));
-                return new DevicePropertyType(DataType.number, ui, (Number) map.get("minValue"),
-                        (Number) map.get("maxValue"), null);
+                if (!dataType.getValidUI().contains(ui)) {
+                    throw new IllegalArgumentException(ui + " not a valid UI for " + dataType);
+                }
+                return new DevicePropertyType(dataType, ui, null, null, null);
             case "string":
+                dataType = DataType.string;
                 for (String param : stringMapParams) {
                     if (!map.containsKey(param)) {
                         throw new NullPointerException("'" + param + "' must exist when declaring a " + data + " property type!");
                     }
                 }
-                return new DevicePropertyType(DataType.string, DevicePropertyInterface.field, null, null, null);
+                ui = DevicePropertyInterface.valueOf((String) map.get("ui"));
+                if (!dataType.getValidUI().contains(ui)) {
+                    throw new IllegalArgumentException(ui + " not a valid UI for " + dataType);
+                }
+                return new DevicePropertyType(dataType, DevicePropertyInterface.field, null, null, null);
             default:
                 throw new IllegalArgumentException("Invalid property data type");
         }
