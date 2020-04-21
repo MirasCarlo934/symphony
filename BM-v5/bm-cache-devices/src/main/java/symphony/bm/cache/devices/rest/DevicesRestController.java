@@ -1,13 +1,16 @@
 package symphony.bm.cache.devices.rest;
 
+import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
-import symphony.bm.cache.devices.entities.SuperRoom;
 import symphony.bm.cache.devices.entities.Device;
-import symphony.bm.cache.devices.entities.deviceproperty.DeviceProperty;
 import symphony.bm.cache.devices.entities.Room;
+import symphony.bm.cache.devices.entities.SuperRoom;
+import symphony.bm.cache.devices.entities.deviceproperty.DeviceProperty;
+import symphony.bm.cache.devices.entities.deviceproperty.DevicePropertyValueSnapshot;
+import symphony.bm.cache.devices.entities.deviceproperty.DevicePropertyValueSnapshotRepository;
 import symphony.bm.cache.devices.rest.messages.MicroserviceMessage;
 import symphony.bm.cache.devices.rest.messages.MicroserviceSuccessfulMessage;
 
@@ -16,30 +19,23 @@ import java.util.List;
 import java.util.Vector;
 
 @RestController
-public class RestAPI {
-    private static String msgToAneya = "Luv u bb <3";
-    private static final Logger LOG = LoggerFactory.getLogger(RestAPI.class);
-    private SuperRoom superRoom;
+@RequestMapping("/devices")
+@AllArgsConstructor
+public class DevicesRestController {
+    private static final Logger LOG = LoggerFactory.getLogger(DevicesRestController.class);
 
-    public RestAPI(SuperRoom superRoom) {
-        this.superRoom = superRoom;
-    }
-    
-    @GetMapping("/")
-    public SuperRoom getAll() {
-        LOG.info("Returning all entities in the Symphony Network...");
-        return superRoom;
-    }
-    
-    @GetMapping("/devices/newcid")
+    private final SuperRoom superRoom;
+    private final DevicePropertyValueSnapshotRepository valueSnapshotRepository;
+
+    @GetMapping("/newcid")
     public String getNewDeviceCID() {
         LOG.info("Generating new device CID...");
         String cid = generateNewCID();
         LOG.info("New CID " + cid + " generated");
         return cid;
     }
-    
-    @GetMapping("/devices/{cid}")
+
+    @GetMapping("/{cid}")
     public Device getDevice(@PathVariable String cid) {
         LOG.info("Getting device " + cid);
         Device d = superRoom.getDevice(cid);
@@ -48,8 +44,8 @@ public class RestAPI {
         }
         return d;
     }
-    
-    @GetMapping("/devices/{cid}/properties/{prop_index}")
+
+    @GetMapping("/{cid}/properties/{prop_index}")
     public DeviceProperty getDeviceProperty(@PathVariable String cid, @PathVariable int prop_index) {
         LOG.info("Getting device property " + cid + "." + prop_index);
         Device d = getDevice(cid);
@@ -62,35 +58,18 @@ public class RestAPI {
         }
         return p;
     }
-    
-    @PostMapping("/query/propertylist")
-    public List<DeviceProperty> getDeviceProperties(@RequestBody HashMap<String, List<Integer>> requestBody) {
-        LOG.info("Getting device properties...");
-        List<DeviceProperty> response = new Vector<>();
-        int n = 0;
-        for (String cid : requestBody.keySet()) {
-            Device d = superRoom.getDevice(cid);
-            for (int prop_index : requestBody.get(cid)) {
-                response.add(d.getProperty(prop_index));
-                n++;
-                LOG.info(cid + "." + prop_index + " retrieved");
-            }
-        }
-        LOG.info(n + " properties retrieved");
-        return response;
+
+    @PostMapping("/{cid}")
+    public MicroserviceMessage addDevice(@PathVariable String cid, @RequestBody Device device) throws Exception {
+        String rid = device.getRID();
+        LOG.info("Adding device " + cid + " to room " + rid + "...");
+        Room room = superRoom.getRoom(rid);
+        room.addDeviceAndCreateInAdaptors(device);
+        LOG.info("Device " + cid + " added to room " + rid);
+        return new MicroserviceSuccessfulMessage();
     }
-    
-    @GetMapping("/rooms/{rid}")
-    public Room getRoom(@PathVariable String rid) {
-        LOG.info("Getting room " + rid);
-        Room r = superRoom.getRoom(rid);
-        if (r == null) {
-            LOG.warn("No room found!");
-        }
-        return r;
-    }
-    
-    @PatchMapping("/devices/{cid}")
+
+    @PatchMapping("/{cid}")
     public MicroserviceMessage updateDevice(@PathVariable String cid, @RequestBody Device device) throws Exception {
         LOG.info("Updating device " + cid + "...");
         Device existing = superRoom.getDevice(cid);
@@ -108,8 +87,8 @@ public class RestAPI {
         }
         return new MicroserviceSuccessfulMessage();
     }
-    
-    @PatchMapping("/devices/{cid}/properties/{prop_index}")
+
+    @PatchMapping("/{cid}/properties/{prop_index}")
     public MicroserviceMessage updateDeviceProperty(@PathVariable String cid, @PathVariable int prop_index,
                                                     @RequestBody DeviceProperty property) throws Exception {
         LOG.info("Updating " + cid + "." + prop_index + "...");
@@ -130,38 +109,15 @@ public class RestAPI {
             LOG.info("Updating value of " + existing.getID() + " from " + existing.getValue() + " to "
                     + property.getValue());
             existing.setValue(property.getValue());
+            LOG.info("Inserting value snapshot of " + existing.getID() + " in DB...");
+            DevicePropertyValueSnapshot valueSnapshot = new DevicePropertyValueSnapshot(property);
+            valueSnapshotRepository.save(valueSnapshot);
+            LOG.info(existing.getID() + " value snapshot inserted in DB");
         }
         return new MicroserviceSuccessfulMessage();
     }
 
-    @PostMapping("/rooms/{rid}/devices/{cid}")
-    public MicroserviceMessage addDevice(@PathVariable String rid, @PathVariable String cid,
-                                         @RequestBody Device device) throws Exception {
-        LOG.info("Adding device " + cid + " to room " + rid + "...");
-        Room room = superRoom.getRoom(rid);
-        room.addDeviceAndCreateInAdaptors(device);
-        LOG.info("Device " + cid + " added to room " + rid);
-        return new MicroserviceSuccessfulMessage();
-    }
-
-    @PostMapping("/rooms/{rid}")
-    public MicroserviceMessage addRoomToSuperRoom(@PathVariable String rid, @RequestBody Room room) throws Exception {
-        LOG.info("Adding room " + rid + "...");
-        superRoom.addRoomAndCreateInAdaptors(room);
-        LOG.info("Room " + rid + " added");
-        return new MicroserviceSuccessfulMessage();
-    }
-
-    @PostMapping("/rooms/{parent_rid}/{new_rid}")
-    public MicroserviceMessage addRoom(@PathVariable String parent_rid, @PathVariable String new_rid,
-                                       @RequestBody Room room) throws Exception {
-        LOG.info("Adding room " + new_rid + " to parent room " + parent_rid + "...");
-        superRoom.getRoom(parent_rid).addRoomAndCreateInAdaptors(room);
-        LOG.info("Room " + new_rid + " added to parent room " + parent_rid);
-        return new MicroserviceSuccessfulMessage();
-    }
-
-    @DeleteMapping("/devices/{cid}")
+    @DeleteMapping("/{cid}")
     public MicroserviceMessage deleteDevice(@PathVariable String cid) throws Exception {
         LOG.info("Deleting device " + cid + "...");
         Device d = superRoom.getDevice(cid);
@@ -173,31 +129,7 @@ public class RestAPI {
         superRoom.printAllEntities();
         return new MicroserviceSuccessfulMessage();
     }
-    
-    @DeleteMapping("/rooms/{rid}")
-    public MicroserviceMessage deleteRoom(@PathVariable String rid) throws Exception {
-        LOG.info("Deleting room " + rid + "...");
-        Room r = superRoom.getRoom(rid);
-        if (r == null) {
-            throw new NullPointerException("No room with RID " + rid + " exists");
-        }
-        r.getParentRoom().removeRoomAndDeleteInAdaptors(rid);
-        LOG.info("Room " + rid + " deleted");
-        superRoom.printAllEntities();
-        return new MicroserviceSuccessfulMessage();
-    }
-    
-    @RequestMapping("/aneya")
-    public String aneya() {
-        return msgToAneya;
-    }
-    
-    @RequestMapping("/aneya/set")
-    public String aneya(@RequestParam("msg") String msg) {
-        msgToAneya = msg;
-        return "Message set!";
-    }
-    
+
     private String generateNewCID() {
         String newCID;
         do {
