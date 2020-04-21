@@ -152,6 +152,7 @@ public class ServicesController {
         HttpGet get = new HttpGet(bmURL + ":" + devicesCachePort + "/devices/" + CID + "/properties/" + index);
         HttpResponse response = httpClient.execute(get);
         String json = EntityUtils.toString(response.getEntity());
+        LOG.debug(json);
         if (json.isEmpty()) {
             throw new NullPointerException("Empty response from devices cache");
         }

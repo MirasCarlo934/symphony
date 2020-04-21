@@ -17,7 +17,7 @@ public class DeviceProperty extends Entity {
     @NonNull @Getter private String name;
     @NonNull @Getter private DevicePropertyType type;
     @NonNull @Getter private DevicePropertyMode mode;
-    @Getter private String value = "";
+    @Getter private String value;
     
     @Transient @JsonIgnore @Setter(onMethod_ = {@JsonIgnore}) @Getter(onMethod_ = {@JsonIgnore}) private Device device;
     
@@ -29,7 +29,12 @@ public class DeviceProperty extends Entity {
         this.name = name;
         this.mode = mode;
         this.type = type;
-        this.value = value;
+        
+        if (value == null) {
+            this.value = "";
+        } else {
+            this.value = value;
+        }
     }
     
     @JsonIgnore
