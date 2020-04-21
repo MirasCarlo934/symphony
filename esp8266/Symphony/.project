@@ -44,7 +44,7 @@
 		<link>
 			<name>libraries/ArduinoJson</name>
 			<type>2</type>
-			<location>C:/Users/User/Documents/Arduino/libraries/ArduinoJson</location>
+			<location>C:/Users/miras.DESKTOP-JHPGKS4/OneDrive/Documents/Arduino/libraries/ArduinoJson</location>
 		</link>
 		<link>
 			<name>libraries/DNSServer</name>
@@ -77,24 +77,29 @@
 			<locationURI>ECLIPSE_HOME/arduinoPlugin/packages/esp8266/hardware/esp8266/2.4.2/libraries/ESP8266mDNS</locationURI>
 		</link>
 		<link>
+			<name>libraries/ESPAsyncDNSServer-master</name>
+			<type>2</type>
+			<location>C:/Users/miras.DESKTOP-JHPGKS4/OneDrive/Documents/Arduino/libraries/ESPAsyncDNSServer-master</location>
+		</link>
+		<link>
 			<name>libraries/ESPAsyncTCP-master</name>
 			<type>2</type>
-			<location>C:/Users/User/Documents/Arduino/libraries/ESPAsyncTCP-master</location>
+			<location>C:/Users/miras.DESKTOP-JHPGKS4/OneDrive/Documents/Arduino/libraries/ESPAsyncTCP-master</location>
 		</link>
 		<link>
 			<name>libraries/ESPAsyncUDP-master</name>
 			<type>2</type>
-			<location>C:/Users/User/Documents/Arduino/libraries/ESPAsyncUDP-master</location>
+			<location>C:/Users/miras.DESKTOP-JHPGKS4/OneDrive/Documents/Arduino/libraries/ESPAsyncUDP-master</location>
 		</link>
 		<link>
 			<name>libraries/ESPAsyncWebServer-master</name>
 			<type>2</type>
-			<location>C:/Users/User/Documents/Arduino/libraries/ESPAsyncWebServer-master</location>
+			<location>C:/Users/miras.DESKTOP-JHPGKS4/OneDrive/Documents/Arduino/libraries/ESPAsyncWebServer-master</location>
 		</link>
 		<link>
 			<name>libraries/ESPAsyncWiFiManager-master</name>
 			<type>2</type>
-			<location>C:/Users/User/Documents/Arduino/libraries/ESPAsyncWiFiManager-master</location>
+			<location>C:/Users/miras.DESKTOP-JHPGKS4/OneDrive/Documents/Arduino/libraries/ESPAsyncWiFiManager-master</location>
 		</link>
 		<link>
 			<name>libraries/Ethernet</name>
@@ -109,7 +114,7 @@
 		<link>
 			<name>libraries/PubSubClient</name>
 			<type>2</type>
-			<locationURI>ECLIPSE_HOME/arduinoPlugin/libraries/PubSubClient/2.6.0</locationURI>
+			<location>C:/Users/miras.DESKTOP-JHPGKS4/OneDrive/Documents/Arduino/libraries/PubSubClient</location>
 		</link>
 		<link>
 			<name>libraries/SD</name>
@@ -124,12 +129,17 @@
 		<link>
 			<name>libraries/arduinoWebSockets-master</name>
 			<type>2</type>
-			<location>C:/Users/User/Documents/Arduino/libraries/arduinoWebSockets-master</location>
+			<location>C:/Users/miras.DESKTOP-JHPGKS4/OneDrive/Documents/Arduino/libraries/arduinoWebSockets-master</location>
+		</link>
+		<link>
+			<name>libraries/async-mqtt-client-master</name>
+			<type>2</type>
+			<location>C:/Users/miras.DESKTOP-JHPGKS4/OneDrive/Documents/Arduino/libraries/async-mqtt-client-master</location>
 		</link>
 		<link>
 			<name>libraries/firebase-arduino-master</name>
 			<type>2</type>
-			<location>C:/Users/User/Documents/Arduino/libraries/firebase-arduino-master</location>
+			<location>C:/Users/miras.DESKTOP-JHPGKS4/OneDrive/Documents/Arduino/libraries/firebase-arduino-master</location>
 		</link>
 	</linkedResources>
 </projectDescription>

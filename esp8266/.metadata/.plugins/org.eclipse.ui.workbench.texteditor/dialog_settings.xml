@@ -2,27 +2,27 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="Get device Info" key="selection"/>
+		<item value="console" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="true" key="wholeword"/>
 		<list key="findhistory">
+			<item value="console"/>
+			<item value="== "/>
+			<item value="== &quot;"/>
+			<item value="JsonArray"/>
+			<item value="setValue"/>
+			<item value="productValueChangeEvent"/>
+			<item value="form"/>
+			<item value="fieldset"/>
+			<item value="parse"/>
+			<item value="int"/>
+			<item value="?"/>
+			<item value="type"/>
+			<item value="hover"/>
 			<item value="get device info"/>
 			<item value="stringify"/>
-			<item value="INIT"/>
-			<item value="connected"/>
-			<item value="ready"/>
-			<item value="menu"/>
-			<item value="submenu"/>
-			<item value="generichandler"/>
-			<item value="getprogress"/>
-			<item value="bin"/>
-			<item value="ready for commands"/>
-			<item value="webServer"/>
-			<item value="core"/>
-			<item value="sendWSRequestToServer"/>
-			<item value="setRootProperties"/>
 		</list>
 		<list key="replacehistory">
 			<item value=""/>
@@ -33,7 +33,7 @@
 		<item value="469" key="DIALOG_WIDTH"/>
 		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
 		<item value="426" key="DIALOG_HEIGHT"/>
-		<item value="924" key="DIALOG_X_ORIGIN"/>
-		<item value="252" key="DIALOG_Y_ORIGIN"/>
+		<item value="1114" key="DIALOG_X_ORIGIN"/>
+		<item value="175" key="DIALOG_Y_ORIGIN"/>
 	</section>
 </section>

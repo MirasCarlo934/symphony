@@ -31,10 +31,10 @@
 					<entry kind="macro" name="ARDUINO_ARCH_ESP8266" value="1">
 						<flag value="BUILTIN|READONLY"/>
 					</entry>
-					<entry kind="macro" name="ARDUINO_BOARD" value="&quot;ESP8266_GENERIC&quot;">
+					<entry kind="macro" name="ARDUINO_BOARD" value="&quot;ESP8266_WEMOS_D1R1&quot;">
 						<flag value="BUILTIN|READONLY"/>
 					</entry>
-					<entry kind="macro" name="ARDUINO_ESP8266_GENERIC" value="1">
+					<entry kind="macro" name="ARDUINO_ESP8266_WEMOS_D1R1" value="1">
 						<flag value="BUILTIN|READONLY"/>
 					</entry>
 					<entry kind="macro" name="DEBUG_ESP_PORT" value="Serial">
@@ -47,9 +47,6 @@
 						<flag value="BUILTIN|READONLY"/>
 					</entry>
 					<entry kind="macro" name="ICACHE_FLASH" value="1">
-						<flag value="BUILTIN|READONLY"/>
-					</entry>
-					<entry kind="macro" name="LED_BUILTIN" value="2">
 						<flag value="BUILTIN|READONLY"/>
 					</entry>
 					<entry kind="macro" name="LWIP_OPEN_SRC" value="1">
@@ -738,10 +735,10 @@
 					<entry kind="macro" name="ARDUINO_ARCH_ESP8266" value="1">
 						<flag value="BUILTIN|READONLY"/>
 					</entry>
-					<entry kind="macro" name="ARDUINO_BOARD" value="&quot;ESP8266_GENERIC&quot;">
+					<entry kind="macro" name="ARDUINO_BOARD" value="&quot;ESP8266_WEMOS_D1R1&quot;">
 						<flag value="BUILTIN|READONLY"/>
 					</entry>
-					<entry kind="macro" name="ARDUINO_ESP8266_GENERIC" value="1">
+					<entry kind="macro" name="ARDUINO_ESP8266_WEMOS_D1R1" value="1">
 						<flag value="BUILTIN|READONLY"/>
 					</entry>
 					<entry kind="macro" name="DEBUG_ESP_PORT" value="Serial">
@@ -754,9 +751,6 @@
 						<flag value="BUILTIN|READONLY"/>
 					</entry>
 					<entry kind="macro" name="ICACHE_FLASH" value="1">
-						<flag value="BUILTIN|READONLY"/>
-					</entry>
-					<entry kind="macro" name="LED_BUILTIN" value="2">
 						<flag value="BUILTIN|READONLY"/>
 					</entry>
 					<entry kind="macro" name="LWIP_OPEN_SRC" value="1">

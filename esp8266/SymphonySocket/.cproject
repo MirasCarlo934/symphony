@@ -36,6 +36,9 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonySocket/libraries/firebase-arduino-master/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonySocket/libraries/ESP8266WebServer/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonySocket/libraries/ESP8266HTTPClient/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonySocket/libraries/ESPAsyncE131-master}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonySocket/libraries/async-mqtt-client-master/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonySocket/libraries/ESPAsyncDNSServer-master/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.636691241" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>
@@ -58,6 +61,9 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonySocket/libraries/firebase-arduino-master/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonySocket/libraries/ESP8266WebServer/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonySocket/libraries/ESP8266HTTPClient/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonySocket/libraries/ESPAsyncE131-master}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonySocket/libraries/async-mqtt-client-master/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonySocket/libraries/ESPAsyncDNSServer-master/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.1187516129" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
 							</tool>
@@ -80,6 +86,9 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonySocket/libraries/firebase-arduino-master/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonySocket/libraries/ESP8266WebServer/src}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonySocket/libraries/ESP8266HTTPClient/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonySocket/libraries/ESPAsyncE131-master}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonySocket/libraries/async-mqtt-client-master/src}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/SymphonySocket/libraries/ESPAsyncDNSServer-master/src}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.S.sketch.input.1823749278" name="Assembly source files" superClass="io.sloeber.compiler.S.sketch.input"/>
 							</tool>
@@ -90,7 +99,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="libraries/firebase-arduino-master/docs|libraries/firebase-arduino-master/contrib|libraries/ArduinoJson/scripts|libraries/ArduinoJson/fuzzing|libraries/ESPAsyncUDP-master/travis|libraries/ESPAsyncWebServer-master/travis|libraries/ESPAsyncTCP-master/travis|libraries/ESPAsyncTCP-master/ssl|libraries/FastLED/platforms|libraries/FastLED/lib8tion|libraries/FastLED/docs|libraries/?*/**/?xamples/**|libraries/?*/**/?xtras/**|libraries/?*/**/test*/**|libraries/?*/**/third-party/**|libraries/**/._*|libraries/?*/utility/*/*" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
+						<entry excluding="libraries/async-mqtt-client-master/scripts|libraries/async-mqtt-client-master/docs|libraries/ESPAsyncE131-master/.vscode|libraries/firebase-arduino-master/docs|libraries/firebase-arduino-master/contrib|libraries/ArduinoJson/scripts|libraries/ArduinoJson/fuzzing|libraries/ESPAsyncUDP-master/travis|libraries/ESPAsyncWebServer-master/travis|libraries/ESPAsyncTCP-master/travis|libraries/ESPAsyncTCP-master/ssl|libraries/FastLED/platforms|libraries/FastLED/lib8tion|libraries/FastLED/docs|libraries/?*/**/?xamples/**|libraries/?*/**/?xtras/**|libraries/?*/**/test*/**|libraries/?*/**/third-party/**|libraries/**/._*|libraries/?*/utility/*/*" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

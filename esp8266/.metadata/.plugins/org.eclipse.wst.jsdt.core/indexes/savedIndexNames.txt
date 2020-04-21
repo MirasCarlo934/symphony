@@ -1,1 +1,2 @@
-INDEX VERSION 1.4+D:\git_symphony\esp8266\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+INDEX VERSION 1.4+D:\symphony\git\esp8266\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+2079956275.index
