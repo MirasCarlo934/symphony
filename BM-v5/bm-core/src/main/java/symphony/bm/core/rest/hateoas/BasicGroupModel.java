@@ -2,7 +2,7 @@ package symphony.bm.core.rest.hateoas;
 
 import org.springframework.hateoas.RepresentationModel;
 import symphony.bm.core.iot.Group;
-import symphony.bm.core.rest.RestApiController;
+import symphony.bm.core.rest.GroupController;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -17,10 +17,10 @@ public class BasicGroupModel extends RepresentationModel<BasicGroupModel> {
         this.parentGID = group.getParentGID();
         this.name = group.getName();
         if (!GID.equals("")) {
-            this.add(linkTo(methodOn(RestApiController.class).getGroup(GID)).withSelfRel());
-            this.add(linkTo(methodOn(RestApiController.class).getGroup(parentGID)).withRel("parent"));
+            this.add(linkTo(methodOn(GroupController.class).getGroup(GID)).withSelfRel());
+            this.add(linkTo(methodOn(GroupController.class).getGroup(parentGID)).withRel("parent"));
         } else {
-            this.add(linkTo(methodOn(RestApiController.class).getSuperGroup()).withSelfRel());
+            this.add(linkTo(methodOn(GroupController.class).getSuperGroup()).withSelfRel());
         }
     }
 }

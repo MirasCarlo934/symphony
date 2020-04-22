@@ -9,7 +9,8 @@ import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.RepresentationModel;
 import symphony.bm.core.iot.Thing;
 import symphony.bm.core.iot.attribute.Attribute;
-import symphony.bm.core.rest.RestApiController;
+import symphony.bm.core.rest.GroupController;
+import symphony.bm.core.rest.ThingController;
 
 import java.util.List;
 import java.util.Vector;
@@ -31,8 +32,8 @@ public class ThingModel extends RepresentationModel<ThingModel> {
             AttributeModel attributeModel = new AttributeModel(thing.getAttributes().get(i), UID, i);
             attributes.add(attributeModel);
         }
-        this.add(linkTo(methodOn(RestApiController.class).getThing(UID)).withSelfRel());
-        this.add(linkTo(methodOn(RestApiController.class).getGroup(thing.getParentGID()))
+        this.add(linkTo(methodOn(ThingController.class).getThing(UID)).withSelfRel());
+        this.add(linkTo(methodOn(GroupController.class).getGroup(thing.getParentGID()))
                 .withRel("parent"));
     }
 }
