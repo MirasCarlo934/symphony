@@ -24,6 +24,6 @@ public class AttributeModel extends RepresentationModel<AttributeModel> {
         this.value = attribute.getValue();
         this.add(linkTo(methodOn(ThingController.class).getAttribute(UID, index)).withSelfRel());
         this.add(linkTo(methodOn(ThingController.class).getThing(UID))
-                .withRel("parent"));
+                .withRel("parent")/*.andAffordance()*/);
     }
 }
