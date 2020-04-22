@@ -23,7 +23,6 @@ import symphony.bm.cache.devices.entities.deviceproperty.DevicePropertyType;
 import symphony.bm.cache.rules.vo.Rule;
 import symphony.bm.generics.exceptions.RequestProcessingException;
 import symphony.bm.generics.jeep.JeepMessage;
-import symphony.bm.generics.jeep.request.JeepRequest;
 import symphony.bm.services.poop.jeep.POOPRequest;
 import symphony.bm.services.poop.jeep.POOPSuccessResponse;
 
@@ -104,7 +103,7 @@ public class ServicesController {
             for (Rule rule : rulesTriggerable) {
                 LOG.info("Checking if rule " + rule.getRuleID() + " (" + rule.getRuleName() + ") is triggered...");
                 List<DeviceProperty> triggerProperties = getDeviceProperties(rule.getTriggerProperties());
-                if (rule.isTriggered(triggerProperties)) {
+                if (rule.evaluate(triggerProperties)) {
                     LOG.info("Rule "+ rule.getRuleID() + " (" + rule.getRuleName() + ") triggered!");
                     List<DeviceProperty> actionProperties = getDeviceProperties(rule.getActionProperties());
                     for (DeviceProperty action : actionProperties) {

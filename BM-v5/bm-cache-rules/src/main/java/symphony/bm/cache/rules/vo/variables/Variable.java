@@ -1,29 +1,24 @@
-package symphony.bm.cache.rules.vo.actions;
+package symphony.bm.cache.rules.vo.variables;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Setter;
 import lombok.Value;
-import lombok.experimental.NonFinal;
 import org.springframework.data.mongodb.core.mapping.Field;
-
-import java.util.HashMap;
 
 @Value
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE)
-public class Action {
+public class Variable {
     @Field("CID") @JsonProperty("CID") String CID;
+    String name;
     int index;
-    @Setter @NonFinal String value;
+    boolean trigger;
     
-    @JsonCreator
-    public Action(@JsonProperty("CID") String CID, @JsonProperty("index") int index,
-                  @JsonProperty("value") String value) {
+    public Variable(@JsonProperty("CID") String CID, @JsonProperty("name") String name,
+                    @JsonProperty("index") int index, @JsonProperty("trigger") boolean trigger) {
         this.CID = CID;
+        this.name = name;
         this.index = index;
-        this.value = value;
+        this.trigger = trigger;
     }
 }

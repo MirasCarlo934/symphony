@@ -4,20 +4,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import symphony.bm.cache.rules.vo.Rule;
 import symphony.bm.generics.messages.MicroserviceMessage;
 import symphony.bm.generics.messages.MicroserviceSuccessfulMessage;
 import symphony.bm.cache.rules.RulesManager;
-import symphony.bm.cache.rules.vo.Rule;
 
 import java.util.List;
 
 @RestController
-public class RulesController {
-    private final static Logger LOG = LoggerFactory.getLogger(RulesController.class);
+public class RulesRestController {
+    private final static Logger LOG = LoggerFactory.getLogger(RulesRestController.class);
     
     private final RulesManager rulesManager;
     
-    public RulesController(@Autowired RulesManager rulesManager) {
+    public RulesRestController(@Autowired RulesManager rulesManager) {
         this.rulesManager = rulesManager;
     }
     

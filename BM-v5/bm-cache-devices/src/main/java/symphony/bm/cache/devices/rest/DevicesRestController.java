@@ -1,9 +1,13 @@
 package symphony.bm.cache.devices.rest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import symphony.bm.cache.devices.entities.Device;
 import symphony.bm.cache.devices.entities.Room;
@@ -11,6 +15,10 @@ import symphony.bm.cache.devices.entities.SuperRoom;
 import symphony.bm.cache.devices.entities.deviceproperty.DeviceProperty;
 import symphony.bm.cache.devices.entities.deviceproperty.DevicePropertyValueSnapshot;
 import symphony.bm.cache.devices.entities.deviceproperty.DevicePropertyValueSnapshotRepository;
+import symphony.bm.cache.devices.rest.models.RegisterRequest;
+import symphony.bm.generics.jeep.JeepMessage;
+import symphony.bm.cache.devices.rest.models.BasicRegisterRequest;
+import symphony.bm.generics.jeep.response.JeepSuccessResponse;
 import symphony.bm.generics.messages.MicroserviceMessage;
 import symphony.bm.generics.messages.MicroserviceSuccessfulMessage;
 import symphony.bm.generics.exceptions.MicroserviceProcessingException;
@@ -56,18 +64,36 @@ public class DevicesRestController {
         return p;
     }
 
-    @PostMapping("/{cid}")
-    public MicroserviceMessage addDevice(@PathVariable String cid, @RequestBody Device device)
-            throws MicroserviceProcessingException {
-        String rid = device.getRID();
-        LOG.info("Adding device " + cid + " to room " + rid + "...");
-        Room room = superRoom.getRoom(rid);
+//    @PostMapping("/{cid}")
+//    public MicroserviceMessage addDevice(@PathVariable String cid, @RequestBody Device device)
+//            throws MicroserviceProcessingException {
+//        String rid = device.getRID();
+//        LOG.info("Adding device " + cid + " to room " + rid + "...");
+//        Room room = superRoom.getRoom(rid);
+//        try {
+//            room.addDeviceAndCreateInAdaptors(device);
+//        } catch (Exception e) {
+//            throw new MicroserviceProcessingException("Add device failed", e);
+//        }
+//        LOG.info("Device " + cid + " added to room " + rid);
+//        return new MicroserviceSuccessfulMessage("Device added");
+//    }
+    
+    @PostMapping(value = "/{cid}")
+    public MicroserviceSuccessfulMessage addDevice(@PathVariable String cid, @RequestBody String requestString)
+        throws MicroserviceProcessingException {
+        LOG.error(requestString);
+        JSONObject requestJSON = new JSONObject(requestString);
+        RegisterRequest request;
         try {
-            room.addDeviceAndCreateInAdaptors(device);
-        } catch (Exception e) {
-            throw new MicroserviceProcessingException("Add device failed", e);
+            request = RegisterRequest.builder().json(requestJSON).build();
+        } catch (JsonProcessingException e) {
+            throw new MicroserviceProcessingException(e.getMessage(), e);
         }
-        LOG.info("Device " + cid + " added to room " + rid);
+        
+        if (request.getClass().equals(BasicRegisterRequest.class)) {
+            BasicRegisterRequest req = (BasicRegisterRequest) request;
+        }
         return new MicroserviceSuccessfulMessage("Device added");
     }
 

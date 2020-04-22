@@ -4,14 +4,11 @@ import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 import symphony.bm.cache.rules.vo.Rule;
 
 import java.util.List;
 import java.util.Vector;
-
-import static org.springframework.data.mongodb.core.query.Query.query;
 
 @Component
 public class RulesManager {

@@ -23,7 +23,7 @@ public class QueryRestController {
 
     private final SuperRoom superRoom;
 
-    @PostMapping("/query/propertylist")
+    @PostMapping("/propertylist")
     public List<DeviceProperty> getDeviceProperties(@RequestBody HashMap<String, List<Integer>> requestBody) {
         LOG.info("Getting device properties...");
         List<DeviceProperty> response = new Vector<>();
