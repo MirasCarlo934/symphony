@@ -4,24 +4,22 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Component;
 
-import javax.validation.constraints.Null;
 import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
 @Slf4j
 public class SuperGroup extends Group {
     private final MongoOperations mongo;
+    
+    @Getter private List<Thing> thingList;
+    @Getter private List<Group> groupList;
 
     public SuperGroup(MongoTemplate mongoTemplate) {
-        super("", "", "Super Group");
+        super("", "Super Group");
         this.mongo = mongoTemplate;
 
         buildContext();
@@ -29,27 +27,52 @@ public class SuperGroup extends Group {
     }
 
     private void buildContext() {
-        List<Thing> thingList = mongo.findAll(Thing.class);
-        List<Group> groupList = mongo.findAll(Group.class);
+        thingList = mongo.findAll(Thing.class);
+        groupList = mongo.findAll(Group.class);
         groupList.add(this);
 
         for (Group group : groupList) {
             for (Thing thing : thingList) {
-                if (thing.getParentGID().equals(group.getGID())) {
-                    group.getThings().add(thing);
+                if (thing.getParentGroups().isEmpty()) {
+                    this.things.add(thing);
+                } else {
+                    for (String parentGID : thing.getParentGroups()) {
+                        if (parentGID.equals(group.getGID())) {
+                            group.getThings().add(thing);
+                            break;
+                        }
+                    }
                 }
             }
             for (Group g : groupList) {
-                if (g.getParentGID().equals(group.getGID()) && !g.getClass().equals(SuperGroup.class)) {
-                    group.getGroups().add(g);
+                if (g.getParentGroups().isEmpty() && !g.getClass().equals(SuperGroup.class)) {
+                    this.groups.add(g);
+                } else {
+                    for (String parentGID : g.getParentGroups()) {
+                        if (parentGID.equals(group.getGID())) {
+                            group.getGroups().add(g);
+                            break;
+                        }
+                    }
                 }
             }
         }
+        
+        groupList.remove(this);
 
         printContentCount();
     }
+    
+    @Override
+    public Group getGroup(String GID) {
+        if (GID == null || GID.isEmpty()) {
+            return this;
+        } else {
+            return super.getGroup(GID);
+        }
+    }
 
     public void printContentCount() {
-        log.info(getContainedThingsCount() + " things and " + getContainedGroupsCount() + " groups currently exists");
+        log.info(thingList.size() + " things and " + groupList.size() + " groups currently exists");
     }
 }

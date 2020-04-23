@@ -22,15 +22,15 @@ public class Group extends Groupable {
     @Transient @Getter protected final List<Group> groups = new Vector<>();
 
     @PersistenceConstructor
-    public Group(String parentGID, String _id, @NonNull String GID, @NonNull String name) {
-        super(parentGID);
+    public Group(List<String> parentGroups, String _id, @NonNull String GID, @NonNull String name) {
+        super(parentGroups);
         this._id = _id;
         this.GID = GID;
         this.name = name;
     }
 
-    public Group(String parentGID, @NonNull String GID, @NonNull String name) {
-        super(parentGID);
+    public Group(@NonNull String GID, @NonNull String name) {
+        super(new Vector<>());
         this.GID = GID;
         this.name = name;
     }
@@ -45,6 +45,10 @@ public class Group extends Groupable {
             return group.getThing(UID);
         }
         return null;
+    }
+    
+    public void addThing(Thing thing) throws IllegalArgumentException {
+        things.add(thing);
     }
 
     public Group getGroup(String GID) {

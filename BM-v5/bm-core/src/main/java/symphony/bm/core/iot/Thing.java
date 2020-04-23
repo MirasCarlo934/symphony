@@ -21,9 +21,9 @@ public class Thing extends Groupable {
     @NonNull @Getter private final List<Attribute> attributes;
 
     @PersistenceConstructor
-    public Thing(String parentGID, String _id, @NonNull String UID, @NonNull String name,
+    public Thing(List<String> parentGroups, String _id, @NonNull String UID, @NonNull String name,
                  @NonNull List<Attribute> attributes) {
-        super(parentGID);
+        super(parentGroups);
         this._id = _id;
         this.UID = UID;
         this.name = name;
