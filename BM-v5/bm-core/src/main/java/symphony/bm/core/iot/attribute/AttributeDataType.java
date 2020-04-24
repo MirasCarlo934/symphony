@@ -11,7 +11,7 @@ import java.util.HashMap;
         setterVisibility = JsonAutoDetect.Visibility.NONE)
 @AllArgsConstructor
 public class AttributeDataType {
-    @NonNull @Getter private final String type;
+    @NonNull @Getter private final String name;
     @NonNull @Getter private final HashMap<String, Object> constraints;
 
     public enum AttributeDataTypeEnum {

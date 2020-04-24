@@ -1,17 +1,49 @@
 package symphony.bm.core.iot;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
+import symphony.bm.core.activitylisteners.Listenable;
 
 import java.util.List;
+import java.util.Vector;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE)
-public abstract class Groupable {
-    @NonNull @Getter private List<String> parentGroups;
+public abstract class Groupable extends Listenable {
+    @NonNull @Setter(AccessLevel.PRIVATE) @Getter(AccessLevel.PROTECTED) private List<String> parentGroups;
 
     public Groupable(List<String> parentGroups) {
         this.parentGroups = parentGroups;
+    }
+
+    @JsonIgnore
+    public List<String> getCopyOfParentGroups() {
+        return new Vector<>(parentGroups);
+    }
+
+    public int parentGroupsCount() {
+        return parentGroups.size();
+    }
+
+    public boolean isAlreadyGroupedIn(List<String> groups) {
+        return parentGroups.size() == groups.size() && parentGroups.containsAll(groups);
+    }
+
+    public boolean hasNoGroup() {
+        return parentGroups.size() == 0;
+    }
+
+    protected void addParentGroup(String GID) {
+        if (!parentGroups.contains(GID)) {
+            parentGroups.add(GID);
+        }
+    }
+
+    protected void removeParentGroup(String GID) {
+        parentGroups.remove(GID);
     }
 }

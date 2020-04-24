@@ -1,10 +1,10 @@
 package symphony.bm.core.iot;
 
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
+import symphony.bm.core.activitylisteners.ActivityListener;
 
 import java.util.List;
 
@@ -14,65 +14,69 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 @Slf4j
 public class SuperGroup extends Group {
     private final MongoOperations mongo;
-    
-    @Getter private List<Thing> thingList;
-    @Getter private List<Group> groupList;
 
-    public SuperGroup(MongoTemplate mongoTemplate) {
+    public SuperGroup(MongoTemplate mongoTemplate, List<ActivityListener> activityListeners) {
         super("", "Super Group");
         this.mongo = mongoTemplate;
+        setActivityListeners(activityListeners);
 
         buildContext();
         log.info("IOT context initialized");
     }
 
     private void buildContext() {
-        thingList = mongo.findAll(Thing.class);
-        groupList = mongo.findAll(Group.class);
+        List<Thing> thingList = mongo.findAll(Thing.class);
+        List<Group> groupList = mongo.findAll(Group.class);
         groupList.add(this);
 
-        for (Group group : groupList) {
-            for (Thing thing : thingList) {
-                if (thing.getParentGroups().isEmpty()) {
-                    this.things.add(thing);
-                } else {
-                    for (String parentGID : thing.getParentGroups()) {
-                        if (parentGID.equals(group.getGID())) {
-                            group.getThings().add(thing);
-                            break;
-                        }
-                    }
-                }
-            }
-            for (Group g : groupList) {
-                if (g.getParentGroups().isEmpty() && !g.getClass().equals(SuperGroup.class)) {
-                    this.groups.add(g);
-                } else {
-                    for (String parentGID : g.getParentGroups()) {
-                        if (parentGID.equals(group.getGID())) {
-                            group.getGroups().add(g);
-                            break;
-                        }
-                    }
+        for (Thing thing : thingList) {
+            log.info("Thing " + thing.getUid() + " retrieved from DB");
+            thing.setActivityListeners(activityListeners);
+            if (thing.getParentGroups().isEmpty()) {
+                this.things.add(thing);
+            } else {
+                for (String GID : thing.getParentGroups()) {
+                    getGroupFromList(GID, groupList).things.add(thing);
                 }
             }
         }
-        
+
+        for (Group group : groupList) {
+            log.info("Group " + group.getGid() + " retrieved from DB");
+            group.setActivityListeners(activityListeners);
+            if (group.getParentGroups().isEmpty() && !group.equals(this)) {
+                this.groups.add(group);
+            } else {
+                for (String GID : group.getParentGroups()) {
+                    getGroupFromList(GID, groupList).groups.add(group);
+                }
+            }
+        }
+
         groupList.remove(this);
 
         printContentCount();
     }
     
     @Override
-    public Group getGroup(String GID) {
+    public Group getGroupRecursively(String GID) {
         if (GID == null || GID.isEmpty()) {
             return this;
         } else {
-            return super.getGroup(GID);
+            return super.getGroupRecursively(GID);
         }
     }
 
     public void printContentCount() {
-        log.info(thingList.size() + " things and " + groupList.size() + " groups currently exists");
+        log.info(getContainedThings().size() + " things and " + getContainedGroups().size() + " groups currently exists");
+    }
+
+    private Group getGroupFromList(String GID, List<Group> groupList) {
+        for (Group group : groupList) {
+            if (group.getGid().equals(GID)) {
+                return group;
+            }
+        }
+        return null;
     }
 }

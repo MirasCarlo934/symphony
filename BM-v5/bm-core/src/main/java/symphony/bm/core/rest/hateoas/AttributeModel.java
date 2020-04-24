@@ -1,7 +1,6 @@
 package symphony.bm.core.rest.hateoas;
 
 import lombok.Getter;
-import lombok.NonNull;
 import org.springframework.hateoas.RepresentationModel;
 import symphony.bm.core.iot.attribute.Attribute;
 import symphony.bm.core.iot.attribute.AttributeDataType;
@@ -12,10 +11,10 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 public class AttributeModel extends RepresentationModel<AttributeModel> {
-    public final String name;
-    public final AttributeMode mode;
-    public final AttributeDataType dataType;
-    public final String value;
+    @Getter public final String name;
+    @Getter public final AttributeMode mode;
+    @Getter public final AttributeDataType dataType;
+    @Getter public final Object value;
 
     public AttributeModel(Attribute attribute, String UID, int index) {
         this.name = attribute.getName();
@@ -23,7 +22,7 @@ public class AttributeModel extends RepresentationModel<AttributeModel> {
         this.dataType = attribute.getDataType();
         this.value = attribute.getValue();
         this.add(linkTo(methodOn(ThingController.class).getAttribute(UID, index)).withSelfRel());
-        this.add(linkTo(methodOn(ThingController.class).getThing(UID))
+        this.add(linkTo(methodOn(ThingController.class).get(UID))
                 .withRel("parent")/*.andAffordance()*/);
     }
 }

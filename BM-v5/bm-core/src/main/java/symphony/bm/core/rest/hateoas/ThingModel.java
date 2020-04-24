@@ -1,5 +1,6 @@
 package symphony.bm.core.rest.hateoas;
 
+import lombok.Getter;
 import org.springframework.hateoas.RepresentationModel;
 import symphony.bm.core.iot.Thing;
 import symphony.bm.core.rest.GroupController;
@@ -8,33 +9,39 @@ import symphony.bm.core.rest.ThingController;
 import java.util.List;
 import java.util.Vector;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 public class ThingModel extends RepresentationModel<ThingModel> {
-    public final String UID;
-    public final List<String> parentGroups;
-    public final String name;
-    public final List<AttributeModel> attributes = new Vector<>();
+    @Getter public final String uid;
+    @Getter public final List<String> parentGroups;
+    @Getter public final String name;
+    @Getter public final List<AttributeModel> attributes = new Vector<>();
 
     public ThingModel(Thing thing) {
-        this.UID = thing.getUID();
-        this.parentGroups = thing.getParentGroups();
+        this.uid = thing.getUid();
+        this.parentGroups = thing.getCopyOfParentGroups();
         this.name = thing.getName();
         for (int i = 0; i < thing.getAttributes().size(); i++) {
-            AttributeModel attributeModel = new AttributeModel(thing.getAttributes().get(i), UID, i);
+            AttributeModel attributeModel = new AttributeModel(thing.getAttributes().get(i), uid, i);
             attributes.add(attributeModel);
         }
         
-        this.add(linkTo(methodOn(ThingController.class).getThing(UID)).withSelfRel());
-        if (thing.getParentGroups().isEmpty()) {
+        this.add(linkTo(methodOn(ThingController.class).get(uid)).withSelfRel()
+                .andAffordance(afford(methodOn(ThingController.class).add(uid, null)))
+//                .andAffordance(afford(methodOn(ThingController.class).replace(uid, null)))
+                .andAffordance(afford(methodOn(ThingController.class).update(uid, null)))
+                .andAffordance(afford(methodOn(ThingController.class).addGroup(uid, null)))
+                .andAffordance(afford(methodOn(ThingController.class).removeGroup(uid, null)))
+                .andAffordance(afford(methodOn(ThingController.class).delete(uid)))
+        );
+        if (parentGroups.isEmpty()) {
             this.add(linkTo(methodOn(GroupController.class).getSuperGroup()).withRel("parent"));
         } else {
-            for (String parentGID : thing.getParentGroups()) {
+            for (String parentGID : parentGroups) {
                 if (parentGID == null || parentGID.equals("")) {
                     this.add(linkTo(methodOn(GroupController.class).getSuperGroup()).withRel("parent"));
                 } else {
-                    this.add(linkTo(methodOn(GroupController.class).getGroup(parentGID))
+                    this.add(linkTo(methodOn(GroupController.class).get(parentGID))
                             .withRel("parent." + parentGID));
                 }
             }
