@@ -1,1 +1,1 @@
-#define SOCKET_VERSION 2
+#define MY_VERSION 2
