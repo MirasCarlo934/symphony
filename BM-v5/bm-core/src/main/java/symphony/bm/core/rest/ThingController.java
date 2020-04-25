@@ -41,11 +41,6 @@ public class ThingController {
         return new ThingModel(superGroup.getThingRecursively(uid));
     }
 
-    @GetMapping("/{uid}/attributes/{index}")
-    public AttributeModel getAttribute(@PathVariable String uid, @PathVariable int index) {
-        return new AttributeModel(superGroup.getThingRecursively(uid).getAttributes().get(index), uid, index);
-    }
-
     @DeleteMapping("/{uid}")
     public ResponseEntity<MicroserviceMessage> delete(@PathVariable String uid) {
         Thing thing = superGroup.getThingRecursively(uid);
@@ -81,7 +76,7 @@ public class ThingController {
         if (current != null) {
             String warn = "Thing already exists. Thing will not be added to context";
             log.warn(warn);
-            return new ResponseEntity<>(new MicroserviceUnsuccessfulMesage(warn), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new MicroserviceUnsuccessfulMesage(warn), HttpStatus.CONFLICT);
         }
 
         log.debug("Adding thing " + uid + " ...");

@@ -19,6 +19,7 @@ public class MongoActivityListener extends TimerTask implements ActivityListener
     private final MongoOperations mongo;
     private final Queue<Thing> thingsToSave = new LinkedBlockingQueue<>();
     private final Queue<Group> groupsToSave = new LinkedBlockingQueue<>();
+    private final Queue<Attribute> attributesToSave = new LinkedBlockingQueue<>();
 
     public MongoActivityListener(MongoTemplate mongoTemplate, long timeBetweenPersists) {
         this.mongo = mongoTemplate;
@@ -38,19 +39,31 @@ public class MongoActivityListener extends TimerTask implements ActivityListener
             Group group = groupsToSave.poll();
             log.info("Saving group " + group.getGid() + " to DB");
             mongo.save(group);
-            log.info("group saved to DB");
+            log.info("Group saved to DB");
+        }
+        while (!attributesToSave.isEmpty()) {
+            Attribute attribute = attributesToSave.poll();
+            log.info("Saving attribute " + attribute.getThing() + "/" + attribute.getAid() + " to DB");
+            mongo.save(attribute);
+            log.info("Attribute saved to DB");
         }
     }
 
     private void save(Thing thing) {
         if (!thingsToSave.contains(thing)) {
-            thingsToSave.add(thing);
+            thingsToSave.offer(thing);
         }
     }
 
     private void save(Group group) {
         if (!groupsToSave.contains(group)) {
-            groupsToSave.add(group);
+            groupsToSave.offer(group);
+        }
+    }
+
+    private void save(Attribute attribute) {
+        if (!attributesToSave.contains(attribute)) {
+            attributesToSave.offer(attribute);
         }
     }
 
@@ -111,21 +124,26 @@ public class MongoActivityListener extends TimerTask implements ActivityListener
 
     @Override
     public void attributeUpdated(Attribute attribute, Map<String, Object> updatedFields) {
-
+        save(attribute);
     }
 
     @Override
     public void attributeUpdatedValue(Attribute attribute, Object value) {
-
+        save(attribute);
     }
 
     @Override
     public void attributeAddedToThing(Attribute attribute, Thing thing) {
-
+        save(attribute);
     }
 
     @Override
     public void attributeRemovedFromThing(Attribute attribute, Thing thing) {
-
+        log.info("Deleting attribute " + thing.getUid() + "/" + attribute.getAid() + " from DB");
+        if (attributesToSave.contains(attribute)) {
+            attributesToSave.remove(attribute);
+        }
+        mongo.remove(attribute);
+        log.info("Attribute deleted from DB");
     }
 }

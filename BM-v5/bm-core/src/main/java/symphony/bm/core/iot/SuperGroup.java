@@ -5,10 +5,9 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
 import symphony.bm.core.activitylisteners.ActivityListener;
+import symphony.bm.core.iot.attribute.Attribute;
 
 import java.util.List;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @Component
 @Slf4j
@@ -27,7 +26,13 @@ public class SuperGroup extends Group {
     private void buildContext() {
         List<Thing> thingList = mongo.findAll(Thing.class);
         List<Group> groupList = mongo.findAll(Group.class);
+        List<Attribute> attributeList = mongo.findAll(Attribute.class);
         groupList.add(this);
+
+        for (Attribute attribute : attributeList) {
+            log.info("Attribute " + attribute.getThing() + "/" + attribute.getAid() + " retrieved from DB");
+            getThingFromList(attribute.getThing(), thingList).getAttributes().add(attribute);
+        }
 
         for (Thing thing : thingList) {
             log.info("Thing " + thing.getUid() + " retrieved from DB");
@@ -69,6 +74,15 @@ public class SuperGroup extends Group {
 
     public void printContentCount() {
         log.info(getContainedThings().size() + " things and " + getContainedGroups().size() + " groups currently exists");
+    }
+
+    private Thing getThingFromList(String UID, List<Thing> thingList) {
+        for (Thing thing : thingList) {
+            if (thing.getUid().equals(UID)) {
+                return thing;
+            }
+        }
+        return null;
     }
 
     private Group getGroupFromList(String GID, List<Group> groupList) {

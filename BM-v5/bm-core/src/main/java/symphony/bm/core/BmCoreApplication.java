@@ -7,7 +7,10 @@ import org.springframework.context.annotation.ImportResource;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {
+        "symphony.bm.core",
+        "symphony.bm.generics"
+})
 @ImportResource({
         "file:${bm.config.home}/bm-core.config.xml"
 })

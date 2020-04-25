@@ -1,6 +1,5 @@
 package symphony.bm.core.iot;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NonNull;
@@ -13,8 +12,6 @@ import symphony.bm.core.rest.interfaces.Resource;
 import java.util.List;
 import java.util.Vector;
 
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE,
-        setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class Group extends Groupable implements Resource {
     @Id @JsonIgnore private String _id;
     @NonNull @Getter private String gid;

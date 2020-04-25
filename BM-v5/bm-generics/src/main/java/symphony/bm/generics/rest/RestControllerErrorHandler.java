@@ -15,6 +15,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import symphony.bm.generics.exceptions.MicroserviceProcessingException;
 import symphony.bm.generics.exceptions.RequestProcessingException;
+import symphony.bm.generics.exceptions.RestControllerProcessingException;
 import symphony.bm.generics.jeep.response.JeepMicroserviceErrorMessage;
 import symphony.bm.generics.messages.MicroserviceUnsuccessfulMesage;
 
@@ -72,12 +73,24 @@ public class RestControllerErrorHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(new MicroserviceUnsuccessfulMesage(error));
     }
 
+    @ExceptionHandler(RestControllerProcessingException.class)
+    protected ResponseEntity<MicroserviceUnsuccessfulMesage> handleRestMicroserviceProcessingException(RestControllerProcessingException e) {
+        String error = e.getMessage();
+        LOG.error("Rest Microservice Processing Exception: " + error, e);
+        return buildResponseEntity(new MicroserviceUnsuccessfulMesage(error), e.getHttpStatus());
+    }
+
     private ResponseEntity<Object> buildGenericResponseEntity(MicroserviceUnsuccessfulMesage msg) {
         return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
     }
 
     private ResponseEntity<MicroserviceUnsuccessfulMesage> buildResponseEntity(MicroserviceUnsuccessfulMesage msg) {
         return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
+    }
+
+    private ResponseEntity<MicroserviceUnsuccessfulMesage> buildResponseEntity(MicroserviceUnsuccessfulMesage msg,
+                                                                               HttpStatus httpStatus) {
+        return new ResponseEntity<>(msg, httpStatus);
     }
 
     private ResponseEntity<JeepMicroserviceErrorMessage> buildResponseEntity(JeepMicroserviceErrorMessage error) {

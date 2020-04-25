@@ -10,8 +10,9 @@ import symphony.bm.core.rest.AttributeController;
 import symphony.bm.core.rest.ThingController;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-public class AttributeModel extends RepresentationModel<AttributeModel> {
+public class BasicAttributeModel extends RepresentationModel<BasicAttributeModel> {
     @Getter public final String aid;
     @Getter public final String name;
     @Getter public final AttributeMode mode;
@@ -19,18 +20,12 @@ public class AttributeModel extends RepresentationModel<AttributeModel> {
     @Getter public final Object value;
 
     @SneakyThrows
-    public AttributeModel(Attribute attribute, String UID) {
+    public BasicAttributeModel(Attribute attribute, String UID) {
         this.aid = attribute.getAid();
         this.name = attribute.getName();
         this.mode = attribute.getMode();
         this.dataType = attribute.getDataType();
         this.value = attribute.getValue();
-        this.add(linkTo(methodOn(AttributeController.class).get(UID, aid)).withSelfRel()
-                .andAffordance(afford(methodOn(AttributeController.class).add(UID, aid, null)))
-                .andAffordance(afford(methodOn(AttributeController.class).update(UID, aid, null)))
-                .andAffordance(afford(methodOn(AttributeController.class).delete(UID, aid)))
-        );
-        this.add(linkTo(methodOn(ThingController.class).get(UID))
-                .withRel("parent"));
+        this.add(linkTo(methodOn(AttributeController.class).get(UID, aid)).withSelfRel());
     }
 }
