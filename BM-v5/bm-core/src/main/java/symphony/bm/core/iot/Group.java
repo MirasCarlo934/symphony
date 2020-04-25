@@ -66,8 +66,7 @@ public class Group extends Groupable implements Resource {
     }
 
     public void removeThing(Thing thing) {
-        boolean b = things.remove(thing);
-        if (b) {
+        if (things.remove(thing)) {
             thing.removeParentGroup(gid);
             activityListeners.forEach( listener -> listener.thingRemovedFromGroup(thing, this));
         }
@@ -103,6 +102,13 @@ public class Group extends Groupable implements Resource {
         group.setActivityListeners(activityListeners);
         groups.add(group);
         activityListeners.forEach( listener -> listener.groupAddedToGroup(group, this));
+    }
+
+    public void removeGroup(Group group) {
+        if (groups.remove(group)) {
+            group.removeParentGroup(gid);
+            activityListeners.forEach( listener -> listener.groupRemovedFromGroup(group, this));
+        }
     }
 
     public List<Thing> getCopyOfThingList() {
@@ -151,6 +157,6 @@ public class Group extends Groupable implements Resource {
 
     @Override
     public void delete() {
-
+        activityListeners.forEach( listener -> listener.groupDeleted(this));
     }
 }

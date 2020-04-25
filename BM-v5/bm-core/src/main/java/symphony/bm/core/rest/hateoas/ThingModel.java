@@ -26,7 +26,7 @@ public class ThingModel extends RepresentationModel<ThingModel> {
 
         List<Attribute> attributeList = thing.getCopyOfAttributeList();
         for (Attribute attribute : attributeList) {
-            AttributeModel attributeModel = new AttributeModel(attribute, uid);
+            AttributeModel attributeModel = new AttributeModel(attribute, uid, false);
             attributes.add(attributeModel);
         }
 

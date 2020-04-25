@@ -19,17 +19,21 @@ public class AttributeModel extends RepresentationModel<AttributeModel> {
     @Getter public final Object value;
 
     @SneakyThrows
-    public AttributeModel(Attribute attribute, String UID) {
+    public AttributeModel(Attribute attribute, String UID, boolean expanded) {
         this.aid = attribute.getAid();
         this.name = attribute.getName();
         this.mode = attribute.getMode();
         this.dataType = attribute.getDataType();
         this.value = attribute.getValue();
-        this.add(linkTo(methodOn(AttributeController.class).get(UID, aid)).withSelfRel()
-                .andAffordance(afford(methodOn(AttributeController.class).add(UID, aid, null)))
-                .andAffordance(afford(methodOn(AttributeController.class).update(UID, aid, null)))
-                .andAffordance(afford(methodOn(AttributeController.class).delete(UID, aid)))
-        );
+        if (expanded) {
+            this.add(linkTo(methodOn(AttributeController.class).get(UID, aid)).withSelfRel()
+                    .andAffordance(afford(methodOn(AttributeController.class).add(UID, aid, null)))
+                    .andAffordance(afford(methodOn(AttributeController.class).update(UID, aid, null)))
+                    .andAffordance(afford(methodOn(AttributeController.class).delete(UID, aid)))
+            );
+        } else {
+            this.add(linkTo(methodOn(AttributeController.class).get(UID, aid)).withSelfRel());
+        }
         this.add(linkTo(methodOn(ThingController.class).get(UID))
                 .withRel("parent"));
     }

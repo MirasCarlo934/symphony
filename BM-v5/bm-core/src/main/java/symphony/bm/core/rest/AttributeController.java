@@ -25,13 +25,13 @@ import java.util.Vector;
 public class AttributeController {
     private final SuperGroup superGroup;
 
-    @GetMapping("/")
+    @GetMapping
     public List<AttributeModel> getAll(@PathVariable String uid) throws RestControllerProcessingException {
         Thing thing = superGroup.getThingRecursively(uid);
         if (thing != null) {
             List<Attribute> attributes = thing.getCopyOfAttributeList();
             List<AttributeModel> attributeModels = new Vector<>();
-            attributes.forEach( attribute -> attributeModels.add(new AttributeModel(attribute, uid)));
+            attributes.forEach( attribute -> attributeModels.add(new AttributeModel(attribute, uid, false)));
             return attributeModels;
         } else {
             throw new RestControllerProcessingException("Thing " + uid + " does not exist", HttpStatus.NOT_FOUND);
@@ -45,7 +45,7 @@ public class AttributeController {
         if (thing != null) {
             Attribute attribute = thing.getAttribute(aid);
             if (attribute != null) {
-                return new AttributeModel(attribute, uid);
+                return new AttributeModel(attribute, uid, true);
             } else {
                 throw new RestControllerProcessingException("Attribute " + thing.getUid() + "/" + aid
                         + " does not exist", HttpStatus.NOT_FOUND);
