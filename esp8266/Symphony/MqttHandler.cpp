@@ -29,7 +29,7 @@ void onMqttConnect(bool sessionPresent) {
   Serial.println("[MqttHandler] Connected to MQTT.");
 //  Serial.print("Session present: ");
 //  Serial.println(sessionPresent);
-  sprintf(subscribeTopic, "%s%s","devices/", myId);
+  sprintf(subscribeTopic, "%s%s/#","things/", myId);
   uint16_t packetIdSub = mqttClient.subscribe(subscribeTopic, 0);
   Serial.printf("[MqttHandler] subscribed to topic %s\n", subscribeTopic);
 //  Serial.print("Subscribing at QoS 2, packetId: ");
@@ -155,7 +155,7 @@ void MqttHandler::connect() { //to connect to MQTT server
  */
 void MqttHandler::publish(const char* payload, uint8_t qos) {
 	Serial.printf("[MqttHandler] Publishing in topic BM at QoS %i\n", qos);
-	mqttClient.publish( publishTopic.c_str(), qos, true, payload);
+	mqttClient.publish( publishTopic.c_str(), qos, false, payload);
 }
 
 /**
