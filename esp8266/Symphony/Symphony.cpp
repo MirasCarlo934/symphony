@@ -36,8 +36,6 @@ String Symphony::nameWithMac = "myName";
 Product Symphony::product;
 String Symphony::version = "0.0";
 
-long Symphony::MRN = 0;
-
 AsyncWebServer		webServer(HTTP_PORT); // Web Server
 AsyncWebServer		wsServer(WS_PORT); // WebSocket Server
 AsyncWebSocket      ws("/ws");      // Web Socket Plugin
@@ -119,7 +117,6 @@ int productValueChangedEvent (int propertyIndex, boolean forHub) {
 	if (forHub) {
 		DynamicJsonBuffer buffer;
 		JsonObject& poopJson = buffer.createObject();
-		poopJson["MRN"] = Symphony::getMRN();
 		poopJson["MSN"] = "poop";
 		poopJson["CID"] = Symphony::nameWithMac;
 		poopJson["prop-index"] = propertyIndex;
@@ -351,45 +348,45 @@ void mqttMsgHandler(char* topic, char* payload, size_t len) {
   Serial.print(topic);
   Serial.print(", len: ");
   Serial.println(len);
-  Serial.print("[CORE] payload: ");
+  Serial.printf("[CORE] payload: %s\n", payload);
 #endif
-	    if (strcmp(topic, theMqttHandler.getSubscribedTopic().c_str()) == 0) {
-	  	  DynamicJsonBuffer jsonBuffer;
-	  	  JsonObject& jsonMsg = jsonBuffer.parseObject(payload);
-	  	  jsonMsg.printTo(Serial);Serial.println();
-	  	  String msn = jsonMsg["MSN"].as<String>();
-	  	  if(msn.equals("register")) {	//this is the response to our register request
+	  DynamicJsonBuffer jsonBuffer;
+	  JsonObject& jsonMsg = jsonBuffer.parseObject(payload);
 #ifdef DEBUG_ONLY
-	  		  Serial.println("[CORE] MQTT registration successful.");
+	  jsonMsg.printTo(Serial);Serial.println();
 #endif
-	  	  }
-	  	  if(msn.equals("poop")) {	//this is a poop request
-	  		  if(jsonMsg.containsKey("success")) {	//this is a response
-	  			  //do nothing
-	  		  } else {
-	  			  /* this is the request that we will receive
-	  			   * {"MRN":"0000005","MSN":"poop","CID":"pir_5ccf7fc78dc3","prop-index":1,"prop-value":0}
-	  			   */
-	  			  //evaluate if directPin==true, execute here.  Else pass to wscallback
-				  attribStruct attrib = Symphony::product.getKeyVal(jsonMsg["prop-index"].as<int>());
+	  String msn = jsonMsg["MSN"].as<String>();
+	  if(msn.equals("register")) {	//this is the response to our register request
 #ifdef DEBUG_ONLY
-				  Serial.printf("[CORE] got attribute %s, current value=%i, pin=%i, directPin=%s\n", attrib.ssid.c_str(), attrib.gui.value, attrib.pin, attrib.directPin?"true":"false");
+		  Serial.println("[CORE] MQTT registration successful.");
 #endif
-				  if (attrib.directPin) {//we set the value here because this is a directPin and its value can be set to pin directly
-					  Symphony::product.setValue(jsonMsg["property"].as<String>(), jsonMsg["value"].as<int>(), false);//forHub=false, we are only showing this to the clients
-				  } else {//we do not set the value here, the callback might need to do some computation before setting the pin
+	  }
+	  if(msn.equals("poop")) {	//this is a poop request
+		  if(jsonMsg.containsKey("success")) {	//this is a response
+			  //do nothing
+		  } else {
+			  /* this is the request that we will receive
+			   *
+			   */
+			  //evaluate if directPin==true, execute here.  Else pass to wscallback
+			  attribStruct attrib = Symphony::product.getKeyVal(jsonMsg["prop-index"].as<int>());
 #ifdef DEBUG_ONLY
-					  Serial.printf("[CORE] Property %s not directly changeable. Passing to callback.\n", attrib.ssid.c_str());
+			  Serial.printf("[CORE] got attribute %s, current value=%i, pin=%i, directPin=%s\n", attrib.ssid.c_str(), attrib.gui.value, attrib.pin, attrib.directPin?"true":"false");
 #endif
-					  if (MqttCallback != nullptr) {
-						  MqttCallback(jsonMsg);
-					  } else {
-						  Serial.println("[CORE] No MQTT callback set!!!");
-					  }
+			  if (attrib.directPin) {//we set the value here because this is a directPin and its value can be set to pin directly
+				  Symphony::product.setValue(jsonMsg["property"].as<String>(), jsonMsg["value"].as<int>(), false);//forHub=false, we are only showing this to the clients
+			  } else {//we do not set the value here, the callback might need to do some computation before setting the pin
+#ifdef DEBUG_ONLY
+				  Serial.printf("[CORE] Property %s not directly changeable. Passing to callback.\n", attrib.ssid.c_str());
+#endif
+				  if (MqttCallback != nullptr) {
+					  MqttCallback(jsonMsg);
+				  } else {
+					  Serial.println("[CORE] No MQTT callback set!!!");
 				  }
-	  		  }
-	  	  }
-	    }
+			  }
+		  }
+	  }
 };
 /**
 * Handler that displays Captive portal during softAP mode
@@ -938,27 +935,34 @@ void Symphony::setRootProperties(String s) {
  *
  *  Complete Registration
 	{
-		"MRN": "1234",
-		"MSN": "register",
-		"CID": "abcd",
-		"name": "deviceName",
-		"product":
-			[
-				{
-					name: "On/Off",
-					index: 0,
-					type: {
-					  "data": "binary", //binary,enum,number,string
-					  "ui": "toggle"
-					},
-					mode: "O"
-				}
-			],
-		"room":
+	  "uid": "12345678",
+	  "parentGroups": [
+		"testRoom1",
+		"testRoom2"
+	  ],
+	  "name": "Switch Device",
+	  "attributes": [
 		{
-			"RID": "roomID",
-			"name": "roomName"
+		  "mode": "controllable",
+		  "dataType": {
+			"type": "binary",
+			"constraints": {}
+		  },
+		"name": "On/Off",
+		"aid": "87654321",
+		"value": 0
+		},
+		{
+		  "mode": "input",
+		  "dataType": {
+			"type": "number",
+			"constraints": {}
+		},
+		"name": "Temperature [C]",
+		"aid": "abcdefgh",
+		"value": 30.2
 		}
+	  ]
 	}
  *
  *
@@ -975,44 +979,42 @@ bool Symphony::registerProduct() {
 				*/
 				DynamicJsonBuffer jsonBuffer;
 				JsonObject& regJson = jsonBuffer.createObject();
-				regJson["MRN"] = getMRN();
-				regJson["MSN"] = "register";
-				regJson["CID"] = Symphony::nameWithMac;
+				regJson["uid"] = Symphony::nameWithMac;
+				JsonArray& gArray = regJson.createNestedArray("parentGroups");
+				gArray.add(product.room);
 				regJson["name"] = product.productName;
-				JsonArray& pArray = regJson.createNestedArray("product");
+				JsonArray& pArray = regJson.createNestedArray("attributes");
 				for (int i=0; i < product.getSize(); i++) {
 					attribStruct a = product.getKeyVal(i);
 					Serial.printf("[CORE] registerProduct ssid=%s label=%s, pintype=%i\n", a.ssid.c_str(), a.gui.label.c_str(), a.gui.pinType);
 					JsonObject& prop1 = pArray.createNestedObject();
 					if (a.gui.pinType == BUTTON_CTL || a.gui.pinType == SLIDER_CTL) {
-						prop1["mode"] = "O";
+						prop1["mode"] = "controllable";
 					} else {  //a.gui.pinType == BUTTON_SNSR || a.gui.pinType == SLIDER_SNSR
-						prop1["mode"] = "I";
+						prop1["mode"] = "input";
 					}
-					JsonObject& theType = prop1.createNestedObject("type");
+					JsonObject& theType = prop1.createNestedObject("dataType");
 					if (a.gui.pinType == BUTTON_CTL || a.gui.pinType == BUTTON_SNSR ) {
-						theType["data"] = "binary";
-						theType["ui"] = "toggle";
+						theType["type"] = "binary";
+						theType["constraints"] = "{}";
 //						if (a.gui.pinType == BUTTON_CTL)
 //							prop1["mode"] = "O";
 //						if (a.gui.pinType == BUTTON_SNSR )
 //							prop1["mode"] = "I";
 					} else { //if (a.gui.pinType == SLIDER_CTL || a.gui.pinType == SLIDER_SNSR )
-						theType["data"] = "number";
-						theType["ui"] = "slider";
-						theType["minValue"] = a.gui.min;
-						theType["maxValue"] = a.gui.max;
+						theType["type"] = "number";
+						JsonObject& constraints = theType.createNestedObject("constraints");
+						constraints["min"] = a.gui.min;
+						constraints["max"] = a.gui.max;
 //						if (a.gui.pinType == SLIDER_CTL)
 //							prop1["mode"] = "O";
 //						if (a.gui.pinType == SLIDER_SNSR )
 //							prop1["mode"] = "I";
 					}
 					prop1["name"] = a.gui.label;
-					prop1["index"] = i;
+					prop1["aid"] = i;
+					prop1["value"] = a.gui.value;
 				}
-				JsonObject& rJson = regJson.createNestedObject("room");
-				rJson["RID"] = "1";
-				rJson["name"] = product.room;
 				String strReg;
 				regJson.printTo(strReg);
 				theMqttHandler.publish(strReg.c_str(), 0);
@@ -1029,16 +1031,6 @@ void Symphony::transmit(const char* payload) {
 	//for now, we are using mqtt
 	transmit(payload);
 }
-/**
- * returns the MRN as string with 7 digits
- */
-String Symphony::getMRN() {
-	MRN++;
-	char s[8];
-	sprintf(s, "%07d", MRN);
-	return s;
-}
-
 
 void Symphony::sendToWsServer(String replyStr){
 //	webSocketClient.sendTXT(replyStr);July 13 2019 do we really need this device to be a ws client?
