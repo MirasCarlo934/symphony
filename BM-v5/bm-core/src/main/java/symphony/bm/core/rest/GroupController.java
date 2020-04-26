@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import symphony.bm.core.iot.Group;
 import symphony.bm.core.iot.SuperGroup;
 import symphony.bm.core.iot.Thing;
+import symphony.bm.core.rest.forms.group.GroupGroupForm;
 import symphony.bm.core.rest.forms.group.GroupUpdateForm;
 import symphony.bm.core.rest.forms.thing.ThingGroupForm;
 import symphony.bm.core.rest.hateoas.GroupModel;
@@ -102,7 +103,7 @@ public class GroupController {
 //    }
     
     @PostMapping("/{gid}/addgroup")
-    public ResponseEntity<MicroserviceMessage> addGroup(@PathVariable String gid, @RequestBody GroupUpdateForm form) {
+    public ResponseEntity<MicroserviceMessage> addGroup(@PathVariable String gid, @RequestBody GroupGroupForm form) {
         List<String> groups = form.getParentGroups();
         Group group = superGroup.getGroupRecursively(gid);
         if (group == null) {
@@ -126,6 +127,32 @@ public class GroupController {
         }
         
         return buildSuccessResponseEntity("Group " + gid + " added to groups " + groups, HttpStatus.OK);
+    }
+    
+    @PostMapping("/{gid}/removegroup")
+    public ResponseEntity<MicroserviceMessage> removeGroup(@PathVariable String gid, @RequestBody GroupGroupForm form) {
+        List<String> groups = form.getParentGroups();
+        Group group = superGroup.getGroupRecursively(gid);
+        if (group == null) {
+            String warn = "Group does not exist";
+            log.warn(warn);
+            return new ResponseEntity<>(new MicroserviceUnsuccessfulMesage(warn), HttpStatus.BAD_REQUEST);
+        }
+    
+        log.debug("Removing group " + gid + " from groups " + groups);
+        for (String GID : groups) {
+            Group parentGroup = superGroup.getGroupRecursively(GID);
+            if (parentGroup != null) {
+                log.info("Removing group from group " + GID);
+                parentGroup.removeGroup(group);
+            }
+        }
+    
+        if (group.hasNoGroup()) {
+            superGroup.addGroup(group);
+        }
+    
+        return buildSuccessResponseEntity("Group " + gid + " removed from groups " + groups, HttpStatus.OK);
     }
     
     public Group createDefaultGroup(String GID) {

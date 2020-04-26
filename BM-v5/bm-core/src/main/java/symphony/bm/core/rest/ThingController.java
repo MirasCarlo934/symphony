@@ -140,6 +140,9 @@ public class ThingController {
             removeGroup(uid, groupForm);
             groupForm.setParentGroups(form.getParentGroups());
             addGroup(uid, groupForm);
+            if (thing.hasNoGroup()) {
+                superGroup.addThing(thing);
+            }
             changed = true;
         }
 
