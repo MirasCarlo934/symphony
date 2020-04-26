@@ -154,6 +154,8 @@ int wsHandler(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json)
 				} else {
 					attribStruct a = s.product.getProperty(json["ssid"].as<String>());
 					Serial.printf("wsHandler timer %s=%i\n", a.gui.label.c_str(), json["val"].as<int>());
+					if (ssid == 20)//for testing only
+						product.setValue(a.ssid, json["val"].as<int>(), true);
 				}
 				break;
 			}
@@ -174,8 +176,8 @@ int mqttHandler(JsonObject& json) {
 //	  "CID": "wemos1_502914e722c"
 //	}
 	attribStruct a = product.getKeyVal(json["prop-index"].as<int>());
-	product.setValue(a.ssid, json["prop-value"].as<int>(), false);
 	int ssid = a.ssid.toInt();
+	product.setValue(a.ssid, json["prop-value"].as<int>(), false);
 	if (ssid==1) {
 		socketState = json["prop-value"].as<int>();
 	}
@@ -210,7 +212,9 @@ void setup()
 	product.addCallableProperty("01", SOCKET_PIN, gui1);//add a property that has an attached pin
 	Gui gui2 = Gui("Socket Control", BUTTON_SNSR, "Indicator", 0, 1, socketState);
 	product.addVirtualProperty("02", gui2);//add a logical property that has no attached pin
-	//gui3-7 for the timer control
+	Gui guiTest = Gui("Socket Control", BUTTON_CTL, "Test", 0, 1, socketState);
+	product.addVirtualProperty("20", guiTest);//add a logical property that has no attached pin
+	//gui3-8 for the timer control
 	Gui gui3 = Gui("Timer", BUTTON_SNSR, "Enabled", 0, 1, 0);
 	product.addVirtualProperty("11", gui3);//add a logical property that has no attached pin
 	Gui gui4 = Gui("Timer", SLIDER_SNSR, "Timer", 0, 24, 0);
