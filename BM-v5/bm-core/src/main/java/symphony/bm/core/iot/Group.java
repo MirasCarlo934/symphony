@@ -14,26 +14,21 @@ import symphony.bm.core.rest.interfaces.Resource;
 import java.util.List;
 import java.util.Vector;
 
+//@RequiredArgsConstructor
 public class Group extends Groupable implements Resource {
     @Id @JsonIgnore private String _id;
     @NonNull @Getter private String gid;
     @NonNull @Getter private String name;
 
-    @Transient protected final List<Thing> things = new Vector<>();
-    @Transient protected final List<Group> groups = new Vector<>();
+    @Transient protected List<Thing> things = new Vector<>();
+    @Transient protected List<Group> groups = new Vector<>();
 
     @PersistenceConstructor
-    public Group(List<String> parentGroups, String _id, @NonNull String gid, @NonNull String name) {
-        super(parentGroups);
-        this._id = _id;
-        this.gid = gid;
-        this.name = name;
-    }
-
     @JsonCreator
-    public Group(@JsonProperty("parentGroups") List<String> parentGroups,
+    public Group(@JsonProperty("parentGroups") List<String> parentGroups, String _id,
                  @JsonProperty("gid") @NonNull String gid, @JsonProperty("name") @NonNull String name) {
         super(parentGroups);
+        this._id = _id;
         this.gid = gid;
         this.name = name;
     }
@@ -42,10 +37,6 @@ public class Group extends Groupable implements Resource {
         super(new Vector<>());
         this.gid = gid;
         this.name = name;
-    }
-
-    public Group() {
-        super(null);
     }
 
     public Thing getThing(String UID) {

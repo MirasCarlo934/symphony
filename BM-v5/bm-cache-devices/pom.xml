@@ -72,6 +72,12 @@
             <version>0.0.4-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>symphony.bm</groupId>
+            <artifactId>bm-generics</artifactId>
+            <version>0.0.5-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
         <!-- THIS DEPENDENCY IS FOR DEVELOPMENT ONLY! -->
 <!--        <dependency>-->
 <!--            <groupId>symphony.bm</groupId>-->

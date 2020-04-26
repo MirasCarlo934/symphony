@@ -26,6 +26,7 @@ import java.util.Vector;
 @Slf4j
 public class ThingController {
     private final SuperGroup superGroup;
+    private final GroupController groupController;
     
     @GetMapping
     public List<ThingModel> getThingList() {
@@ -90,8 +91,7 @@ public class ThingController {
         for (String parentGID : groups) {
             Group group = superGroup.getGroupRecursively(parentGID);
             if (group == null) {
-                return buildErrorResponseEntity("Group " + parentGID + " does not exist",
-                        HttpStatus.BAD_REQUEST);
+                group = groupController.createDefaultGroup(parentGID);
             }
             groupList.add(group);
         }
@@ -171,10 +171,7 @@ public class ThingController {
         for (String GID : groups) {
             Group group = superGroup.getGroupRecursively(GID);
             if (group == null) {
-                log.info("Group " + GID + " does not exist. Creating new group " + GID + " with the same name");
-                group = new Group(GID, GID);
-                superGroup.addGroup(group);
-                group.create();
+                group = groupController.createDefaultGroup(GID);
             }
             log.info("Adding thing to group " + GID);
             group.addThing(thing);

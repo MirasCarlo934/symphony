@@ -43,10 +43,16 @@ public class GroupController {
             for (Thing thing : group.getCopyOfThingList()) {
                 log.debug("Thing " + thing.getUid() + " removed from group " + gid);
                 group.removeThing(thing);
+                if (thing.hasNoGroup()) {
+                    superGroup.addThing(thing);
+                }
             }
             for (Group subgroup : group.getCopyOfGroupList()) {
                 log.debug("Group " + subgroup.getGid() + " removed from group " + gid);
                 group.removeGroup(subgroup);
+                if (subgroup.hasNoGroup()) {
+                    superGroup.addGroup(subgroup);
+                }
             }
             for (String parentGID : group.getCopyOfParentGroups()) {
                 log.debug("Group " + gid + " removed from group " + parentGID);
@@ -61,7 +67,7 @@ public class GroupController {
     }
 
     @PostMapping("/{gid}")
-    public ResponseEntity<MicroserviceMessage> add(@PathVariable String gid, Group group)
+    public ResponseEntity<MicroserviceMessage> add(@PathVariable String gid, @RequestBody Group group)
             throws RestControllerProcessingException {
         if (!group.getGid().equals(gid)) {
             throw new RestControllerProcessingException("GID specified in path (" + gid + ") is not the same with " +
@@ -75,11 +81,22 @@ public class GroupController {
         log.debug("Adding group " + gid + "...");
         for (String parentGID : group.getCopyOfParentGroups()) {
             Group parent = superGroup.getGroupRecursively(parentGID);
+            if (parent == null) {
+                parent = createDefaultGroup(parentGID);
+            }
             parent.addGroup(group);
         }
         group.create();
 
         return buildSuccessResponseEntity("Group " + gid + " added", HttpStatus.CREATED);
+    }
+    
+    public Group createDefaultGroup(String GID) {
+        log.info("Group " + GID + " does not exist. Creating new group " + GID + " with the same name");
+        Group group = new Group(GID, GID);
+        superGroup.addGroup(group);
+        group.create();
+        return group;
     }
 
     private ResponseEntity<MicroserviceMessage> buildSuccessResponseEntity(String msg, HttpStatus status) {
