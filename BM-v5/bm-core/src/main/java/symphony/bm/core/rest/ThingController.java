@@ -150,7 +150,7 @@ public class ThingController {
         changed = changed || thing.update(form);
 
         if (changed) {
-            return buildSuccessResponseEntity("Thing updated", HttpStatus.OK);
+            return buildSuccessResponseEntity("Thing " + uid + " updated", HttpStatus.OK);
         } else {
             return buildSuccessResponseEntity("Nothing to update", HttpStatus.OK);
         }

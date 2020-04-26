@@ -8,7 +8,7 @@ import org.springframework.data.annotation.PersistenceConstructor;
 import symphony.bm.core.activitylisteners.ActivityListener;
 import symphony.bm.core.iot.attribute.Attribute;
 import symphony.bm.core.rest.forms.Form;
-import symphony.bm.core.rest.interfaces.Resource;
+import symphony.bm.core.rest.resources.Resource;
 
 import java.lang.reflect.Method;
 import java.util.List;

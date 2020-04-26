@@ -2,20 +2,15 @@ package symphony.bm.core.iot.attribute;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.PersistenceConstructor;
 import symphony.bm.core.activitylisteners.Listenable;
-import symphony.bm.core.iot.Groupable;
-import symphony.bm.core.iot.Thing;
 import symphony.bm.core.rest.forms.Form;
-import symphony.bm.core.rest.interfaces.Resource;
+import symphony.bm.core.rest.resources.Resource;
 
 import javax.validation.constraints.NotNull;
 import java.lang.reflect.Method;
-import java.util.List;
 import java.util.Map;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE,

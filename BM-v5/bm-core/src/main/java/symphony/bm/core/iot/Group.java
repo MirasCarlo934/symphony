@@ -11,7 +11,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.annotation.Transient;
 import symphony.bm.core.rest.forms.Form;
-import symphony.bm.core.rest.interfaces.Resource;
+import symphony.bm.core.rest.resources.Resource;
 
 import java.lang.reflect.Method;
 import java.util.List;

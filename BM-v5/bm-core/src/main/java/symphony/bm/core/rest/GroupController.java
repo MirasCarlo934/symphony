@@ -97,10 +97,36 @@ public class GroupController {
         return buildSuccessResponseEntity("Group " + gid + " added", HttpStatus.CREATED);
     }
     
-//    @PatchMapping("/{gid}")
-//    public ResponseEntity<MicroserviceMessage> update(@PathVariable String gid, @RequestBody GroupUpdateForm form) {
-//
-//    }
+    @PatchMapping("/{gid}")
+    public ResponseEntity<MicroserviceMessage> update(@PathVariable String gid, @RequestBody GroupUpdateForm form)
+            throws RestControllerProcessingException {
+        Group group = superGroup.getGroupRecursively(gid);
+        if (group == null) {
+            throw new RestControllerProcessingException("Group does not exist", HttpStatus.NOT_FOUND);
+        }
+    
+        boolean changed = false;
+        if (form.getParentGroups() != null && !group.isAlreadyGroupedIn(form.getParentGroups())) {
+            GroupGroupForm groupForm = new GroupGroupForm();
+            groupForm.setParentGroups(group.getCopyOfParentGroups());
+            removeGroup(gid, groupForm);
+            groupForm.setParentGroups(form.getParentGroups());
+            addGroup(gid, groupForm);
+            if (group.hasNoGroup()) {
+                superGroup.addGroup(group);
+            }
+            changed = true;
+        }
+    
+        log.info("Updating thing...");
+        changed = changed || group.update(form);
+    
+        if (changed) {
+            return buildSuccessResponseEntity("Group " + gid + " updated", HttpStatus.OK);
+        } else {
+            return buildSuccessResponseEntity("Nothing to update", HttpStatus.OK);
+        }
+    }
     
     @PostMapping("/{gid}/addgroup")
     public ResponseEntity<MicroserviceMessage> addGroup(@PathVariable String gid, @RequestBody GroupGroupForm form) {
