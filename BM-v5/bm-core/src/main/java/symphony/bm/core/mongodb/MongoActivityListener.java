@@ -101,7 +101,7 @@ public class MongoActivityListener extends TimerTask implements ActivityListener
     }
 
     @Override
-    public void groupUpdated(Group group, Map<String, String> updatedFields) {
+    public void groupUpdated(Group group, Map<String, Object> updatedFields) {
         save(group);
     }
 

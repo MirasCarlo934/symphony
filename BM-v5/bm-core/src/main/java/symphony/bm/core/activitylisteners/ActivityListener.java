@@ -14,7 +14,7 @@ public interface ActivityListener {
     void thingDeleted(Thing thing);
 
     void groupCreated(Group group);
-    void groupUpdated(Group group, Map<String, String> updatedFields);
+    void groupUpdated(Group group, Map<String, Object> updatedFields);
     void groupAddedToGroup(Group group, Group parent);
     void groupRemovedFromGroup(Group group, Group parent);
     void groupDeleted(Group group);

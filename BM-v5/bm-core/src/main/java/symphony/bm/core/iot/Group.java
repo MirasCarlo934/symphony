@@ -5,16 +5,20 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.annotation.Transient;
 import symphony.bm.core.rest.forms.Form;
 import symphony.bm.core.rest.interfaces.Resource;
 
+import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
-//@RequiredArgsConstructor
+@Slf4j
 public class Group extends Groupable implements Resource {
     @Id @JsonIgnore private String _id;
     @NonNull @Getter private String gid;
@@ -115,11 +119,13 @@ public class Group extends Groupable implements Resource {
             activityListeners.forEach( listener -> listener.groupRemovedFromGroup(group, this));
         }
     }
-
+    
+    @JsonIgnore
     public List<Thing> getCopyOfThingList() {
         return new Vector<>(things);
     }
-
+    
+    @JsonIgnore
     public List<Group> getCopyOfGroupList() {
         return new Vector<>(groups);
     }
@@ -155,9 +161,30 @@ public class Group extends Groupable implements Resource {
         activityListeners.forEach( listener -> listener.groupCreated(this));
     }
 
+    @SneakyThrows
     @Override
     public boolean update(Form form) {
-        return false;
+        boolean changed = false;
+        Map<String, Object> params = form.transformToMap();
+        for (Map.Entry<String, Object> param : params.entrySet()) {
+            boolean paramSettable = false;
+            String paramName = param.getKey().toLowerCase();
+            for (Method method : Group.class.getMethods()) {
+                String methodName = method.getName().toLowerCase();
+                if (methodName.contains("set") && methodName.substring(3).equals(paramName)) {
+                    log.info("Changing " + param.getKey() + " to " + param.getValue());
+                    method.invoke(this, param.getValue());
+                    paramSettable = changed = true;
+                }
+            }
+            if (!paramSettable) {
+                params.remove(param.getKey());
+            }
+        }
+        if (changed) {
+            activityListeners.forEach(activityListener -> activityListener.groupUpdated(this, params));
+        }
+        return changed;
     }
 
     @Override

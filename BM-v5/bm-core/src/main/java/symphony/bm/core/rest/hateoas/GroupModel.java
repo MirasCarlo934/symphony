@@ -46,6 +46,7 @@ public class GroupModel extends RepresentationModel<GroupModel> {
         this.add(selfLink
                 .andAffordance(afford(methodOn(GroupController.class).add(gid, null)))
                 .andAffordance(afford(methodOn(GroupController.class).delete(gid)))
+                .andAffordance(afford(methodOn(GroupController.class).addGroup(gid, null)))
         );
         for (Thing thing : group.getCopyOfThingList()) {
             things.add(new BasicThingModel(thing));

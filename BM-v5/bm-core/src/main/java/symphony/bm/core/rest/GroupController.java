@@ -8,10 +8,15 @@ import org.springframework.web.bind.annotation.*;
 import symphony.bm.core.iot.Group;
 import symphony.bm.core.iot.SuperGroup;
 import symphony.bm.core.iot.Thing;
+import symphony.bm.core.rest.forms.group.GroupUpdateForm;
+import symphony.bm.core.rest.forms.thing.ThingGroupForm;
 import symphony.bm.core.rest.hateoas.GroupModel;
 import symphony.bm.generics.exceptions.RestControllerProcessingException;
 import symphony.bm.generics.messages.MicroserviceMessage;
 import symphony.bm.generics.messages.MicroserviceSuccessfulMessage;
+import symphony.bm.generics.messages.MicroserviceUnsuccessfulMesage;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/groups")
@@ -89,6 +94,38 @@ public class GroupController {
         group.create();
 
         return buildSuccessResponseEntity("Group " + gid + " added", HttpStatus.CREATED);
+    }
+    
+//    @PatchMapping("/{gid}")
+//    public ResponseEntity<MicroserviceMessage> update(@PathVariable String gid, @RequestBody GroupUpdateForm form) {
+//
+//    }
+    
+    @PostMapping("/{gid}/addgroup")
+    public ResponseEntity<MicroserviceMessage> addGroup(@PathVariable String gid, @RequestBody GroupUpdateForm form) {
+        List<String> groups = form.getParentGroups();
+        Group group = superGroup.getGroupRecursively(gid);
+        if (group == null) {
+            String warn = "Group does not exist";
+            log.warn(warn);
+            return new ResponseEntity<>(new MicroserviceUnsuccessfulMesage(warn), HttpStatus.BAD_REQUEST);
+        }
+        
+        log.debug("Adding group " + group.getGid() + " to groups " + groups);
+        if (groups == null || groups.isEmpty()) {
+            log.info("Adding group " + gid + " to Super Group");
+            superGroup.addGroup(group);
+        }
+        for (String GID : groups) {
+            Group parentGroup = superGroup.getGroupRecursively(GID);
+            if (parentGroup == null) {
+                parentGroup = createDefaultGroup(GID);
+            }
+            log.info("Adding group " + gid + " to group " + GID);
+            parentGroup.addGroup(group);
+        }
+        
+        return buildSuccessResponseEntity("Group " + gid + " added to groups " + groups, HttpStatus.OK);
     }
     
     public Group createDefaultGroup(String GID) {

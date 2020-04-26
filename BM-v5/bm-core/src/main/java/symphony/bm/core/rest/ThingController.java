@@ -164,7 +164,7 @@ public class ThingController {
         }
 
         log.debug("Adding thing " + thing.getUid() + " to groups " + groups);
-        if (groups.isEmpty()) {
+        if (groups == null || groups.isEmpty()) {
             log.info("Adding thing " + thing.getUid() + " to Super Group");
             superGroup.addThing(thing);
         }
