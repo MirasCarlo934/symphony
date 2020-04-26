@@ -89,10 +89,8 @@ public class MongoActivityListener extends TimerTask implements ActivityListener
 
     @Override
     public void thingDeleted(Thing thing) {
-        log.info("Deleting thing " + thing.getUid() + " from DB");
-        if (thingsToSave.contains(thing)) {
-            thingsToSave.remove(thing);
-        }
+        log.debug("Deleting thing " + thing.getUid() + " from DB");
+        thingsToSave.remove(thing);
         mongo.remove(thing);
         log.info("Thing deleted from DB");
     }
@@ -104,22 +102,25 @@ public class MongoActivityListener extends TimerTask implements ActivityListener
 
     @Override
     public void groupUpdated(Group group, Map<String, String> updatedFields) {
-
+        save(group);
     }
 
     @Override
     public void groupAddedToGroup(Group group, Group parent) {
-
+        save(group);
     }
 
     @Override
     public void groupRemovedFromGroup(Group group, Group parent) {
-
+        save(group);
     }
 
     @Override
     public void groupDeleted(Group group) {
-
+        log.debug("Deleting group " + group.getGid() + " from DB");
+        groupsToSave.remove(group);
+        mongo.remove(group);
+        log.info("Group deleted from DB");
     }
 
     @Override
@@ -139,10 +140,8 @@ public class MongoActivityListener extends TimerTask implements ActivityListener
 
     @Override
     public void attributeRemovedFromThing(Attribute attribute, Thing thing) {
-        log.info("Deleting attribute " + thing.getUid() + "/" + attribute.getAid() + " from DB");
-        if (attributesToSave.contains(attribute)) {
-            attributesToSave.remove(attribute);
-        }
+        log.debug("Deleting attribute " + thing.getUid() + "/" + attribute.getAid() + " from DB");
+        attributesToSave.remove(attribute);
         mongo.remove(attribute);
         log.info("Attribute deleted from DB");
     }

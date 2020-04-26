@@ -60,6 +60,28 @@ public class GroupController {
         }
     }
 
+    @PostMapping("/{gid}")
+    public ResponseEntity<MicroserviceMessage> add(@PathVariable String gid, Group group)
+            throws RestControllerProcessingException {
+        if (!group.getGid().equals(gid)) {
+            throw new RestControllerProcessingException("GID specified in path (" + gid + ") is not the same with " +
+                    "GID of group (" + group.getGid() + ") in request body", HttpStatus.CONFLICT);
+        }
+
+        if (superGroup.getGroupRecursively(gid) != null) {
+            throw new RestControllerProcessingException("Group " + gid + " already exists", HttpStatus.CONFLICT);
+        }
+
+        log.debug("Adding group " + gid + "...");
+        for (String parentGID : group.getCopyOfParentGroups()) {
+            Group parent = superGroup.getGroupRecursively(parentGID);
+            parent.addGroup(group);
+        }
+        group.create();
+
+        return buildSuccessResponseEntity("Group " + gid + " added", HttpStatus.CREATED);
+    }
+
     private ResponseEntity<MicroserviceMessage> buildSuccessResponseEntity(String msg, HttpStatus status) {
         log.info(msg);
         return new ResponseEntity<>(new MicroserviceSuccessfulMessage(msg), status);

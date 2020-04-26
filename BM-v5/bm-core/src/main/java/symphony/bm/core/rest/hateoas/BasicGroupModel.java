@@ -1,6 +1,7 @@
 package symphony.bm.core.rest.hateoas;
 
 import lombok.Getter;
+import lombok.SneakyThrows;
 import org.springframework.hateoas.RepresentationModel;
 import symphony.bm.core.iot.Group;
 import symphony.bm.core.rest.GroupController;
@@ -15,6 +16,7 @@ public class BasicGroupModel extends RepresentationModel<BasicGroupModel> {
 //    @Getter public final List<String> parentGroups;
     @Getter public final String name;
 
+    @SneakyThrows
     public BasicGroupModel(Group group) {
         this.gid = group.getGid();
 //        this.parentGroups = group.getCopyOfParentGroups();

@@ -1,6 +1,7 @@
 package symphony.bm.core.rest.hateoas;
 
 import lombok.Getter;
+import lombok.SneakyThrows;
 import org.springframework.hateoas.Affordance;
 import org.springframework.hateoas.RepresentationModel;
 import symphony.bm.core.iot.Thing;
@@ -19,6 +20,7 @@ public class ThingModel extends RepresentationModel<ThingModel> {
     @Getter public final String name;
     @Getter public final List<AttributeModel> attributes = new Vector<>();
 
+    @SneakyThrows
     public ThingModel(Thing thing) {
         this.uid = thing.getUid();
         this.parentGroups = thing.getCopyOfParentGroups();

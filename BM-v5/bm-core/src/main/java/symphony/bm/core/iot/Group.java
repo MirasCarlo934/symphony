@@ -1,6 +1,8 @@
 package symphony.bm.core.iot;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NonNull;
 import org.springframework.data.annotation.Id;
@@ -28,10 +30,22 @@ public class Group extends Groupable implements Resource {
         this.name = name;
     }
 
+    @JsonCreator
+    public Group(@JsonProperty("parentGroups") List<String> parentGroups,
+                 @JsonProperty("gid") @NonNull String gid, @JsonProperty("name") @NonNull String name) {
+        super(parentGroups);
+        this.gid = gid;
+        this.name = name;
+    }
+
     public Group(@NonNull String gid, @NonNull String name) {
         super(new Vector<>());
         this.gid = gid;
         this.name = name;
+    }
+
+    public Group() {
+        super(null);
     }
 
     public Thing getThing(String UID) {

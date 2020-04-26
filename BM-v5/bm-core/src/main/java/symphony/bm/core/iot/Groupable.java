@@ -17,6 +17,9 @@ public abstract class Groupable extends Listenable {
     @NonNull @Setter(AccessLevel.PRIVATE) @Getter(AccessLevel.PROTECTED) private List<String> parentGroups;
 
     public Groupable(List<String> parentGroups) {
+        if (parentGroups == null) {
+            parentGroups = new Vector<>();
+        }
         this.parentGroups = parentGroups;
     }
 
