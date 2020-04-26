@@ -45,8 +45,9 @@ void Product::setValueChangeCallback(int (* Callback) (int propertyIndex, boolea
 * 	value		= the actual value
 */
 void Product::addProperty(String ssid, boolean directPin, int8_t pin, Gui gui) {
-	size++;
 	attribStruct as;
+	as.aid = size;
+	size++;
 	as.ssid = ssid;
 	as.directPin = directPin;
 	as.pin = pin;

@@ -13,8 +13,7 @@
 AsyncMqttClient mqttClient;
 const char* myId = "myMqttID";
 const char* mqttServer = "localhost";
-char* subscribeTopic = "devices/";
-String publishTopic = "BM";
+char* subscribeTopic = "things/";
 int mqttPort = 1883;
 long timerMillis = 0, reconnectIntervalMillis = 10000;	//default 10 second reconnect interval
 
@@ -153,9 +152,9 @@ void MqttHandler::connect() { //to connect to MQTT server
 /**
  * Publish data to the mqtt server
  */
-void MqttHandler::publish(const char* payload, uint8_t qos) {
-	Serial.printf("[MqttHandler] Publishing in topic BM at QoS %i\n", qos);
-	mqttClient.publish( publishTopic.c_str(), qos, false, payload);
+void MqttHandler::publish(const char* publishTopic, const char* payload) { //publish message to mqtt server
+	Serial.printf("[MqttHandler] Publishing in topic %s\n", publishTopic);
+	mqttClient.publish( publishTopic, 0, false, payload); //we are setting QOS of 0 to prevent from multiple sending of messages
 }
 
 /**
@@ -172,12 +171,6 @@ String MqttHandler::getSubscribedTopic() {
 	return subscribeTopic;
 }
 
-/**
- * Returns the topic where this device listens for control commands
- */
-String MqttHandler::getPublishTopic() {
-	return publishTopic;
-}
 /**
  * sets the reconnect interval
  */

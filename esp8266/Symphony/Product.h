@@ -65,6 +65,7 @@ struct guiStruct {
 
 struct attribStruct {
   String ssid;
+  int aid;
   boolean directPin = false;
   int8_t pin = 12;
   guiStruct gui;

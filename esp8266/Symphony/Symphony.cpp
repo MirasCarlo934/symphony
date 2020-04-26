@@ -81,10 +81,12 @@ int (* MqttCallback) (JsonObject& json);
  * Transmits data to the BM
  * 	this could be via MQTT or any other protocol
  */
-void transmit(const char* payload) {
+void transmit(int attribute_id, const char* payload) {
 	//for now, we are using mqtt
 	if (theMqttHandler.isConnected()) {
-		theMqttHandler.publish(payload, 0);	//we are setting QOS of 0 to prevent from multiple sending of messages
+		String theTopic = "BM/";
+		theTopic = "BM/" + Symphony::nameWithMac + "/attributes/" + attribute_id;
+		theMqttHandler.publish(theTopic.c_str(), payload);
 	} else {
 		Serial.println("[CORE] FAILED, not connected to MQTT. Unable to transmit data.");
 	}
@@ -115,15 +117,13 @@ int productValueChangedEvent (int propertyIndex, boolean forHub) {
 	reply.printTo(strReply);
 	ws.textAll(strReply);
 	if (forHub) {
+		//send to the Hub (for now we use MQTT, we can use other protocol later)
 		DynamicJsonBuffer buffer;
 		JsonObject& poopJson = buffer.createObject();
-		poopJson["MSN"] = "poop";
-		poopJson["CID"] = Symphony::nameWithMac;
-		poopJson["prop-index"] = propertyIndex;
-		poopJson["prop-value"] = a.gui.value;
+		poopJson["value"] = a.gui.value;
 		String strReg;
 		poopJson.printTo(strReg);
-		transmit(strReg.c_str());	//transmit to mqtt
+		transmit(a.aid, strReg.c_str());	//transmit to mqtt
 	}
 
 	Serial.println("[CORE] productValueChangeEvent done");
@@ -344,10 +344,8 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 void mqttMsgHandler(char* topic, char* payload, size_t len) {
 #ifdef DEBUG_ONLY
   Serial.print("[CORE] Messsage received.");
-  Serial.print(" topic:");
-  Serial.print(topic);
-  Serial.print(", len: ");
-  Serial.println(len);
+  Serial.print(" topic:");Serial.print(topic);
+  Serial.print(", len: ");Serial.println(len);
   Serial.printf("[CORE] payload: %s\n", payload);
 #endif
 	  DynamicJsonBuffer jsonBuffer;
@@ -511,12 +509,10 @@ void handleConfigInfo(AsyncWebServerRequest *request) {
 		Serial.println();
 #endif
 		if (!jsonObj.containsKey("sTopic")) {
-			Serial.printf("[CORE] sTopic not found. Should be %s\n", theMqttHandler.getSubscribedTopic().c_str());
 			jsonObj["sTopic"] = theMqttHandler.getSubscribedTopic();
 		}
 		if (!jsonObj.containsKey("pTopic")) {
-			Serial.printf("[CORE] pTopic not found. Should be %s\n", theMqttHandler.getPublishTopic().c_str());
-			jsonObj["pTopic"] = theMqttHandler.getPublishTopic();
+			jsonObj["pTopic"] = "BM";
 		}
 		jsonObj["mqttConn"] = theMqttHandler.isConnected();
 		String cfgInfo;
@@ -986,7 +982,7 @@ bool Symphony::registerProduct() {
 				JsonArray& pArray = regJson.createNestedArray("attributes");
 				for (int i=0; i < product.getSize(); i++) {
 					attribStruct a = product.getKeyVal(i);
-					Serial.printf("[CORE] registerProduct ssid=%s label=%s, pintype=%i\n", a.ssid.c_str(), a.gui.label.c_str(), a.gui.pinType);
+					Serial.printf("[CORE] registerProduct ssid=%s label=%s, pintype=%i, aId=%i\n", a.ssid.c_str(), a.gui.label.c_str(), a.gui.pinType, a.aid);
 					JsonObject& prop1 = pArray.createNestedObject();
 					if (a.gui.pinType == BUTTON_CTL || a.gui.pinType == SLIDER_CTL) {
 						prop1["mode"] = "controllable";
@@ -1012,12 +1008,12 @@ bool Symphony::registerProduct() {
 //							prop1["mode"] = "I";
 					}
 					prop1["name"] = a.gui.label;
-					prop1["aid"] = i;
+					prop1["aid"] = a.aid;
 					prop1["value"] = a.gui.value;
 				}
 				String strReg;
 				regJson.printTo(strReg);
-				theMqttHandler.publish(strReg.c_str(), 0);
+				theMqttHandler.publish("BM",strReg.c_str());
 				Serial.printf("[CORE] registerProduct end payload len=%i\n", strReg.length());
 			}
 		}
