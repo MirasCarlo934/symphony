@@ -340,6 +340,9 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 
 /**
  *  This is the MQTT callback handler that is called when a message from mqtt broker arrives
+ *  We will receive data in either of these forms:
+ *  	1. things/{uid}							for changes in the device properties
+ *  	2. things/{uid}/attributes/{aid}		for changes in the attribute values
  */
 void mqttMsgHandler(char* topic, char* payload, size_t len) {
 #ifdef DEBUG_ONLY
