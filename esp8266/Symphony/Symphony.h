@@ -68,7 +68,6 @@ class Symphony {
 	    void doReboot();
 	    void sendToWsServer(String replyStr);
 	    void transmit(const char* payload);
-	    static String getMRN();
 
 	private:
 	    String ap_ssid, ap_passphrase = "12345678";
