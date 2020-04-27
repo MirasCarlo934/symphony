@@ -36,6 +36,10 @@ public abstract class Groupable extends Listenable {
         return parentGroups.size() == groups.size() && parentGroups.containsAll(groups);
     }
 
+    public boolean hasGroup(String GID) {
+        return parentGroups.contains(GID);
+    }
+
     public boolean hasNoGroup() {
         return parentGroups.size() == 0;
     }

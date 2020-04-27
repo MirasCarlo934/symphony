@@ -133,21 +133,28 @@ public class ThingController {
             throw new RestControllerProcessingException("Thing " + uid + " does not exist", HttpStatus.NOT_FOUND);
         }
 
+        log.debug("Updating thing " + uid + "...");
         boolean changed = false;
         if (form.getParentGroups() != null && !thing.hasSameParentGroups(form.getParentGroups())) {
+            List<String> groupsToAdd = new Vector<>();
+            List<String> groupsToRemove = new Vector<>(thing.getCopyOfParentGroups());
+            form.getParentGroups().forEach(parentGID -> {
+                if (!thing.hasGroup(parentGID)) {
+                    groupsToAdd.add(parentGID);
+                } else {
+                    groupsToRemove.remove(parentGID);
+                }
+            });
             ThingGroupForm groupForm = new ThingGroupForm();
-            groupForm.setParentGroups(thing.getCopyOfParentGroups());
-            removeGroup(uid, groupForm);
-            groupForm.setParentGroups(form.getParentGroups());
+            groupForm.setParentGroups(groupsToAdd);
             addGroup(uid, groupForm);
-            if (thing.hasNoGroup()) {
-                superGroup.addThing(thing);
-            }
+            groupForm.setParentGroups(groupsToRemove);
+            removeGroup(uid, groupForm);
             changed = true;
         }
 
-        log.info("Updating thing...");
-        changed = changed || thing.update(form);
+        boolean updated = thing.update(form);
+        changed = changed || updated;
 
         if (changed) {
             return buildSuccessResponseEntity("Thing " + uid + " updated", HttpStatus.OK);

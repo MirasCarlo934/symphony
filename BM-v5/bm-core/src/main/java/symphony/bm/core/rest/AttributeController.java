@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import symphony.bm.core.iot.SuperGroup;
 import symphony.bm.core.iot.Thing;
-import symphony.bm.core.iot.attribute.Attribute;
+import symphony.bm.core.iot.Attribute;
 import symphony.bm.core.rest.forms.attribute.AttributeUpdateForm;
 import symphony.bm.core.rest.hateoas.AttributeModel;
 import symphony.bm.generics.exceptions.RestControllerProcessingException;

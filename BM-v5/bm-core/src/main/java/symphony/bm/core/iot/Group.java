@@ -14,6 +14,7 @@ import symphony.bm.core.rest.forms.Form;
 import symphony.bm.core.rest.resources.Resource;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -166,23 +167,25 @@ public class Group extends Groupable implements Resource {
     public boolean update(Form form) {
         boolean changed = false;
         Map<String, Object> params = form.transformToMap();
+        Map<String, Object> paramsChanged = new HashMap<>();
         for (Map.Entry<String, Object> param : params.entrySet()) {
             boolean paramSettable = false;
             String paramName = param.getKey().toLowerCase();
-            for (Method method : Group.class.getMethods()) {
+            for (Method method : Group.class.getDeclaredMethods()) {
                 String methodName = method.getName().toLowerCase();
                 if (methodName.contains("set") && methodName.substring(3).equals(paramName)) {
                     log.info("Changing " + param.getKey() + " to " + param.getValue());
                     method.invoke(this, param.getValue());
                     paramSettable = changed = true;
+                    break;
                 }
             }
-            if (!paramSettable) {
-                params.remove(param.getKey());
+            if (paramSettable) {
+                paramsChanged.put(param.getKey(), param.getValue());
             }
         }
         if (changed) {
-            activityListeners.forEach(activityListener -> activityListener.groupUpdated(this, params));
+            activityListeners.forEach(activityListener -> activityListener.groupUpdated(this, paramsChanged));
         }
         return changed;
     }

@@ -10,6 +10,7 @@ import symphony.bm.core.iot.SuperGroup;
 import symphony.bm.core.iot.Thing;
 import symphony.bm.core.rest.forms.group.GroupGroupForm;
 import symphony.bm.core.rest.forms.group.GroupUpdateForm;
+import symphony.bm.core.rest.forms.thing.ThingGroupForm;
 import symphony.bm.core.rest.hateoas.GroupModel;
 import symphony.bm.generics.exceptions.RestControllerProcessingException;
 import symphony.bm.generics.messages.MicroserviceMessage;
@@ -17,6 +18,7 @@ import symphony.bm.generics.messages.MicroserviceSuccessfulMessage;
 import symphony.bm.generics.messages.MicroserviceUnsuccessfulMesage;
 
 import java.util.List;
+import java.util.Vector;
 
 @RestController
 @RequestMapping("/groups")
@@ -103,22 +105,29 @@ public class GroupController {
         if (group == null) {
             throw new RestControllerProcessingException("Group does not exist", HttpStatus.NOT_FOUND);
         }
-    
+
+        log.debug("Updating group " + gid + "...");
         boolean changed = false;
         if (form.getParentGroups() != null && !group.hasSameParentGroups(form.getParentGroups())) {
+            List<String> groupsToAdd = new Vector<>();
+            List<String> groupsToRemove = new Vector<>(group.getCopyOfParentGroups());
+            form.getParentGroups().forEach(parentGID -> {
+                if (!group.hasGroup(parentGID)) {
+                    groupsToAdd.add(parentGID);
+                } else {
+                    groupsToRemove.remove(parentGID);
+                }
+            });
             GroupGroupForm groupForm = new GroupGroupForm();
-            groupForm.setParentGroups(group.getCopyOfParentGroups());
-            removeGroup(gid, groupForm);
-            groupForm.setParentGroups(form.getParentGroups());
+            groupForm.setParentGroups(groupsToAdd);
             addGroup(gid, groupForm);
-            if (group.hasNoGroup()) {
-                superGroup.addGroup(group);
-            }
+            groupForm.setParentGroups(groupsToRemove);
+            removeGroup(gid, groupForm);
             changed = true;
         }
-    
-        log.info("Updating thing...");
-        changed = changed || group.update(form);
+
+        boolean updated = group.update(form);
+        changed = changed || updated;
     
         if (changed) {
             return buildSuccessResponseEntity("Group " + gid + " updated", HttpStatus.OK);

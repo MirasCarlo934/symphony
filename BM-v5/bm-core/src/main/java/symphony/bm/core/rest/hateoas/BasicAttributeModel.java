@@ -3,11 +3,10 @@ package symphony.bm.core.rest.hateoas;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.springframework.hateoas.RepresentationModel;
-import symphony.bm.core.iot.attribute.Attribute;
+import symphony.bm.core.iot.Attribute;
 import symphony.bm.core.iot.attribute.AttributeDataType;
 import symphony.bm.core.iot.attribute.AttributeMode;
 import symphony.bm.core.rest.AttributeController;
-import symphony.bm.core.rest.ThingController;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;

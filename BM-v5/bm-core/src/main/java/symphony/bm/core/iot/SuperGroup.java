@@ -5,7 +5,6 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
 import symphony.bm.core.activitylisteners.ActivityListener;
-import symphony.bm.core.iot.attribute.Attribute;
 
 import java.util.List;
 
@@ -73,7 +72,7 @@ public class SuperGroup extends Group {
     }
 
     public void printContentCount() {
-        log.info(getContainedThings().size() + " things and " + getContainedGroups().size() + " groups currently exists");
+        log.info(getContainedThings().size() + " things and " + getContainedGroups().size() + " groups currently exist");
     }
 
     private Thing getThingFromList(String UID, List<Thing> thingList) {

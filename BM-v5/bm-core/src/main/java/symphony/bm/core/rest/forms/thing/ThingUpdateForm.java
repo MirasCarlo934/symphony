@@ -2,6 +2,7 @@ package symphony.bm.core.rest.forms.thing;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import symphony.bm.core.rest.forms.Form;
 import symphony.bm.core.rest.hateoas.AttributeModel;

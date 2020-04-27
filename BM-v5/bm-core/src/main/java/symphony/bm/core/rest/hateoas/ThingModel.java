@@ -2,10 +2,9 @@ package symphony.bm.core.rest.hateoas;
 
 import lombok.Getter;
 import lombok.SneakyThrows;
-import org.springframework.hateoas.Affordance;
 import org.springframework.hateoas.RepresentationModel;
 import symphony.bm.core.iot.Thing;
-import symphony.bm.core.iot.attribute.Attribute;
+import symphony.bm.core.iot.Attribute;
 import symphony.bm.core.rest.GroupController;
 import symphony.bm.core.rest.ThingController;
 
@@ -34,7 +33,6 @@ public class ThingModel extends RepresentationModel<ThingModel> {
 
         this.add(linkTo(methodOn(ThingController.class).get(uid)).withSelfRel()
                 .andAffordance(afford(methodOn(ThingController.class).add(uid, null)))
-//                .andAffordance(afford(methodOn(ThingController.class).replace(uid, null)))
                 .andAffordance(afford(methodOn(ThingController.class).update(uid, null)))
                 .andAffordance(afford(methodOn(ThingController.class).addGroup(uid, null)))
                 .andAffordance(afford(methodOn(ThingController.class).removeGroup(uid, null)))

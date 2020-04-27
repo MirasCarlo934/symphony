@@ -2,7 +2,7 @@ package symphony.bm.core.activitylisteners;
 
 import symphony.bm.core.iot.Group;
 import symphony.bm.core.iot.Thing;
-import symphony.bm.core.iot.attribute.Attribute;
+import symphony.bm.core.iot.Attribute;
 
 import java.util.Map;
 

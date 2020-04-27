@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import symphony.bm.core.activitylisteners.ActivityListener;
 import symphony.bm.core.iot.Group;
 import symphony.bm.core.iot.Thing;
-import symphony.bm.core.iot.attribute.Attribute;
+import symphony.bm.core.iot.Attribute;
 
 import java.util.Map;
 import java.util.Queue;
@@ -70,6 +70,9 @@ public class MongoActivityListener extends TimerTask implements ActivityListener
     @Override
     public void thingCreated(Thing thing) {
         save(thing);
+        for (Attribute attribute : thing.getCopyOfAttributeList()) {
+            attributeAddedToThing(attribute, thing);
+        }
     }
 
     @Override
@@ -91,8 +94,11 @@ public class MongoActivityListener extends TimerTask implements ActivityListener
     public void thingDeleted(Thing thing) {
         log.debug("Deleting thing " + thing.getUid() + " from DB");
         thingsToSave.remove(thing);
+        for (Attribute attribute : thing.getCopyOfAttributeList()) {
+            attributeRemovedFromThing(attribute, thing);
+        }
         mongo.remove(thing);
-        log.info("Thing deleted from DB");
+        log.info("Thing " + thing.getUid() + " deleted from DB");
     }
 
     @Override
@@ -120,7 +126,7 @@ public class MongoActivityListener extends TimerTask implements ActivityListener
         log.debug("Deleting group " + group.getGid() + " from DB");
         groupsToSave.remove(group);
         mongo.remove(group);
-        log.info("Group deleted from DB");
+        log.info("Group " + group.getGid() + " deleted from DB");
     }
 
     @Override
@@ -143,6 +149,6 @@ public class MongoActivityListener extends TimerTask implements ActivityListener
         log.debug("Deleting attribute " + thing.getUid() + "/" + attribute.getAid() + " from DB");
         attributesToSave.remove(attribute);
         mongo.remove(attribute);
-        log.info("Attribute deleted from DB");
+        log.info("Attribute " + thing.getUid() + "/" + attribute.getAid() + " deleted from DB");
     }
 }
