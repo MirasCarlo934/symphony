@@ -11,8 +11,8 @@ import symphony.bm.core.iot.SuperGroup;
 import symphony.bm.core.iot.Thing;
 import symphony.bm.core.rest.forms.thing.ThingGroupForm;
 import symphony.bm.core.rest.forms.thing.ThingUpdateForm;
-import symphony.bm.core.rest.hateoas.AttributeModel;
 import symphony.bm.core.rest.hateoas.ThingModel;
+import symphony.bm.generics.exceptions.RestControllerProcessingException;
 import symphony.bm.generics.messages.MicroserviceMessage;
 import symphony.bm.generics.messages.MicroserviceSuccessfulMessage;
 import symphony.bm.generics.messages.MicroserviceUnsuccessfulMesage;
@@ -38,25 +38,27 @@ public class ThingController {
     }
 
     @GetMapping("/{uid}")
-    public ThingModel get(@PathVariable String uid) {
+    public ThingModel get(@PathVariable String uid) throws RestControllerProcessingException {
+        Thing thing = superGroup.getThingRecursively(uid);
+        if (thing == null) {
+            throw new RestControllerProcessingException("Thing " + uid + " does not exist", HttpStatus.NOT_FOUND);
+        }
         return new ThingModel(superGroup.getThingRecursively(uid));
     }
 
     @DeleteMapping("/{uid}")
-    public ResponseEntity<MicroserviceMessage> delete(@PathVariable String uid) {
+    public ResponseEntity<MicroserviceMessage> delete(@PathVariable String uid) throws RestControllerProcessingException {
         Thing thing = superGroup.getThingRecursively(uid);
         if (thing == null) {
-            String warn = "Thing does not exist";
-            log.warn(warn);
-            return new ResponseEntity<>(new MicroserviceUnsuccessfulMesage(warn), HttpStatus.BAD_REQUEST);
+            throw new RestControllerProcessingException("Thing " + uid + " does not exist", HttpStatus.NOT_FOUND);
         }
 
         log.debug("Deleting thing " + uid + " ...");
-        List<String> groups = thing.getCopyOfParentGroups();
-        if (groups.isEmpty()) {
+        List<String> parentGIDs = thing.getCopyOfParentGroups();
+        if (parentGIDs.isEmpty()) {
             superGroup.removeThing(thing);
         }
-        for (String parentGID : groups) {
+        for (String parentGID : parentGIDs) {
             Group group = superGroup.getGroupRecursively(parentGID);
             log.info("Removing thing from group " + group.getGid() + "(" + group.getName() + ")");
             group.removeThing(thing);
@@ -67,17 +69,16 @@ public class ThingController {
     }
 
     @PostMapping("/{uid}")
-    public ResponseEntity<MicroserviceMessage> add(@PathVariable String uid, @RequestBody Thing thing) {
+    public ResponseEntity<MicroserviceMessage> add(@PathVariable String uid, @RequestBody Thing thing)
+            throws RestControllerProcessingException {
         if (!uid.equals(thing.getUid())) {
-            return buildErrorResponseEntity("UID specified in path (" + uid + ") is not the same with UID of thing ("
+            throw new RestControllerProcessingException("UID specified in path (" + uid + ") is not the same with UID of thing ("
                     + thing.getUid() + ") in request body", HttpStatus.CONFLICT);
         }
 
         Thing current = superGroup.getThingRecursively(uid);
         if (current != null) {
-            String warn = "Thing already exists. Thing will not be added to context";
-            log.warn(warn);
-            return new ResponseEntity<>(new MicroserviceUnsuccessfulMesage(warn), HttpStatus.CONFLICT);
+            throw new RestControllerProcessingException("Thing " + uid + " already exists", HttpStatus.NOT_FOUND);
         }
 
         log.debug("Adding thing " + uid + " ...");
@@ -124,17 +125,16 @@ public class ThingController {
 //        return buildSuccessResponseEntity("Thing replaced", HttpStatus.OK);
 //    }
 
-    @SneakyThrows
     @PatchMapping("/{uid}")
-    public ResponseEntity<MicroserviceMessage> update(@PathVariable String uid,
-                                                      @RequestBody ThingUpdateForm form) {
+    public ResponseEntity<MicroserviceMessage> update(@PathVariable String uid, @RequestBody ThingUpdateForm form)
+            throws RestControllerProcessingException {
         Thing thing = superGroup.getThingRecursively(uid);
         if (thing == null) {
-            return buildErrorResponseEntity("Thing does not exist", HttpStatus.NOT_FOUND);
+            throw new RestControllerProcessingException("Thing " + uid + " does not exist", HttpStatus.NOT_FOUND);
         }
 
         boolean changed = false;
-        if (form.getParentGroups() != null && !thing.isAlreadyGroupedIn(form.getParentGroups())) {
+        if (form.getParentGroups() != null && !thing.hasSameParentGroups(form.getParentGroups())) {
             ThingGroupForm groupForm = new ThingGroupForm();
             groupForm.setParentGroups(thing.getCopyOfParentGroups());
             removeGroup(uid, groupForm);
@@ -157,18 +157,17 @@ public class ThingController {
     }
 
     @PostMapping("/{uid}/addgroup")
-    public ResponseEntity<MicroserviceMessage> addGroup(@PathVariable String uid, @RequestBody ThingGroupForm form) {
+    public ResponseEntity<MicroserviceMessage> addGroup(@PathVariable String uid, @RequestBody ThingGroupForm form)
+            throws RestControllerProcessingException {
         List<String> groups = form.getParentGroups();
         Thing thing = superGroup.getThingRecursively(uid);
         if (thing == null) {
-            String warn = "Thing does not exist";
-            log.warn(warn);
-            return new ResponseEntity<>(new MicroserviceUnsuccessfulMesage(warn), HttpStatus.BAD_REQUEST);
+            throw new RestControllerProcessingException("Thing " + uid + " does not exist", HttpStatus.NOT_FOUND);
         }
 
         log.debug("Adding thing " + thing.getUid() + " to groups " + groups);
         if (groups == null || groups.isEmpty()) {
-            log.info("Adding thing " + thing.getUid() + " to Super Group");
+            log.info("Adding thing " + thing.getUid() + " to Super Group...");
             superGroup.addThing(thing);
         }
         for (String GID : groups) {
@@ -176,7 +175,7 @@ public class ThingController {
             if (group == null) {
                 group = groupController.createDefaultGroup(GID);
             }
-            log.info("Adding thing to group " + GID);
+            log.info("Adding thing to group " + GID + "...");
             group.addThing(thing);
         }
 
@@ -184,13 +183,12 @@ public class ThingController {
     }
 
     @PostMapping("/{uid}/removegroup")
-    public ResponseEntity<MicroserviceMessage> removeGroup(@PathVariable String uid, @RequestBody ThingGroupForm form) {
+    public ResponseEntity<MicroserviceMessage> removeGroup(@PathVariable String uid, @RequestBody ThingGroupForm form)
+            throws RestControllerProcessingException {
         List<String> groups = form.getParentGroups();
         Thing thing = superGroup.getThingRecursively(uid);
         if (thing == null) {
-            String warn = "Thing does not exist";
-            log.warn(warn);
-            return new ResponseEntity<>(new MicroserviceUnsuccessfulMesage(warn), HttpStatus.BAD_REQUEST);
+            throw new RestControllerProcessingException("Thing " + uid + " does not exist", HttpStatus.NOT_FOUND);
         }
 
         log.debug("Removing thing " + thing.getUid() + " from groups " + groups);
@@ -214,8 +212,8 @@ public class ThingController {
         return new ResponseEntity<>(new MicroserviceSuccessfulMessage(msg), status);
     }
 
-    private ResponseEntity<MicroserviceMessage> buildErrorResponseEntity(String msg, HttpStatus status) {
-        log.error(msg);
-        return new ResponseEntity<>(new MicroserviceUnsuccessfulMesage(msg), status);
-    }
+//    private ResponseEntity<MicroserviceMessage> buildErrorResponseEntity(String msg, HttpStatus status) {
+//        log.error(msg);
+//        return new ResponseEntity<>(new MicroserviceUnsuccessfulMesage(msg), status);
+//    }
 }

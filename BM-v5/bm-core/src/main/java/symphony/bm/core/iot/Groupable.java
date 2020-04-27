@@ -32,7 +32,7 @@ public abstract class Groupable extends Listenable {
         return parentGroups.size();
     }
 
-    public boolean isAlreadyGroupedIn(List<String> groups) {
+    public boolean hasSameParentGroups(List<String> groups) {
         return parentGroups.size() == groups.size() && parentGroups.containsAll(groups);
     }
 

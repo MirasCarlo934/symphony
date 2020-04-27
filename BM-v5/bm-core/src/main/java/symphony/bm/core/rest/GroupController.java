@@ -10,7 +10,6 @@ import symphony.bm.core.iot.SuperGroup;
 import symphony.bm.core.iot.Thing;
 import symphony.bm.core.rest.forms.group.GroupGroupForm;
 import symphony.bm.core.rest.forms.group.GroupUpdateForm;
-import symphony.bm.core.rest.forms.thing.ThingGroupForm;
 import symphony.bm.core.rest.hateoas.GroupModel;
 import symphony.bm.generics.exceptions.RestControllerProcessingException;
 import symphony.bm.generics.messages.MicroserviceMessage;
@@ -34,11 +33,11 @@ public class GroupController {
     @GetMapping("/{gid}")
     public GroupModel get(@PathVariable String gid) throws RestControllerProcessingException {
         Group group = superGroup.getGroupRecursively(gid);
-        if (group != null) {
-            return new GroupModel(group);
-        } else {
-            throw new RestControllerProcessingException("Group does not exist", HttpStatus.NOT_FOUND);
+        if (group == null) {
+            throw new RestControllerProcessingException("Group " + gid + " does not exist", HttpStatus.NOT_FOUND);
+
         }
+        return new GroupModel(group);
     }
 
     @DeleteMapping("/{gid}")
@@ -106,7 +105,7 @@ public class GroupController {
         }
     
         boolean changed = false;
-        if (form.getParentGroups() != null && !group.isAlreadyGroupedIn(form.getParentGroups())) {
+        if (form.getParentGroups() != null && !group.hasSameParentGroups(form.getParentGroups())) {
             GroupGroupForm groupForm = new GroupGroupForm();
             groupForm.setParentGroups(group.getCopyOfParentGroups());
             removeGroup(gid, groupForm);

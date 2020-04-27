@@ -26,7 +26,7 @@ public class AttributeController {
     private final SuperGroup superGroup;
 
     @GetMapping
-    public List<AttributeModel> getAll(@PathVariable String uid) throws RestControllerProcessingException {
+    public List<AttributeModel> getAttributeList(@PathVariable String uid) throws RestControllerProcessingException {
         Thing thing = superGroup.getThingRecursively(uid);
         if (thing != null) {
             List<Attribute> attributes = thing.getCopyOfAttributeList();
