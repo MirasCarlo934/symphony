@@ -14,7 +14,7 @@ import java.util.Vector;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE)
 public abstract class Groupable extends Listenable {
-    @NonNull @Setter(AccessLevel.PRIVATE) @Getter(AccessLevel.PROTECTED) private List<String> parentGroups;
+    @NonNull @Setter(/*AccessLevel.PRIVATE*/) @Getter(/*AccessLevel.PROTECTED*/) private List<String> parentGroups;
 
     public Groupable(List<String> parentGroups) {
         if (parentGroups == null) {

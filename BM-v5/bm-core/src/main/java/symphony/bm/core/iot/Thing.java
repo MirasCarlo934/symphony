@@ -20,9 +20,9 @@ import java.util.Vector;
 @Slf4j
 public class Thing extends Groupable implements Resource {
     @Id @JsonIgnore private String _id;
-    @NotNull @NonNull @Getter private final String uid;
-    @NotNull @NonNull @Setter(AccessLevel.PRIVATE) @Getter private String name;
-    @NotNull @NonNull @Getter(AccessLevel.PACKAGE) private List<Attribute> attributes = new Vector<>();
+    @NotNull @NonNull @Setter @Getter private String uid;
+    @NotNull @NonNull @Setter(/*AccessLevel.PRIVATE*/) @Getter private String name;
+    @NotNull @NonNull @Setter @Getter(/*AccessLevel.PACKAGE*/) private List<Attribute> attributes = new Vector<>();
 
     @PersistenceConstructor
     public Thing(@NonNull List<String> parentGroups, String _id, @NonNull String uid, @NonNull String name) {

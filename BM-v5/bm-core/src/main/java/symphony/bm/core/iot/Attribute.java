@@ -25,7 +25,7 @@ import java.util.Map;
 @Slf4j
 public class Attribute extends Listenable implements Resource {
     @Id @JsonIgnore private String _id;
-    @NotNull @NonNull @Getter private String aid;
+    @NotNull @NonNull @Setter @Getter private String aid;
     @NotNull @Setter(AccessLevel.PACKAGE) @Getter private String thing;
     @NotNull @NonNull @Setter @Getter private String name;
     @NotNull @NonNull @Setter @Getter private AttributeMode mode;

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.annotation.Id;
@@ -13,6 +14,7 @@ import org.springframework.data.annotation.Transient;
 import symphony.bm.core.rest.forms.Form;
 import symphony.bm.core.rest.resources.Resource;
 
+import javax.validation.constraints.NotNull;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
@@ -22,8 +24,8 @@ import java.util.Vector;
 @Slf4j
 public class Group extends Groupable implements Resource {
     @Id @JsonIgnore private String _id;
-    @NonNull @Getter private String gid;
-    @NonNull @Getter private String name;
+    @NotNull @NonNull @Setter @Getter private String gid;
+    @NotNull @NonNull @Setter @Getter private String name;
 
     @Transient protected List<Thing> things = new Vector<>();
     @Transient protected List<Group> groups = new Vector<>();
