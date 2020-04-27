@@ -137,13 +137,12 @@ public class GroupController {
     }
     
     @PostMapping("/{gid}/addgroup")
-    public ResponseEntity<MicroserviceMessage> addGroup(@PathVariable String gid, @RequestBody GroupGroupForm form) {
+    public ResponseEntity<MicroserviceMessage> addGroup(@PathVariable String gid, @RequestBody GroupGroupForm form)
+            throws RestControllerProcessingException {
         List<String> groups = form.getParentGroups();
         Group group = superGroup.getGroupRecursively(gid);
         if (group == null) {
-            String warn = "Group does not exist";
-            log.warn(warn);
-            return new ResponseEntity<>(new MicroserviceUnsuccessfulMesage(warn), HttpStatus.BAD_REQUEST);
+            throw new RestControllerProcessingException("Group " + gid + " does not exist", HttpStatus.NOT_FOUND);
         }
         
         log.debug("Adding group " + group.getGid() + " to groups " + groups);
@@ -151,12 +150,16 @@ public class GroupController {
             log.info("Adding group " + gid + " to Super Group");
             superGroup.addGroup(group);
         }
-        for (String GID : groups) {
-            Group parentGroup = superGroup.getGroupRecursively(GID);
+        for (String parentGID : groups) {
+            Group parentGroup = superGroup.getGroupRecursively(parentGID);
             if (parentGroup == null) {
-                parentGroup = createDefaultGroup(GID);
+                parentGroup = createDefaultGroup(parentGID);
+            } else if (group.getGroupRecursively(parentGID) != null) {
+                throw new RestControllerProcessingException("Adding group " + gid + " under group " + parentGID
+                        + " will result to a circular grouping structure (child will contain parent)",
+                        HttpStatus.CONFLICT);
             }
-            log.info("Adding group " + gid + " to group " + GID);
+            log.info("Adding group " + gid + " to group " + parentGID);
             parentGroup.addGroup(group);
         }
         

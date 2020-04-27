@@ -131,6 +131,7 @@ public class Group extends Groupable implements Resource {
         return new Vector<>(groups);
     }
 
+    @JsonIgnore
     public List<Thing> getContainedThings() {
         List<Thing> thingList = new Vector<>(things);
         for (Group group : groups) {
@@ -144,6 +145,7 @@ public class Group extends Groupable implements Resource {
         return thingList;
     }
 
+    @JsonIgnore
     public List<Group> getContainedGroups() {
         List<Group> groupList = new Vector<>(groups);
         for (Group group : groups) {
