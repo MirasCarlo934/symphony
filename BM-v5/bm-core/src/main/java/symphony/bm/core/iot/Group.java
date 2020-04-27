@@ -111,8 +111,10 @@ public class Group extends Groupable implements Resource {
     }
 
     public void addGroup(Group group) {
+        if (getGroup(group.getGid()) != null) return;
         group.setActivityListeners(activityListeners);
         groups.add(group);
+        group.addParentGroup(gid);
         activityListeners.forEach( listener -> listener.groupAddedToGroup(group, this));
     }
 
