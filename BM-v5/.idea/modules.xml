@@ -2,13 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/bm-cache-devices/bm-cache-devices.iml" filepath="$PROJECT_DIR$/bm-cache-devices/bm-cache-devices.iml" />
-      <module fileurl="file://$PROJECT_DIR$/bm-cache-rules/bm-cache-rules.iml" filepath="$PROJECT_DIR$/bm-cache-rules/bm-cache-rules.iml" />
       <module fileurl="file://$PROJECT_DIR$/bm-comms/bm-comms.iml" filepath="$PROJECT_DIR$/bm-comms/bm-comms.iml" />
       <module fileurl="file://$PROJECT_DIR$/bm-core/bm-core.iml" filepath="$PROJECT_DIR$/bm-core/bm-core.iml" />
       <module fileurl="file://$PROJECT_DIR$/bm-generics/bm-generics.iml" filepath="$PROJECT_DIR$/bm-generics/bm-generics.iml" />
-      <module fileurl="file://$PROJECT_DIR$/bm-services-poop/bm-services-poop.iml" filepath="$PROJECT_DIR$/bm-services-poop/bm-services-poop.iml" />
-      <module fileurl="file://$PROJECT_DIR$/bm-services-registry/bm-services-registry.iml" filepath="$PROJECT_DIR$/bm-services-registry/bm-services-registry.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bm-mqtt/bm-mqtt.iml" filepath="$PROJECT_DIR$/bm-mqtt/bm-mqtt.iml" />
       <module fileurl="file://$PROJECT_DIR$/resources/resources.iml" filepath="$PROJECT_DIR$/resources/resources.iml" />
     </modules>
   </component>

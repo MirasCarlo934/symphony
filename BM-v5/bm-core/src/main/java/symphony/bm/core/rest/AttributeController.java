@@ -31,7 +31,7 @@ public class AttributeController {
         if (thing != null) {
             List<Attribute> attributes = thing.getCopyOfAttributeList();
             List<AttributeModel> attributeModels = new Vector<>();
-            attributes.forEach( attribute -> attributeModels.add(new AttributeModel(attribute, uid, false)));
+            attributes.forEach( attribute -> attributeModels.add(new AttributeModel(attribute, false)));
             return attributeModels;
         } else {
             throw new RestControllerProcessingException("Thing " + uid + " does not exist", HttpStatus.NOT_FOUND);
@@ -45,7 +45,7 @@ public class AttributeController {
         if (thing != null) {
             Attribute attribute = thing.getAttribute(aid);
             if (attribute != null) {
-                return new AttributeModel(attribute, uid, true);
+                return new AttributeModel(attribute, true);
             } else {
                 throw new RestControllerProcessingException("Attribute " + thing.getUid() + "/" + aid
                         + " does not exist", HttpStatus.NOT_FOUND);
@@ -79,7 +79,7 @@ public class AttributeController {
     public ResponseEntity<MicroserviceMessage> add(@PathVariable String uid, @PathVariable String aid,
                                                    @RequestBody Attribute attribute)
             throws RestControllerProcessingException {
-        if (!uid.equals(attribute.getThing())) {
+        if (attribute.getThing() != null && !uid.equals(attribute.getThing())) {
             throw new RestControllerProcessingException("UID specified in path (" + uid + ") is not the same with " +
                     "specified UID of attribute (" + attribute.getThing() + ") in request body", HttpStatus.CONFLICT);
         }

@@ -105,25 +105,24 @@ public class ThingController {
         return buildSuccessResponseEntity("Thing added", HttpStatus.CREATED);
     }
 
-//    @PutMapping("/{uid}")
-//    public ResponseEntity<MicroserviceMessage> replace(@PathVariable String uid, @RequestBody Thing thing) {
-//        if (!uid.equals(thing.getUid())) {
-//            return buildErrorResponseEntity("UID specified in path (" + uid + ") is not the same with UID of thing ("
-//                    + thing.getUid() + ") in request body", HttpStatus.CONFLICT);
-//        }
-//
-//        Thing current = superGroup.getThingRecursively(uid);
-//        if (current == null) {
-//            log.info("Thing does not exist yet");
-//            return add(uid, thing);
-//        }
-//
-//        log.info("Replacing thing " + uid + "...");
-//        delete(uid);
-//        add(uid, thing);
-//
-//        return buildSuccessResponseEntity("Thing replaced", HttpStatus.OK);
-//    }
+    @PutMapping("/{uid}")
+    public ResponseEntity<MicroserviceMessage> put(@PathVariable String uid, @RequestBody Thing thing)
+            throws RestControllerProcessingException {
+        if (!uid.equals(thing.getUid())) {
+            throw new RestControllerProcessingException("UID specified in path (" + uid + ") is not the same with UID of thing ("
+                    + thing.getUid() + ") in request body", HttpStatus.CONFLICT);
+        }
+
+        Thing current = superGroup.getThingRecursively(uid);
+        if (current == null) {
+            log.debug("Thing " + uid + " does not exist yet");
+            return add(uid, thing);
+        }
+
+        log.debug("Updating thing " + uid + "...");
+        ThingUpdateForm form = new ThingUpdateForm(thing.getName(), thing.getCopyOfParentGroups());
+        return update(uid, form);
+    }
 
     @PatchMapping("/{uid}")
     public ResponseEntity<MicroserviceMessage> update(@PathVariable String uid, @RequestBody ThingUpdateForm form)
@@ -145,8 +144,7 @@ public class ThingController {
                     groupsToRemove.remove(parentGID);
                 }
             });
-            ThingGroupForm groupForm = new ThingGroupForm();
-            groupForm.setParentGroups(groupsToAdd);
+            ThingGroupForm groupForm = new ThingGroupForm(groupsToAdd);
             addGroup(uid, groupForm);
             groupForm.setParentGroups(groupsToRemove);
             removeGroup(uid, groupForm);

@@ -1,0 +1,91 @@
+package symphony.bm.mqtt;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.MessageHandler;
+import org.springframework.messaging.MessagingException;
+import org.springframework.messaging.support.GenericMessage;
+import org.springframework.stereotype.Component;
+import symphony.bm.generics.messages.MicroserviceMessage;
+import symphony.bm.generics.messages.MicroserviceUnsuccessfulMesage;
+
+import java.io.IOException;
+import java.util.*;
+
+@Component
+@Slf4j
+public class MqttController implements MessageHandler {
+    private String bmURL;
+    private String bmCorePort;
+    private MessageChannel outbound;
+
+    public MqttController(@Value("${bm.url}") String bmURL, @Value("${bm.port.core}") String bmCorePort,
+                          @Qualifier("mqttOutboundChannel") MessageChannel outbound) {
+        this.bmURL = bmURL;
+        this.bmCorePort = bmCorePort;
+        this.outbound = outbound;
+    }
+
+    @Override
+    public void handleMessage(Message<?> message) throws MessagingException {
+        String topic = (String) message.getHeaders().get("mqtt_receivedTopic");
+        String payload = (String) message.getPayload();
+        StringBuilder thingUrlBuilder = new StringBuilder("things");
+        HttpClient httpClient = HttpClientBuilder.create().build();
+
+        log.debug("Message received from topic " + topic);
+        log.debug("Message: " + payload);
+
+        List<String> topicLevels = new ArrayList<>(Arrays.asList(topic.split("/")));
+        topicLevels.remove(0);
+        topicLevels.forEach( level -> thingUrlBuilder.append("/").append(level));
+
+        String resourceUrl = bmURL + ":" + bmCorePort + "/" + thingUrlBuilder.toString();
+        HttpPut request = new HttpPut(resourceUrl);
+        request.setEntity(new StringEntity(payload, ContentType.APPLICATION_JSON));
+        HttpResponse response;
+        try {
+            log.debug("Requesting resource " + resourceUrl + "...");
+            response = httpClient.execute(request);
+            JsonNode jsonRsp = new ObjectMapper().readTree(EntityUtils.toString(response.getEntity()));
+            log.debug("Response from " + resourceUrl + ": " + jsonRsp.toString());
+            Map<String, Object> headers = new HashMap<>();
+            headers.put("mqtt_topic", thingUrlBuilder.toString());
+            publish(new GenericMessage<>(jsonRsp.toString(), headers));
+        } catch (IOException e) {
+            Map<String, Object> headers = new HashMap<>();
+            headers.put("mqtt_topic", thingUrlBuilder.toString());
+            MicroserviceUnsuccessfulMesage msg = new MicroserviceUnsuccessfulMesage("Unable to request Thing resource");
+            String msgStr;
+            try {
+                msgStr = new ObjectMapper().writeValueAsString(msg);
+            } catch (JsonProcessingException jsonProcessingException) {
+                throw new MessagingException("JsonProcessingException:", jsonProcessingException);
+            }
+            publish(new GenericMessage<>(msgStr, headers));
+        }
+    }
+
+    private void publish(Message<String> message) {
+        log.debug("Publishing to topic " + message.getHeaders().get("mqtt_topic"));
+        log.debug("Message: " + message.getPayload());
+        outbound.send(message);
+    }
+
+}

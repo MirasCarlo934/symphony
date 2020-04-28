@@ -6,6 +6,7 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.annotation.Transient;
 import symphony.bm.core.activitylisteners.ActivityListener;
 import symphony.bm.core.rest.forms.Form;
 import symphony.bm.core.rest.resources.Resource;
@@ -22,7 +23,8 @@ public class Thing extends Groupable implements Resource {
     @Id @JsonIgnore private String _id;
     @NotNull @NonNull @Setter @Getter private String uid;
     @NotNull @NonNull @Setter(/*AccessLevel.PRIVATE*/) @Getter private String name;
-    @NotNull @NonNull @Setter @Getter(/*AccessLevel.PACKAGE*/) private List<Attribute> attributes = new Vector<>();
+
+    @Transient @NotNull @NonNull @Setter @Getter(/*AccessLevel.PACKAGE*/) private List<Attribute> attributes = new Vector<>();
 
     @PersistenceConstructor
     public Thing(@NonNull List<String> parentGroups, String _id, @NonNull String uid, @NonNull String name) {
@@ -66,6 +68,7 @@ public class Thing extends Groupable implements Resource {
     public void addAttribute(Attribute attribute) {
         if (!attributes.contains(attribute)) {
             attributes.add(attribute);
+            attribute.setThing(uid);
             activityListeners.forEach( activityListener -> activityListener.attributeAddedToThing(attribute, this));
         }
     }

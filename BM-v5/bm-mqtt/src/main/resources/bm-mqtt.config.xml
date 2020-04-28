@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int-mqtt="http://www.springframework.org/schema/integration/mqtt"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/integration/mqtt http://www.springframework.org/schema/integration/mqtt/spring-integration-mqtt.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:property-placeholder location="file:${bm.resources.home}/bm.properties"/>
+
+    <bean id="clientFactory"
+          class="org.springframework.integration.mqtt.core.DefaultMqttPahoClientFactory">
+        <property name="connectionOptions">
+            <bean class="org.eclipse.paho.client.mqttv3.MqttConnectOptions">
+<!--                <property name="userName" value="${mqtt.username}"/>-->
+<!--                <property name="password" value="${mqtt.password}"/>-->
+            </bean>
+        </property>
+    </bean>
+
+    <int-mqtt:message-driven-channel-adapter id="mqttInbound"
+                                             client-id="${mqtt.client.id}.inbound"
+                                             url="${mqtt.serverURI}"
+                                             topics="BM/#"
+                                             qos="2"
+                                             client-factory="clientFactory"
+                                             channel="mqttInboundChannel"
+                                             error-channel="mqttErrorChannel"/>
+
+    <int-mqtt:outbound-channel-adapter id="withConverter"
+                                       client-id="${mqtt.client.id}.outbound"
+                                       url="${mqtt.serverURI}"
+                                       client-factory="clientFactory"
+                                       default-qos="2"
+                                       default-retained="false"
+                                       default-topic="${mqtt.topic.default}"
+                                       async="false"
+                                       async-events="false"
+                                       channel="mqttOutboundChannel"/>
+
+    <int:channel id="mqttInboundChannel"/>
+    <int:channel id="mqttOutboundChannel"/>
+    <int:channel id="mqttErrorChannel"/>
+
+    <int:service-activator input-channel="mqttInboundChannel" ref="mqttController"/>
+    <int:service-activator input-channel="mqttErrorChannel" ref="mqttErrorController"/>
+
+<!--    <int-mqtt:message-driven-channel-adapter id="mqttInbound"-->
+<!--                                             client-id="${mqtt.default.client.id}.src"-->
+<!--                                             url="${mqtt.url}"-->
+<!--                                             topics="sometopic"-->
+<!--                                             client-factory="clientFactory"-->
+<!--                                             channel="output"/>-->
+
+<!--    <int-mqtt:outbound-channel-adapter id="withConverter"-->
+<!--                                       client-id="foo"-->
+<!--                                       url="tcp://localhost:1883"-->
+<!--                                       converter="myConverter"-->
+<!--                                       client-factory="clientFactory"-->
+<!--                                       default-qos="1"-->
+<!--                                       qos-expression=""-->
+<!--                                       default-retained="true"-->
+<!--                                       retained-expression=""-->
+<!--                                       default-topic="bar"-->
+<!--                                       topic-expression=""-->
+<!--                                       async="false"-->
+<!--                                       async-events="false"-->
+<!--                                       channel="target" />-->
+</beans>
