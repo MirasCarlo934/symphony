@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import symphony.bm.core.iot.Attribute;
 import symphony.bm.core.rest.forms.Form;
 import symphony.bm.core.rest.hateoas.AttributeModel;
 
@@ -18,4 +19,5 @@ import java.util.Vector;
 public class ThingUpdateForm extends Form {
     String name = null;
     List<String> parentGroups = null;
+    List<Attribute> attributes = null;
 }

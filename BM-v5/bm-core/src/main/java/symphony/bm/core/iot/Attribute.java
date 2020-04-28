@@ -53,6 +53,10 @@ public class Attribute extends Listenable implements Resource {
         this.value = value;
     }
 
+    public void setMode(String mode) throws IllegalArgumentException {
+        this.mode = AttributeMode.valueOf(mode);
+    }
+
     @Override
     public void create() {
         // all attribute create/delete functions are done on Thing-level
@@ -69,7 +73,9 @@ public class Attribute extends Listenable implements Resource {
             String paramName = param.getKey().toLowerCase();
             for (Method method : Attribute.class.getDeclaredMethods()) {
                 String methodName = method.getName().toLowerCase();
-                if (methodName.contains("set") && methodName.substring(3).equals(paramName)) {
+                if (methodName.contains("set") && methodName.substring(3).equals(paramName) &&
+                        method.getParameterCount() == 1 &&
+                        (method.getParameterTypes()[0].equals(param.getKey().getClass()) || paramName.equals("value"))) {
                     log.info("Changing " + param.getKey() + " to " + param.getValue());
                     method.invoke(this, param.getValue());
                     paramSettable = changed = true;

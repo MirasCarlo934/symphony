@@ -9,6 +9,7 @@ import symphony.bm.core.iot.SuperGroup;
 import symphony.bm.core.iot.Thing;
 import symphony.bm.core.iot.Attribute;
 import symphony.bm.core.rest.forms.attribute.AttributeUpdateForm;
+import symphony.bm.core.rest.forms.thing.ThingUpdateForm;
 import symphony.bm.core.rest.hateoas.AttributeModel;
 import symphony.bm.generics.exceptions.RestControllerProcessingException;
 import symphony.bm.generics.messages.MicroserviceMessage;
@@ -122,6 +123,35 @@ public class AttributeController {
             } else {
                 throw new RestControllerProcessingException("Attribute " + thing.getUid() + "/" + aid
                         + " does not exist", HttpStatus.NOT_FOUND);
+            }
+        } else {
+            throw new RestControllerProcessingException("Thing " + uid + "does not exist", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping("/{aid}")
+    public ResponseEntity<MicroserviceMessage> put(@PathVariable String uid, @PathVariable String aid,
+                                                   @RequestBody Attribute attribute) throws RestControllerProcessingException {
+        if (attribute.getThing() != null && !uid.equals(attribute.getThing())) {
+            throw new RestControllerProcessingException("UID specified in path (" + uid + ") is not the same with " +
+                    "specified UID of attribute (" + attribute.getThing() + ") in request body", HttpStatus.CONFLICT);
+        }
+        if (!aid.equals(attribute.getAid())) {
+            throw new RestControllerProcessingException("AID specified in path (" + aid + ") is not the same with " +
+                    "AID of attribute (" + attribute.getAid() + ") in request body", HttpStatus.CONFLICT);
+        }
+
+        Thing thing = superGroup.getThingRecursively(uid);
+        if (thing != null) {
+            Attribute a = thing.getAttribute(aid);
+            if (a == null) {
+                log.debug("Attribute " + aid + " does not exist yet");
+                return add(uid, aid, attribute);
+            } else {
+                log.debug("Updating attribute " + aid + "...");
+                AttributeUpdateForm form = new AttributeUpdateForm(attribute.getName(), attribute.getMode(),
+                        attribute.getDataType(), attribute.getValue());
+                return update(uid, aid, form);
             }
         } else {
             throw new RestControllerProcessingException("Thing " + uid + "does not exist", HttpStatus.NOT_FOUND);

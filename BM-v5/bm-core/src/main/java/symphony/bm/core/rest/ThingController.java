@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import symphony.bm.core.iot.Attribute;
 import symphony.bm.core.iot.Group;
 import symphony.bm.core.iot.SuperGroup;
 import symphony.bm.core.iot.Thing;
@@ -27,6 +28,7 @@ import java.util.Vector;
 public class ThingController {
     private final SuperGroup superGroup;
     private final GroupController groupController;
+    private final AttributeController attributeController;
     
     @GetMapping
     public List<ThingModel> getThingList() {
@@ -105,25 +107,6 @@ public class ThingController {
         return buildSuccessResponseEntity("Thing added", HttpStatus.CREATED);
     }
 
-    @PutMapping("/{uid}")
-    public ResponseEntity<MicroserviceMessage> put(@PathVariable String uid, @RequestBody Thing thing)
-            throws RestControllerProcessingException {
-        if (!uid.equals(thing.getUid())) {
-            throw new RestControllerProcessingException("UID specified in path (" + uid + ") is not the same with UID of thing ("
-                    + thing.getUid() + ") in request body", HttpStatus.CONFLICT);
-        }
-
-        Thing current = superGroup.getThingRecursively(uid);
-        if (current == null) {
-            log.debug("Thing " + uid + " does not exist yet");
-            return add(uid, thing);
-        }
-
-        log.debug("Updating thing " + uid + "...");
-        ThingUpdateForm form = new ThingUpdateForm(thing.getName(), thing.getCopyOfParentGroups());
-        return update(uid, form);
-    }
-
     @PatchMapping("/{uid}")
     public ResponseEntity<MicroserviceMessage> update(@PathVariable String uid, @RequestBody ThingUpdateForm form)
             throws RestControllerProcessingException {
@@ -159,6 +142,31 @@ public class ThingController {
         } else {
             return buildSuccessResponseEntity("Nothing to update", HttpStatus.OK);
         }
+    }
+
+    @PutMapping("/{uid}")
+    public ResponseEntity<MicroserviceMessage> put(@PathVariable String uid, @RequestBody Thing thing)
+            throws RestControllerProcessingException {
+        if (!uid.equals(thing.getUid())) {
+            throw new RestControllerProcessingException("UID specified in path (" + uid + ") is not the same with UID of thing ("
+                    + thing.getUid() + ") in request body", HttpStatus.CONFLICT);
+        }
+
+        Thing current = superGroup.getThingRecursively(uid);
+        if (current == null) {
+            log.debug("Thing " + uid + " does not exist yet");
+            return add(uid, thing);
+        }
+
+        log.debug("Updating thing " + uid + "...");
+        ThingUpdateForm form = new ThingUpdateForm(thing.getName(), thing.getCopyOfParentGroups(),
+                thing.getCopyOfAttributeList());
+        if (form.getAttributes() != null && !form.getAttributes().isEmpty()) {
+            for (Attribute attribute : form.getAttributes()) {
+                attributeController.put(uid, attribute.getAid(), attribute);
+            }
+        }
+        return update(uid, form);
     }
 
     @PostMapping("/{uid}/addgroup")

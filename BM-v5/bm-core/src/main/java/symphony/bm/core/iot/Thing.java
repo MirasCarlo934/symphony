@@ -113,7 +113,8 @@ public class Thing extends Groupable implements Resource {
             String paramName = param.getKey().toLowerCase();
             for (Method method : Thing.class.getDeclaredMethods()) {
                 String methodName = method.getName().toLowerCase();
-                if (methodName.contains("set") && methodName.substring(3).equals(paramName)) {
+                if (!paramName.equals("attributes") && methodName.contains("set") &&
+                        methodName.substring(3).equals(paramName)) {
                     log.info("Changing " + param.getKey() + " to " + param.getValue());
                     method.invoke(this, param.getValue());
                     paramSettable = changed = true;
