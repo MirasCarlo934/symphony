@@ -162,8 +162,13 @@ public class ThingController {
         ThingUpdateForm form = new ThingUpdateForm(thing.getName(), thing.getCopyOfParentGroups(),
                 thing.getCopyOfAttributeList());
         if (form.getAttributes() != null && !form.getAttributes().isEmpty()) {
+            List<Attribute> attributesToRemove = new Vector<>(current.getCopyOfAttributeList());
             for (Attribute attribute : form.getAttributes()) {
+                attributesToRemove.removeIf(a -> a.getAid().equals(attribute.getAid()));
                 attributeController.put(uid, attribute.getAid(), attribute);
+            }
+            for (Attribute attribute : attributesToRemove) {
+                attributeController.delete(uid, attribute.getAid());
             }
         }
         return update(uid, form);
