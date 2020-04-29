@@ -9,7 +9,6 @@ import symphony.bm.core.iot.SuperGroup;
 import symphony.bm.core.iot.Thing;
 import symphony.bm.core.iot.Attribute;
 import symphony.bm.core.rest.forms.attribute.AttributeUpdateForm;
-import symphony.bm.core.rest.forms.thing.ThingUpdateForm;
 import symphony.bm.core.rest.hateoas.AttributeModel;
 import symphony.bm.generics.exceptions.RestControllerProcessingException;
 import symphony.bm.generics.messages.MicroserviceMessage;
@@ -65,7 +64,7 @@ public class AttributeController {
             if (attribute != null) {
                 thing.deleteAttribute(aid);
                 attribute.delete();
-                return buildSuccessResponseEntity("Attribute " + thing.getUid() + "/" + aid + " deleted",
+                return successResponseEntity("Attribute " + thing.getUid() + "/" + aid + " deleted",
                         HttpStatus.OK);
             } else {
                 throw new RestControllerProcessingException("Attribute " + thing.getUid() + "/" + aid
@@ -95,7 +94,7 @@ public class AttributeController {
             if (a == null) {
                 log.info("Adding attribute " + attribute.getAid() + " to thing " + uid);
                 thing.addAttribute(attribute);
-                return buildSuccessResponseEntity("Attribute " + thing.getUid() + "/" + aid + " added",
+                return successResponseEntity("Attribute " + thing.getUid() + "/" + aid + " added",
                         HttpStatus.OK);
             } else {
                 String warn = "Attribute " + thing.getUid() + "/" + aid + " already exists. Attribute will not be " +
@@ -118,7 +117,7 @@ public class AttributeController {
             if (attribute != null) {
                 log.debug("Updating attribute " + uid + '/' + aid + "...");
                 attribute.update(form);
-                return buildSuccessResponseEntity("Attribute " + thing.getUid() + "/" + aid + " updated",
+                return successResponseEntity("Attribute " + thing.getUid() + "/" + aid + " updated",
                         HttpStatus.OK);
             } else {
                 throw new RestControllerProcessingException("Attribute " + thing.getUid() + "/" + aid
@@ -158,7 +157,7 @@ public class AttributeController {
         }
     }
 
-    private ResponseEntity<MicroserviceMessage> buildSuccessResponseEntity(String msg, HttpStatus status) {
+    private ResponseEntity<MicroserviceMessage> successResponseEntity(String msg, HttpStatus status) {
         log.info(msg);
         return new ResponseEntity<>(new MicroserviceSuccessfulMessage(msg), status);
     }

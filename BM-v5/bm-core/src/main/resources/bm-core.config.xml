@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util.xsd">
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:property-placeholder location="file:${bm.properties.home}/bm.properties"/>
 
     <util:list id="bm-core.activityListeners" list-class="java.util.Vector">
         <ref bean="bm-core.mongo.activityListener"/>
+        <ref bean="bm-core.cir.activityListener"/>
     </util:list>
 
     <bean id="bm-core.mongo.activityListener" class="symphony.bm.core.mongodb.MongoActivityListener">
         <constructor-arg name="mongoTemplate" ref="mongoTemplate"/>
         <constructor-arg name="timeBetweenPersists" value="5000"/>
+    </bean>
+
+    <bean id="bm-core.cir.activityListener" class="symphony.bm.core.activitylisteners.CirMicroserviceListener">
+        <constructor-arg name="bmCirPort" value="${bm.port.cir}"/>
+        <constructor-arg name="bmURL" value="${bm.url}"/>
+        <constructor-arg name="objectMapper" ref="jacksonObjectMapper"/>
     </bean>
 </beans>

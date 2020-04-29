@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/bm-cir/bm-cir.iml" filepath="$PROJECT_DIR$/bm-cir/bm-cir.iml" />
       <module fileurl="file://$PROJECT_DIR$/bm-comms/bm-comms.iml" filepath="$PROJECT_DIR$/bm-comms/bm-comms.iml" />
       <module fileurl="file://$PROJECT_DIR$/bm-core/bm-core.iml" filepath="$PROJECT_DIR$/bm-core/bm-core.iml" />
       <module fileurl="file://$PROJECT_DIR$/bm-generics/bm-generics.iml" filepath="$PROJECT_DIR$/bm-generics/bm-generics.iml" />

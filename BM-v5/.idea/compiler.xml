@@ -8,14 +8,16 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="bm-mqtt" />
-        <module name="bm-core" />
         <module name="bm-generics" />
         <module name="bm-comms" />
+        <module name="bm-cir" />
+        <module name="bm-core" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="bm-cache-devices" target="1.8" />
       <module name="bm-cache-rules" target="1.8" />
+      <module name="bm-cir" target="1.8" />
       <module name="bm-comms" target="1.8" />
       <module name="bm-comms-backup1" target="1.8" />
       <module name="bm-core" target="1.8" />
@@ -30,6 +32,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="bm-cache-devices" options="-parameters" />
       <module name="bm-cache-rules" options="-parameters" />
+      <module name="bm-cir" options="-parameters" />
       <module name="bm-comms" options="-parameters" />
       <module name="bm-comms-backup1" options="-parameters" />
       <module name="bm-core" options="-parameters" />

@@ -1,7 +1,6 @@
 package symphony.bm.core.rest;
 
 import lombok.AllArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +15,6 @@ import symphony.bm.core.rest.hateoas.ThingModel;
 import symphony.bm.generics.exceptions.RestControllerProcessingException;
 import symphony.bm.generics.messages.MicroserviceMessage;
 import symphony.bm.generics.messages.MicroserviceSuccessfulMessage;
-import symphony.bm.generics.messages.MicroserviceUnsuccessfulMesage;
 
 import java.util.List;
 import java.util.Vector;
@@ -67,7 +65,7 @@ public class ThingController {
         }
         thing.delete();
 
-        return buildSuccessResponseEntity("Thing " + uid + " deleted", HttpStatus.OK);
+        return successResponseEntity("Thing " + uid + " deleted", HttpStatus.OK);
     }
 
     @PostMapping("/{uid}")
@@ -104,7 +102,7 @@ public class ThingController {
         }
         thing.create();
 
-        return buildSuccessResponseEntity("Thing added", HttpStatus.CREATED);
+        return successResponseEntity("Thing added", HttpStatus.CREATED);
     }
 
     @PatchMapping("/{uid}")
@@ -138,9 +136,9 @@ public class ThingController {
         changed = changed || updated;
 
         if (changed) {
-            return buildSuccessResponseEntity("Thing " + uid + " updated", HttpStatus.OK);
+            return successResponseEntity("Thing " + uid + " updated", HttpStatus.OK);
         } else {
-            return buildSuccessResponseEntity("Nothing to update", HttpStatus.OK);
+            return successResponseEntity("Nothing to update", HttpStatus.OK);
         }
     }
 
@@ -197,7 +195,7 @@ public class ThingController {
             group.addThing(thing);
         }
 
-        return buildSuccessResponseEntity("Thing " + thing.getUid() + " added to groups " + groups, HttpStatus.OK);
+        return successResponseEntity("Thing " + thing.getUid() + " added to groups " + groups, HttpStatus.OK);
     }
 
     @PostMapping("/{uid}/removegroup")
@@ -222,10 +220,10 @@ public class ThingController {
             superGroup.addThing(thing);
         }
 
-        return buildSuccessResponseEntity("Thing " + thing.getUid() + " removed from groups " + groups, HttpStatus.OK);
+        return successResponseEntity("Thing " + thing.getUid() + " removed from groups " + groups, HttpStatus.OK);
     }
 
-    private ResponseEntity<MicroserviceMessage> buildSuccessResponseEntity(String msg, HttpStatus status) {
+    private ResponseEntity<MicroserviceMessage> successResponseEntity(String msg, HttpStatus status) {
         log.info(msg);
         return new ResponseEntity<>(new MicroserviceSuccessfulMessage(msg), status);
     }
