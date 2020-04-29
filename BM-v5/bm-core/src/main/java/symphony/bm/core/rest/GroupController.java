@@ -10,7 +10,6 @@ import symphony.bm.core.iot.SuperGroup;
 import symphony.bm.core.iot.Thing;
 import symphony.bm.core.rest.forms.group.GroupGroupForm;
 import symphony.bm.core.rest.forms.group.GroupUpdateForm;
-import symphony.bm.core.rest.forms.thing.ThingGroupForm;
 import symphony.bm.core.rest.hateoas.GroupModel;
 import symphony.bm.generics.exceptions.RestControllerProcessingException;
 import symphony.bm.generics.messages.MicroserviceMessage;
@@ -67,7 +66,7 @@ public class GroupController {
                 parent.removeGroup(group);
             }
             group.delete();
-            return buildSuccessResponseEntity("Group " + gid + " removed", HttpStatus.OK);
+            return successResponseEntity("Group " + gid + " removed", HttpStatus.OK);
         } else {
             throw new RestControllerProcessingException("Group does not exist", HttpStatus.NOT_FOUND);
         }
@@ -95,7 +94,7 @@ public class GroupController {
         }
         group.create();
 
-        return buildSuccessResponseEntity("Group " + gid + " added", HttpStatus.CREATED);
+        return successResponseEntity("Group " + gid + " added", HttpStatus.CREATED);
     }
     
     @PatchMapping("/{gid}")
@@ -130,9 +129,9 @@ public class GroupController {
         changed = changed || updated;
     
         if (changed) {
-            return buildSuccessResponseEntity("Group " + gid + " updated", HttpStatus.OK);
+            return successResponseEntity("Group " + gid + " updated", HttpStatus.OK);
         } else {
-            return buildSuccessResponseEntity("Nothing to update", HttpStatus.OK);
+            return successResponseEntity("Nothing to update", HttpStatus.OK);
         }
     }
     
@@ -163,7 +162,7 @@ public class GroupController {
             parentGroup.addGroup(group);
         }
         
-        return buildSuccessResponseEntity("Group " + gid + " added to groups " + groups, HttpStatus.OK);
+        return successResponseEntity("Group " + gid + " added to groups " + groups, HttpStatus.OK);
     }
     
     @PostMapping("/{gid}/removegroup")
@@ -189,7 +188,7 @@ public class GroupController {
             superGroup.addGroup(group);
         }
     
-        return buildSuccessResponseEntity("Group " + gid + " removed from groups " + groups, HttpStatus.OK);
+        return successResponseEntity("Group " + gid + " removed from groups " + groups, HttpStatus.OK);
     }
     
     public Group createDefaultGroup(String GID) {
@@ -200,7 +199,7 @@ public class GroupController {
         return group;
     }
 
-    private ResponseEntity<MicroserviceMessage> buildSuccessResponseEntity(String msg, HttpStatus status) {
+    private ResponseEntity<MicroserviceMessage> successResponseEntity(String msg, HttpStatus status) {
         log.info(msg);
         return new ResponseEntity<>(new MicroserviceSuccessfulMessage(msg), status);
     }

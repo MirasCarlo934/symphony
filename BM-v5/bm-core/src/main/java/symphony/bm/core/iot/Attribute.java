@@ -28,9 +28,9 @@ public class Attribute extends Listenable implements Resource {
     @NotNull @NonNull /*@Setter*/ @Getter private String aid;
     @NotNull @Setter(AccessLevel.PACKAGE) @Getter private String thing;
     @NotNull @NonNull @Setter @Getter private String name;
-    @NotNull @NonNull @Setter @Getter private AttributeMode mode;
     @NotNull @NonNull @Setter @Getter private AttributeDataType dataType;
-    @NotNull @NonNull @Setter @Getter private Object value;
+    @NotNull @NonNull @Getter private AttributeMode mode;
+    @NotNull @NonNull @Getter private Object value;
 
     /**
      * For attributes with no 'thing' field. Usually in Thing JSON declaration.
@@ -51,6 +51,11 @@ public class Attribute extends Listenable implements Resource {
         this.mode = mode;
         this.dataType = dataType;
         this.value = value;
+    }
+
+    public void setValue(Object value) {
+        this.value = value;
+        activityListeners.forEach( activityListener -> activityListener.attributeUpdatedValue(this, value));
     }
 
     public void setMode(String mode) throws IllegalArgumentException {

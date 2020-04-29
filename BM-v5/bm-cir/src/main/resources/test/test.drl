@@ -1,0 +1,13 @@
+package test;
+import symphony.bm.cir.test.TestThing
+dialect  "mvel"
+
+global symphony.bm.cir.test.TestThing target
+
+rule "test"
+    when
+        trigger:TestThing(value == 1)
+    then
+        target.setValue(100);
+        trigger.setValue("HAHA");
+end
