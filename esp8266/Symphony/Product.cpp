@@ -45,6 +45,7 @@ void Product::setValueChangeCallback(int (* Callback) (int propertyIndex, boolea
 * 	value		= the actual value
 */
 void Product::addProperty(String ssid, boolean directPin, int8_t pin, Gui gui) {
+	propertyChanged = true;
 	attribStruct as;
 	as.aid = size;
 	size++;
@@ -200,28 +201,81 @@ void Product::setValue(String ssid, int value, boolean forHub) {
 }
 
 /**
- * creates a jason object for this product then returns the string
+ * returns the String representation of this device
  */
 String Product::stringify() {
-	DynamicJsonBuffer jsonBuffer;
-	JsonObject& json = jsonBuffer.createObject();
-	json["cmd"] = 1;
-	json["name_mac"] = name_mac;
-	JsonArray& data = json.createNestedArray("data");
-	for (int i=0; i<size; i++) {
-		JsonObject& element = data.createNestedObject();
-		element["typ"] = attributes[i].gui.pinType;
-		element["lbl"] = attributes[i].gui.label;
-		element["min"] = attributes[i].gui.min;
-		element["max"] = attributes[i].gui.max;
-		element["val"] = attributes[i].gui.value;
-		element["grp"] = attributes[i].gui.group;
-		element["id"] = attributes[i].ssid;
-		element["hasPin"] = attributes[i].directPin;
+#ifdef DEBUG_
+	Serial.println("[Product] stringify start");
+#endif
+	if (stringifyCache.length()== 0 || propertyChanged) {
+		DynamicJsonBuffer jsonBuffer;
+		JsonObject& regJson = jsonBuffer.createObject();
+		regJson["uid"] = name_mac;
+		JsonArray& gArray = regJson.createNestedArray("grps");
+		gArray.add(room);
+		regJson["name"] = productName;
+		JsonArray& pArray = regJson.createNestedArray("attribs");
+		for (int i=0; i<size; i++) {
+			attribStruct a = getKeyVal(i);
+#ifdef DEBUG_
+			Serial.printf("[Product] stringify ssid=%s label=%s, pintype=%i, aId=%i\n", a.ssid.c_str(), a.gui.label.c_str(), a.gui.pinType, a.aid);
+#endif
+			JsonObject& prop1 = pArray.createNestedObject();
+			if (a.gui.pinType == BUTTON_CTL || a.gui.pinType == SLIDER_CTL) {
+				prop1["mode"] = "ctrl";
+			} else {  //a.gui.pinType == BUTTON_SNSR || a.gui.pinType == SLIDER_SNSR
+				prop1["mode"] = "in";
+			}
+			JsonObject& theType = prop1.createNestedObject("dTyp");
+			JsonObject& constraints = theType.createNestedObject("cnstr");
+			constraints["gui"] = a.gui.pinType;
+			if (a.gui.pinType == BUTTON_CTL || a.gui.pinType == BUTTON_SNSR ) {
+				theType["typ"] = "bin";
+	//			theType["cnstr"] = "{}";
+			} else { //if (a.gui.pinType == SLIDER_CTL || a.gui.pinType == SLIDER_SNSR )
+				theType["typ"] = "num";
+	//			JsonObject& constraints = theType.createNestedObject("constraints");
+				constraints["min"] = a.gui.min;
+				constraints["max"] = a.gui.max;
+			}
+			prop1["name"] = a.gui.label;
+			prop1["aid"] = a.aid;
+			prop1["val"] = a.gui.value;
+		}
+		regJson.printTo(stringifyCache);
+		propertyChanged = false;
 	}
-	String s;
-	json.printTo(s);
-	return s;
+#ifdef DEBUG_
+		Serial.printf("[Product] stringify \n\t%s\n", stringifyCache.c_str());
+		Serial.println("[Product] stringify end");
+#endif
+	return stringifyCache;
+}
+
+/**
+ * creates a jason object for this product then returns the string
+ */
+String Product::stringifyForGui() {
+	if (stringifyGuiCache.length()== 0 || propertyChanged) {
+		DynamicJsonBuffer jsonBuffer;
+		JsonObject& json = jsonBuffer.createObject();
+		json["cmd"] = 1;
+		json["name_mac"] = name_mac;
+		JsonArray& data = json.createNestedArray("data");
+		for (int i=0; i<size; i++) {
+			JsonObject& element = data.createNestedObject();
+			element["typ"] = attributes[i].gui.pinType;
+			element["lbl"] = attributes[i].gui.label;
+			element["min"] = attributes[i].gui.min;
+			element["max"] = attributes[i].gui.max;
+			element["val"] = attributes[i].gui.value;
+			element["grp"] = attributes[i].gui.group;
+			element["id"] = attributes[i].ssid;
+			element["hasPin"] = attributes[i].directPin;
+		}
+		json.printTo(stringifyGuiCache);
+	}
+	return stringifyGuiCache;
 }
 /**
  * creates a jason object for the values of this product then returns the string

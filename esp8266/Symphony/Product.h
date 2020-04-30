@@ -123,6 +123,7 @@ class Product {
     attribStruct getKeyVal(int index);
     void setValue(String ssid, int value, boolean forHub);
     String stringify();
+    String stringifyForGui();
     String stringifyValues();
     void print();
     int getSize();
@@ -130,6 +131,9 @@ class Product {
   private:
     int pIndex = 0;
     int size = 0;
+    bool propertyChanged = false;
+    String stringifyCache = "";
+    String stringifyGuiCache = "";
     /**
      * Adds a property to this device.
      * ssid		= the SSID of this property (from the COMPROPLIST table)

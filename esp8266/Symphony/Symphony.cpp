@@ -29,7 +29,6 @@
 
 //#define DISCOVERABLE		//enable this if you want the ESPs to be discoverable via udp
 
-String Symphony::rootProperties = "";
 String Symphony::hostName = "hostName";
 String Symphony::mac = "";
 String Symphony::nameWithMac = "myName";
@@ -75,6 +74,7 @@ int (* WsCallback) (AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject&
  * This is the callback handler that will be called when an MQTT event arrives.
  * This enables the child to handle MQTT events.  Callback will be called if the property is not directly changeable.
  */
+bool initUpdate = true;
 int (* MqttCallback) (JsonObject& json);
 
 /**
@@ -466,7 +466,7 @@ void showControl(AsyncWebServerRequest *request) {
  *  {typ:'Rng',lbl:'Hue',val:'0011',min:'0',max:'360', grp:'g2'}
  */
 void showProperties(AsyncWebServerRequest *request) {
-	request->send(200, "text/html", Symphony::rootProperties);
+	request->send(200, "text/html", Symphony::product.stringifyForGui());
 	Serial.println("[CORE] showProperties");
 }
 /*
@@ -538,7 +538,9 @@ void doneFWUpdate(AsyncWebServerRequest *request) {
 	Serial.printf("[CORE] doneFWUpdate %i\n", fwResult);
 	reboot = true;
 }
-bool initUpdate = true;
+/**
+ * Handles the firmware update
+ */
 void handleFirmWareUpload(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final) {
 	isUpdateFw = true;
 	if (initUpdate) {
@@ -557,43 +559,6 @@ void handleFirmWareUpload(AsyncWebServerRequest *request, String filename, size_
 //		request->send(404, "text/html", "Firmware Update Error.");
 //	}
 //	Serial.printf("**************************** handleFirmWareUpload %i\n", fwResult);
-}
-/**
- * Handles the commit config command
- */
-void handleDeviceConfig(AsyncWebServerRequest *request) {
-#ifdef DEBUG_ONLY
-	Serial.printf("\n[CORE] handleDeviceConfig start\n");
-#endif
-	AsyncWebParameter* pName = request->getParam("pName");
-	AsyncWebParameter* pSSID = request->getParam("pSSID");
-	AsyncWebParameter* pPass = request->getParam("pPass");
-	String configStr = "data:{name:$name, ssid:$ssid, pwd:$pwd}";
-	configStr.replace("$name", pName->value().c_str());
-	configStr.replace("$ssid", pSSID->value().c_str());
-	configStr.replace("$pwd", pPass->value().c_str());
-#ifdef DEBUG_ONLY
-	Serial.printf("\[CORE] handleDeviceConfig will save config %s\n", configStr.c_str());
-#endif
-	fManager.saveConfig(configStr.c_str());
-	reboot = true;
-}
-/*
- * Handles the mqqt settings sent by the client
- *
- * deprecated Mar 29 2020
- */
-void handleMqttConfig (AsyncWebServerRequest *request) {
-	Serial.println("[CORE] handleMqttConfig START");
-	DynamicJsonBuffer jsonBuffer;
-	JsonObject& json = jsonBuffer.parseObject(fManager.readConfig());
-	json.prettyPrintTo(Serial);
-//	AsyncWebParameter* pIP = request->getParam("mqttIp");
-//	AsyncWebParameter* pPort = request->getParam("mqttPort");
-	String mqttConfigStr = "data:{ip:$ip, port:$port}";
-//	mqttConfigStr.replace("$ip", pIP->value().c_str());
-//	mqttConfigStr.replace("$port", pPort->value().c_str());
-	Serial.printf("\n[CORE] handleMqttConfig will save %s\n", mqttConfigStr.c_str());
 }
 
 /****
@@ -616,8 +581,6 @@ void initWebServer() {
 //	webServer.on("/mqttInfo", HTTP_GET, handleConfigInfo);  //get mqtt info from SPIFFS and return to client deprecated Mar 29 2020, we use /devInfo instead
 	webServer.on("/properties.html", showProperties);
 	webServer.on("/fwVersion", showVersion);	//show the firmware version to the client
-//	webServer.on("/config", HTTP_GET, handleDeviceConfig);		//handles the commit config    deprecated Mar 29 2020, we use WS event
-//	webServer.on("/setMqttConfig", handleMqttConfig);	//handles the mqtt settings from the client  deprecated Mar 29 2020, we use WS event
 	webServer.serveStatic("/files.html", SPIFFS, "/files.html");
 	webServer.serveStatic("/test.html", SPIFFS, "/test.html");
 //	webServer.on("/hotspot-detect.html", handleAppleCaptivePortal);//for apple devices
@@ -903,7 +866,6 @@ void Symphony::createMyName(String theHostName) {
 void Symphony::setProduct(Product p) {
 	product = p;
 	product.setValueChangeCallback(productValueChangedEvent);
-	setRootProperties(product.stringify());
 	isProductSet = true;
 }
 /**
@@ -922,12 +884,6 @@ void Symphony::textAll(JsonObject& message){
  */
 void Symphony::doReboot() {
 	reboot = true;
-}
-/**
- * Sets the properties that will be displayed as root HTML as interpreted by js.loadDoc();
- */
-void Symphony::setRootProperties(String s) {
-	Symphony::rootProperties = s;
 }
 /**
  * Will do the actual registration after mqttHandler has been set and product has been set
@@ -973,49 +929,7 @@ bool Symphony::registerProduct() {
 				//register to the BM if not yet registered and if product is set and if mqtt is connected
 				isRegistered = true;
 				Serial.println("[CORE] registerProduct start 1");
-				/*	Registration format is:
-					"{RID:5ccf7f15a492,CID:0000,RTY:register,name:Ngalan,roomID:J444,product:0000}";
-				*/
-				DynamicJsonBuffer jsonBuffer;
-				JsonObject& regJson = jsonBuffer.createObject();
-				regJson["uid"] = Symphony::nameWithMac;
-				JsonArray& gArray = regJson.createNestedArray("parentGroups");
-				gArray.add(product.room);
-				regJson["name"] = product.productName;
-				JsonArray& pArray = regJson.createNestedArray("attributes");
-				for (int i=0; i < product.getSize(); i++) {
-					attribStruct a = product.getKeyVal(i);
-					Serial.printf("[CORE] registerProduct ssid=%s label=%s, pintype=%i, aId=%i\n", a.ssid.c_str(), a.gui.label.c_str(), a.gui.pinType, a.aid);
-					JsonObject& prop1 = pArray.createNestedObject();
-					if (a.gui.pinType == BUTTON_CTL || a.gui.pinType == SLIDER_CTL) {
-						prop1["mode"] = "controllable";
-					} else {  //a.gui.pinType == BUTTON_SNSR || a.gui.pinType == SLIDER_SNSR
-						prop1["mode"] = "input";
-					}
-					JsonObject& theType = prop1.createNestedObject("dataType");
-					if (a.gui.pinType == BUTTON_CTL || a.gui.pinType == BUTTON_SNSR ) {
-						theType["type"] = "binary";
-						theType["constraints"] = "{}";
-//						if (a.gui.pinType == BUTTON_CTL)
-//							prop1["mode"] = "O";
-//						if (a.gui.pinType == BUTTON_SNSR )
-//							prop1["mode"] = "I";
-					} else { //if (a.gui.pinType == SLIDER_CTL || a.gui.pinType == SLIDER_SNSR )
-						theType["type"] = "number";
-						JsonObject& constraints = theType.createNestedObject("constraints");
-						constraints["min"] = a.gui.min;
-						constraints["max"] = a.gui.max;
-//						if (a.gui.pinType == SLIDER_CTL)
-//							prop1["mode"] = "O";
-//						if (a.gui.pinType == SLIDER_SNSR )
-//							prop1["mode"] = "I";
-					}
-					prop1["name"] = a.gui.label;
-					prop1["aid"] = a.aid;
-					prop1["value"] = a.gui.value;
-				}
-				String strReg;
-				regJson.printTo(strReg);
+				String strReg = product.stringify();
 				theMqttHandler.publish("BM",strReg.c_str());
 				Serial.printf("[CORE] registerProduct end payload len=%i\n", strReg.length());
 			}
