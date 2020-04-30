@@ -4,6 +4,6 @@ import symphony.bm.core.rest.forms.Form;
 
 public interface Resource {
     void create();
-    boolean update(Form form);
+    boolean update(Form form) throws Exception;
     void delete();
 }

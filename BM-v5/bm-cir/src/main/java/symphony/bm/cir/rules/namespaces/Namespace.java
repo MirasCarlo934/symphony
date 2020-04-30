@@ -7,5 +7,5 @@ import lombok.experimental.NonFinal;
 public class Namespace {
     String name;
     String uid;
-    @NonFinal String aid;
+    String aid;
 }

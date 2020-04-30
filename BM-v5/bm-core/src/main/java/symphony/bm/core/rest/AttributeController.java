@@ -116,7 +116,11 @@ public class AttributeController {
             Attribute attribute = thing.getAttribute(aid);
             if (attribute != null) {
                 log.debug("Updating attribute " + uid + '/' + aid + "...");
-                attribute.update(form);
+                try {
+                    attribute.update(form);
+                } catch (Exception e) {
+                    throw new RestControllerProcessingException(e.getMessage(), HttpStatus.BAD_REQUEST, e);
+                }
                 return successResponseEntity("Attribute " + thing.getUid() + "/" + aid + " updated",
                         HttpStatus.OK);
             } else {

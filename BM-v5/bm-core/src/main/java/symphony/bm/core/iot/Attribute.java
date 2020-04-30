@@ -53,9 +53,11 @@ public class Attribute extends Listenable implements Resource {
         this.value = value;
     }
 
-    public void setValue(Object value) {
-        this.value = value;
-        activityListeners.forEach( activityListener -> activityListener.attributeUpdatedValue(this, value));
+    public void setValue(Object value) throws Exception {
+        if (dataType.checkValueIfValid(value)) {
+            this.value = value;
+            activityListeners.forEach(activityListener -> activityListener.attributeUpdatedValue(this, value));
+        }
     }
 
     public void setMode(String mode) throws IllegalArgumentException {
@@ -67,9 +69,8 @@ public class Attribute extends Listenable implements Resource {
         // all attribute create/delete functions are done on Thing-level
     }
 
-    @SneakyThrows
     @Override
-    public boolean update(Form form) {
+    public boolean update(Form form) throws Exception {
         boolean changed = false;
         Map<String, Object> params = form.transformToMap();
         Map<String, Object> paramsChanged = new HashMap<>();

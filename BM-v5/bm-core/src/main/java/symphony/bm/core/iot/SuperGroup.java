@@ -1,6 +1,8 @@
 package symphony.bm.core.iot;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
@@ -13,10 +15,9 @@ import java.util.List;
 public class SuperGroup extends Group {
     private final MongoOperations mongo;
 
-    public SuperGroup(MongoTemplate mongoTemplate, List<ActivityListener> activityListeners) {
+    public SuperGroup(MongoTemplate mongoTemplate) {
         super("", "Super Group");
         this.mongo = mongoTemplate;
-        setActivityListeners(activityListeners);
 
         buildContext();
         log.info("IOT context initialized");
@@ -35,7 +36,6 @@ public class SuperGroup extends Group {
 
         for (Thing thing : thingList) {
             log.info("Thing " + thing.getUid() + " retrieved from DB");
-            thing.setActivityListeners(activityListeners);
             if (thing.getParentGroups().isEmpty()) {
                 this.things.add(thing);
             } else {
@@ -47,7 +47,6 @@ public class SuperGroup extends Group {
 
         for (Group group : groupList) {
             log.info("Group " + group.getGid() + " retrieved from DB");
-            group.setActivityListeners(activityListeners);
             if (group.getParentGroups().isEmpty() && !group.equals(this)) {
                 this.groups.add(group);
             } else {
@@ -69,6 +68,14 @@ public class SuperGroup extends Group {
         } else {
             return super.getGroupRecursively(GID);
         }
+    }
+
+    @Autowired
+    @Override
+    public void setActivityListeners(List<ActivityListener> activityListeners) {
+        super.setActivityListeners(activityListeners);
+        getContainedThings().forEach( thing -> thing.setActivityListeners(activityListeners));
+        getContainedGroups().forEach( group -> group.setActivityListeners(activityListeners));
     }
 
     public void printContentCount() {

@@ -1,6 +1,7 @@
 package symphony.bm.cir.rest;
 
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,8 +11,12 @@ import symphony.bm.core.iot.Attribute;
 import symphony.bm.core.iot.Thing;
 import symphony.bm.core.rest.forms.attribute.AttributeUpdateForm;
 import symphony.bm.core.rest.forms.thing.ThingUpdateForm;
+import symphony.bm.generics.exceptions.RestControllerProcessingException;
 import symphony.bm.generics.messages.MicroserviceMessage;
 import symphony.bm.generics.messages.MicroserviceSuccessfulMessage;
+
+import java.util.List;
+import java.util.Vector;
 
 @RestController
 @Slf4j
@@ -20,8 +25,8 @@ public class RulesController {
     private final RulesManager rulesManager;
 
     @PostMapping("/attributes/{aid}")
-    public ResponseEntity<MicroserviceMessage> attributeUpdated(@PathVariable String aid,
-                                                                @RequestBody Attribute attribute) {
+    @SneakyThrows
+    public ResponseEntity<MicroserviceMessage> attributeUpdated(@PathVariable String aid, @RequestBody Attribute attribute) {
         Attribute tracking = rulesManager.getAttribute(aid);
         if (tracking == null) {
             String debug = "Attribute " + aid + " not being tracked";
@@ -29,9 +34,16 @@ public class RulesController {
             return new ResponseEntity<>(new MicroserviceSuccessfulMessage(debug), HttpStatus.OK);
         }
 
+        if (tracking.getValue().toString().equals(attribute.getValue().toString())) {
+            String debug = "Attribute " + aid + " already has value " + attribute.getValue();
+            log.debug(debug);
+            return new ResponseEntity<>(new MicroserviceSuccessfulMessage(debug), HttpStatus.OK);
+        }
+
         AttributeUpdateForm form = new AttributeUpdateForm(attribute.getName(), attribute.getMode(),
                 attribute.getDataType(), attribute.getValue());
         tracking.update(form);
+
         return successResponseEntity("Attribute " + aid + " updated", HttpStatus.OK);
     }
 
@@ -47,31 +59,31 @@ public class RulesController {
         return successResponseEntity("Attribute " + aid + " untracked", HttpStatus.OK);
     }
 
-    @PostMapping("/things/{uid}")
-    public ResponseEntity<MicroserviceMessage> thingUpdated(@PathVariable String uid, @RequestBody Thing thing) {
-        Thing tracking = rulesManager.getThing(uid);
-        if (tracking == null) {
-            String debug = "Thing " + uid + " not being tracked";
-            log.debug(debug);
-            return new ResponseEntity<>(new MicroserviceSuccessfulMessage(debug), HttpStatus.OK);
-        }
-
-        ThingUpdateForm form = new ThingUpdateForm(thing.getName(), thing.getParentGroups(), null);
-        tracking.update(form);
-        return successResponseEntity("Thing " + uid + " updated", HttpStatus.OK);
-    }
-
-    @DeleteMapping("/things/{uid}")
-    public ResponseEntity<MicroserviceMessage> thingDeleted(@PathVariable String uid) {
-        if (rulesManager.getThing(uid) == null) {
-            String debug = "Thing " + uid + " not being tracked";
-            log.debug(debug);
-            return new ResponseEntity<>(new MicroserviceSuccessfulMessage(debug), HttpStatus.OK);
-        }
-
-        rulesManager.untrackThing(uid);
-        return successResponseEntity("Thing " + uid + " untracked", HttpStatus.OK);
-    }
+//    @PostMapping("/things/{uid}")
+//    public ResponseEntity<MicroserviceMessage> thingUpdated(@PathVariable String uid, @RequestBody Thing thing) {
+//        Thing tracking = rulesManager.getThing(uid);
+//        if (tracking == null) {
+//            String debug = "Thing " + uid + " not being tracked";
+//            log.debug(debug);
+//            return new ResponseEntity<>(new MicroserviceSuccessfulMessage(debug), HttpStatus.OK);
+//        }
+//
+//        ThingUpdateForm form = new ThingUpdateForm(thing.getName(), thing.getParentGroups(), null);
+//        tracking.update(form);
+//        return successResponseEntity("Thing " + uid + " updated", HttpStatus.OK);
+//    }
+//
+//    @DeleteMapping("/things/{uid}")
+//    public ResponseEntity<MicroserviceMessage> thingDeleted(@PathVariable String uid) {
+//        if (rulesManager.getThing(uid) == null) {
+//            String debug = "Thing " + uid + " not being tracked";
+//            log.debug(debug);
+//            return new ResponseEntity<>(new MicroserviceSuccessfulMessage(debug), HttpStatus.OK);
+//        }
+//
+//        rulesManager.untrackThing(uid);
+//        return successResponseEntity("Thing " + uid + " untracked", HttpStatus.OK);
+//    }
 
     private ResponseEntity<MicroserviceMessage> successResponseEntity(String msg, HttpStatus status) {
         log.info(msg);

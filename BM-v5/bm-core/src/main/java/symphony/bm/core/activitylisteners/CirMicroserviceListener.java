@@ -1,7 +1,10 @@
 package symphony.bm.core.activitylisteners;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -10,21 +13,27 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
-import org.springframework.beans.factory.annotation.Value;
 import symphony.bm.core.iot.Attribute;
 import symphony.bm.core.iot.Group;
 import symphony.bm.core.iot.Thing;
+import symphony.bm.core.rest.AttributeController;
+import symphony.bm.core.rest.resources.Resource;
+import symphony.bm.generics.exceptions.RestControllerProcessingException;
 import symphony.bm.generics.messages.MicroserviceMessage;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 @Slf4j
 public class CirMicroserviceListener implements ActivityListener {
     private final String bmURL;
     private final String bmCirPort;
     private final ObjectMapper objectMapper;
+    @Setter private AttributeController attributeController;
+
+    private final List<String> attributeAidsBlocked = new Vector<>();
 
     public CirMicroserviceListener(ObjectMapper objectMapper, String bmURL, String bmCirPort) {
         this.bmURL = bmURL;
@@ -39,28 +48,28 @@ public class CirMicroserviceListener implements ActivityListener {
 
     @Override
     public void thingUpdated(Thing thing, Map<String, Object> updatedFields) {
-        HttpClient httpClient = HttpClientBuilder.create().build();
-        HttpPost request = new HttpPost(bmURL + ":" + bmCirPort + "/things/" + thing.getUid());
-        try {
-            request.setEntity(new StringEntity(objectMapper.writeValueAsString(thing)));
-        } catch (UnsupportedEncodingException e) {
-            log.error("UnsupportedEncodingException:", e);
-            return;
-        } catch (JsonProcessingException e) {
-            log.error("JsonProcessingException:", e);
-            return;
-        }
-
-        HttpResponse response;
-        try {
-            response = httpClient.execute(request);
-            MicroserviceMessage msg = objectMapper.readValue(EntityUtils.toString(response.getEntity()),
-                    MicroserviceMessage.class);
-            log.debug(msg.getMessage());
-        } catch (IOException e) {
-            log.error("IOException:", e);
-            return;
-        }
+//        HttpClient httpClient = HttpClientBuilder.create().build();
+//        HttpPost request = new HttpPost(bmURL + ":" + bmCirPort + "/things/" + thing.getUid());
+//        try {
+//            request.setEntity(new StringEntity(objectMapper.writeValueAsString(thing)));
+//        } catch (UnsupportedEncodingException e) {
+//            log.error("UnsupportedEncodingException:", e);
+//            return;
+//        } catch (JsonProcessingException e) {
+//            log.error("JsonProcessingException:", e);
+//            return;
+//        }
+//
+//        HttpResponse response;
+//        try {
+//            response = httpClient.execute(request);
+//            MicroserviceMessage msg = objectMapper.readValue(EntityUtils.toString(response.getEntity()),
+//                    MicroserviceMessage.class);
+//            log.debug(msg.getMessage());
+//        } catch (IOException e) {
+//            log.error("IOException:", e);
+//            return;
+//        }
     }
 
     @Override
@@ -114,15 +123,13 @@ public class CirMicroserviceListener implements ActivityListener {
             return;
         }
 
-        HttpResponse response;
         try {
-            response = httpClient.execute(request);
+            HttpResponse response = httpClient.execute(request);
             MicroserviceMessage msg = objectMapper.readValue(EntityUtils.toString(response.getEntity()),
                     MicroserviceMessage.class);
             log.debug(msg.getMessage());
         } catch (IOException e) {
-            log.error("IOException:", e);
-            return;
+            log.error(e.getMessage());
         }
     }
 

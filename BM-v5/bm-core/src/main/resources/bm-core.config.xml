@@ -20,5 +20,7 @@
         <constructor-arg name="bmCirPort" value="${bm.port.cir}"/>
         <constructor-arg name="bmURL" value="${bm.url}"/>
         <constructor-arg name="objectMapper" ref="jacksonObjectMapper"/>
+        <!-- this is to circumvent circular dependency (superGroup -> activityListener -> controller) -->
+        <property name="attributeController" ref="attributeController"/>
     </bean>
 </beans>

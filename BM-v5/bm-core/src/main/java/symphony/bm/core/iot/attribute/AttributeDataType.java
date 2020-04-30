@@ -8,15 +8,16 @@ import lombok.Getter;
 import lombok.NonNull;
 
 import java.util.HashMap;
+import java.util.List;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE)
 @AllArgsConstructor
 public class AttributeDataType {
-    @NonNull @Getter private final String type;
+    @NonNull @Getter private final AttributeDataTypeEnum type;
     @NonNull @Getter private final HashMap<String, Object> constraints;
 
-    public enum AttributeDataTypeEnum {
-        binary, number, enumeration, string
+    public boolean checkValueIfValid(Object value) throws Exception {
+        return type.checkValueIfValid(value, constraints);
     }
 }
