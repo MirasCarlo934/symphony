@@ -9,13 +9,14 @@ import lombok.NonNull;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE)
 @AllArgsConstructor
 public class AttributeDataType {
     @NonNull @Getter private final AttributeDataTypeEnum type;
-    @NonNull @Getter private final HashMap<String, Object> constraints;
+    @NonNull @Getter private final Map<String, Object> constraints;
 
     public boolean checkValueIfValid(Object value) throws Exception {
         return type.checkValueIfValid(value, constraints);

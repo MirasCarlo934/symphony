@@ -61,6 +61,13 @@
             <version>0.0.5-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>symphony.bm</groupId>
+            <artifactId>bm-core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+            <classifier>generics</classifier>
+        </dependency>
     </dependencies>
 
     <build>

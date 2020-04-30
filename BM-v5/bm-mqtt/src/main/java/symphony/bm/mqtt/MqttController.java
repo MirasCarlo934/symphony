@@ -22,8 +22,12 @@ import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessagingException;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.stereotype.Component;
+import symphony.bm.core.iot.Attribute;
+import symphony.bm.core.iot.Thing;
 import symphony.bm.generics.messages.MicroserviceMessage;
 import symphony.bm.generics.messages.MicroserviceUnsuccessfulMesage;
+import symphony.bm.mqtt.iot.MinifiedAttribute;
+import symphony.bm.mqtt.iot.MinifiedThing;
 
 import java.io.IOException;
 import java.util.*;
@@ -34,12 +38,14 @@ public class MqttController implements MessageHandler {
     private String bmURL;
     private String bmCorePort;
     private MessageChannel outbound;
+    private ObjectMapper objectMapper;
 
     public MqttController(@Value("${bm.url}") String bmURL, @Value("${bm.port.core}") String bmCorePort,
-                          @Qualifier("mqttOutboundChannel") MessageChannel outbound) {
+                          @Qualifier("mqttOutboundChannel") MessageChannel outbound, ObjectMapper objectMapper) {
         this.bmURL = bmURL;
         this.bmCorePort = bmCorePort;
         this.outbound = outbound;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -55,6 +61,35 @@ public class MqttController implements MessageHandler {
         List<String> topicLevels = new ArrayList<>(Arrays.asList(topic.split("/")));
         topicLevels.remove(0);
         topicLevels.forEach( level -> thingUrlBuilder.append("/").append(level));
+        
+        if (topicLevels.contains("attributes")) {
+            try {
+                MinifiedAttribute minAttr = objectMapper.readValue(payload, MinifiedAttribute.class);
+                payload = objectMapper.writeValueAsString(minAttr.unminify());
+            } catch (JsonProcessingException e) {
+                try {
+                    objectMapper.readValue(payload, Attribute.class);
+                } catch (JsonProcessingException e1) {
+                    String msg = "Invalid Attribute data sent";
+                    throw new MessagingException(msg, new MqttMessage(thingUrlBuilder.toString(),
+                            new MicroserviceUnsuccessfulMesage(msg)));
+                }
+            }
+        } else {
+            try {
+                MinifiedThing minThing = objectMapper.readValue(payload, MinifiedThing.class);
+                payload = objectMapper.writeValueAsString(minThing.unminify());
+            } catch (JsonProcessingException e) {
+                log.error("", e);
+                try {
+                    objectMapper.readValue(payload, Thing.class);
+                } catch (JsonProcessingException e1) {
+                    String msg = "Invalid Thing data sent";
+                    throw new MessagingException(msg, new MqttMessage(thingUrlBuilder.toString(),
+                            new MicroserviceUnsuccessfulMesage(msg)));
+                }
+            }
+        }
 
         String resourceUrl = bmURL + ":" + bmCorePort + "/" + thingUrlBuilder.toString();
         HttpPut request = new HttpPut(resourceUrl);
