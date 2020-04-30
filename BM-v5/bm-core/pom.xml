@@ -63,6 +63,7 @@
             <artifactId>bm-generics</artifactId>
             <version>0.0.5-SNAPSHOT</version>
             <scope>compile</scope>
+            <classifier>generics</classifier>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
