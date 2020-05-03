@@ -9,6 +9,7 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.web.bind.annotation.*;
+import symphony.bm.core.iot.Attribute;
 import symphony.bm.core.iot.Thing;
 import symphony.bm.generics.exceptions.RestControllerProcessingException;
 import symphony.bm.generics.messages.MicroserviceMessage;
@@ -49,6 +50,7 @@ public class MicroserviceController {
     public MicroserviceMessage deleteThing(@PathVariable String uid) {
         Map<String, Object> headers = new HashMap<>();
         headers.put("mqtt_topic", "things/" + uid);
+        headers.put("mqtt_retained", true);
         headers.put("mqtt_qos", 2);
         publish(new GenericMessage<>("", headers));
         return new MicroserviceSuccessfulMessage("Thing " + uid + " retained message deleted");
@@ -63,6 +65,16 @@ public class MicroserviceController {
         publish(new GenericMessage<>(value, headers));
         return new MicroserviceSuccessfulMessage("Thing " + uid + " published");
     }
+    
+//    @PostMapping("things/{uid}/attributes/{aid}")
+//    public MicroserviceMessage attribute(@PathVariable String uid, @PathVariable String aid,
+//                                          @RequestBody Attribute attribute) {
+//        Map<String, Object> headers = new HashMap<>();
+//        headers.put("mqtt_topic", "things/" + uid + "/attributes/" + aid);
+//        headers.put("mqtt_qos", 2);
+//        publish(new GenericMessage<>(value, headers));
+//        return new MicroserviceSuccessfulMessage("Thing " + uid + " published");
+//    }
     
     private void publish(Message<String> message) {
         log.debug("Publishing to topic " + message.getHeaders().get("mqtt_topic"));
