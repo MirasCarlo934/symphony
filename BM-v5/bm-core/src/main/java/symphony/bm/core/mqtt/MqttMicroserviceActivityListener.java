@@ -19,20 +19,29 @@ public class MqttMicroserviceActivityListener implements ActivityListener {
         this.microserviceURL = bmURL + ":" + bmMqttMicroservicePort;
     }
     
-    @Override
-    public void thingCreated(Thing thing) {
-        log.debug("Forwarding newly-created Thing " + thing.getUid() + " to MQTT microservice...");
+    private void updateThingStateRepresentation(Thing thing) {
+        log.debug("Updating Thing state representation in MQTT...");
         RestTemplate restTemplate = new RestTemplate();
         MicroserviceMessage response = restTemplate.postForObject(
                 microserviceURL + "/things/" + thing.getUid(),
                 thing, MicroserviceMessage.class);
-        
+    
         assert response != null;
+        logResponse(response);
+    }
+    
+    private void logResponse(MicroserviceMessage response) {
         if (response.isSuccess()) {
             log.debug(response.getMessage());
         } else {
             log.error(response.getMessage());
         }
+    }
+    
+    @Override
+    public void thingCreated(Thing thing) {
+        log.debug("Forwarding newly-created Thing " + thing.getUid() + " to MQTT microservice...");
+        updateThingStateRepresentation(thing);
     }
     
     @Override
@@ -42,40 +51,44 @@ public class MqttMicroserviceActivityListener implements ActivityListener {
         MicroserviceMessage response = restTemplate.postForObject(
                 microserviceURL + "/things/" + thing.getUid() + "/" + fieldName,
                 fieldValue, MicroserviceMessage.class);
-    
-        assert response != null;
-        if (response.isSuccess()) {
-            log.debug(response.getMessage());
-        } else {
-            log.error(response.getMessage());
-        }
         
-        log.debug("Updating retained Thing state representation in MQTT...");
-        response = restTemplate.postForObject(
-                microserviceURL + "/things/" + thing.getUid(),
-                thing, MicroserviceMessage.class);
-    
         assert response != null;
-        if (response.isSuccess()) {
-            log.debug(response.getMessage());
-        } else {
-            log.error(response.getMessage());
-        }
+        logResponse(response);
+        updateThingStateRepresentation(thing);
     }
     
     @Override
     public void thingAddedToGroup(Thing thing, Group group) {
+        log.debug("Adding Thing " + thing.getUid() + " to Group " + group.getGid() + " in MQTT...");
+        RestTemplate restTemplate = new RestTemplate();
+        MicroserviceMessage response = restTemplate.postForObject(
+                microserviceURL + "/things/" + thing.getUid() + "/parentGroups",
+                thing.getParentGroups(), MicroserviceMessage.class);
     
+        assert response != null;
+        logResponse(response);
+        updateThingStateRepresentation(thing);
     }
     
     @Override
     public void thingRemovedFromGroup(Thing thing, Group group) {
+        log.debug("Removing Thing " + thing.getUid() + " from Group " + group.getGid() + " in MQTT...");
+        RestTemplate restTemplate = new RestTemplate();
+        MicroserviceMessage response = restTemplate.postForObject(
+                microserviceURL + "/things/" + thing.getUid() + "/parentGroups",
+                thing.getParentGroups(), MicroserviceMessage.class);
     
+        assert response != null;
+        logResponse(response);
+        updateThingStateRepresentation(thing);
     }
     
     @Override
     public void thingDeleted(Thing thing) {
-    
+        log.debug("Deleting Thing " + thing.getUid() + " state representation in MQTT...");
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.delete(microserviceURL + "/things/" + thing.getUid());
+        log.debug("Thing deleted");
     }
     
     @Override

@@ -8,10 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.support.GenericMessage;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import symphony.bm.core.iot.Thing;
 import symphony.bm.generics.exceptions.RestControllerProcessingException;
 import symphony.bm.generics.messages.MicroserviceMessage;
@@ -46,6 +43,15 @@ public class MicroserviceController {
             throw new RestControllerProcessingException("Thing " + uid + " cannot be published",
                     HttpStatus.INTERNAL_SERVER_ERROR, e);
         }
+    }
+    
+    @DeleteMapping("things/{uid}")
+    public MicroserviceMessage deleteThing(@PathVariable String uid) {
+        Map<String, Object> headers = new HashMap<>();
+        headers.put("mqtt_topic", "things/" + uid);
+        headers.put("mqtt_qos", 2);
+        publish(new GenericMessage<>("", headers));
+        return new MicroserviceSuccessfulMessage("Thing " + uid + " retained message deleted");
     }
     
     @PostMapping("things/{uid}/{field}")
