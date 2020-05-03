@@ -8,7 +8,7 @@
 
     <util:list id="bm-core.activityListeners" list-class="java.util.Vector">
         <ref bean="bm-core.mongo.activityListener"/>
-        <ref bean="bm-core.cir.activityListener"/>
+        <ref bean="bm-core.mqtt.activityListener"/>
     </util:list>
 
     <bean id="bm-core.mongo.activityListener" class="symphony.bm.core.mongodb.MongoActivityListener">
@@ -16,11 +16,8 @@
         <constructor-arg name="timeBetweenPersists" value="5000"/>
     </bean>
 
-    <bean id="bm-core.cir.activityListener" class="symphony.bm.core.activitylisteners.CirMicroserviceListener">
-        <constructor-arg name="bmCirPort" value="${bm.port.cir}"/>
+    <bean id="bm-core.mqtt.activityListener" class="symphony.bm.core.mqtt.MqttMicroserviceActivityListener">
+        <constructor-arg name="bmMqttMicroservicePort" value="${bm.port.mqtt}"/>
         <constructor-arg name="bmURL" value="${bm.url}"/>
-        <constructor-arg name="objectMapper" ref="jacksonObjectMapper"/>
-        <!-- this is to circumvent circular dependency (superGroup -> activityListener -> controller) -->
-        <property name="attributeController" ref="attributeController"/>
     </bean>
 </beans>

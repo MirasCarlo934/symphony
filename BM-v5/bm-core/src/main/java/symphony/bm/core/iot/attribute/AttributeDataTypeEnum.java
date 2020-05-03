@@ -18,17 +18,17 @@ public enum AttributeDataTypeEnum {
         public boolean checkValueIfValid(Object value, Map<String, Object> constraints) throws Exception {
             double d = Double.parseDouble(value.toString());
             try {
-                double min = (double) constraints.get("min");
+                double min = Double.parseDouble(constraints.get("min").toString());
                 if (d < min) {
                     throw new Exception("Attribute value must be greater than " + min
                             + " as set in constraints");
                 }
-                double max = (double) constraints.get("max");
+                double max = Double.parseDouble(constraints.get("max").toString());
                 if (d > max) {
                     throw new Exception("Attribute value must be less than " + max
                             + " as set in constraints");
                 }
-            } catch (NullPointerException e) {
+            } catch (NullPointerException | ClassCastException e) {
                 // no min/max value constraint
             }
             return true;

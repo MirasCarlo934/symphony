@@ -35,27 +35,27 @@ public class Thing extends Groupable implements Resource {
         this.name = name;
     }
 
-//    /**
-//     * For Thing JSON creation with attribute JSONs that do not declare 'thing' field
-//     * @param parentGroups
-//     * @param uid
-//     * @param name
-//     * @param attributes
-//     */
-//    @JsonCreator
-//    public Thing(@JsonProperty("parentGroups") List<String> parentGroups,
-//                 @JsonProperty("uid") @NonNull String uid,
-//                 @JsonProperty("name") @NonNull String name,
-//                 @JsonProperty("attributes") @NonNull List<Attribute> attributes) {
-//        super(parentGroups);
-//        this.uid = uid;
-//        this.name = name;
-//        attributes.forEach( a -> {
-//            Attribute attribute = new Attribute(a.getAid(), a.getName(), a.getMode(), a.getDataType(), a.getValue());
-//            attribute.setThing(uid);
-//            this.attributes.add(attribute);
-//        });
-//    }
+    /**
+     * For Thing JSON creation with attribute JSONs that do not declare 'thing' field
+     * @param parentGroups
+     * @param uid
+     * @param name
+     * @param attributes
+     */
+    @JsonCreator
+    public Thing(@JsonProperty("parentGroups") List<String> parentGroups,
+                 @JsonProperty("uid") @NonNull String uid,
+                 @JsonProperty("name") @NonNull String name,
+                 @JsonProperty("attributes") @NonNull List<Attribute> attributes) {
+        super(parentGroups);
+        this.uid = uid;
+        this.name = name;
+        attributes.forEach( a -> {
+            Attribute attribute = new Attribute(a.getAid(), a.getName(), a.getMode(), a.getDataType(), a.getValue());
+            attribute.setThing(uid);
+            this.attributes.add(attribute);
+        });
+    }
 
     public void setName(String name) {
         this.name = name;

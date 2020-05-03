@@ -19,8 +19,8 @@ public interface ActivityListener {
     void groupRemovedFromGroup(Group group, Group parent);
     void groupDeleted(Group group);
 
-    void attributeUpdated(Attribute attribute, Map<String, Object> updatedFields);
-    void attributeUpdatedValue(Attribute attribute, Object value);
+    void attributeUpdated(Attribute attribute, String fieldName, Object fieldValue);
+//    void attributeUpdatedValue(Attribute attribute, Object value);
     void attributeAddedToThing(Attribute attribute, Thing thing);
     void attributeRemovedFromThing(Attribute attribute, Thing thing);
 }

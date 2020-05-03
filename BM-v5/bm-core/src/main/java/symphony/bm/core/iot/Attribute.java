@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.MethodInvocationException;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import symphony.bm.core.activitylisteners.Listenable;
@@ -15,6 +16,7 @@ import symphony.bm.core.rest.forms.Form;
 import symphony.bm.core.rest.resources.Resource;
 
 import javax.validation.constraints.NotNull;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,8 +29,9 @@ public class Attribute extends Listenable implements Resource {
     @Id @JsonIgnore private String _id;
     @NotNull @NonNull /*@Setter*/ @Getter private String aid;
     @NotNull @Setter(AccessLevel.PACKAGE) @Getter private String thing;
-    @NotNull @NonNull @Setter @Getter private String name;
-    @NotNull @NonNull @Setter @Getter private AttributeDataType dataType;
+    
+    @NotNull @NonNull @Getter private String name;
+    @NotNull @NonNull @Getter private AttributeDataType dataType;
     @NotNull @NonNull @Getter private AttributeMode mode;
     @NotNull @NonNull @Getter private Object value;
 
@@ -56,12 +59,23 @@ public class Attribute extends Listenable implements Resource {
     public void setValue(Object value) throws Exception {
         if (dataType.checkValueIfValid(value)) {
             this.value = value;
-            activityListeners.forEach(activityListener -> activityListener.attributeUpdatedValue(this, value));
+            activityListeners.forEach(activityListener -> activityListener.attributeUpdated(this, "value", value));
         }
+    }
+    
+    public void setName(String name) {
+        this.name = name;
+        activityListeners.forEach(activityListener -> activityListener.attributeUpdated(this, "name", name));
+    }
+    
+    public void setDataType(AttributeDataType dataType) {
+        this.dataType = dataType;
+        activityListeners.forEach(activityListener -> activityListener.attributeUpdated(this, "dataType", dataType));
     }
 
     public void setMode(String mode) throws IllegalArgumentException {
         this.mode = AttributeMode.valueOf(mode);
+        activityListeners.forEach(activityListener -> activityListener.attributeUpdated(this, "mode", mode));
     }
 
     @Override
@@ -83,7 +97,11 @@ public class Attribute extends Listenable implements Resource {
                         method.getParameterCount() == 1 &&
                         (method.getParameterTypes()[0].equals(param.getKey().getClass()) || paramName.equals("value"))) {
                     log.info("Changing " + param.getKey() + " to " + param.getValue());
-                    method.invoke(this, param.getValue());
+                    try {
+                        method.invoke(this, param.getValue());
+                    } catch (InvocationTargetException e) {
+                        throw (Exception) e.getCause();
+                    }
                     paramSettable = changed = true;
                     break;
                 }
@@ -92,9 +110,9 @@ public class Attribute extends Listenable implements Resource {
                 paramsChanged.put(param.getKey(), param.getValue());
             }
         }
-        if (changed) {
-            activityListeners.forEach(activityListener -> activityListener.attributeUpdated(this, paramsChanged));
-        }
+//        if (changed) {
+//            activityListeners.forEach(activityListener -> activityListener.attributeUpdated(this, paramsChanged));
+//        }
         return changed;
     }
 

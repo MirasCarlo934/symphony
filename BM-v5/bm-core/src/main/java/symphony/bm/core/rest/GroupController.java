@@ -14,7 +14,7 @@ import symphony.bm.core.rest.hateoas.GroupModel;
 import symphony.bm.generics.exceptions.RestControllerProcessingException;
 import symphony.bm.generics.messages.MicroserviceMessage;
 import symphony.bm.generics.messages.MicroserviceSuccessfulMessage;
-import symphony.bm.generics.messages.MicroserviceUnsuccessfulMesage;
+import symphony.bm.generics.messages.MicroserviceUnsuccessfulMessage;
 
 import java.util.List;
 import java.util.Vector;
@@ -172,7 +172,7 @@ public class GroupController {
         if (group == null) {
             String warn = "Group does not exist";
             log.warn(warn);
-            return new ResponseEntity<>(new MicroserviceUnsuccessfulMesage(warn), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new MicroserviceUnsuccessfulMessage(warn), HttpStatus.BAD_REQUEST);
         }
     
         log.debug("Removing group " + gid + " from groups " + groups);

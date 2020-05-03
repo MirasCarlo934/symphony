@@ -17,7 +17,7 @@ import symphony.bm.generics.exceptions.MicroserviceProcessingException;
 import symphony.bm.generics.exceptions.RequestProcessingException;
 import symphony.bm.generics.exceptions.RestControllerProcessingException;
 import symphony.bm.generics.jeep.response.JeepMicroserviceErrorMessage;
-import symphony.bm.generics.messages.MicroserviceUnsuccessfulMesage;
+import symphony.bm.generics.messages.MicroserviceUnsuccessfulMessage;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
@@ -45,7 +45,7 @@ public class RestControllerErrorHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         String error = ex.getCause().getCause().getMessage();
         LOG.error("Request Error: " + error, ex);
-        return buildGenericResponseEntity(new MicroserviceUnsuccessfulMesage(error));
+        return buildGenericResponseEntity(new MicroserviceUnsuccessfulMessage(error));
 //        return super.handleHttpMessageNotReadable(ex, headers, status, request);
     }
 
@@ -67,29 +67,29 @@ public class RestControllerErrorHandler extends ResponseEntityExceptionHandler {
      * @return
      */
     @ExceptionHandler(MicroserviceProcessingException.class)
-    protected ResponseEntity<MicroserviceUnsuccessfulMesage> handleMicroserviceProcessingException(MicroserviceProcessingException e) {
+    protected ResponseEntity<MicroserviceUnsuccessfulMessage> handleMicroserviceProcessingException(MicroserviceProcessingException e) {
         String error = e.getMessage();
         LOG.error("Microservice Processing Exception: " + error, e);
-        return buildResponseEntity(new MicroserviceUnsuccessfulMesage(error));
+        return buildResponseEntity(new MicroserviceUnsuccessfulMessage(error));
     }
 
     @ExceptionHandler(RestControllerProcessingException.class)
-    protected ResponseEntity<MicroserviceUnsuccessfulMesage> handleRestMicroserviceProcessingException(RestControllerProcessingException e) {
+    protected ResponseEntity<MicroserviceUnsuccessfulMessage> handleRestMicroserviceProcessingException(RestControllerProcessingException e) {
         String error = e.getMessage();
-        LOG.error("Rest Microservice Processing Exception: " + error, e);
-        return buildResponseEntity(new MicroserviceUnsuccessfulMesage(error), e.getHttpStatus());
+        LOG.error(RestControllerProcessingException.class.getSimpleName() + ": " + error, e);
+        return buildResponseEntity(new MicroserviceUnsuccessfulMessage(error), e.getHttpStatus());
     }
 
-    private ResponseEntity<Object> buildGenericResponseEntity(MicroserviceUnsuccessfulMesage msg) {
+    private ResponseEntity<Object> buildGenericResponseEntity(MicroserviceUnsuccessfulMessage msg) {
         return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
     }
 
-    private ResponseEntity<MicroserviceUnsuccessfulMesage> buildResponseEntity(MicroserviceUnsuccessfulMesage msg) {
+    private ResponseEntity<MicroserviceUnsuccessfulMessage> buildResponseEntity(MicroserviceUnsuccessfulMessage msg) {
         return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
     }
 
-    private ResponseEntity<MicroserviceUnsuccessfulMesage> buildResponseEntity(MicroserviceUnsuccessfulMesage msg,
-                                                                               HttpStatus httpStatus) {
+    private ResponseEntity<MicroserviceUnsuccessfulMessage> buildResponseEntity(MicroserviceUnsuccessfulMessage msg,
+                                                                                HttpStatus httpStatus) {
         return new ResponseEntity<>(msg, httpStatus);
     }
 

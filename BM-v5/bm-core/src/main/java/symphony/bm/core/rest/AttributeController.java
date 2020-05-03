@@ -13,7 +13,7 @@ import symphony.bm.core.rest.hateoas.AttributeModel;
 import symphony.bm.generics.exceptions.RestControllerProcessingException;
 import symphony.bm.generics.messages.MicroserviceMessage;
 import symphony.bm.generics.messages.MicroserviceSuccessfulMessage;
-import symphony.bm.generics.messages.MicroserviceUnsuccessfulMesage;
+import symphony.bm.generics.messages.MicroserviceUnsuccessfulMessage;
 
 import java.util.List;
 import java.util.Vector;
@@ -100,7 +100,7 @@ public class AttributeController {
                 String warn = "Attribute " + thing.getUid() + "/" + aid + " already exists. Attribute will not be " +
                         "added to context.";
                 log.warn(warn);
-                return new ResponseEntity<>(new MicroserviceUnsuccessfulMesage(warn), HttpStatus.CONFLICT);
+                return new ResponseEntity<>(new MicroserviceUnsuccessfulMessage(warn), HttpStatus.CONFLICT);
             }
         } else {
             throw new RestControllerProcessingException("Thing " + uid + "does not exist", HttpStatus.NOT_FOUND);

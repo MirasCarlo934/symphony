@@ -130,12 +130,7 @@ public class MongoActivityListener extends TimerTask implements ActivityListener
     }
 
     @Override
-    public void attributeUpdated(Attribute attribute, Map<String, Object> updatedFields) {
-        save(attribute);
-    }
-
-    @Override
-    public void attributeUpdatedValue(Attribute attribute, Object value) {
+    public void attributeUpdated(Attribute attribute, String fieldName, Object fieldValue) {
         save(attribute);
     }
 

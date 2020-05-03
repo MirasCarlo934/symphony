@@ -1,10 +1,10 @@
 package symphony.bm.mqtt;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPut;
@@ -14,8 +14,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.integration.annotation.ServiceActivator;
-import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
@@ -24,8 +22,7 @@ import org.springframework.messaging.support.GenericMessage;
 import org.springframework.stereotype.Component;
 import symphony.bm.core.iot.Attribute;
 import symphony.bm.core.iot.Thing;
-import symphony.bm.generics.messages.MicroserviceMessage;
-import symphony.bm.generics.messages.MicroserviceUnsuccessfulMesage;
+import symphony.bm.generics.messages.MicroserviceUnsuccessfulMessage;
 import symphony.bm.mqtt.iot.MinifiedAttribute;
 import symphony.bm.mqtt.iot.MinifiedThing;
 
@@ -71,8 +68,7 @@ public class MqttController implements MessageHandler {
                     objectMapper.readValue(payload, Attribute.class);
                 } catch (JsonProcessingException e1) {
                     String msg = "Invalid Attribute data sent";
-                    throw new MessagingException(msg, new MqttMessage(thingUrlBuilder.toString(),
-                            new MicroserviceUnsuccessfulMesage(msg)));
+                    throw new MessagingException(msg, e1);
                 }
             }
         } else {
@@ -80,13 +76,11 @@ public class MqttController implements MessageHandler {
                 MinifiedThing minThing = objectMapper.readValue(payload, MinifiedThing.class);
                 payload = objectMapper.writeValueAsString(minThing.unminify());
             } catch (JsonProcessingException e) {
-                log.error("", e);
                 try {
                     objectMapper.readValue(payload, Thing.class);
                 } catch (JsonProcessingException e1) {
                     String msg = "Invalid Thing data sent";
-                    throw new MessagingException(msg, new MqttMessage(thingUrlBuilder.toString(),
-                            new MicroserviceUnsuccessfulMesage(msg)));
+                    throw new MessagingException(msg, e1);
                 }
             }
         }
@@ -100,27 +94,19 @@ public class MqttController implements MessageHandler {
             response = httpClient.execute(request);
             JsonNode jsonRsp = new ObjectMapper().readTree(EntityUtils.toString(response.getEntity()));
             log.debug("Response from " + resourceUrl + ": " + jsonRsp.toString());
-            Map<String, Object> headers = new HashMap<>();
-            headers.put("mqtt_topic", thingUrlBuilder.toString());
-            publish(new GenericMessage<>(jsonRsp.toString(), headers));
+//            Map<String, Object> headers = new HashMap<>();
+//            headers.put("mqtt_topic", thingUrlBuilder.toString());
+//            publish(new GenericMessage<>(jsonRsp.toString(), headers));
         } catch (IOException e) {
-            Map<String, Object> headers = new HashMap<>();
-            headers.put("mqtt_topic", thingUrlBuilder.toString());
-            MicroserviceUnsuccessfulMesage msg = new MicroserviceUnsuccessfulMesage("Unable to request Thing resource");
-            String msgStr;
-            try {
-                msgStr = new ObjectMapper().writeValueAsString(msg);
-            } catch (JsonProcessingException jsonProcessingException) {
-                throw new MessagingException("JsonProcessingException:", jsonProcessingException);
-            }
-            publish(new GenericMessage<>(msgStr, headers));
+            String msg = "Resource not currently available";
+            throw new MessagingException(msg, e);
         }
     }
 
-    private void publish(Message<String> message) {
-        log.debug("Publishing to topic " + message.getHeaders().get("mqtt_topic"));
-        log.debug("Message: " + message.getPayload());
-        outbound.send(message);
-    }
+//    private void publish(Message<String> message) {
+//        log.debug("Publishing to topic " + message.getHeaders().get("mqtt_topic"));
+//        log.debug("Message: " + message.getPayload());
+//        outbound.send(message);
+//    }
 
 }
