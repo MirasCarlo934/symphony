@@ -16,6 +16,7 @@ public class MqttMicroserviceActivityListener implements ActivityListener {
     private final SuperGroup superGroup;
     private final String microserviceURL;
     
+    // (k:Object, v:url)
     private final HashMap<Object, String> statesWaitingToUpdate = new HashMap<>();
     private final HashMap<Object, Timer> updaters = new HashMap<>();
     
@@ -31,7 +32,7 @@ public class MqttMicroserviceActivityListener implements ActivityListener {
         Timer timer = new Timer(StateUpdater.class.getSimpleName());
         statesWaitingToUpdate.put(obj, url);
         updaters.put(obj, timer);
-        timer.schedule(new StateUpdater(obj), 50);
+        timer.schedule(new StateUpdater(obj), 100);
     }
     
     private void logResponse(MicroserviceMessage response) {

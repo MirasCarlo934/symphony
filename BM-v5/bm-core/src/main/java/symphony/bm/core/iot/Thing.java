@@ -9,10 +9,12 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.annotation.Transient;
 import symphony.bm.core.activitylisteners.ActivityListener;
+import symphony.bm.core.iot.exceptions.ValueUnchangedException;
 import symphony.bm.core.rest.forms.Form;
 import symphony.bm.core.rest.resources.Resource;
 
 import javax.validation.constraints.NotNull;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
@@ -56,9 +58,13 @@ public class Thing extends Groupable implements Resource {
         });
     }
 
-    public void setName(String name) {
-        this.name = name;
-        activityListeners.forEach( listener -> listener.thingUpdated(this, "name", name));
+    public void setName(String name) throws ValueUnchangedException {
+        if (!this.name.equals(name)) {
+            this.name = name;
+            activityListeners.forEach(listener -> listener.thingUpdated(this, "name", name));
+        } else {
+            throw new ValueUnchangedException();
+        }
     }
 
     public Attribute getAttribute(String aid) {
@@ -121,8 +127,14 @@ public class Thing extends Groupable implements Resource {
                 String methodName = method.getName().toLowerCase();
                 if (!paramName.equals("attributes") && methodName.contains("set") &&
                         methodName.substring(3).equals(paramName)) {
-                    log.info("Changing " + param.getKey() + " to " + param.getValue());
-                    method.invoke(this, param.getValue());
+                    try {
+                        method.invoke(this, param.getValue());
+                        log.info("Changing " + param.getKey() + " to " + param.getValue());
+                    } catch (InvocationTargetException e) {
+                        if (!e.getCause().getClass().equals(ValueUnchangedException.class)) {
+                            throw e;
+                        }
+                    }
                     paramSettable = changed = true;
                     break;
                 }
