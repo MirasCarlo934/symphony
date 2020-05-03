@@ -14,12 +14,17 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessagingException;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 import symphony.bm.core.iot.Attribute;
 import symphony.bm.core.iot.Thing;
 import symphony.bm.generics.messages.MicroserviceUnsuccessfulMessage;
@@ -50,7 +55,6 @@ public class MqttController implements MessageHandler {
         String topic = (String) message.getHeaders().get("mqtt_receivedTopic");
         String payload = (String) message.getPayload();
         StringBuilder thingUrlBuilder = new StringBuilder("things");
-        HttpClient httpClient = HttpClientBuilder.create().build();
 
         log.debug("Message received from topic " + topic);
         log.debug("Message: " + payload);
@@ -84,23 +88,34 @@ public class MqttController implements MessageHandler {
                 }
             }
         }
-
+    
+        RestTemplate restTemplate = new RestTemplate();
         String resourceUrl = bmURL + ":" + bmCorePort + "/" + thingUrlBuilder.toString();
-        HttpPut request = new HttpPut(resourceUrl);
-        request.setEntity(new StringEntity(payload, ContentType.APPLICATION_JSON));
-        HttpResponse response;
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(payload, headers);
         try {
-            log.debug("Requesting resource " + resourceUrl + "...");
-            response = httpClient.execute(request);
-            JsonNode jsonRsp = new ObjectMapper().readTree(EntityUtils.toString(response.getEntity()));
-            log.debug("Response from " + resourceUrl + ": " + jsonRsp.toString());
-//            Map<String, Object> headers = new HashMap<>();
-//            headers.put("mqtt_topic", thingUrlBuilder.toString());
-//            publish(new GenericMessage<>(jsonRsp.toString(), headers));
-        } catch (IOException e) {
+            restTemplate.put(resourceUrl, entity);
+        } catch (RestClientException e) {
             String msg = "Resource not currently available";
             throw new MessagingException(msg, e);
         }
+        
+//        HttpPut request = new HttpPut(resourceUrl);
+//        request.setEntity(new StringEntity(payload, ContentType.APPLICATION_JSON));
+//        HttpResponse response;
+//        try {
+//            log.debug("Requesting resource " + resourceUrl + "...");
+//            response = httpClient.execute(request);
+//            JsonNode jsonRsp = new ObjectMapper().readTree(EntityUtils.toString(response.getEntity()));
+//            log.debug("Response from " + resourceUrl + ": " + jsonRsp.toString());
+////            Map<String, Object> headers = new HashMap<>();
+////            headers.put("mqtt_topic", thingUrlBuilder.toString());
+////            publish(new GenericMessage<>(jsonRsp.toString(), headers));
+//        } catch (IOException e) {
+//            String msg = "Resource not currently available";
+//            throw new MessagingException(msg, e);
+//        }
     }
 
 //    private void publish(Message<String> message) {

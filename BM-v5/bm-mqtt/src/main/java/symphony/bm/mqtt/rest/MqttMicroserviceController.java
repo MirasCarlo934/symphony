@@ -75,7 +75,7 @@ public class MqttMicroserviceController {
                                           @RequestBody Attribute attribute) throws RestControllerProcessingException {
         Map<String, Object> headers = new HashMap<>();
         headers.put("mqtt_topic", "things/" + uid + "/attributes/" + aid);
-        headers.put("mqtt_retained", true);
+//        headers.put("mqtt_retained", true);
         headers.put("mqtt_qos", 2);
         try {
             publish(new GenericMessage<>(objectMapper.writeValueAsString(attribute), headers));
@@ -90,7 +90,7 @@ public class MqttMicroserviceController {
     public MicroserviceMessage deleteAttribute(@PathVariable String uid, @PathVariable String aid) {
         Map<String, Object> headers = new HashMap<>();
         headers.put("mqtt_topic", "things/" + uid + "/attributes/" + aid);
-        headers.put("mqtt_retained", true);
+//        headers.put("mqtt_retained", true);
         headers.put("mqtt_qos", 2);
         publish(new GenericMessage<>("", headers));
         return new MicroserviceSuccessfulMessage("Attribute " + uid + "/" + aid + " retained message deleted");

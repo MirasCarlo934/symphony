@@ -5,6 +5,7 @@ import org.springframework.web.client.RestTemplate;
 import symphony.bm.core.activitylisteners.ActivityListener;
 import symphony.bm.core.iot.Attribute;
 import symphony.bm.core.iot.Group;
+import symphony.bm.core.iot.SuperGroup;
 import symphony.bm.core.iot.Thing;
 import symphony.bm.generics.messages.MicroserviceMessage;
 
@@ -12,12 +13,14 @@ import java.util.*;
 
 @Slf4j
 public class MqttMicroserviceActivityListener implements ActivityListener {
+    private final SuperGroup superGroup;
     private final String microserviceURL;
     
     private final HashMap<Object, String> statesWaitingToUpdate = new HashMap<>();
     private final HashMap<Object, Timer> updaters = new HashMap<>();
     
-    public MqttMicroserviceActivityListener(String bmURL, String bmMqttMicroservicePort) {
+    public MqttMicroserviceActivityListener(String bmURL, String bmMqttMicroservicePort, SuperGroup superGroup) {
+        this.superGroup = superGroup;
         this.microserviceURL = bmURL + ":" + bmMqttMicroservicePort;
     }
     
@@ -123,6 +126,7 @@ public class MqttMicroserviceActivityListener implements ActivityListener {
     public void attributeUpdated(Attribute attribute, String fieldName, Object fieldValue) {
         log.debug("Forwarding Attribute " + attribute.getAid() + "/" + attribute.getAid() + " " + fieldName
                 + " update to MQTT microservice...");
+        Thing thing = superGroup.getThingRecursively(attribute.getThing());
         RestTemplate restTemplate = new RestTemplate();
         MicroserviceMessage response = restTemplate.postForObject(
                 microserviceURL + "/things/" + attribute.getThing() + "/attributes/" + attribute.getAid()
@@ -131,7 +135,7 @@ public class MqttMicroserviceActivityListener implements ActivityListener {
     
         assert response != null;
         logResponse(response);
-        scheduleUpdate(attribute, microserviceURL + "/things/" + attribute.getThing() + "/attributes/" + attribute.getAid());
+        scheduleUpdate(thing, microserviceURL + "/things/" + attribute.getThing());
     }
     
     @Override
