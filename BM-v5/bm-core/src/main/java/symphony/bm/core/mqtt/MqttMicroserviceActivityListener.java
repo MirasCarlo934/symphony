@@ -23,7 +23,8 @@ public class MqttMicroserviceActivityListener implements ActivityListener {
     public void thingCreated(Thing thing) {
         log.debug("Forwarding newly-created Thing " + thing.getUid() + " to MQTT microservice...");
         RestTemplate restTemplate = new RestTemplate();
-        MicroserviceMessage response = restTemplate.postForObject(microserviceURL + "/things/" + thing.getUid(),
+        MicroserviceMessage response = restTemplate.postForObject(
+                microserviceURL + "/things/" + thing.getUid(),
                 thing, MicroserviceMessage.class);
         
         assert response != null;
@@ -35,8 +36,19 @@ public class MqttMicroserviceActivityListener implements ActivityListener {
     }
     
     @Override
-    public void thingUpdated(Thing thing, Map<String, Object> updatedFields) {
+    public void thingUpdated(Thing thing, String fieldName, Object fieldValue) {
+        log.debug("Forwarding newly-created Thing " + thing.getUid() + " to MQTT microservice...");
+        RestTemplate restTemplate = new RestTemplate();
+        MicroserviceMessage response = restTemplate.postForObject(
+                microserviceURL + "/things/" + thing.getUid() + "/" + fieldName,
+                fieldValue, MicroserviceMessage.class);
     
+        assert response != null;
+        if (response.isSuccess()) {
+            log.debug(response.getMessage());
+        } else {
+            log.error(response.getMessage());
+        }
     }
     
     @Override
@@ -60,7 +72,7 @@ public class MqttMicroserviceActivityListener implements ActivityListener {
     }
     
     @Override
-    public void groupUpdated(Group group, Map<String, Object> updatedFields) {
+    public void groupUpdated(Group group, String fieldName, Object fieldValue) {
     
     }
     

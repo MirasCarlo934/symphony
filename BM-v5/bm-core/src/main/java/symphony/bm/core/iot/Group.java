@@ -25,7 +25,7 @@ import java.util.Vector;
 public class Group extends Groupable implements Resource {
     @Id @JsonIgnore private String _id;
     @NotNull @NonNull @Setter @Getter private String gid;
-    @NotNull @NonNull @Setter @Getter private String name;
+    @NotNull @NonNull @Getter private String name;
 
     @Transient protected List<Thing> things = new Vector<>();
     @Transient protected List<Group> groups = new Vector<>();
@@ -44,6 +44,11 @@ public class Group extends Groupable implements Resource {
         super(new Vector<>());
         this.gid = gid;
         this.name = name;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
+        activityListeners.forEach(listener -> listener.groupUpdated(this, "name", name));
     }
 
     public Thing getThing(String UID) {
@@ -190,9 +195,9 @@ public class Group extends Groupable implements Resource {
                 paramsChanged.put(param.getKey(), param.getValue());
             }
         }
-        if (changed) {
-            activityListeners.forEach(activityListener -> activityListener.groupUpdated(this, paramsChanged));
-        }
+//        if (changed) {
+//            activityListeners.forEach(activityListener -> activityListener.groupUpdated(this, paramsChanged));
+//        }
         return changed;
     }
 

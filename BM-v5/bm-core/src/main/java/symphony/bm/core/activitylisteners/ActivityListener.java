@@ -8,13 +8,13 @@ import java.util.Map;
 
 public interface ActivityListener {
     void thingCreated(Thing thing);
-    void thingUpdated(Thing thing, Map<String, Object> updatedFields);
+    void thingUpdated(Thing thing, String fieldName, Object fieldValue);
     void thingAddedToGroup(Thing thing, Group group);
     void thingRemovedFromGroup(Thing thing, Group group);
     void thingDeleted(Thing thing);
 
     void groupCreated(Group group);
-    void groupUpdated(Group group, Map<String, Object> updatedFields);
+    void groupUpdated(Group group, String fieldName, Object fieldValue);
     void groupAddedToGroup(Group group, Group parent);
     void groupRemovedFromGroup(Group group, Group parent);
     void groupDeleted(Group group);

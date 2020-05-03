@@ -48,6 +48,16 @@ public class MicroserviceController {
         }
     }
     
+    @PostMapping("things/{uid}/{field}")
+    public MicroserviceMessage thingField(@PathVariable String uid, @PathVariable String field,
+                                          @RequestBody String value) {
+        Map<String, Object> headers = new HashMap<>();
+        headers.put("mqtt_topic", "things/" + uid + "/" + field);
+        headers.put("mqtt_qos", 2);
+        publish(new GenericMessage<>(value, headers));
+        return new MicroserviceSuccessfulMessage("Thing " + uid + " published");
+    }
+    
     private void publish(Message<String> message) {
         log.debug("Publishing to topic " + message.getHeaders().get("mqtt_topic"));
         log.debug("Message: " + message.getPayload());

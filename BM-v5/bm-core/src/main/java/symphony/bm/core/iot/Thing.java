@@ -59,6 +59,7 @@ public class Thing extends Groupable implements Resource {
 
     public void setName(String name) {
         this.name = name;
+        activityListeners.forEach( listener -> listener.thingUpdated(this, "name", name));
     }
 
     public Attribute getAttribute(String aid) {
@@ -130,9 +131,9 @@ public class Thing extends Groupable implements Resource {
                 paramsChanged.put(param.getKey(), param.getValue());
             }
         }
-        if (changed) {
-            activityListeners.forEach(activityListener -> activityListener.thingUpdated(this, paramsChanged));
-        }
+//        if (changed) {
+//            activityListeners.forEach(activityListener -> activityListener.thingUpdated(this, paramsChanged));
+//        }
         return changed;
     }
 
