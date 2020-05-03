@@ -71,7 +71,7 @@ public class AttributeController {
                         + " does not exist", HttpStatus.NOT_FOUND);
             }
         } else {
-            throw new RestControllerProcessingException("Thing " + uid + "does not exist", HttpStatus.NOT_FOUND);
+            throw new RestControllerProcessingException("Thing " + uid + " does not exist", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -103,7 +103,7 @@ public class AttributeController {
                 return new ResponseEntity<>(new MicroserviceUnsuccessfulMessage(warn), HttpStatus.CONFLICT);
             }
         } else {
-            throw new RestControllerProcessingException("Thing " + uid + "does not exist", HttpStatus.NOT_FOUND);
+            throw new RestControllerProcessingException("Thing " + uid + " does not exist", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -128,7 +128,7 @@ public class AttributeController {
                         + " does not exist", HttpStatus.NOT_FOUND);
             }
         } else {
-            throw new RestControllerProcessingException("Thing " + uid + "does not exist", HttpStatus.NOT_FOUND);
+            throw new RestControllerProcessingException("Thing " + uid + " does not exist", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -157,7 +157,7 @@ public class AttributeController {
                 return update(uid, aid, form);
             }
         } else {
-            throw new RestControllerProcessingException("Thing " + uid + "does not exist", HttpStatus.NOT_FOUND);
+            throw new RestControllerProcessingException("Thing " + uid + " does not exist", HttpStatus.NOT_FOUND);
         }
     }
 

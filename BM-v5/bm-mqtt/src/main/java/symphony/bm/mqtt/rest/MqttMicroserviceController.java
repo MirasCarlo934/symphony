@@ -43,9 +43,6 @@ public class MqttMicroserviceController {
             throw new RestControllerProcessingException("Thing " + uid + " cannot be published",
                     HttpStatus.INTERNAL_SERVER_ERROR, e);
         }
-        for (Attribute attribute : thing.getAttributes()) {
-            attribute(uid, attribute.getAid(), attribute);
-        }
         return new MicroserviceSuccessfulMessage("Thing " + uid + " published");
     }
     
