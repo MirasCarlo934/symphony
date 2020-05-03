@@ -15,8 +15,7 @@ public class MqttMicroserviceActivityListener implements ActivityListener {
     private final String microserviceURL;
     
     private final HashMap<Object, String> statesWaitingToUpdate = new HashMap<>();
-    private final HashMap<Object, StateUpdater> updaters = new HashMap<>();
-    private final Timer timer = new Timer(MqttMicroserviceActivityListener.class.getSimpleName());
+    private final HashMap<Object, Timer> updaters = new HashMap<>();
     
     public MqttMicroserviceActivityListener(String bmURL, String bmMqttMicroservicePort) {
         this.microserviceURL = bmURL + ":" + bmMqttMicroservicePort;
@@ -26,10 +25,10 @@ public class MqttMicroserviceActivityListener implements ActivityListener {
         if (updaters.containsKey(obj)) {
             updaters.get(obj).cancel();
         }
-        StateUpdater updater = new StateUpdater();
+        Timer timer = new Timer(StateUpdater.class.getSimpleName());
         statesWaitingToUpdate.put(obj, url);
-        updaters.put(obj, updater);
-        timer.schedule(updater, 10);
+        updaters.put(obj, timer);
+        timer.schedule(new StateUpdater(obj), 50);
     }
     
     private void logResponse(MicroserviceMessage response) {
@@ -150,17 +149,22 @@ public class MqttMicroserviceActivityListener implements ActivityListener {
     }
     
     private class StateUpdater extends TimerTask {
+        Object objectToUpdate;
+        
+        StateUpdater(Object objectToUpdate) {
+            this.objectToUpdate = objectToUpdate;
+        }
+        
         @Override
         public void run() {
-            for (Object obj : statesWaitingToUpdate.keySet()) {
-                String url = statesWaitingToUpdate.remove(obj);
-                log.debug("Updating " + url + " state representation in MQTT...");
-                RestTemplate restTemplate = new RestTemplate();
-                MicroserviceMessage response = restTemplate.postForObject(url, obj, MicroserviceMessage.class);
-                assert response != null;
-                logResponse(response);
-                updaters.remove(obj);
-            }
+            String url = statesWaitingToUpdate.remove(objectToUpdate);
+            updaters.remove(objectToUpdate);
+            log.debug(objectToUpdate.toString());
+            log.debug("Updating " + url + " state representation in MQTT...");
+            RestTemplate restTemplate = new RestTemplate();
+            MicroserviceMessage response = restTemplate.postForObject(url, objectToUpdate, MicroserviceMessage.class);
+            assert response != null;
+            logResponse(response);
         }
     }
 }
