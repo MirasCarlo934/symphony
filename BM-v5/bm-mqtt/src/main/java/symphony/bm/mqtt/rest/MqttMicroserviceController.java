@@ -20,12 +20,12 @@ import java.util.Map;
 
 @RestController
 @Slf4j
-public class MicroserviceController {
+public class MqttMicroserviceController {
     private final MessageChannel outbound;
     private final ObjectMapper objectMapper;
     
-    public MicroserviceController(@Qualifier("mqttOutboundChannel") MessageChannel outbound,
-                                  ObjectMapper objectMapper) {
+    public MqttMicroserviceController(@Qualifier("mqttOutboundChannel") MessageChannel outbound,
+                                      ObjectMapper objectMapper) {
         this.outbound = outbound;
         this.objectMapper = objectMapper;
     }
@@ -39,11 +39,14 @@ public class MicroserviceController {
         headers.put("mqtt_qos", 2);
         try {
             publish(new GenericMessage<>(objectMapper.writeValueAsString(thing), headers));
-            return new MicroserviceSuccessfulMessage("Thing " + uid + " published");
         } catch (JsonProcessingException e) {
             throw new RestControllerProcessingException("Thing " + uid + " cannot be published",
                     HttpStatus.INTERNAL_SERVER_ERROR, e);
         }
+        for (Attribute attribute : thing.getAttributes()) {
+            attribute(uid, attribute.getAid(), attribute);
+        }
+        return new MicroserviceSuccessfulMessage("Thing " + uid + " published");
     }
     
     @DeleteMapping("things/{uid}")
@@ -61,20 +64,49 @@ public class MicroserviceController {
                                           @RequestBody String value) {
         Map<String, Object> headers = new HashMap<>();
         headers.put("mqtt_topic", "things/" + uid + "/" + field);
+//        headers.put("mqtt_retained", true);
         headers.put("mqtt_qos", 2);
         publish(new GenericMessage<>(value, headers));
-        return new MicroserviceSuccessfulMessage("Thing " + uid + " published");
+        return new MicroserviceSuccessfulMessage("Thing " + uid + " " + field + " published");
     }
     
-//    @PostMapping("things/{uid}/attributes/{aid}")
-//    public MicroserviceMessage attribute(@PathVariable String uid, @PathVariable String aid,
-//                                          @RequestBody Attribute attribute) {
-//        Map<String, Object> headers = new HashMap<>();
-//        headers.put("mqtt_topic", "things/" + uid + "/attributes/" + aid);
-//        headers.put("mqtt_qos", 2);
-//        publish(new GenericMessage<>(value, headers));
-//        return new MicroserviceSuccessfulMessage("Thing " + uid + " published");
-//    }
+    @PostMapping("things/{uid}/attributes/{aid}")
+    public MicroserviceMessage attribute(@PathVariable String uid, @PathVariable String aid,
+                                          @RequestBody Attribute attribute) throws RestControllerProcessingException {
+        Map<String, Object> headers = new HashMap<>();
+        headers.put("mqtt_topic", "things/" + uid + "/attributes/" + aid);
+        headers.put("mqtt_retained", true);
+        headers.put("mqtt_qos", 2);
+        try {
+            publish(new GenericMessage<>(objectMapper.writeValueAsString(attribute), headers));
+            return new MicroserviceSuccessfulMessage("Thing " + uid + " published");
+        } catch (JsonProcessingException e) {
+            throw new RestControllerProcessingException("Attribute " + uid + "/" + aid + " cannot be published",
+                    HttpStatus.INTERNAL_SERVER_ERROR, e);
+        }
+    }
+    
+    @DeleteMapping("things/{uid}/attributes/{aid}")
+    public MicroserviceMessage deleteAttribute(@PathVariable String uid, @PathVariable String aid) {
+        Map<String, Object> headers = new HashMap<>();
+        headers.put("mqtt_topic", "things/" + uid + "/attributes/" + aid);
+        headers.put("mqtt_retained", true);
+        headers.put("mqtt_qos", 2);
+        publish(new GenericMessage<>("", headers));
+        return new MicroserviceSuccessfulMessage("Attribute " + uid + "/" + aid + " retained message deleted");
+    }
+    
+    @PostMapping("things/{uid}/attributes/{aid}/{field}")
+    public MicroserviceMessage attributeField(@PathVariable String uid, @PathVariable String aid,
+                                              @PathVariable String field, @RequestBody String value)
+            throws RestControllerProcessingException {
+        Map<String, Object> headers = new HashMap<>();
+        headers.put("mqtt_topic", "things/" + uid + "/attributes/" + aid + "/" + field);
+//        headers.put("mqtt_retained", true);
+        headers.put("mqtt_qos", 2);
+        publish(new GenericMessage<>(value, headers));
+        return new MicroserviceSuccessfulMessage("Attribute " + uid + "/" + aid + " " + field + " published");
+    }
     
     private void publish(Message<String> message) {
         log.debug("Publishing to topic " + message.getHeaders().get("mqtt_topic"));

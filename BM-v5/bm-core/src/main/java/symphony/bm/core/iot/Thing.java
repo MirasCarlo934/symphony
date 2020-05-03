@@ -52,8 +52,7 @@ public class Thing extends Groupable implements Resource {
         this.name = name;
         attributes.forEach( a -> {
             Attribute attribute = new Attribute(a.getAid(), a.getName(), a.getMode(), a.getDataType(), a.getValue());
-            attribute.setThing(uid);
-            this.attributes.add(attribute);
+            addAttribute(attribute);
         });
     }
 
@@ -75,6 +74,7 @@ public class Thing extends Groupable implements Resource {
         if (!attributes.contains(attribute)) {
             attributes.add(attribute);
             attribute.setThing(uid);
+            attribute.setActivityListeners(activityListeners);
             activityListeners.forEach( activityListener -> activityListener.attributeAddedToThing(attribute, this));
         }
     }
@@ -139,6 +139,9 @@ public class Thing extends Groupable implements Resource {
 
     @Override
     public void delete() {
+        for (Attribute attribute : attributes) {
+            activityListeners.forEach( activityListener -> activityListener.attributeRemovedFromThing(attribute, this));
+        }
         activityListeners.forEach( activityListener -> activityListener.thingDeleted(this));
     }
 }
