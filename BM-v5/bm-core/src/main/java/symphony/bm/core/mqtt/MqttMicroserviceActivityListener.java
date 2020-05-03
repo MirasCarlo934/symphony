@@ -1,6 +1,7 @@
 package symphony.bm.core.mqtt;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import symphony.bm.core.activitylisteners.ActivityListener;
 import symphony.bm.core.iot.Attribute;
@@ -13,16 +14,19 @@ import java.util.*;
 
 @Slf4j
 public class MqttMicroserviceActivityListener implements ActivityListener {
-    private final SuperGroup superGroup;
     private final String microserviceURL;
-    
+    private SuperGroup superGroup;
+
     // (k:Object, v:url)
     private final HashMap<Object, String> statesWaitingToUpdate = new HashMap<>();
     private final HashMap<Object, Timer> updaters = new HashMap<>();
     
-    public MqttMicroserviceActivityListener(String bmURL, String bmMqttMicroservicePort, SuperGroup superGroup) {
-        this.superGroup = superGroup;
+    public MqttMicroserviceActivityListener(String bmURL, String bmMqttMicroservicePort) {
         this.microserviceURL = bmURL + ":" + bmMqttMicroservicePort;
+    }
+
+    public void setSuperGroup(SuperGroup superGroup) {
+        this.superGroup = superGroup;
     }
     
     private void scheduleUpdate(Object obj, String url) {
@@ -51,15 +55,19 @@ public class MqttMicroserviceActivityListener implements ActivityListener {
     
     @Override
     public void thingUpdated(Thing thing, String fieldName, Object fieldValue) {
-        log.debug("Forwarding Thing " + thing.getUid() + " " + fieldName + " update to MQTT microservice...");
-        RestTemplate restTemplate = new RestTemplate();
-        MicroserviceMessage response = restTemplate.postForObject(
-                microserviceURL + "/things/" + thing.getUid() + "/" + fieldName,
-                fieldValue, MicroserviceMessage.class);
-        
-        assert response != null;
-        logResponse(response);
-        scheduleUpdate(thing, microserviceURL + "/things/" + thing.getUid());
+        try {
+            log.debug("Forwarding Thing " + thing.getUid() + " " + fieldName + " update to MQTT microservice...");
+            RestTemplate restTemplate = new RestTemplate();
+            MicroserviceMessage response = restTemplate.postForObject(
+                    microserviceURL + "/things/" + thing.getUid() + "/" + fieldName,
+                    fieldValue, MicroserviceMessage.class);
+
+            assert response != null;
+            logResponse(response);
+            scheduleUpdate(thing, microserviceURL + "/things/" + thing.getUid());
+        } catch (RestClientException e) {
+            log.error(e.getMessage(), e);
+        }
     }
     
     @Override
@@ -92,10 +100,14 @@ public class MqttMicroserviceActivityListener implements ActivityListener {
     
     @Override
     public void thingDeleted(Thing thing) {
-        log.debug("Deleting Thing " + thing.getUid() + " state representation in MQTT...");
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.delete(microserviceURL + "/things/" + thing.getUid());
-        log.debug("Thing state representation deleted");
+        try {
+            log.debug("Deleting Thing " + thing.getUid() + " state representation in MQTT...");
+            RestTemplate restTemplate = new RestTemplate();
+            restTemplate.delete(microserviceURL + "/things/" + thing.getUid());
+            log.debug("Thing state representation deleted");
+        } catch (RestClientException e) {
+            log.error(e.getMessage(), e);
+        }
     }
     
     @Override
@@ -125,18 +137,22 @@ public class MqttMicroserviceActivityListener implements ActivityListener {
     
     @Override
     public void attributeUpdated(Attribute attribute, String fieldName, Object fieldValue) {
-        log.debug("Forwarding Attribute " + attribute.getAid() + "/" + attribute.getAid() + " " + fieldName
-                + " update to MQTT microservice...");
-        Thing thing = superGroup.getThingRecursively(attribute.getThing());
-        RestTemplate restTemplate = new RestTemplate();
-        MicroserviceMessage response = restTemplate.postForObject(
-                microserviceURL + "/things/" + attribute.getThing() + "/attributes/" + attribute.getAid()
-                        + "/" + fieldName,
-                fieldValue, MicroserviceMessage.class);
-    
-        assert response != null;
-        logResponse(response);
-        scheduleUpdate(thing, microserviceURL + "/things/" + attribute.getThing());
+        try {
+            log.debug("Forwarding Attribute " + attribute.getAid() + "/" + attribute.getAid() + " " + fieldName
+                    + " update to MQTT microservice...");
+            Thing thing = superGroup.getThingRecursively(attribute.getThing());
+            RestTemplate restTemplate = new RestTemplate();
+            MicroserviceMessage response = restTemplate.postForObject(
+                    microserviceURL + "/things/" + attribute.getThing() + "/attributes/" + attribute.getAid()
+                            + "/" + fieldName,
+                    fieldValue, MicroserviceMessage.class);
+
+            assert response != null;
+            logResponse(response);
+            scheduleUpdate(thing, microserviceURL + "/things/" + attribute.getThing());
+        } catch (RestClientException e) {
+            log.error(e.getMessage(), e);
+        }
     }
     
     @Override
@@ -147,10 +163,14 @@ public class MqttMicroserviceActivityListener implements ActivityListener {
     
     @Override
     public void attributeRemovedFromThing(Attribute attribute, Thing thing) {
-        log.debug("Deleting Attribute " + thing.getUid() + "/" + attribute.getAid() + " state representation in MQTT...");
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.delete(microserviceURL + "/things/" + thing.getUid() + "/attributes/" + attribute.getAid());
-        log.debug("Attribute state representation deleted");
+        try {
+            log.debug("Deleting Attribute " + thing.getUid() + "/" + attribute.getAid() + " state representation in MQTT...");
+            RestTemplate restTemplate = new RestTemplate();
+            restTemplate.delete(microserviceURL + "/things/" + thing.getUid() + "/attributes/" + attribute.getAid());
+            log.debug("Attribute state representation deleted");
+        } catch (RestClientException e) {
+            log.error(e.getMessage(), e);
+        }
     }
     
     private class StateUpdater extends TimerTask {
@@ -162,14 +182,18 @@ public class MqttMicroserviceActivityListener implements ActivityListener {
         
         @Override
         public void run() {
-            String url = statesWaitingToUpdate.remove(objectToUpdate);
-            updaters.remove(objectToUpdate);
-            log.debug(objectToUpdate.toString());
-            log.debug("Updating " + url + " state representation in MQTT...");
-            RestTemplate restTemplate = new RestTemplate();
-            MicroserviceMessage response = restTemplate.postForObject(url, objectToUpdate, MicroserviceMessage.class);
-            assert response != null;
-            logResponse(response);
+            try {
+                String url = statesWaitingToUpdate.remove(objectToUpdate);
+                updaters.remove(objectToUpdate);
+                log.debug(objectToUpdate.toString());
+                log.debug("Updating " + url + " state representation in MQTT...");
+                RestTemplate restTemplate = new RestTemplate();
+                MicroserviceMessage response = restTemplate.postForObject(url, objectToUpdate, MicroserviceMessage.class);
+                assert response != null;
+                logResponse(response);
+            } catch (RestClientException e) {
+                log.error(e.getMessage(), e);
+            }
         }
     }
 }

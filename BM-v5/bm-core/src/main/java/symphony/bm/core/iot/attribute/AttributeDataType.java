@@ -21,4 +21,20 @@ public class AttributeDataType {
     public boolean checkValueIfValid(Object value) throws Exception {
         return type.checkValueIfValid(value, constraints);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        try {
+            AttributeDataType other = (AttributeDataType) obj;
+            if (!other.getType().equals(type)) {
+                return false;
+            }
+            if (!other.getConstraints().equals(constraints)) {
+                return false;
+            }
+            return true;
+        } catch (ClassCastException e) {
+            return false;
+        }
+    }
 }

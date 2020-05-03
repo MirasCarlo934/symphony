@@ -9,6 +9,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.annotation.Transient;
 import symphony.bm.core.activitylisteners.ActivityListener;
+import symphony.bm.core.activitylisteners.ActivityListenerManager;
 import symphony.bm.core.iot.exceptions.ValueUnchangedException;
 import symphony.bm.core.rest.forms.Form;
 import symphony.bm.core.rest.resources.Resource;
@@ -16,7 +17,6 @@ import symphony.bm.core.rest.resources.Resource;
 import javax.validation.constraints.NotNull;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -54,14 +54,15 @@ public class Thing extends Groupable implements Resource {
         this.name = name;
         attributes.forEach( a -> {
             Attribute attribute = new Attribute(a.getAid(), a.getName(), a.getMode(), a.getDataType(), a.getValue());
-            addAttribute(attribute);
+            attribute.setThing(uid);
+            this.attributes.add(attribute);
         });
     }
 
     public void setName(String name) throws ValueUnchangedException {
         if (!this.name.equals(name)) {
             this.name = name;
-            activityListeners.forEach(listener -> listener.thingUpdated(this, "name", name));
+            activityListenerManager.thingUpdated(this, "name", name);
         } else {
             throw new ValueUnchangedException();
         }
@@ -80,8 +81,8 @@ public class Thing extends Groupable implements Resource {
         if (!attributes.contains(attribute)) {
             attributes.add(attribute);
             attribute.setThing(uid);
-            attribute.setActivityListeners(activityListeners);
-            activityListeners.forEach( activityListener -> activityListener.attributeAddedToThing(attribute, this));
+            attribute.setActivityListenerManager(activityListenerManager);
+            activityListenerManager.attributeAddedToThing(attribute, this);
         }
     }
 
@@ -89,7 +90,7 @@ public class Thing extends Groupable implements Resource {
         Attribute attribute = getAttribute(aid);
         if (attribute != null) {
             attributes.remove(attribute);
-            activityListeners.forEach( activityListener -> activityListener.attributeRemovedFromThing(attribute, this));
+            activityListenerManager.attributeRemovedFromThing(attribute, this);
             return attribute;
         } else {
             return null;
@@ -102,16 +103,17 @@ public class Thing extends Groupable implements Resource {
     }
 
     @Override
-    public void setActivityListeners(List<ActivityListener> activityListeners) {
-        super.setActivityListeners(activityListeners);
+    public void setActivityListenerManager(ActivityListenerManager activityListenerManager) {
+        super.setActivityListenerManager(activityListenerManager);
         for (Attribute attribute : attributes) {
-            attribute.setActivityListeners(activityListeners);
+            attribute.setActivityListenerManager(activityListenerManager);
         }
     }
 
     @Override
     public void create() {
-        activityListeners.forEach( activityListener -> activityListener.thingCreated(this));
+        activityListenerManager.thingCreated(this);
+        attributes.forEach(attribute -> activityListenerManager.attributeAddedToThing(attribute, this));
     }
 
     @SneakyThrows
@@ -119,9 +121,7 @@ public class Thing extends Groupable implements Resource {
     public boolean update(Form form) {
         boolean changed = false;
         Map<String, Object> params = form.transformToMap();
-        Map<String, Object> paramsChanged = new HashMap<>();
         for (Map.Entry<String, Object> param : params.entrySet()) {
-            boolean paramSettable = false;
             String paramName = param.getKey().toLowerCase();
             for (Method method : Thing.class.getDeclaredMethods()) {
                 String methodName = method.getName().toLowerCase();
@@ -129,31 +129,25 @@ public class Thing extends Groupable implements Resource {
                         methodName.substring(3).equals(paramName)) {
                     try {
                         method.invoke(this, param.getValue());
-                        log.info("Changing " + param.getKey() + " to " + param.getValue());
+                        log.info("Changed " + param.getKey() + " to " + param.getValue());
+                        changed = true;
                     } catch (InvocationTargetException e) {
                         if (!e.getCause().getClass().equals(ValueUnchangedException.class)) {
-                            throw e;
+                            throw (Exception) e.getCause();
                         }
                     }
-                    paramSettable = changed = true;
                     break;
                 }
             }
-            if (paramSettable) {
-                paramsChanged.put(param.getKey(), param.getValue());
-            }
         }
-//        if (changed) {
-//            activityListeners.forEach(activityListener -> activityListener.thingUpdated(this, paramsChanged));
-//        }
         return changed;
     }
 
     @Override
     public void delete() {
         for (Attribute attribute : attributes) {
-            activityListeners.forEach( activityListener -> activityListener.attributeRemovedFromThing(attribute, this));
+            activityListenerManager.attributeRemovedFromThing(attribute, this);
         }
-        activityListeners.forEach( activityListener -> activityListener.thingDeleted(this));
+        activityListenerManager.thingDeleted(this);
     }
 }

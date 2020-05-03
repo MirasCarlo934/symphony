@@ -6,18 +6,27 @@
 
     <context:property-placeholder location="file:${bm.properties.home}/bm.properties"/>
 
-    <util:list id="bm-core.activityListeners" list-class="java.util.Vector">
+    <util:list id="bm-core.singleThreadedListeners" list-class="java.util.Vector">
         <ref bean="bm-core.mongo.activityListener"/>
+    </util:list>
+
+    <util:list id="bm-core.multiThreadedListeners" list-class="java.util.Vector">
         <ref bean="bm-core.mqtt.activityListener"/>
     </util:list>
+
+    <bean id="bm-core.activityListenerManager" class="symphony.bm.core.activitylisteners.ActivityListenerManager">
+        <property name="multiThreadedListeners" ref="bm-core.multiThreadedListeners"/>
+        <property name="singleThreadedListeners" ref="bm-core.singleThreadedListeners"/>
+    </bean>
 
     <bean id="bm-core.mongo.activityListener" class="symphony.bm.core.mongodb.MongoActivityListener">
         <constructor-arg name="mongoTemplate" ref="mongoTemplate"/>
         <constructor-arg name="timeBetweenPersists" value="5000"/>
     </bean>
 
-    <bean id="bm-core.mqtt.activityListener" class="symphony.bm.core.mqtt.MqttMicroserviceActivityListener">
+    <bean id="bm-core.mqtt.activityListener" class="symphony.bm.core.mqtt.MqttMicroserviceActivityListener" scope="prototype">
         <constructor-arg name="bmMqttMicroservicePort" value="${bm.port.mqtt}"/>
         <constructor-arg name="bmURL" value="${bm.url}"/>
+        <property name="superGroup" ref="superGroup"/>
     </bean>
 </beans>

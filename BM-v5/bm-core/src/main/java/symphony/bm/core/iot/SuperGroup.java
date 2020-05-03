@@ -2,11 +2,11 @@ package symphony.bm.core.iot;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
 import symphony.bm.core.activitylisteners.ActivityListener;
+import symphony.bm.core.activitylisteners.ActivityListenerManager;
 
 import java.util.List;
 
@@ -72,10 +72,10 @@ public class SuperGroup extends Group {
 
     @Autowired
     @Override
-    public void setActivityListeners(List<ActivityListener> activityListeners) {
-        super.setActivityListeners(activityListeners);
-        getContainedThings().forEach( thing -> thing.setActivityListeners(activityListeners));
-        getContainedGroups().forEach( group -> group.setActivityListeners(activityListeners));
+    public void setActivityListenerManager(ActivityListenerManager activityListenerManager) {
+        super.setActivityListenerManager(activityListenerManager);
+        getContainedThings().forEach( thing -> thing.setActivityListenerManager(activityListenerManager));
+        getContainedGroups().forEach( group -> group.setActivityListenerManager(activityListenerManager));
     }
 
     public void printContentCount() {

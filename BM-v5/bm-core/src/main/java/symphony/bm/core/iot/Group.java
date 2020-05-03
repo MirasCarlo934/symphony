@@ -11,12 +11,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.annotation.Transient;
+import symphony.bm.core.iot.exceptions.ValueUnchangedException;
 import symphony.bm.core.rest.forms.Form;
 import symphony.bm.core.rest.resources.Resource;
 
 import javax.validation.constraints.NotNull;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -46,9 +47,13 @@ public class Group extends Groupable implements Resource {
         this.name = name;
     }
     
-    public void setName(String name) {
-        this.name = name;
-        activityListeners.forEach(listener -> listener.groupUpdated(this, "name", name));
+    public void setName(String name) throws ValueUnchangedException {
+        if (!this.name.equals(name)) {
+            this.name = name;
+            activityListenerManager.groupUpdated(this, "name", name);
+        } else {
+            throw new ValueUnchangedException();
+        }
     }
 
     public Thing getThing(String UID) {
@@ -76,16 +81,16 @@ public class Group extends Groupable implements Resource {
     
     public void addThing(Thing thing) {
         if (getThing(thing.getUid()) != null) return;
-        thing.setActivityListeners(activityListeners);
+        thing.setActivityListenerManager(activityListenerManager);
         things.add(thing);
         thing.addParentGroup(gid);
-        activityListeners.forEach( listener -> listener.thingAddedToGroup(thing, this));
+        activityListenerManager.thingAddedToGroup(thing, this);
     }
 
     public void removeThing(Thing thing) {
         if (things.remove(thing)) {
             thing.removeParentGroup(gid);
-            activityListeners.forEach( listener -> listener.thingRemovedFromGroup(thing, this));
+            activityListenerManager.thingRemovedFromGroup(thing, this);
         }
     }
 
@@ -117,16 +122,16 @@ public class Group extends Groupable implements Resource {
 
     public void addGroup(Group group) {
         if (getGroup(group.getGid()) != null) return;
-        group.setActivityListeners(activityListeners);
+        group.setActivityListenerManager(activityListenerManager);
         groups.add(group);
         group.addParentGroup(gid);
-        activityListeners.forEach( listener -> listener.groupAddedToGroup(group, this));
+        activityListenerManager.groupAddedToGroup(group, this);
     }
 
     public void removeGroup(Group group) {
         if (groups.remove(group)) {
             group.removeParentGroup(gid);
-            activityListeners.forEach( listener -> listener.groupRemovedFromGroup(group, this));
+            activityListenerManager.groupRemovedFromGroup(group, this);
         }
     }
     
@@ -170,7 +175,7 @@ public class Group extends Groupable implements Resource {
 
     @Override
     public void create() {
-        activityListeners.forEach( listener -> listener.groupCreated(this));
+        activityListenerManager.groupCreated(this);
     }
 
     @SneakyThrows
@@ -178,21 +183,23 @@ public class Group extends Groupable implements Resource {
     public boolean update(Form form) {
         boolean changed = false;
         Map<String, Object> params = form.transformToMap();
-        Map<String, Object> paramsChanged = new HashMap<>();
         for (Map.Entry<String, Object> param : params.entrySet()) {
             boolean paramSettable = false;
             String paramName = param.getKey().toLowerCase();
             for (Method method : Group.class.getDeclaredMethods()) {
                 String methodName = method.getName().toLowerCase();
                 if (methodName.contains("set") && methodName.substring(3).equals(paramName)) {
-                    log.info("Changing " + param.getKey() + " to " + param.getValue());
-                    method.invoke(this, param.getValue());
-                    paramSettable = changed = true;
+                    try {
+                        method.invoke(this, param.getValue());
+                        log.info("Changed " + param.getKey() + " to " + param.getValue());
+                        changed = true;
+                    } catch (InvocationTargetException e) {
+                        if (!e.getCause().getClass().equals(ValueUnchangedException.class)) {
+                            throw (Exception) e.getCause();
+                        }
+                    }
                     break;
                 }
-            }
-            if (paramSettable) {
-                paramsChanged.put(param.getKey(), param.getValue());
             }
         }
 //        if (changed) {
@@ -203,6 +210,6 @@ public class Group extends Groupable implements Resource {
 
     @Override
     public void delete() {
-        activityListeners.forEach( listener -> listener.groupDeleted(this));
+        activityListenerManager.groupDeleted(this);
     }
 }

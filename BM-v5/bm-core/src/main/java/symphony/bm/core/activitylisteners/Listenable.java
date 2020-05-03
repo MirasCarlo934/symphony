@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Vector;
 
 public abstract class Listenable {
-    @Transient @JsonIgnore @Setter(onMethod_ = {@Transient}) protected List<ActivityListener> activityListeners = new Vector<>();
+    @Transient @JsonIgnore @Setter(onMethod_ = {@Transient}) protected ActivityListenerManager activityListenerManager;
 
-    public void addActivityListener(ActivityListener activityListener) {
-        activityListeners.add(activityListener);
-    }
+//    public void addActivityListener(ActivityListener activityListener) {
+//        activityListeners.add(activityListener);
+//    }
 }
