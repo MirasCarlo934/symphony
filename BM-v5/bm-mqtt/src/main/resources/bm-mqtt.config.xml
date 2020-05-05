@@ -8,7 +8,7 @@
 
     <context:property-placeholder location="file:${bm.resources.home}/bm.properties"/>
 
-    <bean id="clientFactory"
+    <bean id="mqttClientFactory"
           class="org.springframework.integration.mqtt.core.DefaultMqttPahoClientFactory">
         <property name="connectionOptions">
             <bean class="org.eclipse.paho.client.mqttv3.MqttConnectOptions">
@@ -23,14 +23,14 @@
                                              url="${mqtt.serverURI}"
                                              topics="BM/#"
                                              qos="2"
-                                             client-factory="clientFactory"
+                                             client-factory="mqttClientFactory"
                                              channel="mqttInboundChannel"
                                              error-channel="mqttErrorChannel"/>
 
-    <int-mqtt:outbound-channel-adapter id="withConverter"
+    <int-mqtt:outbound-channel-adapter id="mqttOutbound"
                                        client-id="${mqtt.client.id}.outbound"
                                        url="${mqtt.serverURI}"
-                                       client-factory="clientFactory"
+                                       client-factory="mqttClientFactory"
                                        default-qos="2"
                                        default-retained="false"
                                        default-topic="${mqtt.topic.default}"

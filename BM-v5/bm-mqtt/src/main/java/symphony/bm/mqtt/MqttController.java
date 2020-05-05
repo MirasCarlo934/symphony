@@ -100,28 +100,6 @@ public class MqttController implements MessageHandler {
             String msg = "Resource not currently available";
             throw new MessagingException(msg, e);
         }
-        
-//        HttpPut request = new HttpPut(resourceUrl);
-//        request.setEntity(new StringEntity(payload, ContentType.APPLICATION_JSON));
-//        HttpResponse response;
-//        try {
-//            log.debug("Requesting resource " + resourceUrl + "...");
-//            response = httpClient.execute(request);
-//            JsonNode jsonRsp = new ObjectMapper().readTree(EntityUtils.toString(response.getEntity()));
-//            log.debug("Response from " + resourceUrl + ": " + jsonRsp.toString());
-////            Map<String, Object> headers = new HashMap<>();
-////            headers.put("mqtt_topic", thingUrlBuilder.toString());
-////            publish(new GenericMessage<>(jsonRsp.toString(), headers));
-//        } catch (IOException e) {
-//            String msg = "Resource not currently available";
-//            throw new MessagingException(msg, e);
-//        }
     }
-
-//    private void publish(Message<String> message) {
-//        log.debug("Publishing to topic " + message.getHeaders().get("mqtt_topic"));
-//        log.debug("Message: " + message.getPayload());
-//        outbound.send(message);
-//    }
 
 }

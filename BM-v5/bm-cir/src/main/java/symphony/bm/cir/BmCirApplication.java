@@ -8,6 +8,9 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource({
         "file:${bm.properties.home}/bm.properties"
 })
+@ImportResource({
+        "file:${bm.config.home}/bm-cir.config.xml"
+})
 @SpringBootApplication(scanBasePackages = {
         "symphony.bm.cir",
         "symphony.bm.generics"

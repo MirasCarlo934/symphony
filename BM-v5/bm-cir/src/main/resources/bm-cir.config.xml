@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int-mqtt="http://www.springframework.org/schema/integration/mqtt"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/integration/mqtt http://www.springframework.org/schema/integration/mqtt/spring-integration-mqtt.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:property-placeholder location="file:${bm.resources.home}/bm.properties"/>
+
+    <bean id="mqttClientFactory"
+          class="org.springframework.integration.mqtt.core.DefaultMqttPahoClientFactory">
+        <property name="connectionOptions">
+            <bean class="org.eclipse.paho.client.mqttv3.MqttConnectOptions">
+                <!--                <property name="userName" value="${mqtt.username}"/>-->
+                <!--                <property name="password" value="${mqtt.password}"/>-->
+            </bean>
+        </property>
+    </bean>
+
+    <int-mqtt:message-driven-channel-adapter id="mqttThings"
+                                             client-id="${mqtt.client.id}.cir.inbound"
+                                             url="${mqtt.serverURI}"
+                                             topics="things/#"
+                                             qos="2"
+                                             client-factory="mqttClientFactory"
+                                             channel="mqttThingsChannel"
+                                             error-channel="mqttErrorChannel"/>
+
+    <int-mqtt:outbound-channel-adapter id="mqttCore"
+                                       client-id="${mqtt.client.id}.cir.outbound"
+                                       url="${mqtt.serverURI}"
+                                       client-factory="mqttClientFactory"
+                                       default-qos="2"
+                                       default-retained="false"
+                                       default-topic="BM"
+                                       async="false"
+                                       async-events="false"
+                                       channel="mqttCoreChannel"/>
+
+    <int:publish-subscribe-channel id="mqttThingsChannel"/>
+    <int:channel id="mqttCoreChannel"/>
+    <int:channel id="mqttErrorChannel"/>
+</beans>

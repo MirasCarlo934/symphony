@@ -73,13 +73,6 @@ public class MqttMicroserviceActivityListener implements ActivityListener {
     @Override
     public void thingAddedToGroup(Thing thing, Group group) {
         log.debug("Adding Thing " + thing.getUid() + " to Group " + group.getGid() + " in MQTT...");
-//        RestTemplate restTemplate = new RestTemplate();
-//        MicroserviceMessage response = restTemplate.postForObject(
-//                microserviceURL + "/things/" + thing.getUid() + "/parentGroups",
-//                thing.getParentGroups(), MicroserviceMessage.class);
-//
-//        assert response != null;
-//        logResponse(response);
         scheduleUpdate(thing.getParentGroups(), microserviceURL + "/things/" + thing.getUid() + "/parentGroups");
         scheduleUpdate(thing, microserviceURL + "/things/" + thing.getUid());
     }
@@ -87,13 +80,6 @@ public class MqttMicroserviceActivityListener implements ActivityListener {
     @Override
     public void thingRemovedFromGroup(Thing thing, Group group) {
         log.debug("Removing Thing " + thing.getUid() + " from Group " + group.getGid() + " in MQTT...");
-//        RestTemplate restTemplate = new RestTemplate();
-//        MicroserviceMessage response = restTemplate.postForObject(
-//                microserviceURL + "/things/" + thing.getUid() + "/parentGroups",
-//                thing.getParentGroups(), MicroserviceMessage.class);
-//
-//        assert response != null;
-//        logResponse(response);
         scheduleUpdate(thing.getParentGroups(), microserviceURL + "/things/" + thing.getUid() + "/parentGroups");
         scheduleUpdate(thing, microserviceURL + "/things/" + thing.getUid());
     }
