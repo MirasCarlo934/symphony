@@ -1,5 +1,6 @@
 package symphony.bm.cir.rules;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.MongoOperations;
@@ -17,15 +18,17 @@ public class RuleFactory {
     private MongoOperations mongo;
     private SubscribableChannel inbound;
     private MessageChannel outbound;
+    private ObjectMapper objectMapper;
     
     private List<Rule> rules;
     
-    public RuleFactory(MongoOperations mongo,
+    public RuleFactory(MongoOperations mongo, ObjectMapper objectMapper,
                        @Qualifier("mqttThingsChannel") SubscribableChannel inbound,
                        @Qualifier("mqttCoreChannel") MessageChannel outbound) {
         this.mongo = mongo;
         this.inbound = inbound;
         this.outbound = outbound;
+        this.objectMapper = objectMapper;
         
         loadRulesFromDB();
     }
@@ -35,6 +38,7 @@ public class RuleFactory {
         rules = mongo.findAll(Rule.class);
         
         for (Rule rule : rules) {
+            rule.setObjectMapper(objectMapper);
             rule.setOutboundChannel(outbound);
             inbound.subscribe(rule);
         }
