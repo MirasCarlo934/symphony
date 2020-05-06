@@ -2,18 +2,16 @@ package symphony.bm.core.iot;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import symphony.bm.core.activitylisteners.Listenable;
 
 import java.util.List;
 import java.util.Vector;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE)
-public abstract class Groupable extends Listenable {
+public abstract class Groupable extends IotResource {
     @NonNull @Setter(/*AccessLevel.PRIVATE*/) @Getter(/*AccessLevel.PROTECTED*/) private List<String> parentGroups;
 
     public Groupable(List<String> parentGroups) {

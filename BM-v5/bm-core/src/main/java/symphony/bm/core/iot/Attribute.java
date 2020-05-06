@@ -8,7 +8,6 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
-import symphony.bm.core.activitylisteners.Listenable;
 import symphony.bm.core.iot.attribute.AttributeDataType;
 import symphony.bm.core.iot.attribute.AttributeMode;
 import symphony.bm.core.iot.exceptions.ValueUnchangedException;
@@ -24,7 +23,7 @@ import java.util.Map;
         setterVisibility = JsonAutoDetect.Visibility.NONE)
 @AllArgsConstructor(onConstructor_ = {@PersistenceConstructor})
 @Slf4j
-public class Attribute extends Listenable implements Resource {
+public class Attribute extends IotResource implements Resource {
     @Id @JsonIgnore private String _id;
     @NotNull @NonNull /*@Setter*/ @Getter private String aid;
     @NotNull @Setter(AccessLevel.PACKAGE) @Getter private String thing;

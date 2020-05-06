@@ -61,7 +61,7 @@ public class MqttMicroserviceActivityListener implements ActivityListener {
             MicroserviceMessage response = restTemplate.postForObject(
                     microserviceURL + "/things/" + thing.getUid() + "/" + fieldName,
                     fieldValue, MicroserviceMessage.class);
-
+            
             assert response != null;
             logResponse(response);
             scheduleUpdate(thing, microserviceURL + "/things/" + thing.getUid());

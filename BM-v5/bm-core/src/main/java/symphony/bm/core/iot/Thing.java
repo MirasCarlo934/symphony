@@ -143,6 +143,25 @@ public class Thing extends Groupable implements Resource {
         return changed;
     }
 
+//    public boolean updateField(String fieldName, Object fieldValue) throws Exception {
+//        for (Method method : Thing.class.getDeclaredMethods()) {
+//            String methodName = method.getName().toLowerCase();
+//            if (!fieldName.equals("attributes") && methodName.contains("set") &&
+//                    methodName.substring(3).equals(fieldName)) {
+//                try {
+//                    method.invoke(this, fieldValue);
+//                    log.info("Changed " + param.getKey() + " to " + param.getValue());
+//                    changed = true;
+//                } catch (InvocationTargetException e) {
+//                    if (!e.getCause().getClass().equals(ValueUnchangedException.class)) {
+//                        throw (Exception) e.getCause();
+//                    }
+//                }
+//                break;
+//            }
+//        }
+//    }
+
     @Override
     public void delete() {
         for (Attribute attribute : attributes) {
