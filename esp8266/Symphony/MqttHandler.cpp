@@ -11,9 +11,10 @@
 #include "MqttHandler.h"
 
 AsyncMqttClient mqttClient;
-const char* myId = "myMqttID";
+String myId = "myMqttID";
 const char* mqttServer = "localhost";
-char* subscribeTopic = "things/";
+String subscribeTopic = "things/";
+String publishTopic = "BM/";
 int mqttPort = 1883;
 long timerMillis = 0, reconnectIntervalMillis = 10000;	//default 10 second reconnect interval
 
@@ -28,9 +29,10 @@ void onMqttConnect(bool sessionPresent) {
   Serial.println("[MqttHandler] Connected to MQTT.");
 //  Serial.print("Session present: ");
 //  Serial.println(sessionPresent);
-  sprintf(subscribeTopic, "%s%s/#","things/", myId);
-  uint16_t packetIdSub = mqttClient.subscribe(subscribeTopic, 0);
-  Serial.printf("[MqttHandler] subscribed to topic %s\n", subscribeTopic);
+  subscribeTopic = "things/" + myId +"/#";
+  publishTopic = "BM/" + myId;
+  uint16_t packetIdSub = mqttClient.subscribe(subscribeTopic.c_str(), 0);
+  Serial.printf("[MqttHandler] subscribed to topic %s\n", subscribeTopic.c_str());
 //  Serial.print("Subscribing at QoS 2, packetId: ");
 //  Serial.println(packetIdSub);
 //  mqttClient.publish("BM", 0, true, "test 1");
@@ -136,7 +138,7 @@ void MqttHandler::setId(const char *id) {
  */
 void MqttHandler::connect() { //to connect to MQTT server
 	Serial.println("[MqttHandler] Connecting.");
-	mqttClient.setClientId(myId);
+	mqttClient.setClientId(myId.c_str());
 	mqttClient.onConnect(onMqttConnect);
 	mqttClient.onDisconnect(onMqttDisconnect);
 	mqttClient.onSubscribe(onMqttSubscribe);
@@ -156,7 +158,13 @@ void MqttHandler::publish(const char* publishTopic, const char* payload) { //pub
 	Serial.printf("[MqttHandler] Publishing in topic %s\n", publishTopic);
 	mqttClient.publish( publishTopic, 0, false, payload); //we are setting QOS of 0 to prevent from multiple sending of messages
 }
-
+/**
+ * Publish data to the mqtt server
+ */
+void MqttHandler::publish(const char* payload) { //publish message to mqtt server
+	Serial.printf("[MqttHandler] Publishing in topic %s\n", publishTopic.c_str());
+	mqttClient.publish( publishTopic.c_str(), 0, false, payload); //we are setting QOS of 0 to prevent from multiple sending of messages
+}
 /**
  * Return the value of connection status
  */
@@ -169,6 +177,13 @@ bool  MqttHandler::isConnected() {
  */
 String MqttHandler::getSubscribedTopic() {
 	return subscribeTopic;
+}
+
+/**
+ * Returns the topic where this device sends messages to BM
+ */
+String MqttHandler::getPublishTopic() {
+	return publishTopic;
 }
 
 /**

@@ -85,7 +85,7 @@ void transmit(int attribute_id, const char* payload) {
 	//for now, we are using mqtt
 	if (theMqttHandler.isConnected()) {
 		String theTopic = "BM/";
-		theTopic = "BM/" + Symphony::nameWithMac + "/attributes/" + attribute_id;
+		theTopic = theMqttHandler.getPublishTopic() + "/attributes/" + attribute_id;
 		theMqttHandler.publish(theTopic.c_str(), payload);
 	} else {
 		Serial.println("[CORE] FAILED, not connected to MQTT. Unable to transmit data.");
@@ -349,10 +349,12 @@ void mqttMsgHandler(char* topic, char* payload, size_t len) {
   Serial.print("[CORE] Messsage received.");
   Serial.print(" topic:");Serial.print(topic);
   Serial.print(", len: ");Serial.println(len);
-  Serial.printf("[CORE] payload: %s\n", payload);
+  char msg[len+1];
+  strcpy(msg, payload);
+  Serial.printf("[CORE] payload: %s\n", msg);
 #endif
 	  DynamicJsonBuffer jsonBuffer;
-	  JsonObject& jsonMsg = jsonBuffer.parseObject(payload);
+	  JsonObject& jsonMsg = jsonBuffer.parseObject(msg);
 #ifdef DEBUG_ONLY
 	  jsonMsg.printTo(Serial);Serial.println();
 #endif
@@ -515,7 +517,7 @@ void handleConfigInfo(AsyncWebServerRequest *request) {
 			jsonObj["sTopic"] = theMqttHandler.getSubscribedTopic();
 		}
 		if (!jsonObj.containsKey("pTopic")) {
-			jsonObj["pTopic"] = "BM";
+			jsonObj["pTopic"] = theMqttHandler.getPublishTopic();
 		}
 		jsonObj["mqttConn"] = theMqttHandler.isConnected();
 		String cfgInfo;
@@ -930,7 +932,7 @@ bool Symphony::registerProduct() {
 				isRegistered = true;
 				Serial.println("[CORE] registerProduct start 1");
 				String strReg = product.stringify();
-				theMqttHandler.publish("BM",strReg.c_str());
+				theMqttHandler.publish(strReg.c_str());
 				Serial.printf("[CORE] registerProduct end payload len=%i\n", strReg.length());
 			}
 		}
