@@ -16,21 +16,18 @@ import java.util.List;
 @Component
 @Slf4j
 public class RuleFactory {
-    private MongoOperations mongo;
-    private SubscribableChannel inbound;
-    private MessageChannel outbound;
-    private ObjectMapper objectMapper;
-    private ActivityListenerManager activityListenerManager;
+    private final MongoOperations mongo;
+    private final SubscribableChannel inbound;
+    private final ObjectMapper objectMapper;
+    private final ActivityListenerManager activityListenerManager;
     
     private List<Rule> rules;
     
     public RuleFactory(MongoOperations mongo, ObjectMapper objectMapper,
                        @Qualifier("mqttThingsChannel") SubscribableChannel inbound,
-                       @Qualifier("mqttCoreChannel") MessageChannel outbound,
                        ActivityListenerManager activityListenerManager) {
         this.mongo = mongo;
         this.inbound = inbound;
-        this.outbound = outbound;
         this.objectMapper = objectMapper;
         this.activityListenerManager = activityListenerManager;
         
@@ -44,7 +41,6 @@ public class RuleFactory {
         for (Rule rule : rules) {
             rule.setActivityListenerManager(activityListenerManager);
             rule.setObjectMapper(objectMapper);
-            rule.setOutboundChannel(outbound);
             inbound.subscribe(rule);
         }
         

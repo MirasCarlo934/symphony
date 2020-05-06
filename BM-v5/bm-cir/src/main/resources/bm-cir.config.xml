@@ -19,7 +19,15 @@
     </bean>
 
     <bean class="symphony.bm.core.activitylisteners.ActivityListenerManager">
-        
+        <property name="multiThreadedListeners">
+            <list>
+                <ref bean="ruleActionExecutor"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="ruleActionExecutor" class="symphony.bm.cir.rules.RuleActionExecutor">
+        <constructor-arg name="outbound" ref="mqttCoreChannel"/>
     </bean>
 
     <int-mqtt:message-driven-channel-adapter id="mqttThings"

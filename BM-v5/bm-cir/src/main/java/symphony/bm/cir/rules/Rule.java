@@ -21,6 +21,7 @@ import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessagingException;
 import symphony.bm.cir.rules.namespaces.Namespace;
 import symphony.bm.core.activitylisteners.ActivityListenerManager;
+import symphony.bm.core.iot.Attribute;
 import symphony.bm.core.iot.Thing;
 
 import java.util.Iterator;
@@ -41,7 +42,6 @@ public class Rule implements MessageHandler {
     @Setter @Getter private String actions;
 
     @JsonIgnore @Transient @Setter(AccessLevel.PACKAGE) private ActivityListenerManager activityListenerManager;
-    @JsonIgnore @Transient @Setter(AccessLevel.PACKAGE) private MessageChannel outboundChannel;
     @JsonIgnore @Transient @Setter(AccessLevel.PACKAGE) private ObjectMapper objectMapper;
     @JsonIgnore @Transient private final ScheduledExecutorService timer = Executors.newSingleThreadScheduledExecutor();
     @JsonIgnore @Transient private final List<Namespace> missing;
@@ -69,6 +69,7 @@ public class Rule implements MessageHandler {
     public void handleMessage(Message<?> message) throws MessagingException {
         String topic = message.getHeaders().get("mqtt_receivedTopic", String.class);
         String payloadStr = (String) message.getPayload();
+        assert topic != null;
 
         if (!isActive() || payloadStr.isEmpty()) {
             buildNamespacesFromMqtt(message);
@@ -84,9 +85,12 @@ public class Rule implements MessageHandler {
             try {
                 namespace.getResource().update(field, message.getPayload());
             } catch (Exception e) {
-                log.error("Unable to change " + namespace.getURL() + " " + field + " to " + message.getPayload(), e);
+                String error = "Unable to change " + namespace.getURL() + " " + field + " to " + message.getPayload();
+                log.error(error, e);
+                throw new MessagingException(error, e);
             }
         }
+
 
         MVELRule r = new MVELRule()
                 .name(rid)
@@ -98,6 +102,10 @@ public class Rule implements MessageHandler {
         namespaces.forEach( n -> facts.put(n.getName(), n.getResource()));
         rules.register(r);
         engine.fire(rules, facts);
+
+//        namespaces.forEach( n -> {
+//            log.error( ((Attribute) n.getResource()).getValue().toString() + " : " + n.getAid() );
+//        });
     }
 
     @SneakyThrows
