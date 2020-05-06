@@ -9,6 +9,7 @@ import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannel
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.SubscribableChannel;
 import org.springframework.stereotype.Component;
+import symphony.bm.core.activitylisteners.ActivityListenerManager;
 
 import java.util.List;
 
@@ -19,16 +20,19 @@ public class RuleFactory {
     private SubscribableChannel inbound;
     private MessageChannel outbound;
     private ObjectMapper objectMapper;
+    private ActivityListenerManager activityListenerManager;
     
     private List<Rule> rules;
     
     public RuleFactory(MongoOperations mongo, ObjectMapper objectMapper,
                        @Qualifier("mqttThingsChannel") SubscribableChannel inbound,
-                       @Qualifier("mqttCoreChannel") MessageChannel outbound) {
+                       @Qualifier("mqttCoreChannel") MessageChannel outbound,
+                       ActivityListenerManager activityListenerManager) {
         this.mongo = mongo;
         this.inbound = inbound;
         this.outbound = outbound;
         this.objectMapper = objectMapper;
+        this.activityListenerManager = activityListenerManager;
         
         loadRulesFromDB();
     }
@@ -38,6 +42,7 @@ public class RuleFactory {
         rules = mongo.findAll(Rule.class);
         
         for (Rule rule : rules) {
+            rule.setActivityListenerManager(activityListenerManager);
             rule.setObjectMapper(objectMapper);
             rule.setOutboundChannel(outbound);
             inbound.subscribe(rule);

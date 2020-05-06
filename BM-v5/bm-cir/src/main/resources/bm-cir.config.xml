@@ -18,6 +18,10 @@
         </property>
     </bean>
 
+    <bean class="symphony.bm.core.activitylisteners.ActivityListenerManager">
+        
+    </bean>
+
     <int-mqtt:message-driven-channel-adapter id="mqttThings"
                                              client-id="${mqtt.client.id}.cir.inbound"
                                              url="${mqtt.serverURI}"

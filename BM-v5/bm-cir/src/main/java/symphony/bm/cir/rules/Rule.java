@@ -20,6 +20,7 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessagingException;
 import symphony.bm.cir.rules.namespaces.Namespace;
+import symphony.bm.core.activitylisteners.ActivityListenerManager;
 import symphony.bm.core.iot.Thing;
 
 import java.util.Iterator;
@@ -39,6 +40,7 @@ public class Rule implements MessageHandler {
     @Setter @Getter private String condition;
     @Setter @Getter private String actions;
 
+    @JsonIgnore @Transient @Setter(AccessLevel.PACKAGE) private ActivityListenerManager activityListenerManager;
     @JsonIgnore @Transient @Setter(AccessLevel.PACKAGE) private MessageChannel outboundChannel;
     @JsonIgnore @Transient @Setter(AccessLevel.PACKAGE) private ObjectMapper objectMapper;
     @JsonIgnore @Transient private final ScheduledExecutorService timer = Executors.newSingleThreadScheduledExecutor();
@@ -93,7 +95,7 @@ public class Rule implements MessageHandler {
                 .then(actions);
         Rules rules = new Rules();
         Facts facts = new Facts();
-        namespaces.forEach( n -> facts.put(n.getName(), n));
+        namespaces.forEach( n -> facts.put(n.getName(), n.getResource()));
         rules.register(r);
         engine.fire(rules, facts);
     }
@@ -114,6 +116,7 @@ public class Rule implements MessageHandler {
                     continue;
                 }
                 Thing thing = objectMapper.readValue(payload, Thing.class);
+                thing.setActivityListenerManager(activityListenerManager);
 
                 if (namespace.isThing()) {
                     namespace.setResource(thing);
