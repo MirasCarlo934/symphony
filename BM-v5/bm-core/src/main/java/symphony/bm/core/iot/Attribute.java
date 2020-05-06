@@ -104,28 +104,50 @@ public class Attribute extends IotResource implements Resource {
         Map<String, Object> params = form.transformToMap();
         for (Map.Entry<String, Object> param : params.entrySet()) {
             String paramName = param.getKey().toLowerCase();
-            for (Method method : Attribute.class.getDeclaredMethods()) {
-                String methodName = method.getName().toLowerCase();
-                if (methodName.contains("set") && methodName.substring(3).equals(paramName) &&
-                        method.getParameterCount() == 1 &&
-                        (method.getParameterTypes()[0].equals(param.getKey().getClass()) || paramName.equals("value"))) {
-                    try {
-                        method.invoke(this, param.getValue());
-                        log.info("Changed " + param.getKey() + " to " + param.getValue());
-                        changed = true;
-                    } catch (InvocationTargetException e) {
-                        if (!e.getCause().getClass().equals(ValueUnchangedException.class)) {
-                            throw (Exception) e.getCause();
-                        }
-                    }
-                    break;
-                }
-            }
+            changed = update(paramName, param.getValue());
+//            for (Method method : Attribute.class.getDeclaredMethods()) {
+//                String methodName = method.getName().toLowerCase();
+//                if (methodName.contains("set") && methodName.substring(3).equals(paramName) &&
+//                        method.getParameterCount() == 1 &&
+//                        (method.getParameterTypes()[0].equals(param.getKey().getClass()) || paramName.equals("value"))) {
+//                    try {
+//                        method.invoke(this, param.getValue());
+//                        log.info("Changed " + param.getKey() + " to " + param.getValue());
+//                        changed = true;
+//                    } catch (InvocationTargetException e) {
+//                        if (!e.getCause().getClass().equals(ValueUnchangedException.class)) {
+//                            throw (Exception) e.getCause();
+//                        }
+//                    }
+//                    break;
+//                }
+//            }
         }
 //        if (changed) {
 //            activityListeners.forEach(activityListener -> activityListener.attributeUpdated(this, paramsChanged));
 //        }
         return changed;
+    }
+
+    public boolean update(String fieldName, Object fieldValue) throws Exception {
+        for (Method method : this.getClass().getDeclaredMethods()) {
+            String methodName = method.getName().toLowerCase();
+            if (methodName.contains("set") && methodName.substring(3).equals(fieldName) &&
+                    method.getParameterCount() == 1 &&
+                    (method.getParameterTypes()[0].equals(fieldValue.getClass()) || fieldName.equals("value"))) {
+                try {
+                    method.invoke(this, fieldValue);
+                    log.info("Changed " + fieldValue + " to " + fieldValue);
+                    return true;
+                } catch (InvocationTargetException e) {
+                    if (!e.getCause().getClass().equals(ValueUnchangedException.class)) {
+                        throw (Exception) e.getCause();
+                    }
+                }
+                break;
+            }
+        }
+        return false;
     }
 
     @Override

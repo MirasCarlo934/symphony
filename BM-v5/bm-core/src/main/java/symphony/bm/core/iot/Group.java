@@ -184,28 +184,48 @@ public class Group extends Groupable implements Resource {
         boolean changed = false;
         Map<String, Object> params = form.transformToMap();
         for (Map.Entry<String, Object> param : params.entrySet()) {
-            boolean paramSettable = false;
             String paramName = param.getKey().toLowerCase();
-            for (Method method : Group.class.getDeclaredMethods()) {
-                String methodName = method.getName().toLowerCase();
-                if (methodName.contains("set") && methodName.substring(3).equals(paramName)) {
-                    try {
-                        method.invoke(this, param.getValue());
-                        log.info("Changed " + param.getKey() + " to " + param.getValue());
-                        changed = true;
-                    } catch (InvocationTargetException e) {
-                        if (!e.getCause().getClass().equals(ValueUnchangedException.class)) {
-                            throw (Exception) e.getCause();
-                        }
-                    }
-                    break;
-                }
-            }
+            changed = update(paramName, param.getValue());
+//            for (Method method : Group.class.getDeclaredMethods()) {
+//                String methodName = method.getName().toLowerCase();
+//                if (methodName.contains("set") && methodName.substring(3).equals(paramName)) {
+//                    try {
+//                        method.invoke(this, param.getValue());
+//                        log.info("Changed " + param.getKey() + " to " + param.getValue());
+//                        changed = true;
+//                    } catch (InvocationTargetException e) {
+//                        if (!e.getCause().getClass().equals(ValueUnchangedException.class)) {
+//                            throw (Exception) e.getCause();
+//                        }
+//                    }
+//                    break;
+//                }
+//            }
         }
 //        if (changed) {
 //            activityListeners.forEach(activityListener -> activityListener.groupUpdated(this, paramsChanged));
 //        }
         return changed;
+    }
+
+    @Override
+    public boolean update(String fieldName, Object fieldValue) throws Exception {
+        for (Method method : Group.class.getDeclaredMethods()) {
+            String methodName = method.getName().toLowerCase();
+            if (methodName.contains("set") && methodName.substring(3).equals(fieldName)) {
+                try {
+                    method.invoke(this, fieldValue);
+                    log.info("Changed " + fieldName + " to " + fieldValue);
+                    return true;
+                } catch (InvocationTargetException e) {
+                    if (!e.getCause().getClass().equals(ValueUnchangedException.class)) {
+                        throw (Exception) e.getCause();
+                    }
+                }
+                break;
+            }
+        }
+        return false;
     }
 
     @Override

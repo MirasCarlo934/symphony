@@ -171,7 +171,6 @@ public class MqttMicroserviceActivityListener implements ActivityListener {
             try {
                 String url = statesWaitingToUpdate.remove(objectToUpdate);
                 updaters.remove(objectToUpdate);
-                log.debug(objectToUpdate.toString());
                 log.debug("Updating " + url + " state representation in MQTT...");
                 RestTemplate restTemplate = new RestTemplate();
                 MicroserviceMessage response = restTemplate.postForObject(url, objectToUpdate, MicroserviceMessage.class);

@@ -6,6 +6,11 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
+import org.jeasy.rules.api.Facts;
+import org.jeasy.rules.api.Rules;
+import org.jeasy.rules.api.RulesEngine;
+import org.jeasy.rules.core.DefaultRulesEngine;
+import org.jeasy.rules.mvel.MVELRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.Id;
@@ -29,7 +34,7 @@ public class Rule implements MessageHandler {
     @Id @JsonIgnore private String _id; // for mongoDB
     
     @Setter @Getter private String rid;
-    @Setter @Getter private String name;
+    @Setter @Getter private String description;
     @Setter @Getter private List<Namespace> namespaces;
     @Setter @Getter private String condition;
     @Setter @Getter private String actions;
@@ -37,11 +42,12 @@ public class Rule implements MessageHandler {
     @JsonIgnore @Transient @Setter(AccessLevel.PACKAGE) private MessageChannel outboundChannel;
     @JsonIgnore @Transient @Setter(AccessLevel.PACKAGE) private ObjectMapper objectMapper;
     @JsonIgnore @Transient private final ScheduledExecutorService timer = Executors.newSingleThreadScheduledExecutor();
-    @JsonIgnore @Transient private List<Namespace> missing;
+    @JsonIgnore @Transient private final List<Namespace> missing;
+    @JsonIgnore @Transient private final RulesEngine engine = new DefaultRulesEngine();
 
-    public Rule(String rid, String name, List<Namespace> namespaces, String condition, String actions) {
+    public Rule(String rid, String description, List<Namespace> namespaces, String condition, String actions) {
         this.rid = rid;
-        this.name = name;
+        this.description = description;
         this.namespaces = namespaces;
         this.condition = condition;
         this.actions = actions;
@@ -54,21 +60,42 @@ public class Rule implements MessageHandler {
                         + namespace.getName()));
                 log.warn("Rule will not run");
             }
-        }, 5, 5, TimeUnit.SECONDS);
+        }, 10, 10, TimeUnit.SECONDS);
     }
 
     @Override
     public void handleMessage(Message<?> message) throws MessagingException {
-        String payload = (String) message.getPayload();
+        String topic = message.getHeaders().get("mqtt_receivedTopic", String.class);
+        String payloadStr = (String) message.getPayload();
 
-        if (!isActive() || payload.isEmpty()) {
+        if (!isActive() || payloadStr.isEmpty()) {
             buildNamespacesFromMqtt(message);
         }
         if (!isActive()) {
             log.warn("Rule inactive. Check namespace resources");
         }
 
-        
+        Namespace namespace = getNamespaceFromTopic(topic);
+        if (namespace != null && !topic.equals("things/" + namespace.getURL())) {
+            String[] topicLevels = topic.split("/");
+            String field = topicLevels[topicLevels.length - 1];
+            try {
+                namespace.getResource().update(field, message.getPayload());
+            } catch (Exception e) {
+                log.error("Unable to change " + namespace.getURL() + " " + field + " to " + message.getPayload(), e);
+            }
+        }
+
+        MVELRule r = new MVELRule()
+                .name(rid)
+                .description(description)
+                .when(condition)
+                .then(actions);
+        Rules rules = new Rules();
+        Facts facts = new Facts();
+        namespaces.forEach( n -> facts.put(n.getName(), n));
+        rules.register(r);
+        engine.fire(rules, facts);
     }
 
     @SneakyThrows
@@ -108,7 +135,7 @@ public class Rule implements MessageHandler {
     
     private Namespace getNamespaceFromTopic(String topic) {
         for (Namespace namespace : namespaces) {
-            if ( topic.equals("things/"+namespace.getURL()) ) {
+            if ( topic.contains("things/"+namespace.getURL()) ) {
                 return namespace;
             }
         }
