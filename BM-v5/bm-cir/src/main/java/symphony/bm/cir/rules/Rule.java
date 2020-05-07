@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessagingException;
 import symphony.bm.cir.rules.namespaces.Namespace;
@@ -76,6 +75,7 @@ public class Rule implements MessageHandler {
         }
         if (!isActive()) {
             log.warn("Rule inactive. Check namespace resources");
+            return;
         }
 
         Namespace namespace = getNamespaceFromTopic(topic);
@@ -89,23 +89,22 @@ public class Rule implements MessageHandler {
                 log.error(error, e);
                 throw new MessagingException(error, e);
             }
+    
+            if (namespace.isCondition()) {
+                MVELRule r = new MVELRule()
+                        .name(rid)
+                        .description(description)
+                        .when(condition)
+                        .then(actions);
+                Rules rules = new Rules();
+                Facts facts = new Facts();
+                namespaces.forEach(n -> facts.put(n.getName(), n.getResource()));
+                rules.register(r);
+                engine.fire(rules, facts);
+            }
         }
-
-
-        MVELRule r = new MVELRule()
-                .name(rid)
-                .description(description)
-                .when(condition)
-                .then(actions);
-        Rules rules = new Rules();
-        Facts facts = new Facts();
-        namespaces.forEach( n -> facts.put(n.getName(), n.getResource()));
-        rules.register(r);
-        engine.fire(rules, facts);
-
-//        namespaces.forEach( n -> {
-//            log.error( ((Attribute) n.getResource()).getValue().toString() + " : " + n.getAid() );
-//        });
+        
+        namespaces.forEach( n -> log.error( ((Attribute) n.getResource()).getValue() + " : " + n.getURL()));
     }
 
     @SneakyThrows

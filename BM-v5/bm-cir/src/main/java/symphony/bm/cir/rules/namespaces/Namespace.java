@@ -14,6 +14,7 @@ import javax.validation.constraints.NotNull;
 public class Namespace {
     @NonNull @NotNull @Getter String name;
     @NonNull @NotNull @Getter String uid;
+    @NonNull @NotNull @Getter boolean condition;
     @Getter String aid;
     
     @JsonIgnore @Transient @Setter @Getter IotResource resource;
