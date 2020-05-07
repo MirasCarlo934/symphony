@@ -3,6 +3,7 @@ package symphony.bm.core.rest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import symphony.bm.core.iot.Attribute;
@@ -16,6 +17,7 @@ import symphony.bm.generics.exceptions.RestControllerProcessingException;
 import symphony.bm.generics.messages.MicroserviceMessage;
 import symphony.bm.generics.messages.MicroserviceSuccessfulMessage;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Vector;
 
@@ -116,19 +118,7 @@ public class ThingController {
         log.debug("Updating thing " + uid + "...");
         boolean changed = false;
         if (form.getParentGroups() != null && !thing.hasSameParentGroups(form.getParentGroups())) {
-            List<String> groupsToAdd = new Vector<>();
-            List<String> groupsToRemove = new Vector<>(thing.getCopyOfParentGroups());
-            form.getParentGroups().forEach(parentGID -> {
-                if (!thing.hasGroup(parentGID)) {
-                    groupsToAdd.add(parentGID);
-                } else {
-                    groupsToRemove.remove(parentGID);
-                }
-            });
-            ThingGroupForm groupForm = new ThingGroupForm(groupsToAdd);
-            addGroup(uid, groupForm);
-            groupForm.setParentGroups(groupsToRemove);
-            removeGroup(uid, groupForm);
+            updateGroups(thing, form.getParentGroups());
             changed = true;
         }
 
@@ -137,6 +127,53 @@ public class ThingController {
 
         if (changed) {
             return successResponseEntity("Thing " + uid + " updated", HttpStatus.OK);
+        } else {
+            return successResponseEntity("Nothing to update", HttpStatus.OK);
+        }
+    }
+    
+    @PutMapping(value = "/{uid}/{field}", consumes = "text/plain")
+    public ResponseEntity<MicroserviceMessage> updateField(@PathVariable String uid, @PathVariable String field,
+                                                           @RequestBody String value)
+            throws RestControllerProcessingException {
+        Thing thing = superGroup.getThingRecursively(uid);
+        if (thing == null) {
+            throw new RestControllerProcessingException("Thing " + uid + " does not exist", HttpStatus.NOT_FOUND);
+        }
+    
+        log.debug("Updating " + field + " of " + uid + " ...");
+        boolean changed = false;
+        try {
+            changed = thing.update(field, value);
+        } catch (Exception e) {
+            throw new RestControllerProcessingException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, e);
+        }
+    
+        if (changed) {
+            return successResponseEntity("Thing " + uid + " " + field + " updated", HttpStatus.OK);
+        } else {
+            return successResponseEntity("Nothing to update", HttpStatus.OK);
+        }
+    }
+    
+    @PutMapping(value = "/{uid}/{field}", consumes = "application/json")
+    public ResponseEntity<MicroserviceMessage> updateField(@PathVariable String uid, @PathVariable String field,
+                                                           @RequestBody Object value)
+            throws RestControllerProcessingException {
+        Thing thing = superGroup.getThingRecursively(uid);
+        if (thing == null) {
+            throw new RestControllerProcessingException("Thing " + uid + " does not exist", HttpStatus.NOT_FOUND);
+        }
+        
+        boolean changed = false;
+        try {
+            changed = thing.update(field, value);
+        } catch (Exception e) {
+            throw new RestControllerProcessingException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, e);
+        }
+        
+        if (changed) {
+            return successResponseEntity("Thing " + uid + " " + field + " updated", HttpStatus.OK);
         } else {
             return successResponseEntity("Nothing to update", HttpStatus.OK);
         }
@@ -221,6 +258,22 @@ public class ThingController {
         }
 
         return successResponseEntity("Thing " + thing.getUid() + " removed from groups " + groups, HttpStatus.OK);
+    }
+    
+    private void updateGroups(Thing thing, List<String> parentGIDs) throws RestControllerProcessingException {
+        List<String> groupsToAdd = new Vector<>();
+        List<String> groupsToRemove = new Vector<>(thing.getCopyOfParentGroups());
+        parentGIDs.forEach(parentGID -> {
+            if (!thing.hasGroup(parentGID)) {
+                groupsToAdd.add(parentGID);
+            } else {
+                groupsToRemove.remove(parentGID);
+            }
+        });
+        ThingGroupForm groupForm = new ThingGroupForm(groupsToAdd);
+        addGroup(thing.getUid(), groupForm);
+        groupForm.setParentGroups(groupsToRemove);
+        removeGroup(thing.getUid(), groupForm);
     }
 
     private ResponseEntity<MicroserviceMessage> successResponseEntity(String msg, HttpStatus status) {
