@@ -75,7 +75,7 @@ int (* WsCallback) (AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject&
  * This enables the child to handle MQTT events.  Callback will be called if the property is not directly changeable.
  */
 bool initUpdate = true;
-int (* MqttCallback) (JsonObject& json);
+int (* MqttCallback) (int index, char* value);
 
 /**
  * Transmits data to the BM
@@ -85,7 +85,7 @@ void transmit(int attribute_id, const char* payload) {
 	//for now, we are using mqtt
 	if (theMqttHandler.isConnected()) {
 		String theTopic = "BM/";
-		theTopic = theMqttHandler.getPublishTopic() + "/attributes/" + attribute_id;
+		theTopic = theMqttHandler.getPublishTopic() + "/attributes/" + attribute_id +"/value";
 		theMqttHandler.publish(theTopic.c_str(), payload);
 	} else {
 		Serial.println("[CORE] FAILED, not connected to MQTT. Unable to transmit data.");
@@ -118,12 +118,7 @@ int productValueChangedEvent (int propertyIndex, boolean forHub) {
 	ws.textAll(strReply);
 	if (forHub) {
 		//send to the Hub (for now we use MQTT, we can use other protocol later)
-		DynamicJsonBuffer buffer;
-		JsonObject& poopJson = buffer.createObject();
-		poopJson["value"] = a.gui.value;
-		String strReg;
-		poopJson.printTo(strReg);
-		transmit(a.aid, strReg.c_str());	//transmit to mqtt
+		transmit(a.aid, String(a.gui.value).c_str());	//transmit to mqtt
 	}
 
 	Serial.println("[CORE] productValueChangeEvent done");
@@ -340,56 +335,51 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 
 /**
  *  This is the MQTT callback handler that is called when a message from mqtt broker arrives
- *  We will receive data in either of these forms:
- *  	1. things/{uid}							for changes in the device properties
- *  	2. things/{uid}/attributes/{aid}		for changes in the attribute values
+ *  We will receive data from the following topics:
+ *  	1. things/{uid}/parentGroups			for changes in the device parentGroups properties
+ *  	2. things/{uid}/name					for changes in the device name properties
+ *  	3. things/{uid}/attributes/{aid}		for changes in the attribute values
  */
 void mqttMsgHandler(char* topic, char* payload, size_t len) {
 #ifdef DEBUG_ONLY
-  Serial.print("[CORE] Messsage received.");
-  Serial.print(" topic:");Serial.print(topic);
-  Serial.print(", len: ");Serial.println(len);
-  char msg[len+1];
-  strcpy(msg, payload);
-  Serial.printf("[CORE] payload: %s\n", msg);
+	Serial.print("[CORE] Messsage received.");
+	Serial.print(" topic:");Serial.print(topic);
+	Serial.print(", len: ");Serial.println(len);
+	char msg[len+1];
+	strcpy(msg, payload);
+	msg[len+1] = '\0';
+	Serial.printf("[CORE] payload: %s\n", msg);
 #endif
-	  DynamicJsonBuffer jsonBuffer;
-	  JsonObject& jsonMsg = jsonBuffer.parseObject(msg);
+	//determine the topic, valid topics are from below
+	String theTopic = topic;
+	if (theTopic.indexOf("parentGroups") > 0) { // topic is things/{uid}/parentGroups
+
+	} else if (theTopic.indexOf("name") > 0) { // topic is things/{uid}/name
+
+	} else if (theTopic.indexOf("attributes/") > 0) {// topic is 3. things/{uid}/attributes/{aid}
+		int indexOf = theTopic.indexOf("attributes/");
+		int lastIndex = theTopic.lastIndexOf("/");
+		String propIndexStr = theTopic.substring(indexOf+11, lastIndex);
+		int propIndex = propIndexStr.toInt();
+		attribStruct attrib = Symphony::product.getKeyVal(propIndex);
 #ifdef DEBUG_ONLY
-	  jsonMsg.printTo(Serial);Serial.println();
+		Serial.printf("[CORE] indexOf=%i lastIndex=%i propIndex=%i str=%s\n", indexOf, lastIndex, propIndex, propIndexStr.c_str());
+		Serial.printf("[CORE] got attribute index=%i, current value=%i, pin=%i, directPin=%s\n", propIndex, attrib.gui.value, attrib.pin, attrib.directPin?"true":"false");
 #endif
-	  String msn = jsonMsg["MSN"].as<String>();
-	  if(msn.equals("register")) {	//this is the response to our register request
+		if (attrib.directPin) {//we set the value here because this is a directPin and its value can be set to pin directly
+			int value = atoi(payload);
+			Symphony::product.setValueByIndex(propIndex, value, false);//forHub=false, we are only showing this to the clients
+		} else {//we do not set the value here, the callback might need to do some computation before setting the pin
 #ifdef DEBUG_ONLY
-		  Serial.println("[CORE] MQTT registration successful.");
+			Serial.printf("[CORE] Property %s not directly changeable. Passing to callback.\n", attrib.ssid.c_str());
 #endif
-	  }
-	  if(msn.equals("poop")) {	//this is a poop request
-		  if(jsonMsg.containsKey("success")) {	//this is a response
-			  //do nothing
-		  } else {
-			  /* this is the request that we will receive
-			   *
-			   */
-			  //evaluate if directPin==true, execute here.  Else pass to wscallback
-			  attribStruct attrib = Symphony::product.getKeyVal(jsonMsg["prop-index"].as<int>());
-#ifdef DEBUG_ONLY
-			  Serial.printf("[CORE] got attribute %s, current value=%i, pin=%i, directPin=%s\n", attrib.ssid.c_str(), attrib.gui.value, attrib.pin, attrib.directPin?"true":"false");
-#endif
-			  if (attrib.directPin) {//we set the value here because this is a directPin and its value can be set to pin directly
-				  Symphony::product.setValue(jsonMsg["property"].as<String>(), jsonMsg["value"].as<int>(), false);//forHub=false, we are only showing this to the clients
-			  } else {//we do not set the value here, the callback might need to do some computation before setting the pin
-#ifdef DEBUG_ONLY
-				  Serial.printf("[CORE] Property %s not directly changeable. Passing to callback.\n", attrib.ssid.c_str());
-#endif
-				  if (MqttCallback != nullptr) {
-					  MqttCallback(jsonMsg);
-				  } else {
-					  Serial.println("[CORE] No MQTT callback set!!!");
-				  }
-			  }
-		  }
-	  }
+			if (MqttCallback != nullptr) {
+				MqttCallback(propIndex, payload);
+			} else {
+				Serial.println("[CORE] No MQTT callback set!!!");
+			}
+		}
+	}
 };
 /**
 * Handler that displays Captive portal during softAP mode
@@ -737,7 +727,7 @@ void Symphony::setWsCallback(int (* Callback) (AsyncWebSocket ws, AsyncWebSocket
  * This callback is called by the mqttMsgHandler function.  We can do manipulation of pins here.
  *
  */
-void Symphony::setMqttCallback(int (* Callback) (JsonObject& json)) {
+void Symphony::setMqttCallback(int (* Callback) (int index, char* value)) {
 	MqttCallback = Callback;
 }
 

@@ -176,7 +176,6 @@ attribStruct Product::getKeyVal(int index) {
 
 /*
  * Sets the value of the product property with the given ssid then sends to MQTT.
- * Use this if
  */
 void Product::setValue(String ssid, int value, boolean forHub) {
 #ifdef DEBUG_
@@ -194,14 +193,53 @@ void Product::setValue(String ssid, int value, boolean forHub) {
 		  Serial.print("\t prop.value=");Serial.println(attributes[i].gui.value);
 #endif
 	      attributes[i].gui.value = value;
+#ifdef DEBUG_
 	      Serial.print("\t value is set to ");Serial.println(attributes[i].gui.value);
+#endif
 	      valueChangeCallback(i, forHub);
 	    }
 	  }
 }
+/*
+ * Sets the value of the product property with the given index then sends to MQTT.
+ */
+void Product::setValueByIndex(int index, int value, boolean forHub) {
+	attributes[index].gui.value = value;
+#ifdef DEBUG_
+	Serial.print("\t value is set to ");Serial.println(attributes[index].gui.value);
+#endif
+	valueChangeCallback(index, forHub);
+}
 
 /**
  * returns the String representation of this device
+ * {
+    "uid": "12345678",
+    "parentGroups": [],
+    "name": "Thing 1",
+    "attributes": [
+        {
+            "mode": "controllable",
+            "dataType": {
+                "type": "binary",
+                "constraints": {}
+            },
+            "name": "On/Off",
+            "aid": "87654321",
+            "value": 0
+        },
+        {
+            "mode": "input",
+            "dataType": {
+                "type": "number",
+                "constraints": {}
+            },
+            "name": "Temperature [C]",
+            "aid": "abcdefgh",
+            "value": 30.2
+        }
+    ]
+}
  */
 String Product::stringify() {
 #ifdef DEBUG_
@@ -211,10 +249,9 @@ String Product::stringify() {
 		DynamicJsonBuffer jsonBuffer;
 		JsonObject& regJson = jsonBuffer.createObject();
 		regJson["uid"] = name_mac;
-		JsonArray& gArray = regJson.createNestedArray("grps");
-		gArray.add(room);
+		JsonArray& gArray = regJson.createNestedArray("parentGroups");
 		regJson["name"] = productName;
-		JsonArray& pArray = regJson.createNestedArray("attribs");
+		JsonArray& pArray = regJson.createNestedArray("attributes");
 		for (int i=0; i<size; i++) {
 			attribStruct a = getKeyVal(i);
 #ifdef DEBUG_
@@ -222,19 +259,17 @@ String Product::stringify() {
 #endif
 			JsonObject& prop1 = pArray.createNestedObject();
 			if (a.gui.pinType == BUTTON_CTL || a.gui.pinType == SLIDER_CTL) {
-				prop1["mode"] = "ctrl";
+				prop1["mode"] = "controllable";
 			} else {  //a.gui.pinType == BUTTON_SNSR || a.gui.pinType == SLIDER_SNSR
-				prop1["mode"] = "in";
+				prop1["mode"] = "input";
 			}
-			JsonObject& theType = prop1.createNestedObject("dTyp");
-			JsonObject& constraints = theType.createNestedObject("cnstr");
-			constraints["gui"] = a.gui.pinType;
+			JsonObject& theType = prop1.createNestedObject("dataType");
 			if (a.gui.pinType == BUTTON_CTL || a.gui.pinType == BUTTON_SNSR ) {
-				theType["typ"] = "bin";
-	//			theType["cnstr"] = "{}";
+				theType["type"] = "bin";
+				theType["constraints"] = "{}";
 			} else { //if (a.gui.pinType == SLIDER_CTL || a.gui.pinType == SLIDER_SNSR )
-				theType["typ"] = "num";
-	//			JsonObject& constraints = theType.createNestedObject("constraints");
+				theType["type"] = "num";
+				JsonObject& constraints = theType.createNestedObject("constraints");
 				constraints["min"] = a.gui.min;
 				constraints["max"] = a.gui.max;
 			}

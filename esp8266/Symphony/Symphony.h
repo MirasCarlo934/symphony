@@ -61,7 +61,7 @@ class Symphony {
 	    void on(const char* uri, WebRequestMethodComposite method, ArRequestHandlerFunction handler);
 	    void serveStatic(const char* uri, fs::FS& fs, const char* path);
 	    void setWsCallback(int (* WsCallback) (AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json));
-	    void setMqttCallback(int (* MqttCallback) (JsonObject& json));
+	    void setMqttCallback(int (* MqttCallback) (int index, char* value));
 	    void textAll(JsonObject& message);  //for sending to WsClients
 	    static void setRootProperties(String s);
 	    void setProduct(Product p);

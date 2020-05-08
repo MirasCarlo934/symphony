@@ -122,6 +122,7 @@ class Product {
     attribStruct getProperty(String ssid);
     attribStruct getKeyVal(int index);
     void setValue(String ssid, int value, boolean forHub);
+    void setValueByIndex(int index, int value, boolean forHub);
     String stringify();
     String stringifyForGui();
     String stringifyValues();

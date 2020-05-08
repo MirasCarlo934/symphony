@@ -27,23 +27,20 @@ void (* msgCallback) (char* topic, char* payload, size_t len);
 
 void onMqttConnect(bool sessionPresent) {
   Serial.println("[MqttHandler] Connected to MQTT.");
-//  Serial.print("Session present: ");
-//  Serial.println(sessionPresent);
-  subscribeTopic = "things/" + myId +"/#";
+  /* We will subscribe to the following topics:
+   *  	1. things/{uid}/parentGroups			for changes in the device parentGroups properties
+   *  	2. things/{uid}/name					for changes in the device name properties
+   *  	3. things/{uid}/attributes/#			for changes in the attribute values
+   */
+  subscribeTopic = "things/" + myId +"/";
+  String s1 = subscribeTopic + "parentGroups";
+  uint16_t packetIdSub1 = mqttClient.subscribe(s1.c_str(), 0);
+  String s2 = subscribeTopic + "name";
+  uint16_t packetIdSub2 = mqttClient.subscribe(s2.c_str(), 0);
+  String s3 = subscribeTopic + "attributes/#";
+  uint16_t packetIdSub3 = mqttClient.subscribe(s3.c_str(), 0);
   publishTopic = "BM/" + myId;
-  uint16_t packetIdSub = mqttClient.subscribe(subscribeTopic.c_str(), 0);
-  Serial.printf("[MqttHandler] subscribed to topic %s\n", subscribeTopic.c_str());
-//  Serial.print("Subscribing at QoS 2, packetId: ");
-//  Serial.println(packetIdSub);
-//  mqttClient.publish("BM", 0, true, "test 1");
-//  Serial.println("[MqttHandler] ************** Publishing at QoS 0");
-//  uint16_t packetIdPub1 = mqttClient.publish("BM", 1, true, "test 2");
-//  Serial.print("Publishing at QoS 1, packetId: ");
-//  Serial.println(packetIdPub1);
-//  uint16_t packetIdPub2 = mqttClient.publish("BM", 2, true, "test 3");
-//  Serial.print("Publishing at QoS 2, packetId: ");
-//  Serial.println(packetIdPub2);
-//  uint16_t packetIdPub3 = mqttClient.publish("BM", 2, true, thisProduct.stringify().c_str());
+  Serial.printf("[MqttHandler] subscribed to topics %s\t%s\t%s\n", s1.c_str(), s2.c_str(), s3.c_str());
   connected = true;
   doReconnect = false;
 }
