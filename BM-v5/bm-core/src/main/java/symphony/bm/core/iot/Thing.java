@@ -147,7 +147,7 @@ public class Thing extends Groupable implements Resource {
         for (Method method : this.getClass().getDeclaredMethods()) {
             String methodName = method.getName().toLowerCase();
             if (!fieldName.equals("attributes") && methodName.contains("set") &&
-                    methodName.substring(3).equals(fieldName)) {
+                    methodName.substring(3).equalsIgnoreCase(fieldName)) {
                 try {
                     method.invoke(this, fieldValue);
                     log.info("Changed " + fieldName + " to " + fieldValue);

@@ -6,16 +6,25 @@ import java.util.Map;
 public enum AttributeDataTypeEnum {
     binary {
         @Override
-        public boolean checkValueIfValid(Object value, Map<String, Object> constraints) throws Exception {
-            int i = Integer.parseInt(value.toString());
-            if (i < 0 || i > 1) {
-                throw new Exception("Binary attribute value must only be 1 or 0");
+        boolean checkValueIfValid(Object value, Map<String, Object> constraints) throws Exception {
+            try {
+                int i = Integer.parseInt(value.toString());
+                if (i < 0 || i > 1) {
+                    throw new Exception("Binary attribute value must only be 1 or 0");
+                }
+            } catch (NumberFormatException e) {
+                throw new NumberFormatException("Binary attribute value must only be 1 or 0");
             }
             return true;
         }
+
+        @Override
+        Object getDefaultValue(Map<String, Object> constraints) {
+            return 0;
+        }
     }, number {
         @Override
-        public boolean checkValueIfValid(Object value, Map<String, Object> constraints) throws Exception {
+        boolean checkValueIfValid(Object value, Map<String, Object> constraints) throws Exception {
             double d = Double.parseDouble(value.toString());
             try {
                 double min = Double.parseDouble(constraints.get("min").toString());
@@ -28,14 +37,24 @@ public enum AttributeDataTypeEnum {
                     throw new Exception("Attribute value must be less than " + max
                             + " as set in constraints");
                 }
+            } catch (NumberFormatException e) {
+                throw new NumberFormatException("Value is not a number");
             } catch (NullPointerException | ClassCastException e) {
                 // no min/max value constraint
             }
             return true;
         }
+        @Override
+        Object getDefaultValue(Map<String, Object> constraints) {
+            try {
+                return Double.parseDouble(constraints.get("min").toString());
+            } catch (Exception e) {
+                return 0;
+            }
+        }
     }, enumeration {
         @Override
-        public boolean checkValueIfValid(Object value, Map<String, Object> constraints) throws Exception {
+        boolean checkValueIfValid(Object value, Map<String, Object> constraints) throws Exception {
             List<String> enumValues = (List<String>) constraints.get("values");
             String s = value.toString();
             if (!enumValues.contains(s)) {
@@ -43,12 +62,22 @@ public enum AttributeDataTypeEnum {
             }
             return true;
         }
+        @Override
+        Object getDefaultValue(Map<String, Object> constraints) {
+            List<String> enumValues = (List<String>) constraints.get("values");
+            return enumValues.get(0);
+        }
     }, string {
         @Override
-        public boolean checkValueIfValid(Object value, Map<String, Object> constraints) throws Exception {
+        boolean checkValueIfValid(Object value, Map<String, Object> constraints) throws Exception {
             return true;
+        }
+        @Override
+        Object getDefaultValue(Map<String, Object> constraints) {
+            return "";
         }
     };
 
     abstract boolean checkValueIfValid(Object value, Map<String, Object> constraints) throws Exception;
+    abstract Object getDefaultValue(Map<String, Object> constraints);
 }

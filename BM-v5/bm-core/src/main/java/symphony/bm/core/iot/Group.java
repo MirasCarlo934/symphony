@@ -212,7 +212,7 @@ public class Group extends Groupable implements Resource {
     public boolean update(String fieldName, Object fieldValue) throws Exception {
         for (Method method : Group.class.getDeclaredMethods()) {
             String methodName = method.getName().toLowerCase();
-            if (methodName.contains("set") && methodName.substring(3).equals(fieldName)) {
+            if (methodName.contains("set") && methodName.substring(3).equalsIgnoreCase(fieldName)) {
                 try {
                     method.invoke(this, fieldValue);
                     log.info("Changed " + fieldName + " to " + fieldValue);

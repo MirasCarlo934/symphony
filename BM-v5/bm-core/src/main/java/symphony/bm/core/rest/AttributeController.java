@@ -1,13 +1,17 @@
 package symphony.bm.core.rest;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import symphony.bm.core.iot.Group;
 import symphony.bm.core.iot.SuperGroup;
 import symphony.bm.core.iot.Thing;
 import symphony.bm.core.iot.Attribute;
+import symphony.bm.core.iot.attribute.AttributeDataType;
 import symphony.bm.core.rest.forms.attribute.AttributeUpdateForm;
 import symphony.bm.core.rest.hateoas.AttributeModel;
 import symphony.bm.generics.exceptions.RestControllerProcessingException;
@@ -16,6 +20,7 @@ import symphony.bm.generics.messages.MicroserviceSuccessfulMessage;
 import symphony.bm.generics.messages.MicroserviceUnsuccessfulMessage;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 @RestController
@@ -24,6 +29,7 @@ import java.util.Vector;
 @Slf4j
 public class AttributeController {
     private final SuperGroup superGroup;
+    private final ObjectMapper objectMapper;
 
     @GetMapping
     public List<AttributeModel> getAttributeList(@PathVariable String uid) throws RestControllerProcessingException {
@@ -126,6 +132,72 @@ public class AttributeController {
             } else {
                 throw new RestControllerProcessingException("Attribute " + thing.getUid() + "/" + aid
                         + " does not exist", HttpStatus.NOT_FOUND);
+            }
+        } else {
+            throw new RestControllerProcessingException("Thing " + uid + " does not exist", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping(value = "/{aid}/{field}", consumes = {"text/plain"})
+    public ResponseEntity<MicroserviceMessage> updateField(@PathVariable String uid, @PathVariable String aid,
+                                                           @PathVariable String field, @RequestBody String value)
+            throws RestControllerProcessingException {
+        Thing thing = superGroup.getThingRecursively(uid);
+        if (thing != null) {
+            log.debug("Updating " + field + " of " + uid + "/" + aid + " ...");
+            Attribute attribute = thing.getAttribute(aid);
+            if (attribute != null) {
+                boolean changed = false;
+                try {
+                    changed = attribute.update(field, value);
+                } catch (Exception e) {
+                    throw new RestControllerProcessingException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, e);
+                }
+                if (changed) {
+                    return successResponseEntity("Attribute " + uid + "/" + aid + " " + field + " updated",
+                            HttpStatus.OK);
+                } else {
+                    return successResponseEntity("Nothing to update", HttpStatus.OK);
+                }
+            } else {
+                throw new RestControllerProcessingException("Attribute " + uid + "/" + aid + " does not exist",
+                        HttpStatus.NOT_FOUND);
+            }
+        } else {
+            throw new RestControllerProcessingException("Thing " + uid + " does not exist", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping(value = "/{aid}/{field}", consumes = {"application/json"})
+    public ResponseEntity<MicroserviceMessage> updateField(@PathVariable String uid, @PathVariable String aid,
+                                                           @PathVariable String field, @RequestBody Object value)
+            throws RestControllerProcessingException {
+        Thing thing = superGroup.getThingRecursively(uid);
+        if (thing != null) {
+            log.debug("Updating " + field + " of " + uid + "/" + aid + " ...");
+            Attribute attribute = thing.getAttribute(aid);
+            if (attribute != null) {
+                boolean changed = false;
+                if (field.equals("dataType")) {
+                    try {
+                        AttributeDataType dataType = objectMapper.convertValue(value, AttributeDataType.class);
+                        changed = attribute.update(field, dataType);
+                    } catch (Exception e) {
+                        throw new RestControllerProcessingException(e.getMessage(), HttpStatus.BAD_REQUEST, e);
+                    }
+                } else {
+                    throw new RestControllerProcessingException("Content-Type unsupported for field " + field,
+                            HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+                }
+                if (changed) {
+                    return successResponseEntity("Attribute " + uid + "/" + aid + " " + field + " updated",
+                            HttpStatus.OK);
+                } else {
+                    return successResponseEntity("Nothing to update", HttpStatus.OK);
+                }
+            } else {
+                throw new RestControllerProcessingException("Attribute " + uid + "/" + aid + " does not exist",
+                        HttpStatus.NOT_FOUND);
             }
         } else {
             throw new RestControllerProcessingException("Thing " + uid + " does not exist", HttpStatus.NOT_FOUND);

@@ -205,6 +205,7 @@ public class ThingController {
         }
 
         log.debug("Updating thing " + uid + "...");
+        boolean changed = false;
         ThingUpdateForm form = new ThingUpdateForm(thing.getName(), thing.getCopyOfParentGroups(),
                 thing.getCopyOfAttributeList());
         if (form.getAttributes() != null && !form.getAttributes().isEmpty()) {
@@ -216,8 +217,15 @@ public class ThingController {
             for (Attribute attribute : attributesToRemove) {
                 attributeController.delete(uid, attribute.getAid());
             }
+            changed = true;
         }
-        return update(uid, form);
+
+        if (changed) {
+            update(uid, form);
+            return successResponseEntity("Thing " + uid + " updated", HttpStatus.OK);
+        } else {
+            return update(uid, form);
+        }
     }
 
     @PostMapping("/{uid}/addgroup")

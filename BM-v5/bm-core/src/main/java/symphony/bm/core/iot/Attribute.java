@@ -74,9 +74,14 @@ public class Attribute extends IotResource implements Resource {
         }
     }
     
-    public void setDataType(AttributeDataType dataType) {
+    public void setDataType(AttributeDataType dataType) throws Exception {
         if (!this.dataType.equals(dataType)) {
             this.dataType = dataType;
+            try {
+                dataType.checkValueIfValid(value);
+            } catch (Exception e) {
+                setValue(dataType.getDefaultValue());
+            }
             activityListenerManager.attributeUpdated(this, "dataType", dataType);
         } else {
             throw new ValueUnchangedException();
@@ -132,7 +137,7 @@ public class Attribute extends IotResource implements Resource {
     public boolean update(String fieldName, Object fieldValue) throws Exception {
         for (Method method : this.getClass().getDeclaredMethods()) {
             String methodName = method.getName().toLowerCase();
-            if (methodName.contains("set") && methodName.substring(3).equals(fieldName) &&
+            if (methodName.contains("set") && methodName.substring(3).equalsIgnoreCase(fieldName) &&
                     method.getParameterCount() == 1 &&
                     (method.getParameterTypes()[0].equals(fieldValue.getClass()) || fieldName.equals("value"))) {
                 try {

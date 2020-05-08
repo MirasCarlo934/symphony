@@ -22,6 +22,10 @@ public class AttributeDataType {
         return type.checkValueIfValid(value, constraints);
     }
 
+    public Object getDefaultValue() {
+        return type.getDefaultValue(constraints);
+    }
+
     @Override
     public boolean equals(Object obj) {
         try {
