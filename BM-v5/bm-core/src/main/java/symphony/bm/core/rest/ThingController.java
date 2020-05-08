@@ -1,5 +1,6 @@
 package symphony.bm.core.rest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,7 @@ public class ThingController {
     private final SuperGroup superGroup;
     private final GroupController groupController;
     private final AttributeController attributeController;
+    private final ObjectMapper objectMapper;
     
     @GetMapping
     public List<ThingModel> getThingList() {
@@ -118,8 +120,7 @@ public class ThingController {
         log.debug("Updating thing " + uid + "...");
         boolean changed = false;
         if (form.getParentGroups() != null && !thing.hasSameParentGroups(form.getParentGroups())) {
-            updateGroups(thing, form.getParentGroups());
-            changed = true;
+            changed = updateGroups(thing, form.getParentGroups());
         }
 
         boolean updated = thing.update(form);
@@ -164,12 +165,22 @@ public class ThingController {
         if (thing == null) {
             throw new RestControllerProcessingException("Thing " + uid + " does not exist", HttpStatus.NOT_FOUND);
         }
-        
+
         boolean changed = false;
-        try {
-            changed = thing.update(field, value);
-        } catch (Exception e) {
-            throw new RestControllerProcessingException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, e);
+        if (field.equals("parentGroups")) {
+            try {
+                List<String> parentGroups = (List<String>) value;
+                changed = updateGroups(thing, parentGroups);
+            } catch (ClassCastException e) {
+                throw new RestControllerProcessingException("Invalid data sent (must be string JSON array)",
+                        HttpStatus.BAD_REQUEST);
+            }
+        } else {
+            try {
+                changed = thing.update(field, value);
+            } catch (Exception e) {
+                throw new RestControllerProcessingException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, e);
+            }
         }
         
         if (changed) {
@@ -260,20 +271,24 @@ public class ThingController {
         return successResponseEntity("Thing " + thing.getUid() + " removed from groups " + groups, HttpStatus.OK);
     }
     
-    private void updateGroups(Thing thing, List<String> parentGIDs) throws RestControllerProcessingException {
-        List<String> groupsToAdd = new Vector<>();
-        List<String> groupsToRemove = new Vector<>(thing.getCopyOfParentGroups());
-        parentGIDs.forEach(parentGID -> {
-            if (!thing.hasGroup(parentGID)) {
-                groupsToAdd.add(parentGID);
-            } else {
-                groupsToRemove.remove(parentGID);
-            }
-        });
-        ThingGroupForm groupForm = new ThingGroupForm(groupsToAdd);
-        addGroup(thing.getUid(), groupForm);
-        groupForm.setParentGroups(groupsToRemove);
-        removeGroup(thing.getUid(), groupForm);
+    private boolean updateGroups(Thing thing, List<String> parentGIDs) throws RestControllerProcessingException {
+        if (!thing.hasSameParentGroups(parentGIDs)) {
+            List<String> groupsToAdd = new Vector<>();
+            List<String> groupsToRemove = new Vector<>(thing.getCopyOfParentGroups());
+            parentGIDs.forEach(parentGID -> {
+                if (!thing.hasGroup(parentGID)) {
+                    groupsToAdd.add(parentGID);
+                } else {
+                    groupsToRemove.remove(parentGID);
+                }
+            });
+            ThingGroupForm groupForm = new ThingGroupForm(groupsToAdd);
+            addGroup(thing.getUid(), groupForm);
+            groupForm.setParentGroups(groupsToRemove);
+            removeGroup(thing.getUid(), groupForm);
+            return true;
+        }
+        return false;
     }
 
     private ResponseEntity<MicroserviceMessage> successResponseEntity(String msg, HttpStatus status) {
