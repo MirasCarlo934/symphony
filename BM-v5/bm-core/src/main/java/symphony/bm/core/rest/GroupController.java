@@ -10,6 +10,7 @@ import symphony.bm.core.iot.SuperGroup;
 import symphony.bm.core.iot.Thing;
 import symphony.bm.core.rest.forms.group.GroupGroupForm;
 import symphony.bm.core.rest.forms.group.GroupUpdateForm;
+import symphony.bm.core.rest.forms.thing.ThingGroupForm;
 import symphony.bm.core.rest.hateoas.GroupModel;
 import symphony.bm.generics.exceptions.RestControllerProcessingException;
 import symphony.bm.generics.messages.MicroserviceMessage;
@@ -97,6 +98,30 @@ public class GroupController {
         return successResponseEntity("Group " + gid + " added", HttpStatus.CREATED);
     }
 
+    @PatchMapping("/{gid}")
+    public ResponseEntity<MicroserviceMessage> update(@PathVariable String gid, @RequestBody GroupUpdateForm form)
+            throws RestControllerProcessingException {
+        Group group = superGroup.getGroupRecursively(gid);
+        if (group == null) {
+            throw new RestControllerProcessingException("Group does not exist", HttpStatus.NOT_FOUND);
+        }
+
+        log.debug("Updating group " + gid + "...");
+        boolean changed = false;
+        if (form.getParentGroups() != null) {
+            changed = updateGroups(group, form.getParentGroups());
+        }
+
+        boolean updated = group.update(form);
+        changed = changed || updated;
+
+        if (changed) {
+            return successResponseEntity("Group " + gid + " updated", HttpStatus.OK);
+        } else {
+            return successResponseEntity("Nothing to update", HttpStatus.OK);
+        }
+    }
+
     @PutMapping(value = "/{gid}/{field}", consumes = "text/plain")
     public ResponseEntity<MicroserviceMessage> updateField(@PathVariable String gid, @PathVariable String field,
                                                            @RequestBody String value)
@@ -115,50 +140,45 @@ public class GroupController {
         }
 
         if (changed) {
-            return successResponseEntity("Thing " + gid + " " + field + " updated", HttpStatus.OK);
+            return successResponseEntity("Group " + gid + " " + field + " updated", HttpStatus.OK);
         } else {
             return successResponseEntity("Nothing to update", HttpStatus.OK);
         }
     }
-    
-    @PatchMapping("/{gid}")
-    public ResponseEntity<MicroserviceMessage> update(@PathVariable String gid, @RequestBody GroupUpdateForm form)
+
+    @PutMapping(value = "/{gid}/{field}", consumes = "application/json")
+    public ResponseEntity<MicroserviceMessage> updateField(@PathVariable String gid, @PathVariable String field,
+                                                           @RequestBody Object value)
             throws RestControllerProcessingException {
         Group group = superGroup.getGroupRecursively(gid);
         if (group == null) {
             throw new RestControllerProcessingException("Group does not exist", HttpStatus.NOT_FOUND);
         }
 
-        log.debug("Updating group " + gid + "...");
         boolean changed = false;
-        if (form.getParentGroups() != null && !group.hasSameParentGroups(form.getParentGroups())) {
-            List<String> groupsToAdd = new Vector<>();
-            List<String> groupsToRemove = new Vector<>(group.getCopyOfParentGroups());
-            form.getParentGroups().forEach(parentGID -> {
-                if (!group.hasGroup(parentGID)) {
-                    groupsToAdd.add(parentGID);
-                } else {
-                    groupsToRemove.remove(parentGID);
-                }
-            });
-            GroupGroupForm groupForm = new GroupGroupForm();
-            groupForm.setParentGroups(groupsToAdd);
-            addGroup(gid, groupForm);
-            groupForm.setParentGroups(groupsToRemove);
-            removeGroup(gid, groupForm);
-            changed = true;
+        if (field.equals("parentGroups")) {
+            try {
+                List<String> parentGroups = (List<String>) value;
+                changed = updateGroups(group, parentGroups);
+            } catch (ClassCastException e) {
+                throw new RestControllerProcessingException("Invalid data sent (must be JSON string array)",
+                        HttpStatus.BAD_REQUEST);
+            }
+        } else {
+            try {
+                changed = group.update(field, value);
+            } catch (Exception e) {
+                throw new RestControllerProcessingException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, e);
+            }
         }
 
-        boolean updated = group.update(form);
-        changed = changed || updated;
-    
         if (changed) {
-            return successResponseEntity("Group " + gid + " updated", HttpStatus.OK);
+            return successResponseEntity("Group " + gid + " " + field + " updated", HttpStatus.OK);
         } else {
             return successResponseEntity("Nothing to update", HttpStatus.OK);
         }
     }
-    
+
     @PostMapping("/{gid}/addgroup")
     public ResponseEntity<MicroserviceMessage> addGroup(@PathVariable String gid, @RequestBody GroupGroupForm form)
             throws RestControllerProcessingException {
@@ -213,6 +233,27 @@ public class GroupController {
         }
     
         return successResponseEntity("Group " + gid + " removed from groups " + groups, HttpStatus.OK);
+    }
+
+    private boolean updateGroups(Group group, List<String> parentGIDs) throws RestControllerProcessingException {
+        if (!group.hasSameParentGroups(parentGIDs)) {
+            List<String> groupsToAdd = new Vector<>();
+            List<String> groupsToRemove = new Vector<>(group.getCopyOfParentGroups());
+            parentGIDs.forEach(parentGID -> {
+                if (!group.hasGroup(parentGID)) {
+                    groupsToAdd.add(parentGID);
+                } else {
+                    groupsToRemove.remove(parentGID);
+                }
+            });
+            GroupGroupForm groupForm = new GroupGroupForm();
+            groupForm.setParentGroups(groupsToAdd);
+            addGroup(group.getGid(), groupForm);
+            groupForm.setParentGroups(groupsToRemove);
+            removeGroup(group.getGid(), groupForm);
+            return true;
+        }
+        return false;
     }
     
     public Group createDefaultGroup(String GID) {

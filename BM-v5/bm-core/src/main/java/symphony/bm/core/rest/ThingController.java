@@ -119,7 +119,7 @@ public class ThingController {
 
         log.debug("Updating thing " + uid + "...");
         boolean changed = false;
-        if (form.getParentGroups() != null && !thing.hasSameParentGroups(form.getParentGroups())) {
+        if (form.getParentGroups() != null) {
             changed = updateGroups(thing, form.getParentGroups());
         }
 
@@ -172,7 +172,7 @@ public class ThingController {
                 List<String> parentGroups = (List<String>) value;
                 changed = updateGroups(thing, parentGroups);
             } catch (ClassCastException e) {
-                throw new RestControllerProcessingException("Invalid data sent (must be string JSON array)",
+                throw new RestControllerProcessingException("Invalid data sent (must be JSON string array)",
                         HttpStatus.BAD_REQUEST);
             }
         } else {
