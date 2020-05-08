@@ -96,6 +96,30 @@ public class GroupController {
 
         return successResponseEntity("Group " + gid + " added", HttpStatus.CREATED);
     }
+
+    @PutMapping(value = "/{gid}/{field}", consumes = "text/plain")
+    public ResponseEntity<MicroserviceMessage> updateField(@PathVariable String gid, @PathVariable String field,
+                                                           @RequestBody String value)
+            throws RestControllerProcessingException {
+        Group group = superGroup.getGroupRecursively(gid);
+        if (group == null) {
+            throw new RestControllerProcessingException("Group does not exist", HttpStatus.NOT_FOUND);
+        }
+
+        log.debug("Updating " + field + " of " + gid + " ...");
+        boolean changed = false;
+        try {
+            changed = group.update(field, value);
+        } catch (Exception e) {
+            throw new RestControllerProcessingException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, e);
+        }
+
+        if (changed) {
+            return successResponseEntity("Thing " + gid + " " + field + " updated", HttpStatus.OK);
+        } else {
+            return successResponseEntity("Nothing to update", HttpStatus.OK);
+        }
+    }
     
     @PatchMapping("/{gid}")
     public ResponseEntity<MicroserviceMessage> update(@PathVariable String gid, @RequestBody GroupUpdateForm form)
