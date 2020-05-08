@@ -165,9 +165,8 @@ int wsHandler(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json)
 /*
  * Callback function for the mqtt events
  */
-int mqttHandler(JsonObject& json) {
+int mqttHandler(int index, char* value) {
 	Serial.println("SymphonySocket mqtt callback executed start");
-	json.prettyPrintTo(Serial);Serial.println();
 //	{
 //	  "prop-index": 0,
 //	  "MRN": "35027136",
@@ -175,11 +174,10 @@ int mqttHandler(JsonObject& json) {
 //	  "prop-value": "0",
 //	  "CID": "wemos1_502914e722c"
 //	}
-	attribStruct a = product.getKeyVal(json["prop-index"].as<int>());
-	int ssid = a.ssid.toInt();
-	product.setValue(a.ssid, json["prop-value"].as<int>(), false);
-	if (ssid==1) {
-		socketState = json["prop-value"].as<int>();
+
+	product.setValueByIndex(index, atoi(value), false);
+	if (index==1) {
+		socketState = atoi(value);
 	}
 	Serial.println("SymphonySocket mqtt callback executed end");
 }
@@ -217,16 +215,16 @@ void setup()
 	//gui3-8 for the timer control
 	Gui gui3 = Gui("Timer", BUTTON_SNSR, "Enabled", 0, 1, 0);
 	product.addVirtualProperty("11", gui3);//add a logical property that has no attached pin
-	Gui gui4 = Gui("Timer", SLIDER_SNSR, "Timer", 0, 24, 0);
-	product.addVirtualProperty("12", gui4);//add a logical property that has no attached pin
-	Gui gui5 = Gui("Timer", SLIDER_SUBMIT, "Hours", 0, 23, 0);
-	product.addVirtualProperty("13", gui5);//add a logical property that has no attached pin
-	Gui gui6 = Gui("Timer", SLIDER_SUBMIT, "Mins", 0, 59, 0);
-	product.addVirtualProperty("14", gui6);//add a logical property that has no attached pin
-	Gui gui7 = Gui("Timer", SLIDER_SUBMIT, "Secs", 0, 59, 0);
-	product.addVirtualProperty("15", gui7);//add a logical property that has no attached pin
-	Gui gui8 = Gui("Timer", SUBMIT, "Submit", 0, 1, 0);
-	product.addVirtualProperty("16", gui8);//add a logical property that has no attached pin
+//	Gui gui4 = Gui("Timer", SLIDER_SNSR, "Timer", 0, 24, 0);
+//	product.addVirtualProperty("12", gui4);//add a logical property that has no attached pin
+//	Gui gui5 = Gui("Timer", SLIDER_SUBMIT, "Hours", 0, 23, 0);
+//	product.addVirtualProperty("13", gui5);//add a logical property that has no attached pin
+//	Gui gui6 = Gui("Timer", SLIDER_SUBMIT, "Mins", 0, 59, 0);
+//	product.addVirtualProperty("14", gui6);//add a logical property that has no attached pin
+//	Gui gui7 = Gui("Timer", SLIDER_SUBMIT, "Secs", 0, 59, 0);
+//	product.addVirtualProperty("15", gui7);//add a logical property that has no attached pin
+//	Gui gui8 = Gui("Timer", SUBMIT, "Submit", 0, 1, 0);
+//	product.addVirtualProperty("16", gui8);//add a logical property that has no attached pin
 	s.setProduct(product);
 
 	if (e131.begin(E131_MULTICAST, UNIVERSE_START, UNIVERSE_COUNT))   // Listen via Multicast
