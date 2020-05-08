@@ -55,6 +55,8 @@ public class MqttController implements MessageHandler {
         String topic = (String) message.getHeaders().get("mqtt_receivedTopic");
         String payload = (String) message.getPayload();
         StringBuilder thingUrlBuilder = new StringBuilder("things");
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
 
         log.debug("Message received from topic " + topic);
         log.debug("Message: " + payload);
@@ -63,7 +65,8 @@ public class MqttController implements MessageHandler {
         topicLevels.remove(0);
         topicLevels.forEach( level -> thingUrlBuilder.append("/").append(level));
         
-        if (topicLevels.contains("attributes")) {
+        if (topicLevels.contains("attributes") && topicLevels.size() == 3) { // for Attribute
+            headers.setContentType(MediaType.APPLICATION_JSON);
             try {
                 MinifiedAttribute minAttr = objectMapper.readValue(payload, MinifiedAttribute.class);
                 payload = objectMapper.writeValueAsString(minAttr.unminify());
@@ -75,7 +78,8 @@ public class MqttController implements MessageHandler {
                     throw new MessagingException(msg, e1);
                 }
             }
-        } else {
+        } else if (topicLevels.size() == 1) {
+            headers.setContentType(MediaType.APPLICATION_JSON);
             try {
                 MinifiedThing minThing = objectMapper.readValue(payload, MinifiedThing.class);
                 payload = objectMapper.writeValueAsString(minThing.unminify());
@@ -87,12 +91,11 @@ public class MqttController implements MessageHandler {
                     throw new MessagingException(msg, e1);
                 }
             }
+        } else { // data sent is a Thing or Attribute field
+            headers.setContentType(MediaType.TEXT_PLAIN);
         }
-    
-        RestTemplate restTemplate = new RestTemplate();
+        
         String resourceUrl = bmURL + ":" + bmCorePort + "/" + thingUrlBuilder.toString();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> entity = new HttpEntity<>(payload, headers);
         try {
             restTemplate.put(resourceUrl, entity);
