@@ -31,7 +31,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class Rule implements MessageHandler {
-    private final Logger log;
+    @Transient private final Logger log;
     @Id @JsonIgnore private String _id; // for mongoDB
     
     @Setter @Getter private String rid;
@@ -42,9 +42,11 @@ public class Rule implements MessageHandler {
 
     @JsonIgnore @Transient @Setter(AccessLevel.PACKAGE) private ActivityListenerManager activityListenerManager;
     @JsonIgnore @Transient @Setter(AccessLevel.PACKAGE) private ObjectMapper objectMapper;
-    @JsonIgnore @Transient private final ScheduledExecutorService timer = Executors.newSingleThreadScheduledExecutor();
     @JsonIgnore @Transient private final List<Namespace> missing;
     @JsonIgnore @Transient private final RulesEngine engine = new DefaultRulesEngine();
+    
+    @JsonIgnore @Transient private final ScheduledExecutorService timer = Executors.newSingleThreadScheduledExecutor();
+    @JsonIgnore @Transient private final RuleActiveNotifier notifier = new RuleActiveNotifier();
 
     public Rule(String rid, String description, List<Namespace> namespaces, String condition, String actions) {
         this.rid = rid;
@@ -55,13 +57,7 @@ public class Rule implements MessageHandler {
         log = LoggerFactory.getLogger(Rule.class.getName() + "." + rid);
         missing = new Vector<>(namespaces);
 
-        timer.scheduleAtFixedRate(() -> {
-            if (!missing.isEmpty()) {
-                missing.forEach( namespace -> log.warn("No resource " + namespace.getURL() + " found for namespace  "
-                        + namespace.getName()));
-                log.warn("Rule will not run");
-            }
-        }, 10, 10, TimeUnit.SECONDS);
+        timer.scheduleAtFixedRate(notifier, 10, 10, TimeUnit.SECONDS);
     }
 
     @Override
@@ -120,6 +116,8 @@ public class Rule implements MessageHandler {
                 if (payload.isEmpty()) {
                     log.warn("Resource " + namespace.getURL() + " deleted (Namespace:  "
                             + namespace.getName() + "). Rule will not run.");
+                    missing.add(namespace);
+                    notifier.notified = false;
                     continue;
                 }
                 Thing thing = objectMapper.readValue(payload, Thing.class);
@@ -154,5 +152,19 @@ public class Rule implements MessageHandler {
 
     public boolean isActive() {
         return missing.isEmpty();
+    }
+    
+    class RuleActiveNotifier implements Runnable {
+        boolean notified = false;
+
+        @Override
+        public void run() {
+            if (!missing.isEmpty() && !notified) {
+                missing.forEach( namespace -> log.warn("No resource " + namespace.getURL() + " found for namespace  "
+                        + namespace.getName()));
+                log.warn("Rule will not run");
+                notified = true;
+            }
+        }
     }
 }

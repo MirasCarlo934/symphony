@@ -33,35 +33,6 @@ public class RuleFactory {
         loadRulesFromDB();
     }
     
-    
-    public Rule getRule(String rid) {
-        for (Rule rule : rules) {
-            if (rule.getRid().equals(rid)) {
-                return rule;
-            }
-        }
-        return null;
-    }
-    
-    public boolean addRule(Rule rule) {
-        if (getRule(rule.getRid()) == null) {
-            rules.add(rule);
-            log.info("Rule " + rule.getRid() + " added");
-            printRuleCount();
-            return true;
-        }
-        return false;
-    }
-    
-    public boolean deleteRule(String rid) {
-        boolean b = rules.removeIf(r -> r.getRid().equals(rid));
-        if (b) {
-            log.info("Rule " + rid + " removed");
-            printRuleCount();
-        }
-        return b;
-    }
-    
     public void loadRulesFromDB() {
         log.debug("Loading rules from DB...");
         rules = mongo.findAll(Rule.class);
@@ -75,7 +46,41 @@ public class RuleFactory {
         printRuleCount();
     }
     
+    public Rule getRule(String rid) {
+        for (Rule rule : rules) {
+            if (rule.getRid().equals(rid)) {
+                return rule;
+            }
+        }
+        return null;
+    }
+    
+    public boolean addRule(Rule rule) {
+        if (getRule(rule.getRid()) == null) {
+            rule.setActivityListenerManager(activityListenerManager);
+            rule.setObjectMapper(objectMapper);
+            inbound.subscribe(rule);
+            rules.add(rule);
+            mongo.save(rule);
+            log.info("Rule " + rule.getRid() + " added");
+            printRuleCount();
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean deleteRule(String rid) {
+        Rule rule = getRule(rid);
+        if (rule != null) {
+            rules.removeIf(r -> r.getRid().equals(rid));
+            mongo.remove(rule);
+            log.info("Rule " + rid + " removed");
+            printRuleCount();
+        }
+        return rule != null;
+    }
+    
     public void printRuleCount() {
-        log.info(rules.size() + " rules currently exists");
+        log.info(rules.size() + " rules currently exist");
     }
 }
