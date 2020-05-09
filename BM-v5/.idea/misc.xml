@@ -8,6 +8,7 @@
         <option value="$PROJECT_DIR$/bm-core/pom.xml" />
         <option value="$PROJECT_DIR$/bm-mqtt/pom.xml" />
         <option value="$PROJECT_DIR$/bm-cir/pom.xml" />
+        <option value="$PROJECT_DIR$/bm-data/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

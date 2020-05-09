@@ -7,11 +7,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="bm-mqtt" />
-        <module name="bm-generics" />
+        <module name="bm-data" />
         <module name="bm-core" />
-        <module name="bm-cir" />
+        <module name="bm-generics" />
         <module name="bm-comms" />
+        <module name="bm-mqtt" />
+        <module name="bm-cir" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -21,6 +22,7 @@
       <module name="bm-comms" target="1.8" />
       <module name="bm-comms-backup1" target="1.8" />
       <module name="bm-core" target="1.8" />
+      <module name="bm-data" target="1.8" />
       <module name="bm-generics" target="1.8" />
       <module name="bm-mqtt" target="1.8" />
       <module name="bm-services-poop" target="1.8" />
@@ -36,6 +38,7 @@
       <module name="bm-comms" options="-parameters" />
       <module name="bm-comms-backup1" options="-parameters" />
       <module name="bm-core" options="-parameters" />
+      <module name="bm-data" options="-parameters" />
       <module name="bm-mqtt" options="-parameters" />
       <module name="bm-services-poop" options="-parameters" />
       <module name="bm-services-registry" options="-parameters" />
