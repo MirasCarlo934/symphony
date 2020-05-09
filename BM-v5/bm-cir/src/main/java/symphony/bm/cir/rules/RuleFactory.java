@@ -33,6 +33,7 @@ public class RuleFactory {
         loadRulesFromDB();
     }
     
+    
     public Rule getRule(String rid) {
         for (Rule rule : rules) {
             if (rule.getRid().equals(rid)) {
@@ -40,6 +41,25 @@ public class RuleFactory {
             }
         }
         return null;
+    }
+    
+    public boolean addRule(Rule rule) {
+        if (getRule(rule.getRid()) == null) {
+            rules.add(rule);
+            log.info("Rule " + rule.getRid() + " added");
+            printRuleCount();
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean deleteRule(String rid) {
+        boolean b = rules.removeIf(r -> r.getRid().equals(rid));
+        if (b) {
+            log.info("Rule " + rid + " removed");
+            printRuleCount();
+        }
+        return b;
     }
     
     public void loadRulesFromDB() {
@@ -52,6 +72,10 @@ public class RuleFactory {
             inbound.subscribe(rule);
         }
         
-        log.info(rules.size() + " rules loaded from DB");
+        printRuleCount();
+    }
+    
+    public void printRuleCount() {
+        log.info(rules.size() + " rules currently exists");
     }
 }
