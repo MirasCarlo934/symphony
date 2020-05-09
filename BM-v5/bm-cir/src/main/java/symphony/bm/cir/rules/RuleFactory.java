@@ -1,17 +1,16 @@
 package symphony.bm.cir.rules;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.integration.handler.ServiceActivatingHandler;
-import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
-import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.SubscribableChannel;
 import org.springframework.stereotype.Component;
 import symphony.bm.core.activitylisteners.ActivityListenerManager;
 
 import java.util.List;
+import java.util.Vector;
 
 @Component
 @Slf4j
@@ -21,7 +20,7 @@ public class RuleFactory {
     private final ObjectMapper objectMapper;
     private final ActivityListenerManager activityListenerManager;
     
-    private List<Rule> rules;
+    @Getter private List<Rule> rules = new Vector<>();
     
     public RuleFactory(MongoOperations mongo, ObjectMapper objectMapper,
                        @Qualifier("mqttThingsChannel") SubscribableChannel inbound,
@@ -32,6 +31,15 @@ public class RuleFactory {
         this.activityListenerManager = activityListenerManager;
         
         loadRulesFromDB();
+    }
+    
+    public Rule getRule(String rid) {
+        for (Rule rule : rules) {
+            if (rule.getRid().equals(rid)) {
+                return rule;
+            }
+        }
+        return null;
     }
     
     public void loadRulesFromDB() {

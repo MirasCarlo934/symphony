@@ -104,7 +104,7 @@ public class Rule implements MessageHandler {
             }
         }
         
-        namespaces.forEach( n -> log.error( ((Attribute) n.getResource()).getValue() + " : " + n.getURL()));
+//        namespaces.forEach( n -> log.error( ((Attribute) n.getResource()).getValue() + " : " + n.getURL()));
     }
 
     @SneakyThrows

@@ -19,6 +19,7 @@ public class Namespace {
     
     @JsonIgnore @Transient @Setter @Getter IotResource resource;
 
+    @JsonIgnore
     public String getURL() {
         String url = uid;
         if (aid != null) {
@@ -27,6 +28,7 @@ public class Namespace {
         return url;
     }
 
+    @JsonIgnore
     public String getThingURL() {
         return uid;
     }
@@ -35,6 +37,7 @@ public class Namespace {
      *
      * @return <b>true</b> if Thing is being tracked, <b>false</b> if Attribute
      */
+    @JsonIgnore
     public boolean isThing() {
         return aid == null;
     }
