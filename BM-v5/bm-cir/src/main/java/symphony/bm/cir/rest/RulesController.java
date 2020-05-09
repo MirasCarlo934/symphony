@@ -35,6 +35,16 @@ public class RulesController {
         return rule;
     }
     
+    @DeleteMapping("/{rid}")
+    public ResponseEntity<MicroserviceMessage> deleteRule(@PathVariable String rid)
+            throws RestControllerProcessingException {
+        if (ruleFactory.deleteRule(rid)) {
+            return successResponseEntity("Rule " + rid + " deleted", HttpStatus.OK);
+        } else {
+            throw new RestControllerProcessingException("Rule " + rid + " does not exist", HttpStatus.NOT_FOUND);
+        }
+    }
+    
     @PostMapping("/{rid}")
     public ResponseEntity<MicroserviceMessage> addRule(@PathVariable String rid, @RequestBody Rule rule)
             throws RestControllerProcessingException {
