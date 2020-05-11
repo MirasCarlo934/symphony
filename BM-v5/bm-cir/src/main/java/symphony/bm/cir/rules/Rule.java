@@ -100,7 +100,10 @@ public class Rule implements MessageHandler {
                         .then(actions);
                 Rules rules = new Rules();
                 Facts facts = new Facts();
-                namespaces.forEach(n -> facts.put(n.getName(), n.getResource()));
+                namespaces.forEach(n -> {
+                    n.getResource().setActivityListenerManager(activityListenerManager);
+                    facts.put(n.getName(), n.getResource());
+                });
                 rules.register(r);
                 engine.fire(rules, facts);
             }
