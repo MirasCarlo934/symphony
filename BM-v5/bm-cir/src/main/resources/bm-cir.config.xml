@@ -12,6 +12,7 @@
           class="org.springframework.integration.mqtt.core.DefaultMqttPahoClientFactory">
         <property name="connectionOptions">
             <bean class="org.eclipse.paho.client.mqttv3.MqttConnectOptions">
+                <property name="serverURIs" value="${mqtt.serverURI}"/>
                 <!--                <property name="userName" value="${mqtt.username}"/>-->
                 <!--                <property name="password" value="${mqtt.password}"/>-->
             </bean>
@@ -27,19 +28,19 @@
     </bean>
 
     <bean id="ruleActionExecutor" class="symphony.bm.cir.rules.RuleActionExecutor">
-        <constructor-arg name="outbound" ref="mqttCoreChannel"/>
+        <constructor-arg name="outbound" ref="coreChannel"/>
     </bean>
 
-    <int-mqtt:message-driven-channel-adapter id="mqttThings"
+    <int-mqtt:message-driven-channel-adapter id="thingChannelAdapter"
                                              client-id="${mqtt.client.id}.cir.inbound"
                                              url="${mqtt.serverURI}"
                                              topics="things/#"
                                              qos="2"
                                              client-factory="mqttClientFactory"
-                                             channel="mqttThingsChannel"
-                                             error-channel="mqttErrorChannel"/>
+                                             channel="mainThingsChannel"
+                                             error-channel="errorChannel"/>
 
-    <int-mqtt:outbound-channel-adapter id="mqttCore"
+    <int-mqtt:outbound-channel-adapter id="coreAdapter"
                                        client-id="${mqtt.client.id}.cir.outbound"
                                        url="${mqtt.serverURI}"
                                        client-factory="mqttClientFactory"
@@ -48,11 +49,10 @@
                                        default-topic="BM"
                                        async="false"
                                        async-events="false"
-                                       channel="mqttCoreChannel"/>
+                                       channel="coreChannel"/>
 
-    <int:publish-subscribe-channel id="mqttThingsChannel"/>
-    <int:channel id="mqttCoreChannel"/>
-    <int:channel id="mqttErrorChannel"/>
+    <int:publish-subscribe-channel id="mainThingsChannel"/>
+    <int:channel id="coreChannel"/>
 
-    <int:service-activator input-channel="mqttErrorChannel" ref="exceptionHandler"/>
+    <int:service-activator input-channel="errorChannel" ref="exceptionHandler"/>
 </beans>

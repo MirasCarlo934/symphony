@@ -15,7 +15,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
+import org.springframework.integration.channel.DirectChannel;
+import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
 import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessagingException;
 import symphony.bm.cir.rules.namespaces.Namespace;
@@ -39,9 +42,10 @@ public class Rule implements MessageHandler {
     @Setter @Getter private List<Namespace> namespaces;
     @Setter @Getter private String condition;
     @Setter @Getter private String actions;
-
+    
     @JsonIgnore @Transient @Setter(AccessLevel.PACKAGE) private ActivityListenerManager activityListenerManager;
     @JsonIgnore @Transient @Setter(AccessLevel.PACKAGE) private ObjectMapper objectMapper;
+    @JsonIgnore @Transient private MqttPahoMessageDrivenChannelAdapter mqttAdapter;
     @JsonIgnore @Transient private final List<Namespace> missing;
     @JsonIgnore @Transient private final RulesEngine engine = new DefaultRulesEngine();
     
@@ -65,6 +69,8 @@ public class Rule implements MessageHandler {
         String topic = message.getHeaders().get("mqtt_receivedTopic", String.class);
         String payloadStr = (String) message.getPayload();
         assert topic != null;
+        log.debug("Message received from topic " + topic);
+        log.debug("Message: " + payloadStr);
 
         if (!isActive() || payloadStr.isEmpty()) {
             buildNamespacesFromMqtt(message);
@@ -139,6 +145,23 @@ public class Rule implements MessageHandler {
                 }
             }
         }
+    }
+    
+    public void setMqttAdapter(MqttPahoMessageDrivenChannelAdapter mqttAdapter) {
+        this.mqttAdapter = mqttAdapter;
+        DirectChannel channel = new DirectChannel();
+        channel.setComponentName("Rule " + rid + " channel");
+        channel.subscribe(this);
+        mqttAdapter.setOutputChannel(channel);
+        
+        List<String> subscribedTopics = new Vector<>();
+        namespaces.forEach( namespace -> {
+            String topic = "things/" + namespace.getURL();
+            if (!subscribedTopics.contains(topic)) {
+                mqttAdapter.addTopic(topic);
+                subscribedTopics.add(topic);
+            }
+        });
     }
     
     private Namespace getNamespaceFromTopic(String topic) {
