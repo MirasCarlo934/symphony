@@ -6,6 +6,10 @@ import java.util.Map;
 public enum AttributeDataTypeEnum {
     binary {
         @Override
+        boolean checkValuesForEquality(Object value1, Object value2) {
+            return Integer.valueOf(value1.toString()).equals(Integer.valueOf(value2.toString()));
+        }
+        @Override
         Object checkValueIfValid(Object value, Map<String, Object> constraints) throws Exception {
             try {
                 int i = Integer.parseInt(value.toString());
@@ -22,6 +26,10 @@ public enum AttributeDataTypeEnum {
             return 0;
         }
     }, number {
+        @Override
+        boolean checkValuesForEquality(Object value1, Object value2) {
+            return Double.valueOf(value1.toString()).equals(Double.valueOf(value2.toString()));
+        }
         @Override
         Object checkValueIfValid(Object value, Map<String, Object> constraints) throws Exception {
             double d = Double.parseDouble(value.toString());
@@ -53,6 +61,10 @@ public enum AttributeDataTypeEnum {
         }
     }, enumeration {
         @Override
+        boolean checkValuesForEquality(Object value1, Object value2) {
+            return value1.toString().equals(value2.toString());
+        }
+        @Override
         Object checkValueIfValid(Object value, Map<String, Object> constraints) throws Exception {
             List<String> enumValues = (List<String>) constraints.get("values");
             String s = value.toString();
@@ -68,6 +80,10 @@ public enum AttributeDataTypeEnum {
         }
     }, string {
         @Override
+        boolean checkValuesForEquality(Object value1, Object value2) {
+            return value1.toString().equals(value2.toString());
+        }
+        @Override
         Object checkValueIfValid(Object value, Map<String, Object> constraints) throws Exception {
             return value;
         }
@@ -77,6 +93,7 @@ public enum AttributeDataTypeEnum {
         }
     };
 
+    abstract boolean checkValuesForEquality(Object value1, Object value2);
     abstract Object checkValueIfValid(Object value, Map<String, Object> constraints) throws Exception;
     abstract Object getDefaultValue(Map<String, Object> constraints);
 }

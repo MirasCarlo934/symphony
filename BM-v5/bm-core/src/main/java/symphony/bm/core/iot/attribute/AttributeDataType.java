@@ -17,6 +17,10 @@ import java.util.Map;
 public class AttributeDataType {
     @NonNull @Getter private final AttributeDataTypeEnum type;
     @NonNull @Getter private final Map<String, Object> constraints;
+    
+    public boolean checkValuesForEquality(Object value1, Object value2) {
+        return type.checkValuesForEquality(value1, value2);
+    }
 
     public Object checkValueIfValid(Object value) throws Exception {
         return type.checkValueIfValid(value, constraints);
