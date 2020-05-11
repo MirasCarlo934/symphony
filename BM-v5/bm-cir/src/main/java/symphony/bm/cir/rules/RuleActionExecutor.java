@@ -75,10 +75,9 @@ public class RuleActionExecutor implements ActivityListener {
     @SneakyThrows
     @Override
     public void attributeUpdated(Attribute attribute, String fieldName, Object fieldValue) {
-        log.error(attribute.getAid() + " - " + fieldName + ": " + fieldValue);
         Map<String, Object> headers = new HashMap<>();
         headers.put("mqtt_topic", "BM/" + attribute.getThing() + "/attributes/" + attribute.getAid() + "/" + fieldName);
-        Message<String> message = new GenericMessage<>(objectMapper.writeValueAsString(fieldValue), headers);
+        Message<String> message = new GenericMessage<>(fieldValue.toString(), headers);
         outbound.send(message);
         log.debug("Attribute " + attribute.getThing() + "/" + attribute.getAid() + " state sent to core");
     }

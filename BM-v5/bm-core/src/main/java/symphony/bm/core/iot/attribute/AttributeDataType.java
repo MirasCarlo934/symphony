@@ -18,14 +18,14 @@ public class AttributeDataType {
     @NonNull @Getter private final AttributeDataTypeEnum type;
     @NonNull @Getter private final Map<String, Object> constraints;
 
-    public boolean checkValueIfValid(Object value) throws Exception {
+    public Object checkValueIfValid(Object value) throws Exception {
         return type.checkValueIfValid(value, constraints);
     }
 
     public Object getDefaultValue() {
         return type.getDefaultValue(constraints);
     }
-
+    
     @Override
     public boolean equals(Object obj) {
         try {

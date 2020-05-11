@@ -55,13 +55,11 @@ public class Attribute extends IotResource implements Resource {
     }
 
     public void setValue(Object value) throws Exception {
-        if (dataType.checkValueIfValid(value)) {
-            if (!this.value.toString().equals(value.toString())) {
-                this.value = value;
-                activityListenerManager.attributeUpdated(this, "value", value);
-            } else {
-                throw new ValueUnchangedException();
-            }
+        if (!this.value.toString().equals(value.toString())) {
+            this.value = dataType.checkValueIfValid(value);
+            activityListenerManager.attributeUpdated(this, "value", value);
+        } else {
+            throw new ValueUnchangedException();
         }
     }
     
