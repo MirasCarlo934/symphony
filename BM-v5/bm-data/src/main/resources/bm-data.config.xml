@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:int-mqtt="http://www.springframework.org/schema/integration/mqtt"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/integration/mqtt http://www.springframework.org/schema/integration/mqtt/spring-integration-mqtt.xsd">
+
+    <context:property-placeholder location="file:${bm.resources.home}/bm.properties"/>
+
+    <bean id="mqttClientFactory"
+          class="org.springframework.integration.mqtt.core.DefaultMqttPahoClientFactory">
+        <property name="connectionOptions">
+            <bean class="org.eclipse.paho.client.mqttv3.MqttConnectOptions">
+                <property name="serverURIs" value="${mqtt.serverURI}"/>
+                <!--                <property name="userName" value="${mqtt.username}"/>-->
+                <!--                <property name="password" value="${mqtt.password}"/>-->
+            </bean>
+        </property>
+    </bean>
+
+    <int-mqtt:message-driven-channel-adapter id="thingChannelAdapter"
+                                             client-id="${mqtt.client.id}.data.inbound"
+                                             topics="things/#"
+                                             qos="2"
+                                             client-factory="mqttClientFactory"
+                                             channel="mainThingsChannel"
+                                             error-channel="errorChannel"/>
+
+    <int:channel id="mainThingsChannel"/>
+
+    <int:service-activator input-channel="mainThingsChannel" ref="mqttListener"/>
+</beans>
