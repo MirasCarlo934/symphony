@@ -9,14 +9,14 @@ import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessagingException;
 import org.springframework.stereotype.Component;
 import symphony.bm.core.iot.Thing;
-import symphony.bm.data.iot.ResourceContainer;
+import symphony.bm.data.iot.ResourceDataController;
 
 @Component
 @AllArgsConstructor
 @Slf4j
 public class MqttListener implements MessageHandler {
     private final ObjectMapper objectMapper;
-    private final ResourceContainer resourceContainer;
+    private final ResourceDataController resourceDataController;
     
     @Override
     public void handleMessage(Message<?> message) throws MessagingException {
@@ -28,7 +28,7 @@ public class MqttListener implements MessageHandler {
         if (checkIfThingTopic(topic)) {
             try {
                 Thing thing = objectMapper.readValue(payload, Thing.class);
-                resourceContainer.addThing(thing);
+                resourceDataController.addThing(thing);
             } catch (JsonProcessingException e) {
                 throw new MessagingException(e.getMessage(), e);
             }
