@@ -19,6 +19,14 @@
         </property>
     </bean>
 
+    <bean class="symphony.bm.core.activitylisteners.ActivityListenerManager">
+        <property name="multiThreadedListeners">
+            <list>
+                <ref bean="resourceActivityListener"/>
+            </list>
+        </property>
+    </bean>
+
     <int-mqtt:message-driven-channel-adapter id="thingChannelAdapter"
                                              client-id="${mqtt.client.id}.data.inbound"
                                              topics="things/#"

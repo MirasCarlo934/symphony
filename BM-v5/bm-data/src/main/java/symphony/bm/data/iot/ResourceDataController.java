@@ -38,4 +38,8 @@ public class ResourceDataController {
             }
         }
     }
+    
+    public Thing getThing(String uid) {
+        return things.get(uid);
+    }
 }
