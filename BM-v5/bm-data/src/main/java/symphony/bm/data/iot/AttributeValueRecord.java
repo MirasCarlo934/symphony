@@ -1,15 +1,16 @@
 package symphony.bm.data.iot;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Value;
+import lombok.Data;
 import org.springframework.data.annotation.Id;
 
 import java.util.Date;
 
-@Value
+@Data
 public class AttributeValueRecord {
-    String aid;
-    String thing;
-    Date timestamp;
-    Object value;
+    @Id @JsonIgnore String _id;
+    @JsonIgnore final String aid;
+    @JsonIgnore final String thing;
+    final Date timestamp;
+    final Object value;
 }

@@ -8,7 +8,7 @@ import symphony.bm.core.activitylisteners.ActivityListener;
 import symphony.bm.core.iot.Attribute;
 import symphony.bm.core.iot.Group;
 import symphony.bm.core.iot.Thing;
-import symphony.bm.data.mongodb.AttributeValueRecordRepository;
+import symphony.bm.data.repositories.AttributeValueRecordRepository;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -18,7 +18,6 @@ import java.util.Date;
 @Slf4j
 public class ResourceActivityListener implements ActivityListener {
     private final AttributeValueRecordRepository avrRepository;
-    private final MongoOperations mongo;
     
     @Override
     public void thingCreated(Thing thing) {
@@ -76,7 +75,7 @@ public class ResourceActivityListener implements ActivityListener {
             Date now = Calendar.getInstance().getTime();
             AttributeValueRecord avr = new AttributeValueRecord(attribute.getAid(), attribute.getThing(), now,
                     fieldValue);
-            mongo.save(avr);
+            avrRepository.save(avr);
         }
     }
     

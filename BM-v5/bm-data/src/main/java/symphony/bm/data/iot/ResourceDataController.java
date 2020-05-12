@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Component;
 import symphony.bm.core.iot.Attribute;
 import symphony.bm.core.iot.Thing;
-import symphony.bm.data.mongodb.AttributeValueRecordRepository;
+import symphony.bm.data.repositories.AttributeValueRecordRepository;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -17,7 +17,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Slf4j
 public class ResourceDataController {
-    private final MongoOperations mongo;
     private final AttributeValueRecordRepository avrRepository;
     private Map<String, Thing> things = new HashMap<>();
     
@@ -33,7 +32,7 @@ public class ResourceDataController {
                             " @ " + now);
                     AttributeValueRecord newAvr = new AttributeValueRecord(attr.getAid(), attr.getThing(), now,
                             attr.getValue());
-                    mongo.save(newAvr);
+                    avrRepository.save(newAvr);
                 }
             }
         }
