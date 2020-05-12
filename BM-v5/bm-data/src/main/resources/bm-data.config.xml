@@ -30,4 +30,5 @@
     <int:channel id="mainThingsChannel"/>
 
     <int:service-activator input-channel="mainThingsChannel" ref="mqttListener"/>
+    <int:service-activator input-channel="errorChannel" ref="mqttMessagingExceptionHandler"/>
 </beans>
