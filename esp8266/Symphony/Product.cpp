@@ -265,17 +265,17 @@ String Product::stringify() {
 			}
 			JsonObject& theType = prop1.createNestedObject("dataType");
 			if (a.gui.pinType == BUTTON_CTL || a.gui.pinType == BUTTON_SNSR ) {
-				theType["type"] = "bin";
-				theType["constraints"] = "{}";
+				theType["type"] = "binary";
+				JsonObject& theTypeObj = theType.createNestedObject("constraints");
 			} else { //if (a.gui.pinType == SLIDER_CTL || a.gui.pinType == SLIDER_SNSR )
-				theType["type"] = "num";
+				theType["type"] = "number";
 				JsonObject& constraints = theType.createNestedObject("constraints");
 				constraints["min"] = a.gui.min;
 				constraints["max"] = a.gui.max;
 			}
 			prop1["name"] = a.gui.label;
 			prop1["aid"] = a.aid;
-			prop1["val"] = a.gui.value;
+			prop1["value"] = a.gui.value;
 		}
 		regJson.printTo(stringifyCache);
 		propertyChanged = false;
