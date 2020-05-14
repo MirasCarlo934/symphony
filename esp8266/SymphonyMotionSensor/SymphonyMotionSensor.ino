@@ -21,9 +21,9 @@ void handleInterrupt() {
 /*
  * Callback function for the mqtt events
  */
-int mqttHandler(JsonObject& json) {
+int mqttHandler(int index, char* value) {
 	Serial.println("PIR mqtt callback executed start");
-	json.prettyPrintTo(Serial);Serial.println();
+
 	Serial.println("PIR mqtt callback executed end");
 }
 /*
