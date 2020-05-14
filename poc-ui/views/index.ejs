@@ -7,5 +7,30 @@
   <body>
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
+
+    <% things.forEach((thing) => { %>
+      <div>
+        <h2><%= thing.name %></h2>
+
+        <div style="padding-left: 16px; border-left: 4px solid steelblue">
+          <table>
+            <% thing.attributes.forEach((attr) => { %>
+              <tr>
+                <th align="left"><h3><%= attr.name %></h3></th>
+                <th><% if (attr.dataType.type == "binary") { %>
+                  <label class="switch">
+                    <% if (attr.value) {%><input type="checkbox" checked>
+                    <% } else { %><input type="checkbox" checked><% } %>
+                      <span class="slider round"></span>
+                  </label>
+                <% } %></th>
+              </tr>
+            <% }) %>
+          </table>
+        </div>
+
+      </div>
+    <% }) %>
+
   </body>
 </html>
