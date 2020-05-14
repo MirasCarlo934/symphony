@@ -104,27 +104,26 @@ int wsHandler(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json)
 			{
 				timerData.enabled = true;
 				timerData.startMillis = millis();
-				JsonArray& arr = json["data"];
-				for(JsonVariant v : arr) {
-					Serial.printf(" ssid=%i lbl=%s, val=%i\n", v["ssid"].as<int>(), v["lbl"].as<String>().c_str(), v["val"].as<int>());
-					if (v["ssid"].as<int>() == 13)
-						timerData.hour = v["val"].as<int>();
-					if (v["ssid"].as<int>() == 14)
-						timerData.mins = v["val"].as<int>();
-					if (v["ssid"].as<int>() == 15)
-						timerData.secs = v["val"].as<int>();
+				if (json.containsKey("data")) {
+					JsonArray& arr = json["data"];
+					for(JsonVariant v : arr) {
+						Serial.printf(" ssid=%i lbl=%s, val=%i\n", v["ssid"].as<int>(), v["lbl"].as<String>().c_str(), v["val"].as<int>());
+						if (v["ssid"].as<int>() == 13)
+							timerData.hour = v["val"].as<int>();
+						if (v["ssid"].as<int>() == 14)
+							timerData.mins = v["val"].as<int>();
+						if (v["ssid"].as<int>() == 15)
+							timerData.secs = v["val"].as<int>();
+					}
+
+				} else {
+					timerData.hour = json["hrs"].as<int>();
+					timerData.mins = 10 * json["mins1"].as<int>() + json["mins2"].as<int>();
+					timerData.secs = 10* json["secs1"].as<int>() + 	json["secs2"].as<int>();
 				}
 				timerData.millis = timerData.hour * 3600000 +  // 3600000 milliseconds in an hour
-						(timerData.mins) * 60000 + // 60000 milliseconds in a minute
-						(timerData.secs) * 1000; // 1000 milliseconds in a second
-//				timerData.hour = json["hrs"].as<int>();
-//				timerData.mins1 = json["mins1"].as<int>();
-//				timerData.mins2 = json["mins2"].as<int>();
-//				timerData.secs1 = json["secs1"].as<int>();
-//				timerData.secs2 = json["secs2"].as<int>();
-//				timerData.millis = timerData.hour * 3600000 +  // 3600000 milliseconds in an hour
-//						(timerData.mins1*10 + timerData.mins2) * 60000 + // 60000 milliseconds in a minute
-//						(timerData.secs1*10 + timerData.secs2) * 1000; // 1000 milliseconds in a second
+					(timerData.mins) * 60000 + // 60000 milliseconds in a minute
+					(timerData.secs) * 1000; // 1000 milliseconds in a second
 				sendTimerData(client, json);
 #ifdef DEBUG_SOCKET
 				Serial.printf("\nhour: %i, millis:",timerData.hour);
@@ -166,7 +165,7 @@ int wsHandler(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json)
  * Callback function for the mqtt events
  */
 int mqttHandler(int index, char* value) {
-	Serial.println("SymphonySocket mqtt callback executed start");
+	Serial.printf("SymphonySocket mqtt callback executed start index=%i value=%i\n", index, atoi(value));
 //	{
 //	  "prop-index": 0,
 //	  "MRN": "35027136",
@@ -176,7 +175,7 @@ int mqttHandler(int index, char* value) {
 //	}
 
 	product.setValueByIndex(index, atoi(value), false);
-	if (index==1) {
+	if (index==0) {
 		socketState = atoi(value);
 	}
 	Serial.println("SymphonySocket mqtt callback executed end");
