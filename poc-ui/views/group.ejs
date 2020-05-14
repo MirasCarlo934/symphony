@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<head>
+    <title><%= name %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+<% if (gid != "") {%>
+    <a href="javascript:history.back()">&lt Back</a>
+<% } %>
+<h1><%= name %></h1>
+<br/>
+
+<h3>Things</h3>
+<div style="padding-left: 16px; border-left: 4px solid steelblue">
+    <% if (things.length == 0) { %>
+        <p style="color: gray">There are no Things in this group.</p>
+    <% } %>
+    <% things.forEach((minThing) => { %>
+        <% things.forEach((minThing) => {%>
+            <h2><a href="/things/<%= minThing.uid %>"><%= minThing.name %></a></h2>
+        <% }) %>
+    <% }) %>
+</div>
+
+<h3>Groups</h3>
+<div style="padding-left: 16px; border-left: 4px solid #00B7FF">
+    <% if (groups.length == 0) { %>
+        <p style="color: gray">There are no subgroups in this group.</p>
+    <% } %>
+    <% groups.forEach((minGroup) => { %>
+        <h2><a href="/groups/<%=minGroup.gid%>"><%= minGroup.name %></a></h2>
+    <% }) %>
+</div>
+
+</body>
