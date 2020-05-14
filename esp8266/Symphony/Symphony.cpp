@@ -371,7 +371,7 @@ void mqttMsgHandler(char* topic, char* payload, size_t len) {
 			Symphony::product.setValueByIndex(propIndex, value, false);//forHub=false, we are only showing this to the clients
 		} else {//we do not set the value here, the callback might need to do some computation before setting the pin
 #ifdef DEBUG_ONLY
-			Serial.printf("[CORE] Property %s not directly changeable. Passing to callback.\n", attrib.ssid.c_str());
+			Serial.printf("[CORE] Property SSID=%s not directly changeable. Passing to callback.\n", attrib.ssid.c_str());
 #endif
 			if (MqttCallback != nullptr) {
 				MqttCallback(propIndex, payload);
