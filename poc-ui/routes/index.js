@@ -15,7 +15,7 @@ router.get('/', function(req, res, next) {
 
 router.get('/groups/:groupID', function(req, res, next) {
   const groupID = req.params.groupID;
-  Request.get(serverURL + "/groups/" + groupID, (error, response, body) => {
+  Request.get(appProperties.serverURL + ":" + appProperties.ports.core + "/groups/" + groupID, (error, response, body) => {
     if(error) {
       return console.dir(error);
     }

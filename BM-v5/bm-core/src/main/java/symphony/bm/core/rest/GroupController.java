@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Vector;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/groups")
 @AllArgsConstructor
 @Slf4j

@@ -9,6 +9,7 @@ import symphony.bm.core.iot.SuperGroup;
 import symphony.bm.core.rest.hateoas.GroupModel;
 
 @RestController
+@CrossOrigin
 @AllArgsConstructor
 @Slf4j
 public class BaseController {

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<section ng-controller="ThingController">
+    <h1>{{thing.name}}</h1>
+
+    <div>
+        <div style="padding-left: 16px; border-left: 4px solid steelblue">
+            <table style="border-collapse: collapse">
+                <tr ng-repeat="attr in thing.attributes">
+                    <td style="text-align: left; padding-right: 32px;"><h2>{{attr.name}}</h2></td>
+                    <td style="text-align: left; padding-left: 32px; border-left: 1px solid lightsteelblue">
+                        <form id="{{attr.aid}}-valueForm">
+                            <label ng-if="attr.dataType.type == 'binary'" ng-click="toggleValue(attr.aid)" class="switch">
+                                <input ng-if="attr.value == 1" type="checkbox" name="value" checked>
+                                <input ng-if="attr.value == 0" type="checkbox" name="value">
+                                <span class="slider round"></span>
+                            </label>
+                            <label ng-if="attr.dataType.type == 'number'" ng-click="updateValue(attr.aid)">
+                                <input type="number" name="value" value="{{attr.value}}"
+                                       min="{{attr.dataType.constraints.min}}"
+                                       max="{{attr.dataType.constraints.max}}"/>
+                            </label>
+                            <label ng-if="attr.dataType.type == 'enumeration'">
+                                <input ng-repeat="val in attr.dataType.constraints.values" type="radio" name="value" value="{{val}}"/>
+                            </label>
+                            <br/>
+                            <label ng-if="attr.dataType.type == 'string'">
+                                <textarea name="value">{{attr.value}}</textarea>
+                                <button type="button">submit</button>
+                            </label>
+                        </form>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+</section>

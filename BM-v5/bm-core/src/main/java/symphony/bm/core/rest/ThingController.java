@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Vector;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/things")
 @AllArgsConstructor
 @Slf4j

@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Vector;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/things/{uid}/attributes")
 @AllArgsConstructor
 @Slf4j
