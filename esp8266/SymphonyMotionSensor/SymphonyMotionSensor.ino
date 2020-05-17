@@ -75,7 +75,7 @@ void setup()
 	sprintf(ver, "%u.%u", SYMPHONY_VERSION, MY_VERSION);
 	s.setup(myName, ver);
 
-	product = Product(s.nameWithMac, "Dining", myName);
+	product = Product(s.mac, "Dining", myName);
 	pinMode(LED_PIN1, OUTPUT);
 	digitalWrite(LED_PIN1, 1);
 	Gui gui1 = Gui("Mode", BUTTON_CTL, "Latch", 0, 1, 0);
