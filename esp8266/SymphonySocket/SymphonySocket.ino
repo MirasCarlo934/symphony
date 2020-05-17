@@ -11,6 +11,7 @@
 
 //#define DEBUG_SOCKET
 #define SOCKET_PIN     12
+#define LED_PIN     2
 #define UPDATES_PER_SECOND 100
 #define UNIVERSE_START 1
 #define UNIVERSE_COUNT 7
@@ -185,7 +186,9 @@ void setup()
 	Serial.begin(115200);
 	delay(10);
 	pinMode(SOCKET_PIN, OUTPUT);
+	pinMode(LED_PIN, OUTPUT);
 	digitalWrite(SOCKET_PIN, socketState);
+	digitalWrite(LED_PIN, !socketState);
 	Serial.println("\n\n************START Symphony Socket Setup***************");
 	String config = file.readFrSPIFFS(socketConfigFile.c_str());
 	Serial.printf("%s is %s\n",socketConfigFile.c_str(), config.c_str());
@@ -203,7 +206,7 @@ void setup()
 
 	s.on("/getConfig", HTTP_GET, handleGetConfig);
 
-	product = Product(s.nameWithMac, "Kitchen", "Socket");
+	product = Product(s.mac, "Kitchen", "Socket");
 	//gui1 and gui2 for the switch control
 	Gui gui1 = Gui("Socket Control", BUTTON_CTL, "On/Off", 0, 1, socketState);
 	product.addCallableProperty("01", SOCKET_PIN, gui1);//add a property that has an attached pin
@@ -256,6 +259,7 @@ void loop() {
 			//the normal socket state
 			if (socketState != prevSocketState) {
 				digitalWrite(SOCKET_PIN, socketState);
+				digitalWrite(LED_PIN, !socketState);
 				prevSocketState = socketState;
 				Serial.printf("loop Pin%i set to %i\n",SOCKET_PIN, socketState);
 			}
