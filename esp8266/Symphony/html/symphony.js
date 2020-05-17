@@ -125,6 +125,13 @@ function commitConfig() {
 		};
 	websocket.send(JSON.stringify(obj));
 }
+/*
+ * Function that sends reboot command to the device
+ */
+function rebootDevice() {
+	var obj = { core: 30};
+	websocket.send(JSON.stringify(obj));
+}
 /**
  * Sends AJAX request to the server
  * 

@@ -169,6 +169,7 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 							switch (core) {
 
 								case CORE_INIT:
+								{
 									//this is the INIT command from the WS client.
 									if (json.containsKey("data")) {
 										String d = json["data"].as<String>();
@@ -190,7 +191,9 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 											client->text("PING Successful");
 									}
 									break;
+								}
 								case CORE_COMMIT_DEVICE_SETTINGS://this is the commit AP, Passkey, Device Name, mqttEnabled, mqttIp and mqttPort then reboot is done
+								{
 									//this is from the admin WS client
 									if (json.containsKey("data")) {
 										String cfg = json["data"].as<String>();
@@ -201,36 +204,15 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 										reboot = true;
 									}
 									break;
+								}
 								case CORE_PING: {
 #ifdef DEBUG_ONLY
 											Serial.println("[CORE] PING received");
 #endif
 									break;
 								}
-//							No need for this code as all config data are sent via CORE_COMMIT_DEVICE_SETTINGS
-//							we are just leaving this code here for reference on adding config to an existing config from file
-//								case CORE_COMMIT_MQTT_SETTINGS://this is the commit mqtt ip and port
-//										//this is from the admin WS client
-//										if (json.containsKey("data")) {
-//											String cfg = json["data"].as<String>();
-//											DynamicJsonBuffer jsonBuffer;
-//											JsonObject& jsonCfg = jsonBuffer.parseObject(fManager.readConfig());
-//											if (jsonCfg.success()) {
-//												jsonCfg["mqttIp"] = json["data"]["mqttIp"].as<String>();
-//												jsonCfg["mqttPort"] = json["data"]["mqttPort"].as<int>();
-//#ifdef DEBUG_ONLY
-//												jsonCfg.prettyPrintTo(Serial);
-//												Serial.printf("\nCORE_COMMIT_MQTT_SETTINGS will save config %s\n", cfg.c_str());
-//#endif
-//												String newConfig;
-//												jsonCfg.printTo(newConfig);
-//												Serial.printf("New config is %s\n", newConfig.c_str());
-//												fManager.saveConfig(newConfig.c_str());
-//												reboot = true;
-//											}
-//										}
-//										break;
 								case CORE_DELETE://this is the delete file command from the WS admin client
+								{
 									//delete path fr SPIFFS
 									if (json.containsKey("data")) {
 										String path = json["data"].as<String>();
@@ -241,6 +223,7 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 										client->text(path + " deleted");
 									}
 									break;
+								}
 								case CORE_VALUES: {//VALUES command from the WS client, sends the current values of the product
 									//this is used by the client app to display the current state of the product
 									DynamicJsonBuffer jsonBuffer;
@@ -284,8 +267,15 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 											Serial.println("[CORE] wsEvent No Websocket callback set!!!");
 										}
 									}
+									break;
 								}
-								break;
+								case CORE_REBOOT: {
+#ifdef DEBUG_ONLY
+									Serial.println("[CORE] PING received");
+#endif
+									reboot = true;
+									break;
+								}
 							}
 						} else {
 							Serial.println("[CORE] value-pair not found.");

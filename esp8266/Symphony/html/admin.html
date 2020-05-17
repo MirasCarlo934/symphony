@@ -14,7 +14,7 @@
   <button class="tablinks" onclick="openTab(event, 'mqtt');">MQTT</button>
   <button class="tablinks" onclick="openTab(event, 'upload');">Files</button>
   <button class="tablinks" onclick="openTab(event, 'firmware')">Firmware</button>
-  <button class="tablinks" onclick="openTab(event, 'test')">test</button>
+  <button class="tablinks" onclick="openTab(event, 'reboot')">Reboot</button>
 </div>
 <div class="footer" id="status"></div>
 <div class="blurred"></div>
@@ -71,14 +71,13 @@
 </fieldset></center>
 </div>
 
-<div id="test" class="tabcontent">
+<div id="reboot" class="tabcontent">
 <fieldset style="width:300px">
-<legend>g1</legend>
-<label class="bar barchkbox">
-<div class="lbl">GREEN</div>
-<input onclick="sendOnOffWs(this)" lbl="RED" id="$NAME$:0007" name="g1" type="checkbox">
-<div class="btn btntxt">
-</div></label><br>
+<legend>Reboot Device</legend>
+<br/><br/>
+<form>
+<input type='button' id='btnReboot' value='Reboot' onclick='rebootDevice()'>
+</form>
 </fieldset>
 </div>
 </body>

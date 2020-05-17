@@ -16,9 +16,10 @@
 #define  CORE_DELETE 3					//a core command from admin WS Client to delete file in Spiffs
 #define  CORE_GETDEVICEINFO 4			//not used
 #define  CORE_PING 5					//a core command from WS client to send heartbeat to device
+#define  CORE_CONTROL 7					//a core command from WS client to control the device.
 #define  CORE_START_HEARTBEAT 8 		//a core command from device to start heartbeat to WS client. This will enable WS client to aware when we are done with reboot
 #define  CORE_VALUES 20					//a core command from WS client requesting for the current values of the product.  This is used by the WS client to display the current state of the product.
-#define  CORE_CONTROL 7					//a core command from WS client to control the device.
+#define  CORE_REBOOT 30					//a core command from WS client to reboot the device.
 
 #define  CMD_INIT 1						//a command from device to the client for the initiation of the websocket, deprecated
 #define  CMD_VALUES 2					//a command from device to the client when sending the values requested via CORE_VALUES
