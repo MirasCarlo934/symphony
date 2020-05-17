@@ -14,6 +14,7 @@ import symphony.bm.generics.messages.MicroserviceSuccessfulMessage;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @Slf4j
 @AllArgsConstructor
 @RequestMapping("/rules")

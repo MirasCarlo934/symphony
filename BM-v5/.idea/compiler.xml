@@ -10,7 +10,6 @@
         <module name="bm-data" />
         <module name="bm-core" />
         <module name="bm-generics" />
-        <module name="bm-comms" />
         <module name="bm-mqtt" />
         <module name="bm-cir" />
       </profile>

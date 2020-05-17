@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
+import java.beans.Transient;
 import java.util.List;
 import java.util.Vector;
 

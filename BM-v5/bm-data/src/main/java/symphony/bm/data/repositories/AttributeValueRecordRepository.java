@@ -9,12 +9,14 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import symphony.bm.data.iot.AttributeValueRecord;
 
 import java.util.Date;
 
 @Component
 @RepositoryRestResource(collectionResourceRel = "attributes", path = "attributes")
+@CrossOrigin
 public interface AttributeValueRecordRepository extends MongoRepository<AttributeValueRecord, Date> {
     
     @Query(sort = "{timestamp: -1 }")
