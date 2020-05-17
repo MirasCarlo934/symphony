@@ -27,15 +27,17 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
     // functions
     $scope.updateValue = (aid) => {
         let $valueForm = $("#" + aid + "-valueForm");
-        console.log($valueForm.find("input[name='value']").val());
-        console.log("updating value: " + $("#" + aid + "-valueForm"));
-        // $http.put(appProperties.serverURL + ":" + appProperties.ports.core + "/things/" + uid + "/attributes/" + aid + "/value",
-        //     value).then((response) => {
-        //         console.log(response.data);
-        //     }
-        // )
+        let val = $valueForm.find("input[name='value']").val();
+        ngmqtt.publish(bmTopic + "/attributes/" + aid + "/value", val.toString());
     }
 
+    $scope.enterKeyPressUpdateValue = (aid, $event) => {
+        if ($event.which === 13) {
+            alert("Enter pressed");
+        }
+    }
+
+    // for binary data types only
     $scope.toggleValue = (aid) => {
         let val = $scope.thing.attributes.find((attr) => {return attr.aid == aid;}).value
         if (val == 0) val = 1;

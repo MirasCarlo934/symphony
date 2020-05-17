@@ -14,18 +14,20 @@
                                 <input ng-if="attr.value == 0" type="checkbox" name="value">
                                 <span class="slider round"></span>
                             </label>
-                            <label ng-if="attr.dataType.type == 'number'" ng-click="updateValue(attr.aid)">
+                            <label ng-if="attr.dataType.type == 'number'">
                                 <input type="number" name="value" value="{{attr.value}}"
                                        min="{{attr.dataType.constraints.min}}"
                                        max="{{attr.dataType.constraints.max}}"/>
+                                <button type="button" ng-click="updateValue(attr.aid)">submit</button>
                             </label>
                             <label ng-if="attr.dataType.type == 'enumeration'">
                                 <input ng-repeat="val in attr.dataType.constraints.values" type="radio" name="value" value="{{val}}"/>
+                                <button type="button" ng-click="updateValue(attr.aid)">submit</button>
                             </label>
                             <br/>
                             <label ng-if="attr.dataType.type == 'string'">
                                 <textarea name="value">{{attr.value}}</textarea>
-                                <button type="button">submit</button>
+                                <button type="button" ng-click="updateValue(attr.aid)">submit</button>
                             </label>
                         </form>
                     </td>

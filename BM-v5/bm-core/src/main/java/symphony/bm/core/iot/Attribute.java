@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import symphony.bm.core.iot.attribute.AttributeDataType;
+import symphony.bm.core.iot.attribute.AttributeDataTypeEnum;
 import symphony.bm.core.iot.attribute.AttributeMode;
 import symphony.bm.core.iot.exceptions.ValueUnchangedException;
 import symphony.bm.core.rest.forms.Form;
@@ -85,6 +86,22 @@ public class Attribute extends IotResource implements Resource {
             throw new ValueUnchangedException();
         }
     }
+    
+    public void setDataType(Map<String, Object> dataTypeMap) throws Exception {
+        AttributeDataType dataType = new AttributeDataType(AttributeDataTypeEnum.valueOf((String)dataTypeMap.get("type")),
+                (Map) dataTypeMap.get("constraints"));
+        if (!this.dataType.equals(dataType)) {
+            this.dataType = dataType;
+            try {
+                dataType.checkValueIfValid(value);
+            } catch (Exception e) {
+                setValue(dataType.getDefaultValue());
+            }
+            activityListenerManager.attributeUpdated(this, "dataType", dataType);
+        } else {
+            throw new ValueUnchangedException();
+        }
+    }
 
     public void setMode(String mode) throws IllegalArgumentException {
         AttributeMode m = AttributeMode.valueOf(mode);
@@ -108,27 +125,7 @@ public class Attribute extends IotResource implements Resource {
         for (Map.Entry<String, Object> param : params.entrySet()) {
             String paramName = param.getKey().toLowerCase();
             changed = update(paramName, param.getValue());
-//            for (Method method : Attribute.class.getDeclaredMethods()) {
-//                String methodName = method.getName().toLowerCase();
-//                if (methodName.contains("set") && methodName.substring(3).equals(paramName) &&
-//                        method.getParameterCount() == 1 &&
-//                        (method.getParameterTypes()[0].equals(param.getKey().getClass()) || paramName.equals("value"))) {
-//                    try {
-//                        method.invoke(this, param.getValue());
-//                        log.info("Changed " + param.getKey() + " to " + param.getValue());
-//                        changed = true;
-//                    } catch (InvocationTargetException e) {
-//                        if (!e.getCause().getClass().equals(ValueUnchangedException.class)) {
-//                            throw (Exception) e.getCause();
-//                        }
-//                    }
-//                    break;
-//                }
-//            }
         }
-//        if (changed) {
-//            activityListeners.forEach(activityListener -> activityListener.attributeUpdated(this, paramsChanged));
-//        }
         return changed;
     }
 
@@ -137,7 +134,7 @@ public class Attribute extends IotResource implements Resource {
             String methodName = method.getName().toLowerCase();
             if (methodName.contains("set") && methodName.substring(3).equalsIgnoreCase(fieldName) &&
                     method.getParameterCount() == 1 &&
-                    (method.getParameterTypes()[0].equals(fieldValue.getClass()) || fieldName.equals("value"))) {
+                    (method.getParameterTypes()[0].isInstance(fieldValue) || fieldName.equals("value"))) {
                 try {
                     method.invoke(this, fieldValue);
                     log.info("Changed " + fieldValue + " to " + fieldValue);

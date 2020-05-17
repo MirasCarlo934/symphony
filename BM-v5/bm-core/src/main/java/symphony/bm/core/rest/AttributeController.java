@@ -227,6 +227,7 @@ public class AttributeController {
                 log.debug("Updating attribute " + aid + "...");
                 AttributeUpdateForm form = new AttributeUpdateForm(attribute.getName(), attribute.getMode(),
                         attribute.getDataType(), attribute.getValue());
+                log.error(attribute.getDataType().getConstraints().toString());
                 return update(uid, aid, form);
             }
         } else {
