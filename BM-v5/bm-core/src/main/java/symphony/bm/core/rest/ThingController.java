@@ -65,7 +65,7 @@ public class ThingController {
         if (parentGIDs.isEmpty()) {
             superGroup.removeThing(thing);
         }
-        for (String parentGID : parentGIDs) {
+        for (String parentGID : new Vector<>(parentGIDs)) {
             Group group = superGroup.getGroupRecursively(parentGID);
             log.info("Removing thing from group " + group.getGid() + "(" + group.getName() + ")");
             group.removeThing(thing);

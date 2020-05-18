@@ -65,7 +65,7 @@ public class GroupController {
                     superGroup.addGroup(subgroup);
                 }
             }
-            for (String parentGID : group.getParentGroups()) {
+            for (String parentGID : new Vector<>(group.getParentGroups())) {
                 log.debug("Group " + gid + " removed from group " + parentGID);
                 Group parent = superGroup.getGroupRecursively(parentGID);
                 parent.removeGroup(group);
