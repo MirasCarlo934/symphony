@@ -3,6 +3,7 @@ package symphony.bm.mqtt.iot;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.NonNull;
+import lombok.SneakyThrows;
 import lombok.Value;
 import symphony.bm.core.iot.Attribute;
 
@@ -33,7 +34,8 @@ public class MinifiedAttribute implements Minified<Attribute> {
         this.dTyp = dTyp;
         this.val = val;
     }
-    
+
+    @SneakyThrows
     @Override
     public Attribute unminify() {
         return new Attribute(aid, name, mode.unminify(), dTyp.unminify(), val);

@@ -51,16 +51,16 @@ public class Thing extends Groupable implements Resource {
                  @JsonProperty("uid") @NonNull String uid,
                  @JsonProperty("name") @NonNull String name,
                  @JsonProperty("attributes") @NonNull List<Attribute> attributes,
-                 @JsonProperty("active") @NonNull boolean active) {
+                 @JsonProperty("active") @NonNull boolean active) throws Exception {
         super(parentGroups);
         this.uid = uid;
         this.name = name;
         this.active = active;
-        attributes.forEach( a -> {
+        for (Attribute a : attributes) {
             Attribute attribute = new Attribute(a.getAid(), a.getName(), a.getMode(), a.getDataType(), a.getValue());
             attribute.setThing(uid);
             this.attributes.add(attribute);
-        });
+        }
     }
 
     public void setName(String name) throws ValueUnchangedException {

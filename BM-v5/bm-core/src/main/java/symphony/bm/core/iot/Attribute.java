@@ -47,12 +47,13 @@ public class Attribute extends IotResource implements Resource {
                      @JsonProperty("name") @NotNull @NonNull String name,
                      @JsonProperty("mode") @NotNull @NonNull AttributeMode mode,
                      @JsonProperty("dataType") @NotNull @NonNull AttributeDataType dataType,
-                     @JsonProperty("value") @NotNull @NonNull Object value) {
+                     @JsonProperty("value") @NotNull @NonNull Object value) throws Exception {
         this.aid = aid;
         this.name = name;
         this.mode = mode;
         this.dataType = dataType;
         this.value = value;
+        dataType.checkConstraintsIfValid();
     }
 
     public void setValue(Object value) throws Exception {
