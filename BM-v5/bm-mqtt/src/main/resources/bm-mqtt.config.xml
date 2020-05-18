@@ -18,13 +18,22 @@
         </property>
     </bean>
 
-    <int-mqtt:message-driven-channel-adapter id="mqttInbound"
-                                             client-id="${mqtt.client.id}.inbound"
+    <int-mqtt:message-driven-channel-adapter id="bmTopic"
+                                             client-id="${mqtt.client.id}.topic.bm"
                                              url="${mqtt.serverURI}"
                                              topics="BM/#"
                                              qos="2"
                                              client-factory="mqttClientFactory"
-                                             channel="mqttInboundChannel"
+                                             channel="mqttThingsChannel"
+                                             error-channel="mqttErrorChannel"/>
+
+    <int-mqtt:message-driven-channel-adapter id="queryTopic"
+                                             client-id="${mqtt.client.id}.topic.query"
+                                             url="${mqtt.serverURI}"
+                                             topics="query/#"
+                                             qos="2"
+                                             client-factory="mqttClientFactory"
+                                             channel="mqttQueryChannel"
                                              error-channel="mqttErrorChannel"/>
 
     <int-mqtt:outbound-channel-adapter id="mqttOutbound"
@@ -38,11 +47,13 @@
                                        async-events="false"
                                        channel="mqttOutboundChannel"/>
 
-    <int:channel id="mqttInboundChannel"/>
+    <int:channel id="mqttThingsChannel"/>
+    <int:channel id="mqttQueryChannel"/>
     <int:channel id="mqttOutboundChannel"/>
     <int:channel id="mqttErrorChannel"/>
 
-    <int:service-activator input-channel="mqttInboundChannel" ref="mqttController"/>
+    <int:service-activator input-channel="mqttThingsChannel" ref="mqttThingsController"/>
+    <int:service-activator input-channel="mqttQueryChannel" ref="mqttQueryController"/>
     <int:service-activator input-channel="mqttErrorChannel" ref="mqttErrorController"/>
 
 <!--    <int-mqtt:message-driven-channel-adapter id="mqttInbound"-->

@@ -36,14 +36,14 @@ import java.util.*;
 
 @Component
 @Slf4j
-public class MqttController implements MessageHandler {
+public class MqttThingsController implements MessageHandler {
     private String bmURL;
     private String bmCorePort;
     private MessageChannel outbound;
     private ObjectMapper objectMapper;
 
-    public MqttController(@Value("${bm.url}") String bmURL, @Value("${bm.port.core}") String bmCorePort,
-                          @Qualifier("mqttOutboundChannel") MessageChannel outbound, ObjectMapper objectMapper) {
+    public MqttThingsController(@Value("${bm.url}") String bmURL, @Value("${bm.port.core}") String bmCorePort,
+                                @Qualifier("mqttOutboundChannel") MessageChannel outbound, ObjectMapper objectMapper) {
         this.bmURL = bmURL;
         this.bmCorePort = bmCorePort;
         this.outbound = outbound;
