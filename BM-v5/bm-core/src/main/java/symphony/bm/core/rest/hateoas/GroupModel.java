@@ -15,7 +15,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 public class GroupModel extends RepresentationModel<GroupModel> {
     @Getter public final String gid;
-    @Getter public final List<String> parentGroups;
+    @Getter public final List<BasicGroupModel> parentGroups = new Vector<>();
     @Getter public final String name;
 
     @Getter public final List<BasicThingModel> things = new Vector<>();
@@ -24,8 +24,9 @@ public class GroupModel extends RepresentationModel<GroupModel> {
     @SneakyThrows
     public GroupModel(Group group) {
         this.gid = group.getGid();
-        this.parentGroups = group.getParentGroups();
         this.name = group.getName();
+    
+        group.getParentGroupObjects().forEach( parent -> parentGroups.add(new BasicGroupModel(parent)) );
 
         Link selfLink;
         if (gid == null || gid.equals("")) {
@@ -35,7 +36,7 @@ public class GroupModel extends RepresentationModel<GroupModel> {
             if (parentGroups.isEmpty()) {
                 this.add(linkTo(methodOn(GroupController.class).getSuperGroup()).withRel("parent"));
             }
-            for (String parentGID : parentGroups) {
+            for (String parentGID : group.getParentGroups()) {
                 if (parentGID == null || parentGID.equals("")) {
                     this.add(linkTo(methodOn(GroupController.class).getSuperGroup()).withRel("parent"));
                 } else {
