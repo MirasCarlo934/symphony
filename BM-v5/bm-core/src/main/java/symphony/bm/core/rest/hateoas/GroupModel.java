@@ -6,6 +6,7 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
 import symphony.bm.core.iot.Group;
 import symphony.bm.core.iot.Thing;
+import symphony.bm.core.rest.BaseController;
 import symphony.bm.core.rest.GroupController;
 
 import java.util.List;
@@ -30,15 +31,15 @@ public class GroupModel extends RepresentationModel<GroupModel> {
 
         Link selfLink;
         if (gid == null || gid.equals("")) {
-            selfLink = linkTo(methodOn(GroupController.class).getSuperGroup()).withSelfRel();
+            selfLink = linkTo(methodOn(BaseController.class).getSuperGroup()).withSelfRel();
         } else {
             selfLink = linkTo(methodOn(GroupController.class).get(gid)).withSelfRel();
             if (parentGroups.isEmpty()) {
-                this.add(linkTo(methodOn(GroupController.class).getSuperGroup()).withRel("parent"));
+                this.add(linkTo(methodOn(BaseController.class).getSuperGroup()).withRel("parent"));
             }
             for (String parentGID : group.getParentGroups()) {
                 if (parentGID == null || parentGID.equals("")) {
-                    this.add(linkTo(methodOn(GroupController.class).getSuperGroup()).withRel("parent"));
+                    this.add(linkTo(methodOn(BaseController.class).getSuperGroup()).withRel("parent"));
                 } else {
                     this.add(linkTo(methodOn(GroupController.class).get(parentGID)).withRel("parent." + parentGID));
                 }

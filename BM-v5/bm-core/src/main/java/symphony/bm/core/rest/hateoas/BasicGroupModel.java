@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.SneakyThrows;
 import org.springframework.hateoas.RepresentationModel;
 import symphony.bm.core.iot.Group;
+import symphony.bm.core.rest.BaseController;
 import symphony.bm.core.rest.GroupController;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class BasicGroupModel extends RepresentationModel<BasicGroupModel> {
         this.name = group.getName();
     
         if (gid == null || gid.equals("")) {
-            this.add(linkTo(methodOn(GroupController.class).getSuperGroup()).withSelfRel());
+            this.add(linkTo(methodOn(BaseController.class).getSuperGroup()).withSelfRel());
         } else {
             this.add(linkTo(methodOn(GroupController.class).get(gid)).withSelfRel());
         }

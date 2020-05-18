@@ -6,6 +6,7 @@ import org.springframework.hateoas.RepresentationModel;
 import symphony.bm.core.iot.Group;
 import symphony.bm.core.iot.Thing;
 import symphony.bm.core.iot.Attribute;
+import symphony.bm.core.rest.BaseController;
 import symphony.bm.core.rest.GroupController;
 import symphony.bm.core.rest.ThingController;
 
@@ -41,12 +42,12 @@ public class ThingModel extends RepresentationModel<ThingModel> {
                 .andAffordance(afford(methodOn(ThingController.class).delete(uid)))
         );
         if (parentGroups.isEmpty()) {
-            this.add(linkTo(methodOn(GroupController.class).getSuperGroup()).withRel("parent"));
+            this.add(linkTo(methodOn(BaseController.class).getSuperGroup()).withRel("parent"));
         } else {
             for (Group parentGroup : thing.getParentGroupObjects()) {
                 String parentGID = parentGroup.getGid();
                 if (parentGID == null || parentGID.equals("")) {
-                    this.add(linkTo(methodOn(GroupController.class).getSuperGroup()).withRel("parent"));
+                    this.add(linkTo(methodOn(BaseController.class).getSuperGroup()).withRel("parent"));
                 } else {
                     this.add(linkTo(methodOn(GroupController.class).get(parentGID))
                             .withRel("parent." + parentGID));

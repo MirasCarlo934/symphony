@@ -11,6 +11,7 @@ import symphony.bm.core.iot.Thing;
 import symphony.bm.core.rest.forms.group.GroupGroupForm;
 import symphony.bm.core.rest.forms.group.GroupUpdateForm;
 import symphony.bm.core.rest.forms.thing.ThingGroupForm;
+import symphony.bm.core.rest.hateoas.BasicGroupModel;
 import symphony.bm.core.rest.hateoas.GroupModel;
 import symphony.bm.generics.exceptions.RestControllerProcessingException;
 import symphony.bm.generics.messages.MicroserviceMessage;
@@ -29,8 +30,10 @@ public class GroupController {
     private final SuperGroup superGroup;
 
     @GetMapping
-    public GroupModel getSuperGroup() {
-        return new GroupModel(superGroup);
+    public List<GroupModel> getAll() {
+        List<GroupModel> groupModels = new Vector<>();
+        superGroup.getContainedGroups().forEach( group -> groupModels.add(new GroupModel(group)) );
+        return groupModels;
     }
 
     @GetMapping("/{gid}")
