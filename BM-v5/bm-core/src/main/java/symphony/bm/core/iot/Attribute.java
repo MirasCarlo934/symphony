@@ -75,6 +75,10 @@ public class Attribute extends IotResource implements Resource {
     
     public void setDataType(AttributeDataType dataType) throws Exception {
         if (!this.dataType.equals(dataType)) {
+            if (!this.dataType.getType().equals(dataType.getType())) {
+                throw new IllegalArgumentException("Attribute dataType.type cannot be changed! " +
+                        "Delete attribute first then add new attribute with the new dataType.type.");
+            }
             this.dataType = dataType;
             try {
                 dataType.checkValueIfValid(value);
@@ -90,17 +94,7 @@ public class Attribute extends IotResource implements Resource {
     public void setDataType(Map<String, Object> dataTypeMap) throws Exception {
         AttributeDataType dataType = new AttributeDataType(AttributeDataTypeEnum.valueOf((String)dataTypeMap.get("type")),
                 (Map) dataTypeMap.get("constraints"));
-        if (!this.dataType.equals(dataType)) {
-            this.dataType = dataType;
-            try {
-                dataType.checkValueIfValid(value);
-            } catch (Exception e) {
-                setValue(dataType.getDefaultValue());
-            }
-            activityListenerManager.attributeUpdated(this, "dataType", dataType);
-        } else {
-            throw new ValueUnchangedException();
-        }
+        setDataType(dataType);
     }
 
     public void setMode(String mode) throws IllegalArgumentException {
