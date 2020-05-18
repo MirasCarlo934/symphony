@@ -54,6 +54,7 @@ public class Attribute extends IotResource implements Resource {
         this.dataType = dataType;
         this.value = value;
         dataType.checkConstraintsIfValid();
+        dataType.checkValueIfValid(value);
     }
 
     public void setValue(Object value) throws Exception {

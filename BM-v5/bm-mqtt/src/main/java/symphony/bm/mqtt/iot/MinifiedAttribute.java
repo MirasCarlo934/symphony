@@ -16,7 +16,7 @@ public class MinifiedAttribute implements Minified<Attribute> {
     Object val;
     
     /**
-     * This constructor is needed to force Jackson ObjectMapper to throw an exception when a property is not found
+     * This constructor is needed to force Jackson ObjectMapper to throw an exception when a field is not found
      * @param aid
      * @param name
      * @param mode
