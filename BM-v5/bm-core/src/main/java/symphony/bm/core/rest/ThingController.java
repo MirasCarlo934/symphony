@@ -59,7 +59,7 @@ public class ThingController {
         }
 
         log.debug("Deleting thing " + uid + " ...");
-        List<String> parentGIDs = thing.getCopyOfParentGroups();
+        List<String> parentGIDs = thing.getParentGroups();
         if (parentGIDs.isEmpty()) {
             superGroup.removeThing(thing);
         }
@@ -90,7 +90,7 @@ public class ThingController {
         List<Group> groupList = new Vector<>();
 
         // check if the group/s specified exist/s
-        List<String> groups = thing.getCopyOfParentGroups();
+        List<String> groups = thing.getParentGroups();
         if (groups.isEmpty()) {
             groupList.add(superGroup);
         }
@@ -207,7 +207,7 @@ public class ThingController {
 
         log.debug("Updating thing " + uid + "...");
         boolean changed = false;
-        ThingUpdateForm form = new ThingUpdateForm(thing.getName(), thing.getCopyOfParentGroups(),
+        ThingUpdateForm form = new ThingUpdateForm(thing.getName(), thing.getParentGroups(),
                 thing.getCopyOfAttributeList());
         if (form.getAttributes() != null && !form.getAttributes().isEmpty()) {
             List<Attribute> attributesToRemove = new Vector<>(current.getCopyOfAttributeList());
@@ -283,7 +283,7 @@ public class ThingController {
     private boolean updateGroups(Thing thing, List<String> parentGIDs) throws RestControllerProcessingException {
         if (!thing.hasSameParentGroups(parentGIDs)) {
             List<String> groupsToAdd = new Vector<>();
-            List<String> groupsToRemove = new Vector<>(thing.getCopyOfParentGroups());
+            List<String> groupsToRemove = new Vector<>(thing.getParentGroups());
             parentGIDs.forEach(parentGID -> {
                 if (!thing.hasGroup(parentGID)) {
                     groupsToAdd.add(parentGID);

@@ -1,6 +1,7 @@
 package symphony.bm.core.iot;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -13,9 +14,9 @@ import java.util.Vector;
         setterVisibility = JsonAutoDetect.Visibility.NONE)
 public abstract class Groupable extends IotResource {
     // this field is for DB persistence only
-    @NonNull @Setter(/*AccessLevel.PRIVATE*/) /*@Getter(AccessLevel.PROTECTED)*/ private List<String> parentGroups;
+    @NonNull @Setter(/*AccessLevel.PRIVATE*/) @Getter(/*AccessLevel.PROTECTED*/) private List<String> parentGroups;
     // this field is for resource representation
-    @Transient @Getter private List<Group> parentGroupObjects = new Vector<>();
+    @JsonIgnore @Transient @Getter private List<Group> parentGroupObjects = new Vector<>();
 
     public Groupable(List<String> parentGroups) {
         if (parentGroups == null) {
@@ -23,11 +24,6 @@ public abstract class Groupable extends IotResource {
         }
         this.parentGroups = parentGroups;
     }
-
-//    @JsonIgnore
-//    public List<String> getCopyOfParentGroups() {
-//        return new Vector<>(parentGroups);
-//    }
 
     public int parentGroupsCount() {
         return parentGroups.size();
@@ -48,6 +44,8 @@ public abstract class Groupable extends IotResource {
     protected void addParentGroup(Group group) {
         if (!parentGroups.contains(group.getGid())) {
             parentGroups.add(group.getGid());
+        }
+        if (!parentGroupObjects.contains(group)) {
             parentGroupObjects.add(group);
         }
     }

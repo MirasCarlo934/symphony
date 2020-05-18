@@ -62,7 +62,7 @@ public class GroupController {
                     superGroup.addGroup(subgroup);
                 }
             }
-            for (String parentGID : group.getCopyOfParentGroups()) {
+            for (String parentGID : group.getParentGroups()) {
                 log.debug("Group " + gid + " removed from group " + parentGID);
                 Group parent = superGroup.getGroupRecursively(parentGID);
                 parent.removeGroup(group);
@@ -87,7 +87,7 @@ public class GroupController {
         }
 
         log.debug("Adding group " + gid + "...");
-        for (String parentGID : group.getCopyOfParentGroups()) {
+        for (String parentGID : group.getParentGroups()) {
             Group parent = superGroup.getGroupRecursively(parentGID);
             if (parent == null) {
                 parent = createDefaultGroup(parentGID);
@@ -239,7 +239,7 @@ public class GroupController {
     private boolean updateGroups(Group group, List<String> parentGIDs) throws RestControllerProcessingException {
         if (!group.hasSameParentGroups(parentGIDs)) {
             List<String> groupsToAdd = new Vector<>();
-            List<String> groupsToRemove = new Vector<>(group.getCopyOfParentGroups());
+            List<String> groupsToRemove = new Vector<>(group.getParentGroups());
             parentGIDs.forEach(parentGID -> {
                 if (!group.hasGroup(parentGID)) {
                     groupsToAdd.add(parentGID);

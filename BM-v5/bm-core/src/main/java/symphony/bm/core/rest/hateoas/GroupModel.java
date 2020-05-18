@@ -24,7 +24,7 @@ public class GroupModel extends RepresentationModel<GroupModel> {
     @SneakyThrows
     public GroupModel(Group group) {
         this.gid = group.getGid();
-        this.parentGroups = group.getCopyOfParentGroups();
+        this.parentGroups = group.getParentGroups();
         this.name = group.getName();
 
         Link selfLink;

@@ -40,7 +40,10 @@ public class SuperGroup extends Group {
                 this.things.add(thing);
             } else {
                 for (String GID : thing.getParentGroups()) {
-                    getGroupFromList(GID, groupList).things.add(thing);
+                    Group group = getGroupFromList(GID, groupList);
+                    assert group != null;
+                    group.things.add(thing);
+                    thing.addParentGroup(group); // to add the Group object to its list of parent group objects
                 }
             }
         }
@@ -51,7 +54,10 @@ public class SuperGroup extends Group {
                 this.groups.add(group);
             } else {
                 for (String GID : group.getParentGroups()) {
-                    getGroupFromList(GID, groupList).groups.add(group);
+                    Group parent = getGroupFromList(GID, groupList);
+                    assert parent != null;
+                    parent.groups.add(group);
+                    group.addParentGroup(parent);
                 }
             }
         }
