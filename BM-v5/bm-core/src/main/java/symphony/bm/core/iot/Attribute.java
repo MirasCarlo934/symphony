@@ -74,16 +74,19 @@ public class Attribute extends IotResource implements Resource {
     }
     
     public void setDataType(AttributeDataType dataType) throws Exception {
+        if (!dataType.checkConstraintsIfValid()) {
+            throw new IllegalArgumentException("Attribute dataType declares invalid constraints");
+        }
         if (!this.dataType.equals(dataType)) {
             if (!this.dataType.getType().equals(dataType.getType())) {
                 throw new IllegalArgumentException("Attribute dataType.type cannot be changed! " +
                         "Delete attribute first then add new attribute with the new dataType.type.");
             }
-            this.dataType = dataType;
             try {
                 dataType.checkValueIfValid(value);
+                this.dataType = dataType;
             } catch (Exception e) {
-                setValue(dataType.getDefaultValue());
+                throw new IllegalArgumentException("Attribute dataType cannot be updated as it will violate its current value.");
             }
             activityListenerManager.attributeUpdated(this, "dataType", dataType);
         } else {

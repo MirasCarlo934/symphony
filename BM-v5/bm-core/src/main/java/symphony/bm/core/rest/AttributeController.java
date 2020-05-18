@@ -145,9 +145,9 @@ public class AttributeController {
             throws RestControllerProcessingException {
         Thing thing = superGroup.getThingRecursively(uid);
         if (thing != null) {
-            log.debug("Updating " + field + " of " + uid + "/" + aid + " ...");
             Attribute attribute = thing.getAttribute(aid);
             if (attribute != null) {
+                log.debug("Updating " + field + " of " + uid + "/" + aid + " ...");
                 boolean changed = false;
                 try {
                     changed = attribute.update(field, value);
@@ -175,9 +175,9 @@ public class AttributeController {
             throws RestControllerProcessingException {
         Thing thing = superGroup.getThingRecursively(uid);
         if (thing != null) {
-            log.debug("Updating " + field + " of " + uid + "/" + aid + " ...");
             Attribute attribute = thing.getAttribute(aid);
             if (attribute != null) {
+                log.debug("Updating " + field + " of " + uid + "/" + aid + " ...");
                 boolean changed = false;
                 if (field.equals("dataType")) {
                     try {
@@ -192,6 +192,37 @@ public class AttributeController {
                 }
                 if (changed) {
                     return successResponseEntity("Attribute " + uid + "/" + aid + " " + field + " updated",
+                            HttpStatus.OK);
+                } else {
+                    return successResponseEntity("Nothing to update", HttpStatus.OK);
+                }
+            } else {
+                throw new RestControllerProcessingException("Attribute " + uid + "/" + aid + " does not exist",
+                        HttpStatus.NOT_FOUND);
+            }
+        } else {
+            throw new RestControllerProcessingException("Thing " + uid + " does not exist", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping(value = "/{aid}/dataType/constraints", consumes = {"application/json"})
+    public ResponseEntity<MicroserviceMessage> updateDataTypeConstraints(@PathVariable String uid, @PathVariable String aid,
+                                                                         @RequestBody Map<String, Object> constraints)
+            throws RestControllerProcessingException {
+        Thing thing = superGroup.getThingRecursively(uid);
+        if (thing != null) {
+            Attribute attribute = thing.getAttribute(aid);
+            if (attribute != null) {
+                log.debug("Updating data type constraints of " + uid + "/" + aid + " ...");
+                AttributeDataType dataType = new AttributeDataType(attribute.getDataType().getType(), constraints);
+                boolean changed = false;
+                try {
+                    changed = attribute.update("dataType", dataType);
+                } catch (Exception e) {
+                    throw new RestControllerProcessingException(e.getMessage(), HttpStatus.BAD_REQUEST, e);
+                }
+                if (changed) {
+                    return successResponseEntity("Attribute " + uid + "/" + aid + " data type constraints updated",
                             HttpStatus.OK);
                 } else {
                     return successResponseEntity("Nothing to update", HttpStatus.OK);

@@ -22,6 +22,10 @@ public class AttributeDataType {
         return type.checkValuesForEquality(value1, value2);
     }
 
+    public boolean checkConstraintsIfValid() throws Exception {
+        return type.checkConstraintsIfValid(constraints);
+    }
+
     public Object checkValueIfValid(Object value) throws Exception {
         return type.checkValueIfValid(value, constraints);
     }

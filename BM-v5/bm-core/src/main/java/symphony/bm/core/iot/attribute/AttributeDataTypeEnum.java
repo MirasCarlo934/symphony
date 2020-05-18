@@ -10,6 +10,20 @@ public enum AttributeDataTypeEnum {
             return Integer.valueOf(value1.toString()).equals(Integer.valueOf(value2.toString()));
         }
         @Override
+        boolean checkConstraintsIfValid(Map<String, Object> constraints) throws Exception {
+            try {
+                if (constraints.containsKey("min") && Double.parseDouble(constraints.get("min").toString()) != 0d) {
+                    throw new IllegalArgumentException("Binary data type min must always be 0");
+                }
+                if (constraints.containsKey("max") && Double.parseDouble(constraints.get("max").toString()) != 1d) {
+                    throw new IllegalArgumentException("Binary data type max must always be 1");
+                }
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Data type constraint min/max is not a number");
+            }
+            return true;
+        }
+        @Override
         Object checkValueIfValid(Object value, Map<String, Object> constraints) throws Exception {
             try {
                 int i = Integer.parseInt(value.toString());
@@ -25,10 +39,26 @@ public enum AttributeDataTypeEnum {
         Object getDefaultValue(Map<String, Object> constraints) {
             return 0;
         }
-    }, number {
+    },
+    number {
         @Override
         boolean checkValuesForEquality(Object value1, Object value2) {
             return Double.valueOf(value1.toString()).equals(Double.valueOf(value2.toString()));
+        }
+        @Override
+        boolean checkConstraintsIfValid(Map<String, Object> constraints) throws Exception {
+            try {
+                double min = Double.parseDouble(constraints.get("min").toString());
+                double max = Double.parseDouble(constraints.get("max").toString());
+                if (min >= max) {
+                    throw new IllegalArgumentException("Number data type min must always be less than max");
+                }
+            } catch (NumberFormatException e) {
+                throw new NumberFormatException("Value is not a number");
+            } catch (NullPointerException | ClassCastException e) {
+                // no min/max value constraint
+            }
+            return true;
         }
         @Override
         Object checkValueIfValid(Object value, Map<String, Object> constraints) throws Exception {
@@ -59,10 +89,20 @@ public enum AttributeDataTypeEnum {
                 return 0;
             }
         }
-    }, enumeration {
+    },
+    enumeration {
         @Override
         boolean checkValuesForEquality(Object value1, Object value2) {
             return value1.toString().equals(value2.toString());
+        }
+        @Override
+        boolean checkConstraintsIfValid(Map<String, Object> constraints) throws Exception {
+            try {
+                List<String> values = (List<String>) constraints.get("values");
+            } catch (ClassCastException e) {
+                throw new IllegalArgumentException("Enumeration data type has no declared values under constraints");
+            }
+            return true;
         }
         @Override
         Object checkValueIfValid(Object value, Map<String, Object> constraints) throws Exception {
@@ -78,10 +118,15 @@ public enum AttributeDataTypeEnum {
             List<String> enumValues = (List<String>) constraints.get("values");
             return enumValues.get(0);
         }
-    }, string {
+    },
+    string {
         @Override
         boolean checkValuesForEquality(Object value1, Object value2) {
             return value1.toString().equals(value2.toString());
+        }
+        @Override
+        boolean checkConstraintsIfValid(Map<String, Object> constraints) throws Exception {
+            return true;
         }
         @Override
         Object checkValueIfValid(Object value, Map<String, Object> constraints) throws Exception {
@@ -94,6 +139,7 @@ public enum AttributeDataTypeEnum {
     };
 
     abstract boolean checkValuesForEquality(Object value1, Object value2);
+    abstract boolean checkConstraintsIfValid(Map<String, Object> constraints) throws Exception;
     abstract Object checkValueIfValid(Object value, Map<String, Object> constraints) throws Exception;
     abstract Object getDefaultValue(Map<String, Object> constraints);
 }
