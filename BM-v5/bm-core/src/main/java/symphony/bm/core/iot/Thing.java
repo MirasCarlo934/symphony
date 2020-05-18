@@ -25,11 +25,13 @@ public class Thing extends Groupable implements Resource {
     @Id @JsonIgnore private String _id;
     @NotNull @NonNull @Setter @Getter private String uid;
     @NotNull @NonNull @Getter private String name;
+    @NotNull @NonNull @Getter private boolean active;
 
     @Transient @NotNull @NonNull @Setter @Getter(/*AccessLevel.PACKAGE*/) private List<Attribute> attributes = new Vector<>();
 
     @PersistenceConstructor
-    public Thing(@NonNull List<String> parentGroups, String _id, @NonNull String uid, @NonNull String name) {
+    public Thing(@NonNull List<String> parentGroups, String _id, @NonNull String uid, @NonNull String name,
+                 @NonNull boolean active) {
         super(parentGroups);
         this._id = _id;
         this.uid = uid;
@@ -62,6 +64,30 @@ public class Thing extends Groupable implements Resource {
         if (!this.name.equals(name)) {
             this.name = name;
             activityListenerManager.thingUpdated(this, "name", name);
+        } else {
+            throw new ValueUnchangedException();
+        }
+    }
+    
+    public void setActive(boolean active) throws ValueUnchangedException {
+        if (!this.active == active) {
+            this.active = active;
+            activityListenerManager.thingUpdated(this, "active", name);
+        } else {
+            throw new ValueUnchangedException();
+        }
+    }
+    
+    /**
+     * Sets the active field of this Thing. Used primarily for REST API update field request.
+     * @param activeStr The string containing the active boolean, case-insensitive
+     * @throws ValueUnchangedException
+     */
+    public void setActive(String activeStr) throws ValueUnchangedException {
+        boolean active = Boolean.getBoolean(activeStr);
+        if (!this.active == active) {
+            this.active = active;
+            activityListenerManager.thingUpdated(this, "active", name);
         } else {
             throw new ValueUnchangedException();
         }
@@ -123,22 +149,6 @@ public class Thing extends Groupable implements Resource {
         for (Map.Entry<String, Object> param : params.entrySet()) {
             String paramName = param.getKey().toLowerCase();
             changed = update(paramName, param.getValue());
-//            for (Method method : Thing.class.getDeclaredMethods()) {
-//                String methodName = method.getName().toLowerCase();
-//                if (!paramName.equals("attributes") && methodName.contains("set") &&
-//                        methodName.substring(3).equals(paramName)) {
-//                    try {
-//                        method.invoke(this, param.getValue());
-//                        log.info("Changed " + param.getKey() + " to " + param.getValue());
-//                        changed = true;
-//                    } catch (InvocationTargetException e) {
-//                        if (!e.getCause().getClass().equals(ValueUnchangedException.class)) {
-//                            throw (Exception) e.getCause();
-//                        }
-//                    }
-//                    break;
-//                }
-//            }
         }
         return changed;
     }
