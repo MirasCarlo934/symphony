@@ -20,11 +20,11 @@ import java.util.Map;
 
 @RestController
 @Slf4j
-public class MqttMicroserviceController {
+public class RestMicroserviceController {
     private final MessageChannel outbound;
     private final ObjectMapper objectMapper;
     
-    public MqttMicroserviceController(@Qualifier("mqttOutboundChannel") MessageChannel outbound,
+    public RestMicroserviceController(@Qualifier("mqttOutboundChannel") MessageChannel outbound,
                                       ObjectMapper objectMapper) {
         this.outbound = outbound;
         this.objectMapper = objectMapper;
@@ -35,7 +35,7 @@ public class MqttMicroserviceController {
             throws RestControllerProcessingException {
         Map<String, Object> headers = new HashMap<>();
         headers.put("mqtt_topic", "things/" + uid);
-        headers.put("mqtt_retained", true);
+        headers.put("mqtt_retained", false);
         headers.put("mqtt_qos", 2);
         try {
             publish(new GenericMessage<>(objectMapper.writeValueAsString(thing), headers));
