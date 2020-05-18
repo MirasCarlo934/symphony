@@ -725,7 +725,7 @@ void Symphony::setMqttCallback(int (* Callback) (int index, char* value)) {
  * Member method that enables the MQTT handler.
  */
 void Symphony::enableMqttHandler() {
-	theMqttHandler.setId(nameWithMac.c_str());
+	theMqttHandler.setId(mac.c_str());
 	theMqttHandler.setUrl(mqttIp.c_str());
 	theMqttHandler.setPort(mqttPort);
 	theMqttHandler.setMsgCallback(mqttMsgHandler);
