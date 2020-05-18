@@ -83,13 +83,13 @@ public class Group extends Groupable implements Resource {
         if (getThing(thing.getUid()) != null) return;
         thing.setActivityListenerManager(activityListenerManager);
         things.add(thing);
-        thing.addParentGroup(gid);
+        thing.addParentGroup(this);
         activityListenerManager.thingAddedToGroup(thing, this);
     }
 
     public void removeThing(Thing thing) {
         if (things.remove(thing)) {
-            thing.removeParentGroup(gid);
+            thing.removeParentGroup(this);
             activityListenerManager.thingRemovedFromGroup(thing, this);
         }
     }
@@ -124,13 +124,13 @@ public class Group extends Groupable implements Resource {
         if (getGroup(group.getGid()) != null) return;
         group.setActivityListenerManager(activityListenerManager);
         groups.add(group);
-        group.addParentGroup(gid);
+        group.addParentGroup(this);
         activityListenerManager.groupAddedToGroup(group, this);
     }
 
     public void removeGroup(Group group) {
         if (groups.remove(group)) {
-            group.removeParentGroup(gid);
+            group.removeParentGroup(this);
             activityListenerManager.groupRemovedFromGroup(group, this);
         }
     }

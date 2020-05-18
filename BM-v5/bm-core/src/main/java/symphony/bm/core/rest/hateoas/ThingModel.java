@@ -3,6 +3,7 @@ package symphony.bm.core.rest.hateoas;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import org.springframework.hateoas.RepresentationModel;
+import symphony.bm.core.iot.Group;
 import symphony.bm.core.iot.Thing;
 import symphony.bm.core.iot.Attribute;
 import symphony.bm.core.rest.GroupController;
@@ -15,15 +16,16 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 public class ThingModel extends RepresentationModel<ThingModel> {
     @Getter public final String uid;
-    @Getter public final List<String> parentGroups;
     @Getter public final String name;
+    @Getter public final List<BasicGroupModel> parentGroups = new Vector<>();
     @Getter public final List<AttributeModel> attributes = new Vector<>();
 
     @SneakyThrows
     public ThingModel(Thing thing) {
         this.uid = thing.getUid();
-        this.parentGroups = thing.getCopyOfParentGroups();
         this.name = thing.getName();
+
+        thing.getParentGroupObjects().forEach( group -> parentGroups.add(new BasicGroupModel(group)) );
 
         List<Attribute> attributeList = thing.getCopyOfAttributeList();
         for (Attribute attribute : attributeList) {
@@ -41,7 +43,8 @@ public class ThingModel extends RepresentationModel<ThingModel> {
         if (parentGroups.isEmpty()) {
             this.add(linkTo(methodOn(GroupController.class).getSuperGroup()).withRel("parent"));
         } else {
-            for (String parentGID : parentGroups) {
+            for (Group parentGroup : thing.getParentGroupObjects()) {
+                String parentGID = parentGroup.getGid();
                 if (parentGID == null || parentGID.equals("")) {
                     this.add(linkTo(methodOn(GroupController.class).getSuperGroup()).withRel("parent"));
                 } else {
