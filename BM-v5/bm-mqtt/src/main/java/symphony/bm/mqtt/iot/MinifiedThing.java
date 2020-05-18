@@ -16,6 +16,7 @@ public class MinifiedThing implements Minified<Thing> {
     String name;
     List<MinifiedAttribute> attribs;
     List<String> grps;
+    boolean active;
     
     /**
      * This constructor is needed to force Jackson ObjectMapper to throw an exception when a property is not found
@@ -27,17 +28,19 @@ public class MinifiedThing implements Minified<Thing> {
     @JsonCreator
     public MinifiedThing(@NonNull @JsonProperty("uid") String uid, @NonNull @JsonProperty("name") String name,
                          @NonNull @JsonProperty("attribs") List<MinifiedAttribute> attribs,
-                         @NonNull @JsonProperty("grps") List<String> grps) {
+                         @NonNull @JsonProperty("grps") List<String> grps,
+                         @NonNull @JsonProperty("active") boolean active) {
         this.uid = uid;
         this.name = name;
         this.attribs = attribs;
         this.grps = grps;
+        this.active = active;
     }
     
     
     @Override
     public Thing unminify() {
-        Thing thing = new Thing(grps, null, uid, name);
+        Thing thing = new Thing(grps, null, uid, name, active);
         attribs.forEach( attr -> thing.addAttribute(attr.unminify()));
         return thing;
     }

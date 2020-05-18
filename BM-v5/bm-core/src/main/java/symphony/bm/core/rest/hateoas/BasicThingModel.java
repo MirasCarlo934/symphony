@@ -14,27 +14,15 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 public class BasicThingModel extends RepresentationModel<BasicThingModel> {
     @Getter public final String uid;
-//    @Getter public final List<String> parentGroups;
     @Getter public final String name;
+    @Getter public final boolean active;
 
     @SneakyThrows
     public BasicThingModel(Thing thing) {
         this.uid = thing.getUid();
-//        this.parentGroups = thing.getCopyOfParentGroups();
         this.name = thing.getName();
+        this.active = thing.isActive();
     
         this.add(linkTo(methodOn(ThingController.class).get(uid)).withSelfRel());
-//        if (parentGroups.isEmpty()) {
-//            this.add(linkTo(methodOn(GroupController.class).getSuperGroup()).withRel("parent"));
-//        } else {
-//            for (String parentGID : parentGroups) {
-//                if (parentGID == null || parentGID.equals("")) {
-//                    this.add(linkTo(methodOn(GroupController.class).getSuperGroup()).withRel("parent"));
-//                } else {
-//                    this.add(linkTo(methodOn(GroupController.class).get(parentGID))
-//                            .withRel("parent." + parentGID));
-//                }
-//            }
-//        }
     }
 }

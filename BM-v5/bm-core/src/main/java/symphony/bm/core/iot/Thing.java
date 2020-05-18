@@ -36,6 +36,7 @@ public class Thing extends Groupable implements Resource {
         this._id = _id;
         this.uid = uid;
         this.name = name;
+        this.active = active;
     }
 
     /**
@@ -49,10 +50,12 @@ public class Thing extends Groupable implements Resource {
     public Thing(@JsonProperty("parentGroups") List<String> parentGroups,
                  @JsonProperty("uid") @NonNull String uid,
                  @JsonProperty("name") @NonNull String name,
-                 @JsonProperty("attributes") @NonNull List<Attribute> attributes) {
+                 @JsonProperty("attributes") @NonNull List<Attribute> attributes,
+                 @JsonProperty("active") @NonNull boolean active) {
         super(parentGroups);
         this.uid = uid;
         this.name = name;
+        this.active = active;
         attributes.forEach( a -> {
             Attribute attribute = new Attribute(a.getAid(), a.getName(), a.getMode(), a.getDataType(), a.getValue());
             attribute.setThing(uid);
@@ -157,7 +160,8 @@ public class Thing extends Groupable implements Resource {
         for (Method method : this.getClass().getDeclaredMethods()) {
             String methodName = method.getName().toLowerCase();
             if (!fieldName.equals("attributes") && methodName.contains("set") &&
-                    methodName.substring(3).equalsIgnoreCase(fieldName)) {
+                    methodName.substring(3).equalsIgnoreCase(fieldName) && method.getParameterCount() == 1 &&
+                    method.getParameterTypes()[0].isInstance(fieldValue)) {
                 try {
                     method.invoke(this, fieldValue);
                     log.info("Changed " + fieldName + " to " + fieldValue);

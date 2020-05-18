@@ -18,6 +18,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 public class ThingModel extends RepresentationModel<ThingModel> {
     @Getter public final String uid;
     @Getter public final String name;
+    @Getter public final boolean active;
     @Getter public final List<BasicGroupModel> parentGroups = new Vector<>();
     @Getter public final List<AttributeModel> attributes = new Vector<>();
 
@@ -25,6 +26,7 @@ public class ThingModel extends RepresentationModel<ThingModel> {
     public ThingModel(Thing thing) {
         this.uid = thing.getUid();
         this.name = thing.getName();
+        this.active = thing.isActive();
 
         thing.getParentGroupObjects().forEach( group -> parentGroups.add(new BasicGroupModel(group)) );
 
