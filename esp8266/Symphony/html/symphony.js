@@ -238,8 +238,8 @@ function renderPage(xhttp) {
 	//			{"id":"0003","typ":10,"lbl":"Green","min":0,"max":1,"val":0,"grp":"Grp1"}]}
 	//RADIO_CTL = 10, BUTTON_CTL = 20, SLIDER_CTL = 30 , RADIO_SNSR = 50, BUTTON_SNSR = 60, SLIDER_SNSR = 70, UNDEF = 99
 	//this is the temp array of object {typ:1,lbl:'RED',val:'0007', grp:'g2'}
+//	alert(xhttp.responseText);
     jsonResponse = JSON.parse(xhttp.responseText);
-//alert(xhttp.responseText)
     itm = jsonResponse["data"];
     name = jsonResponse["name_mac"];
     var splitStr = name.split("_");
