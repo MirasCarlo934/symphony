@@ -15,6 +15,7 @@ String myId = "myMqttID";
 const char* mqttServer = "localhost";
 String subscribeTopic = "things/";
 String publishTopic = "BM/";
+String willTopic = "lastWill";
 int mqttPort = 1883;
 long timerMillis = 0, reconnectIntervalMillis = 10000;	//default 10 second reconnect interval
 
@@ -23,7 +24,7 @@ boolean connected = false, doReconnect = false;
 /*
  * This is the callback handler in Symphony.cpp that will be called when a message arrives.
  */
-void (* msgCallback) (char* topic, char* payload, size_t len);
+void (* msgCallback) (char* topic, String payload, size_t len);
 
 void onMqttConnect(bool sessionPresent) {
   Serial.println("[MqttHandler] Connected to MQTT.");
@@ -32,15 +33,16 @@ void onMqttConnect(bool sessionPresent) {
    *  	2. things/{uid}/name					for changes in the device name properties
    *  	3. things/{uid}/attributes/#			for changes in the attribute values
    */
-  subscribeTopic = "things/" + myId +"/";
-  String s1 = subscribeTopic + "parentGroups";
+  subscribeTopic = "things/" + myId ;
+  uint16_t packetIdSubMain = mqttClient.subscribe(subscribeTopic.c_str(), 0);
+  String s1 = subscribeTopic +"/"+ "parentGroups";
   uint16_t packetIdSub1 = mqttClient.subscribe(s1.c_str(), 0);
-  String s2 = subscribeTopic + "name";
+  String s2 = subscribeTopic +"/"+ "name";
   uint16_t packetIdSub2 = mqttClient.subscribe(s2.c_str(), 0);
-  String s3 = subscribeTopic + "attributes/#";
+  String s3 = subscribeTopic +"/"+ "attributes/#";
   uint16_t packetIdSub3 = mqttClient.subscribe(s3.c_str(), 0);
   publishTopic = "BM/" + myId;
-  Serial.printf("[MqttHandler] subscribed to topics %s\t%s\t%s\n", s1.c_str(), s2.c_str(), s3.c_str());
+  Serial.printf("[MqttHandler] subscribed to topics \n\t%s\n\t%s\n\t%s\n\t%s\n", subscribeTopic.c_str(),s1.c_str(), s2.c_str(), s3.c_str());
   connected = true;
   doReconnect = false;
 }
@@ -66,27 +68,40 @@ void onMqttUnsubscribe(uint16_t packetId) {
   Serial.println(packetId);
 }
 
+String payloadBuf;	//this is the buffer for messages that may be sent in multiple packets
 void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total) {
   Serial.println("[MqttHandler] Messsage received.");
-//  Serial.print("[MqttHandler] **************   topic: ");
-//  Serial.println(topic);
-//  Serial.print("[MqttHandler]   qos: ");
-//  Serial.print(properties.qos);
-//  Serial.print(",  dup: ");
-//  Serial.print(properties.dup);
-//  Serial.print(",  retain: ");
-//  Serial.print(properties.retain);
-//  Serial.print(",  len: ");
-//  Serial.print(len);
-//  Serial.print(",  index: ");
-//  Serial.print(index);
-//  Serial.print(",  total: ");
-//  Serial.println(total);
-//  Serial.print("[MqttHandler]   payload: ");
-//  char str2[len];
-//  strncpy ( str2, payload, len );
-//  Serial.println(str2);
-  msgCallback(topic, payload,len);
+  Serial.print("[MqttHandler] **************   topic: ");
+  Serial.println(topic);
+  Serial.print("[MqttHandler]   qos: ");
+  Serial.print(properties.qos);
+  Serial.print(",  dup: ");
+  Serial.print(properties.dup);
+  Serial.print(",  retain: ");
+  Serial.print(properties.retain);
+  Serial.print(",  len: ");
+  Serial.print(len);
+  Serial.print(",  index: ");
+  Serial.print(index);
+  Serial.print(",  total: ");
+  Serial.println(total);
+  Serial.print("[MqttHandler]   payload: ");
+  char str2[len];
+  strncpy ( str2, payload, len );
+  Serial.println(str2);
+  if (index == 0) {
+	payloadBuf = "";
+  }
+  auto pl = len;
+  auto p = payload;
+  while (pl--) {
+	payloadBuf += *(p++);
+  }
+  if (index + len == total) {
+	/// Do your stuff with complete payloadBuf here
+	msgCallback(topic, payloadBuf, total);
+  }
+
 }
 
 void onMqttPublish(uint16_t packetId) {
@@ -107,7 +122,7 @@ MqttHandler::MqttHandler() {
  * This will be from Symphony.cpp
  *
  */
-void MqttHandler::setMsgCallback(void (* Callback) (char* topic, char* payload, size_t len)) {
+void MqttHandler::setMsgCallback(void (* Callback) (char* topic, String payload, size_t len)) {
 	msgCallback= Callback;
 }
 /**
@@ -142,9 +157,10 @@ void MqttHandler::connect() { //to connect to MQTT server
 	mqttClient.onUnsubscribe(onMqttUnsubscribe);
 	mqttClient.onMessage(onMqttMessage);
 	mqttClient.onPublish(onMqttPublish);
+	willTopic = "BM/" + myId + "/active";
+	mqttClient.setWill(willTopic.c_str(), 1, false, "false", 5);
 	Serial.printf("[MqttHandler] url=%s port=%i\n", mqttServer, mqttPort);
 	mqttClient.setServer(mqttServer, mqttPort);
-
 	mqttClient.connect();
 }
 

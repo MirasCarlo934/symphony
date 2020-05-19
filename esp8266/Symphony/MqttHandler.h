@@ -20,7 +20,7 @@ class MqttHandler {
 
 	MqttHandler();
 	//generic methods
-	void setMsgCallback(void (* Callback) (char* topic, char* payload, size_t len));
+	void setMsgCallback(void (* Callback) (char* topic, String payload, size_t len));
 	void setUrl(const char *url);	//sets the URL, can be used if MqttHandler was instantiated using the default constructor
 	void setPort(int port);	//sets the port, can be uised if MqttHandler was instantiated using the default constructor
 	void setId(const char *id);	//sets the id, can be uised if MqttHandler was instantiated using the default constructor

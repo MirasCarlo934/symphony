@@ -10,10 +10,10 @@
 
 Product::Product(){}
 
-Product::Product(String name_mac, String room, String productName){
+Product::Product(String mac, String room, String productName){
   this->room = room;
   this->productName = productName;
-  this->name_mac = name_mac;
+  this->mac = mac;
   attributes = new attribStruct[0];
 }
 
@@ -45,7 +45,7 @@ void Product::setValueChangeCallback(int (* Callback) (int propertyIndex, boolea
 * 	value		= the actual value
 */
 void Product::addProperty(String ssid, boolean directPin, int8_t pin, Gui gui) {
-	propertyChanged = true;
+	propertyAdded = true;
 	attribStruct as;
 	as.aid = size;
 	size++;
@@ -206,49 +206,22 @@ void Product::setValue(String ssid, int value, boolean forHub) {
 void Product::setValueByIndex(int index, int value, boolean forHub) {
 	attributes[index].gui.value = value;
 #ifdef DEBUG_
-	Serial.print("\t value is set to ");Serial.println(attributes[index].gui.value);
+	Serial.print("[Product]value is set to ");Serial.println(attributes[index].gui.value);
 #endif
 	valueChangeCallback(index, forHub);
 }
 
 /**
  * returns the String representation of this device
- * {
-    "uid": "12345678",
-    "parentGroups": [],
-    "name": "Thing 1",
-    "attributes": [
-        {
-            "mode": "controllable",
-            "dataType": {
-                "type": "binary",
-                "constraints": {}
-            },
-            "name": "On/Off",
-            "aid": "87654321",
-            "value": 0
-        },
-        {
-            "mode": "input",
-            "dataType": {
-                "type": "number",
-                "constraints": {}
-            },
-            "name": "Temperature [C]",
-            "aid": "abcdefgh",
-            "value": 30.2
-        }
-    ]
-}
  */
 String Product::stringify() {
 #ifdef DEBUG_
 	Serial.println("[Product] stringify start");
 #endif
-	if (stringifyCache.length()== 0 || propertyChanged) {
 		DynamicJsonBuffer jsonBuffer;
 		JsonObject& regJson = jsonBuffer.createObject();
-		regJson["uid"] = name_mac;
+		regJson["uid"] = mac;
+		regJson["active"] = true;
 		JsonArray& gArray = regJson.createNestedArray("parentGroups");
 		regJson["name"] = productName;
 		JsonArray& pArray = regJson.createNestedArray("attributes");
@@ -277,25 +250,30 @@ String Product::stringify() {
 			prop1["aid"] = a.aid;
 			prop1["value"] = a.gui.value;
 		}
-		regJson.printTo(stringifyCache);
-		propertyChanged = false;
-	}
+		String s;
+		regJson.printTo(s);
 #ifdef DEBUG_
-		Serial.printf("[Product] stringify \n\t%s\n", stringifyCache.c_str());
+		Serial.printf("[Product] stringify \n\t%s\n", s.c_str());
 		Serial.println("[Product] stringify end");
 #endif
-	return stringifyCache;
+	return s;
 }
 
 /**
  * creates a jason object for this product then returns the string
  */
 String Product::stringifyForGui() {
-	if (stringifyGuiCache.length()== 0 || propertyChanged) {
+#ifdef DEBUG_
+      Serial.printf("[Product] size=%i\n", size);
+#endif
+	if (stringifyGuiCache.length()== 0 || propertyAdded) {
+#ifdef DEBUG_
+		Serial.printf("[Product] stringifyGuiCache.length=%i\n", stringifyGuiCache.length());
+#endif
 		DynamicJsonBuffer jsonBuffer;
 		JsonObject& json = jsonBuffer.createObject();
 		json["cmd"] = 1;
-		json["name_mac"] = name_mac;
+		json["name_mac"] = productName+"_"+mac;
 		JsonArray& data = json.createNestedArray("data");
 		for (int i=0; i<size; i++) {
 			JsonObject& element = data.createNestedObject();
@@ -309,6 +287,7 @@ String Product::stringifyForGui() {
 			element["hasPin"] = attributes[i].directPin;
 		}
 		json.printTo(stringifyGuiCache);
+		propertyAdded = false;
 	}
 	return stringifyGuiCache;
 }
@@ -320,7 +299,7 @@ String Product::stringifyValues() {
 	JsonObject& json = jsonBuffer.createObject();
 	json["core"] = WSCLIENT_DO_DISPLAY;
 	json["cmd"] = CMD_VALUES;
-	json["name_mac"] = name_mac;
+	json["name_mac"] = productName+"_"+mac;
 	JsonArray& data = json.createNestedArray("data");
 	for (int i=0; i<size; i++) {
 		JsonObject& element = data.createNestedObject();

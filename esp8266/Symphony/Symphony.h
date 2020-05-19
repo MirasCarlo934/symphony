@@ -49,19 +49,19 @@ class Symphony {
 	    static String rootProperties;//the properties of the form {typ:'Rad',lbl:'RED',val:'0007', grp:'g2'}
 	    static String hostName;//the hostName of this device
 	    static String mac;//the mac address
-	    static String nameWithMac;//the name of this device that includes the mac address
+	    static String name;//the name of this device
 	    static Product product;
 	    static String version;
 	    static bool hasMqttHandler;
 
 	    //public methods
-	    void setup(String theHostName, String ver);
+	    int setup(String ver);	//returns -1 if not connected to Wifi (SOFT_AP mode), returns 7 if connected to wifi (Station Mode)
 	    bool loop();
 	    //lets the instantiator of this Symphony object assign a callback handler
 	    void on(const char* uri, WebRequestMethodComposite method, ArRequestHandlerFunction handler);
 	    void serveStatic(const char* uri, fs::FS& fs, const char* path);
 	    void setWsCallback(int (* WsCallback) (AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json));
-	    void setMqttCallback(int (* MqttCallback) (int index, char* value));
+	    void setMqttCallback(int (* MqttCallback) (int index, String value));
 	    void textAll(JsonObject& message);  //for sending to WsClients
 	    static void setRootProperties(String s);
 	    void setProduct(Product p);
@@ -74,16 +74,16 @@ class Symphony {
 	    IPAddress apIP = IPAddress (192, 168, 7, 1);
 	    String ssid = "ssid", pwd = "pwd", mqttIp = "localhost";
 	    static long MRN;	//the Message Reference Number, an incremental variable
-	    bool isProductSet = false, isRegistered = false;
+	    bool isProductSet = false, isInquireDone = false;;
 	    int wifiMaxConnCount=50, mqttPort=1883;  //max counter when connecting to wifi AP, corresponds to 10secs
 	    long restartTimer = 0;  //the restart timer in millis.  this will restart every maxrestartTimer if wifi is not connected.
 	    const long maxRestartTimer = 120000; //the max millis before restart.  2 mins
-//	    String hostName = "Symphony";
 	    void connectToWifi();
-	    void createMyName(String theHostName);
+	    void initNameAndMac();
 	    void setupAP();
 	    void enableMqttHandler();
-	    bool registerProduct();	//should be called after mqttHandler has been set and product has been set
+	    bool inquireBM();	//should be called after mqttHandler has been successfully connected
+	    bool registerProduct(); //should be called after mqttHandler has been successfully connected and product has been set
 	    void readConfigFile();	//reads the config file and loads to the variables
 };
 

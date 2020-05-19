@@ -31,7 +31,7 @@
 
 String Symphony::hostName = "hostName";
 String Symphony::mac = "";
-String Symphony::nameWithMac = "myName";
+String Symphony::name = "myName";
 Product Symphony::product;
 String Symphony::version = "0.0";
 
@@ -54,6 +54,7 @@ String responseHTML = ""
 
 bool		reboot 	= false; // Reboot flag
 bool 		isUpdateFw = false; // used to indicate if firmware update is ongoing
+bool doRegister = false;
 Filemanager	fManager = 		Filemanager();
 int8_t		fwResult = 0;
 long identifyTries[] = {5000, 10000, 20000};
@@ -75,7 +76,7 @@ int (* WsCallback) (AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject&
  * This enables the child to handle MQTT events.  Callback will be called if the property is not directly changeable.
  */
 bool initUpdate = true;
-int (* MqttCallback) (int index, char* value);
+int (* MqttCallback) (int index, String value);
 
 /**
  * Transmits data to the BM
@@ -330,15 +331,12 @@ void wsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
  *  	2. things/{uid}/name					for changes in the device name properties
  *  	3. things/{uid}/attributes/{aid}		for changes in the attribute values
  */
-void mqttMsgHandler(char* topic, char* payload, size_t len) {
+void mqttMsgHandler(char* topic, String payload, size_t len) {
 #ifdef DEBUG_ONLY
 	Serial.print("[CORE] Messsage received.");
 	Serial.print(" topic:");Serial.print(topic);
 	Serial.print(", len: ");Serial.println(len);
-	char msg[len+1];
-	strcpy(msg, payload);
-	msg[len+1] = '\0';
-	Serial.printf("[CORE] payload: %s\n", msg);
+	Serial.printf("[CORE] payload: %s\n", payload.c_str());
 #endif
 	//determine the topic, valid topics are from below
 	String theTopic = topic;
@@ -357,7 +355,7 @@ void mqttMsgHandler(char* topic, char* payload, size_t len) {
 		Serial.printf("[CORE] got attribute index=%i, current value=%i, pin=%i, directPin=%s\n", propIndex, attrib.gui.value, attrib.pin, attrib.directPin?"true":"false");
 #endif
 		if (attrib.directPin) {//we set the value here because this is a directPin and its value can be set to pin directly
-			int value = atoi(payload);
+			int value = payload.toInt();
 			Symphony::product.setValueByIndex(propIndex, value, false);//forHub=false, we are only showing this to the clients
 		} else {//we do not set the value here, the callback might need to do some computation before setting the pin
 #ifdef DEBUG_ONLY
@@ -367,6 +365,31 @@ void mqttMsgHandler(char* topic, char* payload, size_t len) {
 				MqttCallback(propIndex, payload);
 			} else {
 				Serial.println("[CORE] No MQTT callback set!!!");
+			}
+		}
+	} else if (theTopic.equals(theMqttHandler.getSubscribedTopic())) {
+#ifdef DEBUG_ONLY
+		Serial.println("[CORE] response from inquireBM");
+#endif
+		DynamicJsonBuffer jsonBuffer;
+		JsonObject& json = jsonBuffer.parseObject(payload);
+		if (json.success()) {
+			if (json.containsKey("uid")) {
+				//device already exists in BM
+				Symphony::name = json["name"].as<String>();
+				Symphony::product.productName = Symphony::name;
+				JsonArray& array = json["attributes"].as<JsonArray>();
+				for (int i=0; i<array.size(); i++) {
+					int aid = array[i]["aid"].as<int>();
+					int value = array[i]["value"].as<int>();
+					Symphony::product.setValueByIndex(aid, value, false);//forHub=false, we are only showing this to the clients
+#ifdef DEBUG_ONLY
+					Serial.printf("[CORE] attribute%i name=%s value=%i\n", aid, array[i]["name"].as<char*>(), value);
+#endif
+				}
+			} else {
+				//device does not exist in BM
+				doRegister = true;
 			}
 		}
 	}
@@ -585,8 +608,13 @@ Symphony::Symphony(){
  * ver is passed by the child and should be composed of SYMPHONY_VERSION.CHILD_VERSION
  * mqtt is not enabled
  *
+ * returns
+ * 		-1 if not connected to Wifi (SOFT_AP mode)
+ * 		7 if connected to wifi (Station Mode)
+ *
+ *
  */
-void Symphony::setup(String theHostName, String ver) {
+int Symphony::setup(String ver) {
 //	Serial.begin(115200);	//implementing objects should set the baud rate
 //	wifi_set_sleep_type(NONE_SLEEP_T);
 #ifdef SHOW_FLASH
@@ -616,15 +644,17 @@ void Symphony::setup(String theHostName, String ver) {
 	initWebServer();	//initialize the html pages
 	readConfigFile();	//reads the content of the config file and loads to the necessary variables
 	connectToWifi();		//we are connecting to the wifi AP
-	createMyName(theHostName);		//create this device's name
+	initNameAndMac();	//initialize the hostname and the mac
+	bool response = 7;		//wer reply with 7 if this is connected to wifi
 	if (WiFi.status() != WL_CONNECTED) {
+		response = -1;		//we reply with -1 since this is not connected to wifi
 		//setup the AP for this device since we cannot connect to wifi as station
 		setupAP();
 	}
 	homeHtml = CONTROL_HTML1;
 	homeHtml.replace("$AAA$", hostName);
 #ifdef DEBUG_ONLY
-	Serial.printf("[CORE] Hostname=%s.local nameWithMac=%s\n", hostName.c_str());
+	Serial.printf("[CORE] Hostname=%s.local name=%s\n", hostName.c_str(), name.c_str());
 #endif
 	MDNS.setInstanceName("staticHostname");
 	if (MDNS.begin(Symphony::hostName.c_str())) {
@@ -653,6 +683,7 @@ void Symphony::setup(String theHostName, String ver) {
 	Serial.print(F("[CORE] Web Server started on port "));
 	Serial.println(HTTP_PORT);
 	Serial.printf("\n[CORE] Setup Version %i,  boot:%i\n", SYMPHONY_VERSION, reboot);
+	return response;
 }
 
 /*
@@ -677,9 +708,6 @@ bool Symphony::loop() {
 	} else {
 		//we process other items if it is not reboot mode
 //		dnsServer.processNextRequest();
-//		webSocketClient.loop();July 13 2019 do we really need this device to be a ws client?
-		registerProduct();//register this product to BM
-		theMqttHandler.reconnect();//reconnect if MQTT is not connected
 	}
 	if (!isUpdateFw) {
 #ifdef DISCOVERABLE
@@ -689,6 +717,11 @@ bool Symphony::loop() {
 		} else
 			sendIdentify();	//this device sends discovery identify mode every 2mins, use sendIdentify(ms) if you want to override interval
 #endif
+		if (!reboot) {
+			inquireBM();//inquire this product from BM
+			registerProduct();//register to BM
+			theMqttHandler.reconnect();//reconnect if MQTT is not connected
+		}
 		return true;
 	} else {
 		return false;
@@ -717,7 +750,7 @@ void Symphony::setWsCallback(int (* Callback) (AsyncWebSocket ws, AsyncWebSocket
  * This callback is called by the mqttMsgHandler function.  We can do manipulation of pins here.
  *
  */
-void Symphony::setMqttCallback(int (* Callback) (int index, char* value)) {
+void Symphony::setMqttCallback(int (* Callback) (int index, String value)) {
 	MqttCallback = Callback;
 }
 
@@ -740,13 +773,13 @@ void Symphony::readConfigFile() {
 		DynamicJsonBuffer jsonBuffer;
 		JsonObject& json = jsonBuffer.parseObject(fManager.readConfig());
 		if (!json.success()) {
-			Serial.println("[CORE] connectToWifi parseObject() failed");
+			Serial.println("[CORE] readConfigFile parseObject() failed");
 		} else {
 			if (json.containsKey("ssid")) {
 				//ssid key is found, this means pwd and name are also there
 				ssid = json["ssid"].as<String>();
 				pwd = json["pwd"].as<String>();
-				nameWithMac = json["name"].as<String>();
+				name = json["name"].as<String>();
 				theMqttHandler.enabled = json["mqttEnabled"].as<bool>();
 				if (json.containsKey("mqttIp")) {
 					//mqttIp is found, set the mqtt variables
@@ -824,23 +857,24 @@ void Symphony::connectToWifi() {
 }
 /*
  * this creates the unique name of this device based on its mac address
- * hostname will be myName, which is from config file read during connectToWifi
- * if there is no config file, it will be theHostName
+ * hostname will be name, which is from config file read during connectToWifi
+ * if there is no config file, it will be the default myName
  */
-void Symphony::createMyName(String theHostName) {
-	if (nameWithMac.length() == 0)
-		nameWithMac = theHostName;
-	hostName = nameWithMac;
+void Symphony::initNameAndMac() {
+	hostName = name;
 	hostName.toLowerCase();
-	nameWithMac += "_";
+	name += "_";
 	// Generate device name based on MAC address
 	uint8_t _mac[6];
 	WiFi.macAddress(_mac);
 	//	we generate the name based on the MAC values
 	for (int i = 0; i < 6; ++i) {
-		nameWithMac += String(_mac[i], 16);
+		name += String(_mac[i], 16);
 		mac += String(_mac[i], 16);
 	}
+#ifdef DEBUG_ONLY
+    Serial.printf("[CORE] name:%s, mac:%s, hostname:%s\n", name.c_str(), mac.c_str(), hostName.c_str());
+#endif
 }
 /**
  * sets the product details of this device
@@ -870,50 +904,34 @@ void Symphony::doReboot() {
 /**
  * Will do the actual registration after mqttHandler has been set and product has been set
  *
- *  Complete Registration
-	{
-	  "uid": "12345678",
-	  "parentGroups": [
-		"testRoom1",
-		"testRoom2"
-	  ],
-	  "name": "Switch Device",
-	  "attributes": [
-		{
-		  "mode": "controllable",
-		  "dataType": {
-			"type": "binary",
-			"constraints": {}
-		  },
-		"name": "On/Off",
-		"aid": "87654321",
-		"value": 0
-		},
-		{
-		  "mode": "input",
-		  "dataType": {
-			"type": "number",
-			"constraints": {}
-		},
-		"name": "Temperature [C]",
-		"aid": "abcdefgh",
-		"value": 30.2
-		}
-	  ]
-	}
  *
  *
  */
+bool Symphony::inquireBM() {
+	if (!isInquireDone) {
+		if (isProductSet) {
+			if ( theMqttHandler.enabled && theMqttHandler.isConnected()) {
+				isInquireDone = true;
+				Serial.println("[CORE] inquireBM");
+				String activeTopic = theMqttHandler.getPublishTopic() + "/active";
+				theMqttHandler.publish(activeTopic.c_str(), "true");
+				theMqttHandler.publish("query/resource", theMqttHandler.getSubscribedTopic().c_str());
+			}
+		}
+	}
+}
+
 bool Symphony::registerProduct() {
-	if (!isRegistered) {
+	if (doRegister) {
 		if (isProductSet) {
 			if ( theMqttHandler.enabled && theMqttHandler.isConnected()) {
 				//register to the BM if not yet registered and if product is set and if mqtt is connected
-				isRegistered = true;
-				Serial.println("[CORE] registerProduct start 1");
+				doRegister = false;
 				String strReg = product.stringify();
 				theMqttHandler.publish(strReg.c_str());
+#ifdef DEBUG_ONLY
 				Serial.printf("[CORE] registerProduct end payload len=%i\n", strReg.length());
+#endif
 			}
 		}
 	}

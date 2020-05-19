@@ -83,7 +83,7 @@ class Product {
   public:
     String room;
     String productName;
-    String name_mac = "";
+    String mac = "";
     attribStruct *attributes = NULL;
 
     Product();
@@ -132,8 +132,7 @@ class Product {
   private:
     int pIndex = 0;
     int size = 0;
-    bool propertyChanged = false;
-    String stringifyCache = "";
+    bool propertyAdded = false;
     String stringifyGuiCache = "";
     /**
      * Adds a property to this device.
