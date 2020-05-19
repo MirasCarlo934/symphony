@@ -23,6 +23,6 @@ public class BasicThingModel extends RepresentationModel<BasicThingModel> {
         this.name = thing.getName();
         this.active = thing.isActive();
     
-        this.add(linkTo(methodOn(ThingController.class).get(uid)).withSelfRel());
+        this.add(linkTo(methodOn(ThingController.class).get(uid, true)).withSelfRel());
     }
 }

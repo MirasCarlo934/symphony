@@ -36,7 +36,7 @@ public class ThingModel extends RepresentationModel<ThingModel> {
             attributes.add(attributeModel);
         }
 
-        this.add(linkTo(methodOn(ThingController.class).get(uid)).withSelfRel()
+        this.add(linkTo(methodOn(ThingController.class).get(uid, true)).withSelfRel()
                 .andAffordance(afford(methodOn(ThingController.class).add(uid, null)))
                 .andAffordance(afford(methodOn(ThingController.class).update(uid, null)))
                 .andAffordance(afford(methodOn(ThingController.class).addGroup(uid, null)))

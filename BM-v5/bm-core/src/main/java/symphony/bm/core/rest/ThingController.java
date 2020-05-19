@@ -3,10 +3,7 @@ package symphony.bm.core.rest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
-import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import symphony.bm.core.iot.Attribute;
@@ -20,7 +17,6 @@ import symphony.bm.generics.exceptions.RestControllerProcessingException;
 import symphony.bm.generics.messages.MicroserviceMessage;
 import symphony.bm.generics.messages.MicroserviceSuccessfulMessage;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Vector;
 
@@ -45,14 +41,20 @@ public class ThingController {
     }
 
     @GetMapping("/{uid}")
-    public ThingModel get(@PathVariable String uid) throws RestControllerProcessingException {
+    public Object get(@PathVariable String uid,
+                      @RequestParam(value = "restful", required = false, defaultValue = "true") Boolean restful)
+            throws RestControllerProcessingException {
         Thing thing = superGroup.getThingRecursively(uid);
         if (thing == null) {
             throw new RestControllerProcessingException("Thing " + uid + " does not exist", HttpStatus.NOT_FOUND);
         }
-        return new ThingModel(superGroup.getThingRecursively(uid));
+        if (restful) {
+            return new ThingModel(superGroup.getThingRecursively(uid));
+        } else {
+            return thing;
+        }
     }
-
+    
     @DeleteMapping("/{uid}")
     public ResponseEntity<MicroserviceMessage> delete(@PathVariable String uid) throws RestControllerProcessingException {
         Thing thing = superGroup.getThingRecursively(uid);

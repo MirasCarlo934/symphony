@@ -36,7 +36,7 @@ public class AttributeModel extends RepresentationModel<AttributeModel> {
         } else {
             this.add(linkTo(methodOn(AttributeController.class).get(attribute.getThing(), aid)).withSelfRel());
         }
-        this.add(linkTo(methodOn(ThingController.class).get(attribute.getThing()))
+        this.add(linkTo(methodOn(ThingController.class).get(attribute.getThing(), true))
                 .withRel("parent"));
     }
 }
