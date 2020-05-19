@@ -32,12 +32,12 @@ public class ThingController {
     private final ObjectMapper objectMapper;
     
     @GetMapping
-    public List<ThingModel> getThingList() {
+    public Object getThingList() {
         List<ThingModel> thingModels = new Vector<>();
         for (Thing thing : superGroup.getContainedThings()) {
             thingModels.add(new ThingModel(thing));
         }
-        return thingModels;
+        return superGroup.getContainedThings();
     }
 
     @GetMapping("/{uid}")

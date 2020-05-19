@@ -49,7 +49,10 @@ public class MqttQueryController implements MessageHandler {
         topicLevels.remove(0);
 
         if (topicLevels.size() == 1 && topicLevels.get(0).equals("resource")) {
-            ResponseEntity<String> response = restTemplate.getForEntity(bmURL + ":" + bmCorePort + "/" + payload, String.class);
+            ResponseEntity<String> response = restTemplate.getForEntity(
+                    bmURL + ":" + bmCorePort + "/" + payload + "?restful=false",
+                    String.class
+            );
             if (response.getStatusCode().is2xxSuccessful()) {
                 String resource = response.getBody();
                 Map<String, Object> headers = new HashMap<>();

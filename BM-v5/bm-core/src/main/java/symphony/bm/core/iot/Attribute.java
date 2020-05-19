@@ -136,7 +136,7 @@ public class Attribute extends IotResource implements Resource {
                     (method.getParameterTypes()[0].isInstance(fieldValue) || fieldName.equals("value"))) {
                 try {
                     method.invoke(this, fieldValue);
-                    log.info("Changed " + fieldValue + " to " + fieldValue);
+                    log.info("Changed " + fieldName + " to " + fieldValue);
                     return true;
                 } catch (InvocationTargetException e) {
                     if (!e.getCause().getClass().equals(ValueUnchangedException.class)) {
