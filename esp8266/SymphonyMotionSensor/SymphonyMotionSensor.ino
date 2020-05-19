@@ -9,7 +9,6 @@ bool oldInputState;
 bool isLatchSwitch = false;
 bool isController = true;
 volatile bool pirStateChanged = 0;
-String myName = "PIR";	//temporary name, will be set later via the admin config client
 
 Product product;
 Symphony s = Symphony();
@@ -21,7 +20,7 @@ void handleInterrupt() {
 /*
  * Callback function for the mqtt events
  */
-int mqttHandler(int index, char* value) {
+int mqttHandler(int index, String value) {
 	Serial.println("PIR mqtt callback executed start");
 
 	Serial.println("PIR mqtt callback executed end");
@@ -73,9 +72,9 @@ void setup()
 	s.setMqttCallback(mqttHandler);
 	char ver[10];
 	sprintf(ver, "%u.%u", SYMPHONY_VERSION, MY_VERSION);
-	s.setup(myName, ver);
+	s.setup(ver);
 
-	product = Product(s.mac, "Dining", myName);
+	product = Product(s.mac, "Dining", s.name);
 	pinMode(LED_PIN1, OUTPUT);
 	digitalWrite(LED_PIN1, 1);
 	Gui gui1 = Gui("Mode", BUTTON_CTL, "Latch", 0, 1, 0);

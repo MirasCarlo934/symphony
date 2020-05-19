@@ -16,8 +16,6 @@
 #define UNIVERSE_START 1
 #define UNIVERSE_COUNT 7
 
-String myName = "symphonySocket";
-
 Filemanager	file = 	Filemanager();
 String socketConfigFile = "/socket.cfg";
 
@@ -165,8 +163,8 @@ int wsHandler(AsyncWebSocket ws, AsyncWebSocketClient *client, JsonObject& json)
 /*
  * Callback function for the mqtt events
  */
-int mqttHandler(int index, char* value) {
-	Serial.printf("SymphonySocket mqtt callback executed start index=%i value=%i\n", index, atoi(value));
+int mqttHandler(int index, String value) {
+	Serial.printf("SymphonySocket mqtt callback executed start index=%i value=%s\n", index, value.c_str());
 //	{
 //	  "prop-index": 0,
 //	  "MRN": "35027136",
@@ -175,9 +173,9 @@ int mqttHandler(int index, char* value) {
 //	  "CID": "wemos1_502914e722c"
 //	}
 
-	product.setValueByIndex(index, atoi(value), false);
+	product.setValueByIndex(index, value.toInt(), false);
 	if (index==0) {
-		socketState = atoi(value);
+		socketState = value.toInt();
 	}
 	Serial.println("SymphonySocket mqtt callback executed end");
 }
@@ -199,14 +197,14 @@ void setup()
 	s.setMqttCallback(mqttHandler);
 	char ver[10];
 	sprintf(ver, "%u.%u", SYMPHONY_VERSION, MY_VERSION);
-	s.setup(myName, ver);
+	bool mode = s.setup(ver);
 	s.on("/init", HTTP_GET, handleInit);
 	s.on("/toggle", HTTP_GET, handleToggle);
 	s.serveStatic("/socket.html", SPIFFS, "/socket.html");
 
 	s.on("/getConfig", HTTP_GET, handleGetConfig);
 
-	product = Product(s.mac, "Kitchen", "Socket");
+	product = Product(s.mac, "Kitchen", s.hostName);
 	//gui1 and gui2 for the switch control
 	Gui gui1 = Gui("Socket Control", BUTTON_CTL, "On/Off", 0, 1, socketState);
 	product.addCallableProperty("01", SOCKET_PIN, gui1);//add a property that has an attached pin
@@ -229,10 +227,12 @@ void setup()
 //	product.addVirtualProperty("16", gui8);//add a logical property that has no attached pin
 	s.setProduct(product);
 
-	if (e131.begin(E131_MULTICAST, UNIVERSE_START, UNIVERSE_COUNT))   // Listen via Multicast
-		Serial.println(F("Listening for data..."));
-	else
-		Serial.println(F("*** e131.begin failed ***"));
+	if (mode == 7) {//we do this only if we are connected as station
+		if (e131.begin(E131_MULTICAST, UNIVERSE_START, UNIVERSE_COUNT))   // Listen via Multicast
+			Serial.println(F("Listening for data..."));
+		else
+			Serial.println(F("*** e131.begin failed ***"));
+	}
 
 //	e131.begin(E131_MULTICAST, myUniverse, 1);
 	Serial.printf("\n************END Symphony Socket Setup Version %u.%u***************\n", SYMPHONY_VERSION, MY_VERSION);
