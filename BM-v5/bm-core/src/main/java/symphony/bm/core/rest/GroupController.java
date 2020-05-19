@@ -30,20 +30,28 @@ public class GroupController {
     private final SuperGroup superGroup;
 
     @GetMapping
-    public List<GroupModel> getAll() {
-        List<GroupModel> groupModels = new Vector<>();
-        superGroup.getContainedGroups().forEach( group -> groupModels.add(new GroupModel(group)) );
-        return groupModels;
+    public Object getAll(@RequestParam(value = "restful", required = false, defaultValue = "true") Boolean restful) {
+        if (restful) {
+            List<GroupModel> groupModels = new Vector<>();
+            superGroup.getContainedGroups().forEach(group -> groupModels.add(new GroupModel(group)));
+            return groupModels;
+        } else {
+            return superGroup.getContainedGroups();
+        }
     }
 
     @GetMapping("/{gid}")
-    public GroupModel get(@PathVariable String gid) throws RestControllerProcessingException {
+    public Object get(@PathVariable String gid,
+                      @RequestParam(value = "restful", required = false, defaultValue = "true") Boolean restful) throws RestControllerProcessingException {
         Group group = superGroup.getGroupRecursively(gid);
         if (group == null) {
             throw new RestControllerProcessingException("Group " + gid + " does not exist", HttpStatus.NOT_FOUND);
-
         }
-        return new GroupModel(group);
+        if (restful) {
+            return new GroupModel(group);
+        } else {
+            return group;
+        }
     }
 
     @DeleteMapping("/{gid}")

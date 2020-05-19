@@ -22,9 +22,9 @@ public class BasicGroupModel extends RepresentationModel<BasicGroupModel> {
         this.name = group.getName();
     
         if (gid == null || gid.equals("")) {
-            this.add(linkTo(methodOn(BaseController.class).getSuperGroup()).withSelfRel());
+            this.add(linkTo(methodOn(BaseController.class).getSuperGroup(true)).withSelfRel());
         } else {
-            this.add(linkTo(methodOn(GroupController.class).get(gid)).withSelfRel());
+            this.add(linkTo(methodOn(GroupController.class).get(gid, true)).withSelfRel());
         }
     }
 }

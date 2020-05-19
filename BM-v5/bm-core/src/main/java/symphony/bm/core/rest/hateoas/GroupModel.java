@@ -31,17 +31,17 @@ public class GroupModel extends RepresentationModel<GroupModel> {
 
         Link selfLink;
         if (gid == null || gid.equals("")) {
-            selfLink = linkTo(methodOn(BaseController.class).getSuperGroup()).withSelfRel();
+            selfLink = linkTo(methodOn(BaseController.class).getSuperGroup(true)).withSelfRel();
         } else {
-            selfLink = linkTo(methodOn(GroupController.class).get(gid)).withSelfRel();
+            selfLink = linkTo(methodOn(GroupController.class).get(gid, true)).withSelfRel();
             if (parentGroups.isEmpty()) {
-                this.add(linkTo(methodOn(BaseController.class).getSuperGroup()).withRel("parent"));
+                this.add(linkTo(methodOn(BaseController.class).getSuperGroup(true)).withRel("parent"));
             }
             for (String parentGID : group.getParentGroups()) {
                 if (parentGID == null || parentGID.equals("")) {
-                    this.add(linkTo(methodOn(BaseController.class).getSuperGroup()).withRel("parent"));
+                    this.add(linkTo(methodOn(BaseController.class).getSuperGroup(true)).withRel("parent"));
                 } else {
-                    this.add(linkTo(methodOn(GroupController.class).get(parentGID)).withRel("parent." + parentGID));
+                    this.add(linkTo(methodOn(GroupController.class).get(parentGID, true)).withRel("parent." + parentGID));
                 }
             }
         }

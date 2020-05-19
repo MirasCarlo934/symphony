@@ -1,5 +1,6 @@
 package symphony.bm.core.iot;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
@@ -13,7 +14,7 @@ import java.util.List;
 @Component
 @Slf4j
 public class SuperGroup extends Group {
-    private final MongoOperations mongo;
+    @JsonIgnore private final MongoOperations mongo;
 
     public SuperGroup(MongoTemplate mongoTemplate) {
         super("", "Super Group");

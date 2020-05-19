@@ -44,14 +44,14 @@ public class ThingModel extends RepresentationModel<ThingModel> {
                 .andAffordance(afford(methodOn(ThingController.class).delete(uid)))
         );
         if (parentGroups.isEmpty()) {
-            this.add(linkTo(methodOn(BaseController.class).getSuperGroup()).withRel("parent"));
+            this.add(linkTo(methodOn(BaseController.class).getSuperGroup(true)).withRel("parent"));
         } else {
             for (Group parentGroup : thing.getParentGroupObjects()) {
                 String parentGID = parentGroup.getGid();
                 if (parentGID == null || parentGID.equals("")) {
-                    this.add(linkTo(methodOn(BaseController.class).getSuperGroup()).withRel("parent"));
+                    this.add(linkTo(methodOn(BaseController.class).getSuperGroup(true)).withRel("parent"));
                 } else {
-                    this.add(linkTo(methodOn(GroupController.class).get(parentGID))
+                    this.add(linkTo(methodOn(GroupController.class).get(parentGID, true))
                             .withRel("parent." + parentGID));
                 }
             }
