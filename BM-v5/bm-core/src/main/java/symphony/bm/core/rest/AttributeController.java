@@ -33,10 +33,15 @@ public class AttributeController {
     private final ObjectMapper objectMapper;
 
     @GetMapping
-    public List<AttributeModel> getAttributeList(@PathVariable String uid) throws RestControllerProcessingException {
+    public Object getAttributeList(@PathVariable String uid,
+                                                 @RequestParam(value = "restful", required = false, defaultValue = "true") Boolean restful)
+            throws RestControllerProcessingException {
         Thing thing = superGroup.getThingRecursively(uid);
         if (thing != null) {
             List<Attribute> attributes = thing.getCopyOfAttributeList();
+            if (!restful) {
+                return attributes;
+            }
             List<AttributeModel> attributeModels = new Vector<>();
             attributes.forEach( attribute -> attributeModels.add(new AttributeModel(attribute, false)));
             return attributeModels;
@@ -46,13 +51,18 @@ public class AttributeController {
     }
 
     @GetMapping("/{aid}")
-    public AttributeModel get(@PathVariable String uid, @PathVariable String aid)
+    public Object get(@PathVariable String uid, @PathVariable String aid,
+                      @RequestParam(value = "restful", required = false, defaultValue = "true") Boolean restful)
             throws RestControllerProcessingException {
         Thing thing = superGroup.getThingRecursively(uid);
         if (thing != null) {
             Attribute attribute = thing.getAttribute(aid);
             if (attribute != null) {
-                return new AttributeModel(attribute, true);
+                if (restful) {
+                    return new AttributeModel(attribute, true);
+                } else {
+                    return attribute;
+                }
             } else {
                 throw new RestControllerProcessingException("Attribute " + thing.getUid() + "/" + aid
                         + " does not exist", HttpStatus.NOT_FOUND);

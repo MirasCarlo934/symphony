@@ -25,6 +25,6 @@ public class BasicAttributeModel extends RepresentationModel<BasicAttributeModel
         this.mode = attribute.getMode();
         this.dataType = attribute.getDataType();
         this.value = attribute.getValue();
-        this.add(linkTo(methodOn(AttributeController.class).get(UID, aid)).withSelfRel());
+        this.add(linkTo(methodOn(AttributeController.class).get(UID, aid, true)).withSelfRel());
     }
 }

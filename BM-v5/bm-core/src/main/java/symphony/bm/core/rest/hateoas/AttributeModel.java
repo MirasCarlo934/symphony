@@ -28,13 +28,13 @@ public class AttributeModel extends RepresentationModel<AttributeModel> {
         this.dataType = attribute.getDataType();
         this.value = attribute.getValue();
         if (expanded) {
-            this.add(linkTo(methodOn(AttributeController.class).get(attribute.getThing(), aid)).withSelfRel()
+            this.add(linkTo(methodOn(AttributeController.class).get(attribute.getThing(), aid, true)).withSelfRel()
                     .andAffordance(afford(methodOn(AttributeController.class).add(attribute.getThing(), aid, null)))
                     .andAffordance(afford(methodOn(AttributeController.class).update(attribute.getThing(), aid, null)))
                     .andAffordance(afford(methodOn(AttributeController.class).delete(attribute.getThing(), aid)))
             );
         } else {
-            this.add(linkTo(methodOn(AttributeController.class).get(attribute.getThing(), aid)).withSelfRel());
+            this.add(linkTo(methodOn(AttributeController.class).get(attribute.getThing(), aid, true)).withSelfRel());
         }
         this.add(linkTo(methodOn(ThingController.class).get(attribute.getThing(), true))
                 .withRel("parent"));
