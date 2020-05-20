@@ -1,7 +1,9 @@
 package symphony.bm.cir.rules;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.ValueInstantiationException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,23 +17,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
-import org.springframework.integration.channel.DirectChannel;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
 import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessagingException;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 import symphony.bm.cir.rules.namespaces.Namespace;
 import symphony.bm.core.activitylisteners.ActivityListenerManager;
 import symphony.bm.core.iot.Attribute;
+import symphony.bm.core.iot.IotResource;
 import symphony.bm.core.iot.Thing;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class Rule implements MessageHandler {
     @Transient private final Logger log;
@@ -42,15 +45,12 @@ public class Rule implements MessageHandler {
     @Setter @Getter private List<Namespace> namespaces;
     @Setter @Getter private String condition;
     @Setter @Getter private String actions;
-    
+
+    @JsonIgnore @Transient @Setter(AccessLevel.PACKAGE) private String resourceAPI_URL;
     @JsonIgnore @Transient @Setter(AccessLevel.PACKAGE) private ActivityListenerManager activityListenerManager;
     @JsonIgnore @Transient @Setter(AccessLevel.PACKAGE) private ObjectMapper objectMapper;
-    @JsonIgnore @Transient private MqttPahoMessageDrivenChannelAdapter mqttAdapter;
     @JsonIgnore @Transient private final List<Namespace> missing;
     @JsonIgnore @Transient private final RulesEngine engine = new DefaultRulesEngine();
-    
-    @JsonIgnore @Transient private final ScheduledExecutorService timer = Executors.newSingleThreadScheduledExecutor();
-    @JsonIgnore @Transient private final RuleActiveNotifier notifier = new RuleActiveNotifier();
 
     public Rule(String rid, String description, List<Namespace> namespaces, String condition, String actions) {
         this.rid = rid;
@@ -60,8 +60,6 @@ public class Rule implements MessageHandler {
         this.actions = actions;
         log = LoggerFactory.getLogger(Rule.class.getName() + "." + rid);
         missing = new Vector<>(namespaces);
-
-        timer.scheduleAtFixedRate(notifier, 10, 10, TimeUnit.SECONDS);
     }
 
     @Override
@@ -73,7 +71,7 @@ public class Rule implements MessageHandler {
         log.debug("Message: " + payloadStr);
 
         if (!isActive() || payloadStr.isEmpty()) {
-            buildNamespacesFromMqtt(message);
+            configureNamespacesFromMqtt(message);
         }
         if (!isActive()) {
             log.warn("Rule inactive. Check namespace resources");
@@ -108,63 +106,67 @@ public class Rule implements MessageHandler {
                 engine.fire(rules, facts);
             }
         }
-        
-//        namespaces.forEach( n -> log.error( ((Attribute) n.getResource()).getValue() + " : " + n.getURL()));
     }
 
     @SneakyThrows
-    private void buildNamespacesFromMqtt(Message<?> message) {
+    /**
+     * Retrieves and links namespace resources from resource API.
+     */
+    void linkNamespacesToResources() {
+        RestTemplate restTemplate = new RestTemplate();
+        Iterator<Namespace> i = missing.iterator();
+
+        while (i.hasNext()) {
+            Namespace namespace = i.next();
+            try {
+                ResponseEntity<String> response = restTemplate.getForEntity(
+                        resourceAPI_URL + "/things/" + namespace.getURL() + "?restful=false",
+                        String.class
+                );
+                if (response.getStatusCode().is2xxSuccessful()) {
+                    IotResource resource;
+                    try {
+                        resource = objectMapper.readValue(response.getBody(), Thing.class);
+                    } catch (JsonMappingException e) {
+                        resource = objectMapper.readValue(response.getBody(), Attribute.class);
+                    }
+                    resource.setActivityListenerManager(activityListenerManager);
+                    namespace.setResource(resource);
+                    i.remove();
+                } else {
+                    log.warn("No resource " + namespace.getURL() + " found for namespace " + namespace.getName());
+                }
+            } catch (HttpClientErrorException e) {
+                if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+                    log.warn("No resource " + namespace.getURL() + " found for namespace " + namespace.getName());
+                }
+            } catch (RestClientException e) {
+                log.error("Error in retrieving resource " + namespace.getURL(), e);
+            }
+        }
+
+        if (missing.isEmpty()) {
+            log.info("Rule is running");
+        } else {
+            log.warn("Rule will not run");
+        }
+    }
+
+    @SneakyThrows
+    private void configureNamespacesFromMqtt(Message<?> message) {
         String topic = message.getHeaders().get("mqtt_receivedTopic", String.class);
         String payload = (String) message.getPayload();
         assert topic != null;
 
-        Iterator<Namespace> i = missing.iterator();
-        while (i.hasNext()) {
-            Namespace namespace = i.next();
-            if (topic.equals("things/"+namespace.getThingURL())) {
-                if (payload.isEmpty()) {
-                    log.warn("Resource " + namespace.getURL() + " deleted (Namespace:  "
+        for (Namespace namespace : missing) {
+            if (topic.equals("things/" + namespace.getThingURL())) {
+                if (payload.isEmpty()) { // Thing is deleted, namespace is no longer valid
+                    log.warn("Resource " + namespace.getURL() + " deleted (Namespace: "
                             + namespace.getName() + "). Rule will not run.");
                     missing.add(namespace);
-                    notifier.notified = false;
-                    continue;
-                }
-                Thing thing = objectMapper.readValue(payload, Thing.class);
-                thing.setActivityListenerManager(activityListenerManager);
-
-                if (namespace.isThing()) {
-                    namespace.setResource(thing);
-                } else {
-                    namespace.setResource(thing.getAttribute(namespace.getAid()));
-                }
-
-                if (namespace.getResource() != null) {
-                    log.info("Namespace " + namespace.getName() + " successfully linked to resource "
-                            + namespace.getURL());
-                    i.remove();
-                } else {
-                    log.warn("No resource " + namespace.getURL() + " found for namespace  "
-                            + namespace.getName());
                 }
             }
         }
-    }
-    
-    public void setMqttAdapter(MqttPahoMessageDrivenChannelAdapter mqttAdapter) {
-        this.mqttAdapter = mqttAdapter;
-        DirectChannel channel = new DirectChannel();
-        channel.setComponentName("Rule " + rid + " channel");
-        channel.subscribe(this);
-        mqttAdapter.setOutputChannel(channel);
-        
-        List<String> subscribedTopics = new Vector<>();
-        namespaces.forEach( namespace -> {
-            String topic = "things/" + namespace.getURL();
-            if (!subscribedTopics.contains(topic)) {
-                mqttAdapter.addTopic(topic);
-                subscribedTopics.add(topic);
-            }
-        });
     }
     
     private Namespace getNamespaceFromTopic(String topic) {

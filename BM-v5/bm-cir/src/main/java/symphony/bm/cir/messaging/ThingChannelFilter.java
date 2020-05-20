@@ -13,7 +13,8 @@ public class ThingChannelFilter implements MessageHandler {
     private Message<?> retained;
     
     public ThingChannelFilter(String thingURL) {
-        RetainablePublishSubscribeChannel thingChannel = new RetainablePublishSubscribeChannel();
+//        RetainablePublishSubscribeChannel thingChannel = new RetainablePublishSubscribeChannel();
+        PublishSubscribeChannel thingChannel = new PublishSubscribeChannel();
         thingChannel.setComponentName(thingURL);
         this.thingChannel = thingChannel;
         this.thingURL = thingURL;
@@ -28,25 +29,25 @@ public class ThingChannelFilter implements MessageHandler {
         }
     }
     
-    private class RetainablePublishSubscribeChannel extends PublishSubscribeChannel {
-        @Setter private Message<?> retainedMessage;
-    
-        @Override
-        public boolean send(Message<?> message) {
-            Boolean retained = message.getHeaders().get("mqtt_receivedRetained", Boolean.class);
-            assert retained != null;
-            if (retained) {
-                this.retainedMessage = message;
-            }
-            return super.send(message);
-        }
-    
-        @Override
-        public boolean subscribe(MessageHandler handler) {
-            if (retainedMessage != null) {
-                handler.handleMessage(retainedMessage);
-            }
-            return super.subscribe(handler);
-        }
-    }
+//    private class RetainablePublishSubscribeChannel extends PublishSubscribeChannel {
+//        @Setter private Message<?> retainedMessage;
+//
+//        @Override
+//        public boolean send(Message<?> message) {
+//            Boolean retained = message.getHeaders().get("mqtt_receivedRetained", Boolean.class);
+//            assert retained != null;
+//            if (retained) {
+//                this.retainedMessage = message;
+//            }
+//            return super.send(message);
+//        }
+//
+//        @Override
+//        public boolean subscribe(MessageHandler handler) {
+//            if (retainedMessage != null) {
+//                handler.handleMessage(retainedMessage);
+//            }
+//            return super.subscribe(handler);
+//        }
+//    }
 }
