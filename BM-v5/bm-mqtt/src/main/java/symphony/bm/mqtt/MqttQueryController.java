@@ -25,17 +25,15 @@ import java.util.*;
 @Component
 @Slf4j
 public class MqttQueryController implements MessageHandler {
-    private String bmURL;
-    private String bmCorePort;
-    private MessageChannel outbound;
-    private ObjectMapper objectMapper;
+    private final String bmURL;
+    private final String bmCorePort;
+    private final MessageChannel outbound;
 
     public MqttQueryController(@Value("${bm.url}") String bmURL, @Value("${bm.port.core}") String bmCorePort,
-                                @Qualifier("mqttOutboundChannel") MessageChannel outbound, ObjectMapper objectMapper) {
+                                @Qualifier("mqttOutboundChannel") MessageChannel outbound) {
         this.bmURL = bmURL;
         this.bmCorePort = bmCorePort;
         this.outbound = outbound;
-        this.objectMapper = objectMapper;
     }
 
     @SneakyThrows
