@@ -75,7 +75,7 @@ public class Thing extends Groupable implements Resource {
     public void setActive(boolean active) throws ValueUnchangedException {
         if (!this.active == active) {
             this.active = active;
-            activityListenerManager.thingUpdated(this, "active", name);
+            activityListenerManager.thingUpdated(this, "active", active);
         } else {
             throw new ValueUnchangedException();
         }
@@ -87,13 +87,7 @@ public class Thing extends Groupable implements Resource {
      * @throws ValueUnchangedException
      */
     public void setActive(String activeStr) throws ValueUnchangedException {
-        boolean active = Boolean.getBoolean(activeStr);
-        if (!this.active == active) {
-            this.active = active;
-            activityListenerManager.thingUpdated(this, "active", name);
-        } else {
-            throw new ValueUnchangedException();
-        }
+        setActive(Boolean.parseBoolean(activeStr));
     }
 
     public Attribute getAttribute(String aid) {

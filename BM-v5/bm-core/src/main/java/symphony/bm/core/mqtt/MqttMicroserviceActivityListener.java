@@ -61,6 +61,7 @@ public class MqttMicroserviceActivityListener implements ActivityListener {
     public void thingUpdated(Thing thing, String fieldName, Object fieldValue) {
         try {
             log.debug("Forwarding Thing " + thing.getUid() + " " + fieldName + " update to MQTT microservice...");
+            log.debug(fieldName + " value = " + fieldValue);
             RestTemplate restTemplate = new RestTemplate();
             MicroserviceMessage response = restTemplate.postForObject(
                     microserviceURL + "/things/" + thing.getUid() + "/" + fieldName,
