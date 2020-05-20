@@ -32,12 +32,16 @@ public class ThingController {
     private final ObjectMapper objectMapper;
     
     @GetMapping
-    public Object getThingList() {
+    public Object getThingList(@RequestParam(value = "restful", required = false, defaultValue = "true") Boolean restful) {
         List<ThingModel> thingModels = new Vector<>();
         for (Thing thing : superGroup.getContainedThings()) {
             thingModels.add(new ThingModel(thing));
         }
-        return superGroup.getContainedThings();
+        if (restful) {
+            return thingModels;
+        } else {
+            return superGroup.getContainedThings();
+        }
     }
 
     @GetMapping("/{uid}")

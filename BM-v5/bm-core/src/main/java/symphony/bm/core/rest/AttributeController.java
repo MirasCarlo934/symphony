@@ -34,7 +34,7 @@ public class AttributeController {
 
     @GetMapping
     public Object getAttributeList(@PathVariable String uid,
-                                                 @RequestParam(value = "restful", required = false, defaultValue = "true") Boolean restful)
+                                   @RequestParam(value = "restful", required = false, defaultValue = "true") Boolean restful)
             throws RestControllerProcessingException {
         Thing thing = superGroup.getThingRecursively(uid);
         if (thing != null) {

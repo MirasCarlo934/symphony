@@ -78,14 +78,12 @@ public class MqttMicroserviceActivityListener implements ActivityListener {
     public void thingAddedToGroup(Thing thing, Group group) {
         log.debug("Adding Thing " + thing.getUid() + " to Group " + group.getGid() + " in MQTT...");
         scheduleUpdate(thing.getParentGroups(), microserviceURL + "/things/" + thing.getUid() + "/parentGroups");
-//        scheduleUpdate(thing, microserviceURL + "/things/" + thing.getUid());
     }
     
     @Override
     public void thingRemovedFromGroup(Thing thing, Group group) {
         log.debug("Removing Thing " + thing.getUid() + " from Group " + group.getGid() + " in MQTT...");
         scheduleUpdate(thing.getParentGroups(), microserviceURL + "/things/" + thing.getUid() + "/parentGroups");
-//        scheduleUpdate(thing, microserviceURL + "/things/" + thing.getUid());
     }
     
     @Override
