@@ -30,8 +30,9 @@
 //#define DISCOVERABLE		//enable this if you want the ESPs to be discoverable via udp
 
 String Symphony::hostName = "hostName";
+String Symphony::name = "";
 String Symphony::mac = "";
-String Symphony::name = "myName";
+String Symphony::nameWithMac = "myName";
 Product Symphony::product;
 String Symphony::version = "0.0";
 
@@ -371,26 +372,28 @@ void mqttMsgHandler(char* topic, String payload, size_t len) {
 #ifdef DEBUG_ONLY
 		Serial.println("[CORE] response from inquireBM");
 #endif
-		DynamicJsonBuffer jsonBuffer;
-		JsonObject& json = jsonBuffer.parseObject(payload);
-		if (json.success()) {
-			if (json.containsKey("uid")) {
-				//device already exists in BM
-				Symphony::name = json["name"].as<String>();
-				Symphony::product.productName = Symphony::name;
-				JsonArray& array = json["attributes"].as<JsonArray>();
-				for (int i=0; i<array.size(); i++) {
-					int aid = array[i]["aid"].as<int>();
-					int value = array[i]["value"].as<int>();
-					Symphony::product.setValueByIndex(aid, value, false);//forHub=false, we are only showing this to the clients
-#ifdef DEBUG_ONLY
-					Serial.printf("[CORE] attribute%i name=%s value=%i\n", aid, array[i]["name"].as<char*>(), value);
-#endif
+		if (payload.length() >0) {
+			DynamicJsonBuffer jsonBuffer;
+			JsonObject& json = jsonBuffer.parseObject(payload);
+			if (json.success()) {
+				if (json.containsKey("uid")) {
+					//device already exists in BM
+					Symphony::nameWithMac = json["name"].as<String>();
+					Symphony::product.productName = Symphony::hostName;
+					JsonArray& array = json["attributes"].as<JsonArray>();
+					for (int i=0; i<array.size(); i++) {
+						int aid = array[i]["aid"].as<int>();
+						int value = array[i]["value"].as<int>();
+						Symphony::product.setValueByIndex(aid, value, false);//forHub=false, we are only showing this to the clients
+	#ifdef DEBUG_ONLY
+						Serial.printf("[CORE] attribute%i name=%s value=%i\n", aid, array[i]["name"].as<char*>(), value);
+	#endif
+					}
 				}
-			} else {
-				//device does not exist in BM
-				doRegister = true;
 			}
+		} else {
+			//device does not exist in BM, register to BM
+			doRegister = true;
 		}
 	}
 };
@@ -654,7 +657,7 @@ int Symphony::setup(String ver) {
 	homeHtml = CONTROL_HTML1;
 	homeHtml.replace("$AAA$", hostName);
 #ifdef DEBUG_ONLY
-	Serial.printf("[CORE] Hostname=%s.local name=%s\n", hostName.c_str(), name.c_str());
+	Serial.printf("[CORE] Hostname=%s.local nameWithMac=%s\n", hostName.c_str(), nameWithMac.c_str());
 #endif
 	MDNS.setInstanceName("staticHostname");
 	if (MDNS.begin(Symphony::hostName.c_str())) {
@@ -863,17 +866,17 @@ void Symphony::connectToWifi() {
 void Symphony::initNameAndMac() {
 	hostName = name;
 	hostName.toLowerCase();
-	name += "_";
+	nameWithMac = name + "_";
 	// Generate device name based on MAC address
 	uint8_t _mac[6];
 	WiFi.macAddress(_mac);
 	//	we generate the name based on the MAC values
 	for (int i = 0; i < 6; ++i) {
-		name += String(_mac[i], 16);
+		nameWithMac += String(_mac[i], 16);
 		mac += String(_mac[i], 16);
 	}
 #ifdef DEBUG_ONLY
-    Serial.printf("[CORE] name:%s, mac:%s, hostname:%s\n", name.c_str(), mac.c_str(), hostName.c_str());
+    Serial.printf("[CORE] initNameAndMac name:%s, mac:%s, hostname:%s\n", name.c_str(), mac.c_str(), hostName.c_str());
 #endif
 }
 /**
