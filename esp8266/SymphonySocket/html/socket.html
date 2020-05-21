@@ -16,17 +16,15 @@ function countDownTimer() {
 	hours = Math.floor(dSeconds / (60*60))
 	minutes = Math.floor((dSeconds % (60*60)) / 60)
 	seconds = Math.floor(dSeconds - hours*60*60 - minutes*60)
-	var tdiv1 = document.getElementById("lbl_12:rng");
-	tdiv1.textContent = hours + "h" + minutes + "m" + seconds + "s";
+	document.getElementById("lblValue").innerHTML = hours + "h "
+	+ minutes + "m " + seconds + "s ";
 	
 	// If the count down is finished, write some text 
 	if (distance < 0) {
 	  clearInterval(timer);
 	  timerRunning = false;
-	  var tdiv1 = document.getElementById("lbl_12:rng");
-	  tdiv1.textContent = "EXPIRED";
-	  var input =  document.getElementById("11");
-	  input.checked=false;
+	  document.getElementById("lblValue").innerHTML = "EXPIRED";
+	  document.getElementById("lblEnabled").innerHTML = "False";
 	}	else {
 	 timerRunning = true;
 	}
@@ -39,22 +37,12 @@ function serverResponseHandler(json) {
 	var cmd = json.cmd;
 	switch(cmd) {
 		case CMD_TIMER_INFO:
-			document.getElementById("13").value = json.hrs;
-			var tdiv1 = document.getElementById("lbl_13:rng");
-		  	tdiv1.textContent = json.hrs;
-			document.getElementById("14").value = json.mins;
-			var tdiv2 = document.getElementById("lbl_14:rng");
-		  	tdiv2.textContent = json.mins;
-			document.getElementById("15").value = json.secs;
-			var tdiv3 = document.getElementById("lbl_15:rng");
-		  	tdiv3.textContent = json.secs;
-		  	var input =  document.getElementById("11");
-			if (input.type == "checkbox" || input.type == "radio") {
-            	if (json.e == 1)
-    				input.checked=true;	
-            	else
-            		input.checked=false;
-            }
+			document.getElementById("hrs").value = json.hrs;
+			document.getElementById("mins1").value = json.mins1;
+			document.getElementById("mins2").value = json.mins2;
+			document.getElementById("secs1").value = json.secs1;
+			document.getElementById("secs2").value = json.secs2;
+			document.getElementById("lblEnabled").innerHTML = json.e?"True":"False";
 			if (json.e) {
 				distance =  parseFloat(json.value, 10);
 				if (!timerRunning) {

@@ -204,7 +204,7 @@ void setup()
 
 	s.on("/getConfig", HTTP_GET, handleGetConfig);
 
-	product = Product(s.mac, "Kitchen", s.hostName);
+	product = Product(s.mac, "Kitchen", s.name);
 	//gui1 and gui2 for the switch control
 	Gui gui1 = Gui("Socket Control", BUTTON_CTL, "On/Off", 0, 1, socketState);
 	product.addCallableProperty("01", SOCKET_PIN, gui1);//add a property that has an attached pin
@@ -213,8 +213,8 @@ void setup()
 	Gui guiTest = Gui("Socket Control", BUTTON_CTL, "Test", 0, 1, socketState);
 	product.addVirtualProperty("20", guiTest);//add a logical property that has no attached pin
 	//gui3-8 for the timer control
-	Gui gui3 = Gui("Timer", BUTTON_SNSR, "Enabled", 0, 1, 0);
-	product.addVirtualProperty("11", gui3);//add a logical property that has no attached pin
+//	Gui gui3 = Gui("Timer", BUTTON_SNSR, "Enabled", 0, 1, 0);
+//	product.addVirtualProperty("11", gui3);//add a logical property that has no attached pin
 //	Gui gui4 = Gui("Timer", SLIDER_SNSR, "Timer", 0, 24, 0);
 //	product.addVirtualProperty("12", gui4);//add a logical property that has no attached pin
 //	Gui gui5 = Gui("Timer", SLIDER_SUBMIT, "Hours", 0, 23, 0);
