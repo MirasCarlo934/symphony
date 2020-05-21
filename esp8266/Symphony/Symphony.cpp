@@ -55,7 +55,7 @@ String responseHTML = ""
 
 bool		reboot 	= false; // Reboot flag
 bool 		isUpdateFw = false; // used to indicate if firmware update is ongoing
-bool doRegister = false;
+bool doRegister = false, isSetup = true;
 Filemanager	fManager = 		Filemanager();
 int8_t		fwResult = 0;
 long identifyTries[] = {5000, 10000, 20000};
@@ -341,38 +341,38 @@ void mqttMsgHandler(char* topic, String payload, size_t len) {
 #endif
 	//determine the topic, valid topics are from below
 	String theTopic = topic;
-	if (theTopic.indexOf("parentGroups") > 0) { // topic is things/{uid}/parentGroups
+	if (payload.length() >0) {
+		if (theTopic.indexOf("parentGroups") > 0) { // topic is things/{uid}/parentGroups
 
-	} else if (theTopic.indexOf("name") > 0) { // topic is things/{uid}/name
+		} else if (theTopic.indexOf("name") > 0) { // topic is things/{uid}/name
 
-	} else if (theTopic.indexOf("attributes/") > 0) {// topic is 3. things/{uid}/attributes/{aid}
-		int indexOf = theTopic.indexOf("attributes/");
-		int lastIndex = theTopic.lastIndexOf("/");
-		String propIndexStr = theTopic.substring(indexOf+11, lastIndex);
-		int propIndex = propIndexStr.toInt();
-		attribStruct attrib = Symphony::product.getKeyVal(propIndex);
-#ifdef DEBUG_ONLY
-		Serial.printf("[CORE] indexOf=%i lastIndex=%i propIndex=%i str=%s\n", indexOf, lastIndex, propIndex, propIndexStr.c_str());
-		Serial.printf("[CORE] got attribute index=%i, current value=%i, pin=%i, directPin=%s\n", propIndex, attrib.gui.value, attrib.pin, attrib.directPin?"true":"false");
-#endif
-		if (attrib.directPin) {//we set the value here because this is a directPin and its value can be set to pin directly
-			int value = payload.toInt();
-			Symphony::product.setValueByIndex(propIndex, value, false);//forHub=false, we are only showing this to the clients
-		} else {//we do not set the value here, the callback might need to do some computation before setting the pin
-#ifdef DEBUG_ONLY
-			Serial.printf("[CORE] Property SSID=%s not directly changeable. Passing to callback.\n", attrib.ssid.c_str());
-#endif
-			if (MqttCallback != nullptr) {
-				MqttCallback(propIndex, payload);
-			} else {
-				Serial.println("[CORE] No MQTT callback set!!!");
+		} else if (theTopic.indexOf("attributes/") > 0) {// topic is 3. things/{uid}/attributes/{aid}
+			int indexOf = theTopic.indexOf("attributes/");
+			int lastIndex = theTopic.lastIndexOf("/");
+			String propIndexStr = theTopic.substring(indexOf+11, lastIndex);
+			int propIndex = propIndexStr.toInt();
+			attribStruct attrib = Symphony::product.getKeyVal(propIndex);
+	#ifdef DEBUG_ONLY
+			Serial.printf("[CORE] indexOf=%i lastIndex=%i propIndex=%i str=%s\n", indexOf, lastIndex, propIndex, propIndexStr.c_str());
+			Serial.printf("[CORE] got attribute index=%i, current value=%i, pin=%i, directPin=%s\n", propIndex, attrib.gui.value, attrib.pin, attrib.directPin?"true":"false");
+	#endif
+			if (attrib.directPin) {//we set the value here because this is a directPin and its value can be set to pin directly
+				int value = payload.toInt();
+				Symphony::product.setValueByIndex(propIndex, value, false);//forHub=false, we are only showing this to the clients
+			} else {//we do not set the value here, the callback might need to do some computation before setting the pin
+	#ifdef DEBUG_ONLY
+				Serial.printf("[CORE] Property SSID=%s not directly changeable. Passing to callback.\n", attrib.ssid.c_str());
+	#endif
+				if (MqttCallback != nullptr) {
+					MqttCallback(propIndex, payload);
+				} else {
+					Serial.println("[CORE] No MQTT callback set!!!");
+				}
 			}
-		}
-	} else if (theTopic.equals(theMqttHandler.getSubscribedTopic())) {
-#ifdef DEBUG_ONLY
-		Serial.println("[CORE] response from inquireBM");
-#endif
-		if (payload.length() >0) {
+		} else if (theTopic.equals(theMqttHandler.getSubscribedTopic())) {
+	#ifdef DEBUG_ONLY
+			Serial.println("[CORE] response from inquireBM");
+	#endif
 			DynamicJsonBuffer jsonBuffer;
 			JsonObject& json = jsonBuffer.parseObject(payload);
 			if (json.success()) {
@@ -391,8 +391,11 @@ void mqttMsgHandler(char* topic, String payload, size_t len) {
 					}
 				}
 			}
-		} else {
-			//device does not exist in BM, register to BM
+		}
+	} else {
+		//BM returned a blank data, device does not exist
+		if (theTopic.equals(theMqttHandler.getSubscribedTopic())) {
+			//register if the topic is subscribed topic
 			doRegister = true;
 		}
 	}
@@ -905,9 +908,9 @@ void Symphony::doReboot() {
 	reboot = true;
 }
 /**
- * Will do the actual registration after mqttHandler has been set and product has been set
+ * Will query metadata of device from BM. should be done when mqttHandler has been set and product has been set.
  *
- *
+ * This is to get the latest state of the pins from BM.
  *
  */
 bool Symphony::inquireBM() {
@@ -923,13 +926,18 @@ bool Symphony::inquireBM() {
 		}
 	}
 }
-
+/**
+ * Will do the actual registration after mqttHandler has been set and product has been set.
+ * Should only be run once when the device starts up.
+ *
+ */
 bool Symphony::registerProduct() {
-	if (doRegister) {
+	if (doRegister && isSetup) {
 		if (isProductSet) {
 			if ( theMqttHandler.enabled && theMqttHandler.isConnected()) {
 				//register to the BM if not yet registered and if product is set and if mqtt is connected
 				doRegister = false;
+				isSetup = false;
 				String strReg = product.stringify();
 				theMqttHandler.publish(strReg.c_str());
 #ifdef DEBUG_ONLY
