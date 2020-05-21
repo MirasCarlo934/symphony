@@ -27,7 +27,7 @@ boolean connected = false, doReconnect = false;
 void (* msgCallback) (char* topic, String payload, size_t len);
 
 void onMqttConnect(bool sessionPresent) {
-  Serial.println("[MqttHandler] Connected to MQTT.");
+  Serial.println("[MQTT] Connected to MQTT.");
   /* We will subscribe to the following topics:
    *  	1. things/{uid}/parentGroups			for changes in the device parentGroups properties
    *  	2. things/{uid}/name					for changes in the device name properties
@@ -42,20 +42,20 @@ void onMqttConnect(bool sessionPresent) {
   String s3 = subscribeTopic +"/"+ "attributes/#";
   uint16_t packetIdSub3 = mqttClient.subscribe(s3.c_str(), 0);
   publishTopic = "BM/" + myId;
-  Serial.printf("[MqttHandler] subscribed to topics \n\t%s\n\t%s\n\t%s\n\t%s\n", subscribeTopic.c_str(),s1.c_str(), s2.c_str(), s3.c_str());
+  Serial.printf("[MQTT] subscribed to topics \n\t%s\n\t%s\n\t%s\n\t%s\n", subscribeTopic.c_str(),s1.c_str(), s2.c_str(), s3.c_str());
   connected = true;
   doReconnect = false;
 }
 
 void onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
-  Serial.printf("[MqttHandler] Disconnected from MQTT reason %i.\n", reason);
+  Serial.printf("[MQTT] Disconnected from MQTT reason %i.\n", reason);
   //we send a message to the callback handler with topic="reboot" and len=reason
   connected = false;
   doReconnect = true;
 }
 
 void onMqttSubscribe(uint16_t packetId, uint8_t qos) {
-  Serial.println("[MqttHandler] Subscribe acknowledged.");
+  Serial.println("[MQTT] Subscribe acknowledged.");
   Serial.print("  packetId: ");
   Serial.println(packetId);
   Serial.print("  qos: ");
@@ -63,17 +63,17 @@ void onMqttSubscribe(uint16_t packetId, uint8_t qos) {
 }
 
 void onMqttUnsubscribe(uint16_t packetId) {
-  Serial.println("[MqttHandler] Unsubscribe acknowledged.");
+  Serial.println("[MQTT] Unsubscribe acknowledged.");
   Serial.print("  packetId: ");
   Serial.println(packetId);
 }
 
 String payloadBuf;	//this is the buffer for messages that may be sent in multiple packets
 void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total) {
-  Serial.println("[MqttHandler] Messsage received.");
-  Serial.print("[MqttHandler] **************   topic: ");
+  Serial.println("[MQTT] Messsage received.");
+  Serial.print("[MQTT] **************   topic: ");
   Serial.println(topic);
-  Serial.print("[MqttHandler]   qos: ");
+  Serial.print("[MQTT]   qos: ");
   Serial.print(properties.qos);
   Serial.print(",  dup: ");
   Serial.print(properties.dup);
@@ -85,7 +85,7 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
   Serial.print(index);
   Serial.print(",  total: ");
   Serial.println(total);
-  Serial.print("[MqttHandler]   payload: ");
+  Serial.print("[MQTT]   payload: ");
   char str2[len];
   strncpy ( str2, payload, len );
   Serial.println(str2);
@@ -105,7 +105,7 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
 }
 
 void onMqttPublish(uint16_t packetId) {
-  Serial.println("[MqttHandler] Publish acknowledged.");
+  Serial.println("[MQTT] Publish acknowledged.");
   Serial.print(" packetId: ");
   Serial.println(packetId);
 }
@@ -129,7 +129,7 @@ void MqttHandler::setMsgCallback(void (* Callback) (char* topic, String payload,
  * sets the URL, can be uised if MqttHandler was instantiated using the default constructor
  */
 void MqttHandler::setUrl(const char *url) {
-	Serial.printf("[MqttHandler] url=%s\n", url);
+	Serial.printf("[MQTT] url=%s\n", url);
 	mqttServer = url;
 }
 /**
@@ -149,7 +149,7 @@ void MqttHandler::setId(const char *id) {
  * Connect to the MQTT server
  */
 void MqttHandler::connect() { //to connect to MQTT server
-	Serial.println("[MqttHandler] Connecting.");
+	Serial.println("[MQTT] Connecting.");
 	mqttClient.setClientId(myId.c_str());
 	mqttClient.onConnect(onMqttConnect);
 	mqttClient.onDisconnect(onMqttDisconnect);
@@ -159,7 +159,7 @@ void MqttHandler::connect() { //to connect to MQTT server
 	mqttClient.onPublish(onMqttPublish);
 	willTopic = "BM/" + myId + "/active";
 	mqttClient.setWill(willTopic.c_str(), 1, false, "false", 5);
-	Serial.printf("[MqttHandler] url=%s port=%i\n", mqttServer, mqttPort);
+	Serial.printf("[MQTT] url=%s port=%i\n", mqttServer, mqttPort);
 	mqttClient.setServer(mqttServer, mqttPort);
 	mqttClient.connect();
 }
@@ -168,14 +168,14 @@ void MqttHandler::connect() { //to connect to MQTT server
  * Publish data to the mqtt server
  */
 void MqttHandler::publish(const char* publishTopic, const char* payload) { //publish message to mqtt server
-	Serial.printf("[MqttHandler] Publishing in topic %s\n", publishTopic);
+	Serial.printf("[MQTT] Publishing in topic %s\n", publishTopic);
 	mqttClient.publish( publishTopic, 0, false, payload); //we are setting QOS of 0 to prevent from multiple sending of messages
 }
 /**
  * Publish data to the mqtt server
  */
 void MqttHandler::publish(const char* payload) { //publish message to mqtt server
-	Serial.printf("[MqttHandler] Publishing in topic %s\n", publishTopic.c_str());
+	Serial.printf("[MQTT] Publishing in topic %s\n", publishTopic.c_str());
 	mqttClient.publish( publishTopic.c_str(), 0, false, payload); //we are setting QOS of 0 to prevent from multiple sending of messages
 }
 /**
@@ -211,7 +211,7 @@ void MqttHandler::setReconnectInterval(long interval) {
 void MqttHandler::reconnect() {
 	if ( enabled && doReconnect) {
 		if (millis() - timerMillis >= reconnectIntervalMillis) {
-			Serial.println("[MqttHandler] Reconnecting.");
+			Serial.println("[MQTT] Reconnecting.");
 			mqttClient.connect();
 			timerMillis = millis();
 		}
