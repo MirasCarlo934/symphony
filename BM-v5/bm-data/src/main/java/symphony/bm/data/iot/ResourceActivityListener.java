@@ -30,7 +30,8 @@ public class ResourceActivityListener implements ActivityListener {
     @Override
     public void thingUpdated(Thing thing, String fieldName, Object fieldValue) {
         if (fieldName.equals("active")) {
-            tasRepository.save(new ThingActiveState(thing.getUid(), Calendar.getInstance().getTime(), thing.isActive()));
+            tasRepository.save(new ThingActiveState(thing.getUid(), Calendar.getInstance().getTime(),
+                    Boolean.parseBoolean(fieldValue.toString())));
         }
     }
     

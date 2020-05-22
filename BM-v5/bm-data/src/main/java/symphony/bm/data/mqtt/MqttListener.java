@@ -49,11 +49,11 @@ public class MqttListener implements MessageHandler {
         } else if (checkIfAttributeTopic(topic)) {
             Thing thing = resourceRepository.getThing(topicLevels[1]);
             if (thing == null) {
-                throw new MessagingException("Thing " + topicLevels[1] + " does not exist");
+                throw new NullPointerException("Thing " + topicLevels[1] + " does not exist");
             }
             Attribute attr = thing.getAttribute(topicLevels[3]);
             if (attr == null) {
-                throw new MessagingException("Attribute " + topicLevels[3] + " does not exist");
+                throw new NullPointerException("Attribute " + topicLevels[3] + " does not exist");
             }
             if (topicLevels.length == 5) {
                 attr.update(topicLevels[4], payload);

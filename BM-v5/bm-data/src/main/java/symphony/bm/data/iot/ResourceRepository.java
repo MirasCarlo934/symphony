@@ -62,13 +62,14 @@ public class ResourceRepository {
             things.put(thing.getUid(), thing);
     
             ThingActiveState tas = tasRepository.findFirstByUid(thing.getUid());
+            Date now = Calendar.getInstance().getTime();
             if (tas == null || tas.isActive() != thing.isActive()) {
-                tasRepository.save(new ThingActiveState(thing.getUid(), Calendar.getInstance().getTime(), thing.isActive()));
+                log.info("Saving new thing active state record for " + thing.getUid() + " @ " + now);
+                tasRepository.save(new ThingActiveState(thing.getUid(), now, thing.isActive()));
             }
             for (Attribute attr : thing.getAttributes()) {
                 AttributeValueRecord avr = avrRepository.findFirstByThingAndAid(attr.getThing(), attr.getAid());
                 if (avr == null || !attr.getDataType().checkValuesForEquality(avr.getValue(), attr.getValue())) {
-                    Date now = Calendar.getInstance().getTime();
                     log.info("Saving new attribute value record for " + attr.getThing() + "/" + attr.getAid() +
                             " @ " + now);
                     AttributeValueRecord newAvr = new AttributeValueRecord(attr.getAid(), attr.getThing(), now,
