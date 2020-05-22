@@ -9,10 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import symphony.bm.core.iot.Attribute;
 import symphony.bm.core.iot.Thing;
-import symphony.bm.data.iot.ResourceDataController;
+import symphony.bm.data.iot.ResourceRepository;
 import symphony.bm.data.iot.attribute.AttributeValueRecord;
 import symphony.bm.data.repositories.AttributeValueRecordRepository;
-import symphony.bm.data.rest.resource.AttributeValueRecordsPageableResource;
 import symphony.bm.data.rest.resource.stats.*;
 import symphony.bm.generics.exceptions.RestControllerProcessingException;
 
@@ -24,7 +23,7 @@ import java.util.*;
 @RequiredArgsConstructor
 @Slf4j
 public class AttributeValueRecordRestController {
-    private final ResourceDataController resourceDataController;
+    private final ResourceRepository resourceRepository;
     private final AttributeValueRecordRepository avrRepository;
     
     @GetMapping("/stats/byDate")
@@ -33,7 +32,7 @@ public class AttributeValueRecordRestController {
                                                @RequestParam("from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date from,
                                                @RequestParam(value = "to", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date to,
                                                Pageable p) throws RestControllerProcessingException {
-        Thing t = resourceDataController.getThing(thing);
+        Thing t = resourceRepository.getThing(thing);
         if (t == null) {
             throw new RestControllerProcessingException("Thing " + thing + " does not exist", HttpStatus.NOT_FOUND);
         }

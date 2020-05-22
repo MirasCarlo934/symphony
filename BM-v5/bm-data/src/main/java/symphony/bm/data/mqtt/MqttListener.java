@@ -1,8 +1,7 @@
 package symphony.bm.data.mqtt;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -13,15 +12,14 @@ import org.springframework.stereotype.Component;
 import symphony.bm.core.activitylisteners.ActivityListenerManager;
 import symphony.bm.core.iot.Attribute;
 import symphony.bm.core.iot.Thing;
-import symphony.bm.data.iot.ResourceDataController;
+import symphony.bm.data.iot.ResourceRepository;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class MqttListener implements MessageHandler {
     private final ObjectMapper objectMapper;
-    private final ResourceDataController resourceDataController;
-    private final ActivityListenerManager activityListenerManager;
+    private final ResourceRepository resourceRepository;
     
     @SneakyThrows
     @Override
@@ -31,13 +29,21 @@ public class MqttListener implements MessageHandler {
         assert topic != null;
     
         String[] topicLevels = topic.split("/");
-        if (checkIfThingTopic(topic)) { // new Thing added to BeeHive
-            Thing thing = objectMapper.readValue(payload, Thing.class);
-            if (resourceDataController.getThing(thing.getUid()) == null) {
-                resourceDataController.addThing(thing);
+        if (checkIfThingTopic(topic)) {
+            Thing thing;
+            try { // new Thing added to BeeHive
+                thing = objectMapper.readValue(payload, Thing.class);
+                if (resourceRepository.getThing(thing.getUid()) == null) {
+                    resourceRepository.addThing(thing);
+                }
+            } catch (JsonMappingException e) { // MQTT message is a Thing field update
+                if (topicLevels.length == 3) {
+                    thing = resourceRepository.getThing(topicLevels[1]);
+                    thing.update(topicLevels[2], payload);
+                }
             }
         } else if (checkIfAttributeTopic(topic)) {
-            Thing thing = resourceDataController.getThing(topicLevels[1]);
+            Thing thing = resourceRepository.getThing(topicLevels[1]);
             if (thing == null) {
                 throw new MessagingException("Thing " + topicLevels[1] + " does not exist");
             }

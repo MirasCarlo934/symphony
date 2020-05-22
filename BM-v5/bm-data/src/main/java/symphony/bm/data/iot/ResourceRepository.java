@@ -17,7 +17,7 @@ import java.util.*;
 
 @Component
 @Slf4j
-public class ResourceDataController {
+public class ResourceRepository {
     private final ThingActiveStateRepository tasRepository;
     private final AttributeValueRecordRepository avrRepository;
     
@@ -27,12 +27,12 @@ public class ResourceDataController {
     
     private Map<String, Thing> things = new HashMap<>();
     
-    public ResourceDataController(ThingActiveStateRepository tasRepository,
-                                  AttributeValueRecordRepository avrRepository,
-                                  ActivityListenerManager activityListenerManager,
-                                  ObjectMapper objectMapper,
-                                  @Value("${bm.url}") String bmServerURL,
-                                  @Value("${bm.port.core}") String bmCorePort) {
+    public ResourceRepository(ThingActiveStateRepository tasRepository,
+                              AttributeValueRecordRepository avrRepository,
+                              ActivityListenerManager activityListenerManager,
+                              ObjectMapper objectMapper,
+                              @Value("${bm.url}") String bmServerURL,
+                              @Value("${bm.port.core}") String bmCorePort) {
         this.tasRepository = tasRepository;
         this.avrRepository = avrRepository;
         this.activityListenerManager = activityListenerManager;
@@ -44,7 +44,6 @@ public class ResourceDataController {
     
     private void getThingsFromCore() {
         RestTemplate restTemplate = new RestTemplate();
-//        log.error(restTemplate.getForEntity(bmCoreURL + "/things?restful=false", String.class).getBody());
         Map[] thingMapList = restTemplate.getForEntity(bmCoreURL + "/things?restful=false", Map[].class).getBody();
         for (Map thingMap : thingMapList) {
             Thing thing = objectMapper.convertValue(thingMap, Thing.class);

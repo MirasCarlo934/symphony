@@ -8,7 +8,9 @@ import symphony.bm.core.iot.Attribute;
 import symphony.bm.core.iot.Group;
 import symphony.bm.core.iot.Thing;
 import symphony.bm.data.iot.attribute.AttributeValueRecord;
+import symphony.bm.data.iot.thing.ThingActiveState;
 import symphony.bm.data.repositories.AttributeValueRecordRepository;
+import symphony.bm.data.repositories.ThingActiveStateRepository;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -17,6 +19,7 @@ import java.util.Date;
 @RequiredArgsConstructor
 @Slf4j
 public class ResourceActivityListener implements ActivityListener {
+    private final ThingActiveStateRepository tasRepository;
     private final AttributeValueRecordRepository avrRepository;
     
     @Override
@@ -26,7 +29,9 @@ public class ResourceActivityListener implements ActivityListener {
     
     @Override
     public void thingUpdated(Thing thing, String fieldName, Object fieldValue) {
-    
+        if (fieldName.equals("active")) {
+            tasRepository.save(new ThingActiveState(thing.getUid(), Calendar.getInstance().getTime(), thing.isActive()));
+        }
     }
     
     @Override

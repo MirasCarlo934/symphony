@@ -13,8 +13,8 @@ import symphony.bm.data.iot.thing.ThingActiveState;
 import java.util.Date;
 
 @Component
-//@RepositoryRestResource(collectionResourceRel = "things/activestates", path = "things/activestates")
-//@CrossOrigin
+@RepositoryRestResource(collectionResourceRel = "thingActiveStates", path = "thingActiveStates")
+@CrossOrigin
 public interface ThingActiveStateRepository extends MongoRepository<ThingActiveState, Date> {
     
     @Query(sort = "{timestamp: -1 }")
