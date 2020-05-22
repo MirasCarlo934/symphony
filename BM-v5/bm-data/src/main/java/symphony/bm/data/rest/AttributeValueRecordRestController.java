@@ -13,10 +13,7 @@ import symphony.bm.data.iot.ResourceDataController;
 import symphony.bm.data.iot.attribute.AttributeValueRecord;
 import symphony.bm.data.repositories.AttributeValueRecordRepository;
 import symphony.bm.data.rest.resource.AttributeValueRecordsPageableResource;
-import symphony.bm.data.rest.resource.stats.AttributeValueRecordsStats;
-import symphony.bm.data.rest.resource.stats.BinaryAttributeValueRecordsStats;
-import symphony.bm.data.rest.resource.stats.EnumerationAttributeValueRecordsStats;
-import symphony.bm.data.rest.resource.stats.NumberAttributeValueRecordsStats;
+import symphony.bm.data.rest.resource.stats.*;
 import symphony.bm.generics.exceptions.RestControllerProcessingException;
 
 import java.util.*;
@@ -133,7 +130,9 @@ public class AttributeValueRecordRestController {
                     }
                 } while (records.hasNext());
                 stats = new EnumerationAttributeValueRecordsStats(timeSpentAt, totalTime, thing, aid, from, to , p);
-            // TODO do the other cases
+                
+            default:
+                stats = new EmptyAttributeValueRecordsStats(thing, aid, from, to, p);
         }
         
         return stats;
