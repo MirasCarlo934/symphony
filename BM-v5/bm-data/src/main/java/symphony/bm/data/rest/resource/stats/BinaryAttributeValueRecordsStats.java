@@ -11,6 +11,7 @@ import java.util.Map;
 @Value
 public class BinaryAttributeValueRecordsStats extends AttributeValueRecordsStats {
     Map<String, Long> timeSpentAt = new HashMap<>();
+    long totalTime;
     
     @SneakyThrows
     public BinaryAttributeValueRecordsStats(long timeSpentAtOne, long timeSpentAtZero, long totalTime,
@@ -18,6 +19,6 @@ public class BinaryAttributeValueRecordsStats extends AttributeValueRecordsStats
         super(thing, aid, from, to, p);
         timeSpentAt.put("1", timeSpentAtOne);
         timeSpentAt.put("0", timeSpentAtZero);
-        timeSpentAt.put("total", totalTime);
+        this.totalTime = totalTime;
     }
 }

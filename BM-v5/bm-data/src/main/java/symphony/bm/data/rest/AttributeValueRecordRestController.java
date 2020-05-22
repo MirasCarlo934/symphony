@@ -15,11 +15,11 @@ import symphony.bm.data.repositories.AttributeValueRecordRepository;
 import symphony.bm.data.rest.resource.AttributeValueRecordsPageableResource;
 import symphony.bm.data.rest.resource.stats.AttributeValueRecordsStats;
 import symphony.bm.data.rest.resource.stats.BinaryAttributeValueRecordsStats;
+import symphony.bm.data.rest.resource.stats.EnumerationAttributeValueRecordsStats;
 import symphony.bm.data.rest.resource.stats.NumberAttributeValueRecordsStats;
 import symphony.bm.generics.exceptions.RestControllerProcessingException;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 
 @RestController
 @CrossOrigin
@@ -45,7 +45,7 @@ public class AttributeValueRecordRestController {
             throw new RestControllerProcessingException("Attribute " + aid + " in Thing " + thing + " does not exist",
                     HttpStatus.NOT_FOUND);
         }
-        if (from.compareTo(to) >= 0) {
+        if (to != null && from.compareTo(to) >= 0) {
             throw new RestControllerProcessingException("Date 'to' must always be greater than date 'from'",
                     HttpStatus.BAD_REQUEST);
         }
@@ -58,6 +58,7 @@ public class AttributeValueRecordRestController {
             records = avrRepository.findByThingAndAidAndTimestampBetween(thing, aid, from, to, p);
         }
         switch (attr.getDataType().getType()) {
+            
             case number:
                 double min = 0, max = 0, ave = 0;
                 do {
@@ -76,23 +77,24 @@ public class AttributeValueRecordRestController {
                 ave /= records.getTotalElements();
                 stats = new NumberAttributeValueRecordsStats(min, max, ave, thing, aid, from, to, p);
                 break;
+                
             case binary:
                 long timeAtOne = 0, timeAtZero = 0;
-                Date currentTimestamp;
+                Date currentTimestamp1;
                 if (to == null) {
-                    currentTimestamp = Calendar.getInstance().getTime();
+                    currentTimestamp1 = Calendar.getInstance().getTime();
                 } else {
-                    currentTimestamp = to;
+                    currentTimestamp1 = to;
                 }
                 do {
                     for (AttributeValueRecord avr : records) {
-                        long difference = currentTimestamp.getTime() - avr.getTimestamp().getTime(); // assumed that avr is listed in descending order
+                        long difference = currentTimestamp1.getTime() - avr.getTimestamp().getTime(); // assumed that avr is listed in descending order
                         if (Integer.parseInt(avr.getValue().toString()) == 1) {
                             timeAtOne += difference;
                         } else {
                             timeAtZero += difference;
                         }
-                        currentTimestamp = avr.getTimestamp();
+                        currentTimestamp1 = avr.getTimestamp();
                     }
                     if (to == null) {
                         records = avrRepository.findByThingAndAidAndTimestampGreaterThanEqual(thing, aid, from, records.nextPageable());
@@ -102,6 +104,35 @@ public class AttributeValueRecordRestController {
                 } while (records.hasNext());
                 stats = new BinaryAttributeValueRecordsStats(timeAtOne, timeAtZero, timeAtOne + timeAtZero, thing, aid, from, to, p);
                 break;
+                
+            case enumeration:
+                Map<String, Long> timeSpentAt = new HashMap<>();
+                long totalTime = 0;
+                Date currentTimestamp2;
+                if (to == null) {
+                    currentTimestamp2 = Calendar.getInstance().getTime();
+                } else {
+                    currentTimestamp2 = to;
+                }
+                for (String enumValue : ((List<String>) attr.getDataType().getConstraints().get("values"))) {
+                    timeSpentAt.put(enumValue, 0L);
+                }
+                do {
+                    for (AttributeValueRecord avr : records) {
+                        long difference = currentTimestamp2.getTime() - avr.getTimestamp().getTime(); // assumed that avr is listed in descending order
+                        long time = timeSpentAt.get(avr.getValue().toString());
+                        time += difference;
+                        totalTime += difference;
+                        timeSpentAt.put(avr.getValue().toString(), time);
+                        currentTimestamp2 = avr.getTimestamp();
+                    }
+                    if (to == null) {
+                        records = avrRepository.findByThingAndAidAndTimestampGreaterThanEqual(thing, aid, from, records.nextPageable());
+                    } else {
+                        records = avrRepository.findByThingAndAidAndTimestampBetween(thing, aid, from, to, records.nextPageable());
+                    }
+                } while (records.hasNext());
+                stats = new EnumerationAttributeValueRecordsStats(timeSpentAt, totalTime, thing, aid, from, to , p);
             // TODO do the other cases
         }
         
