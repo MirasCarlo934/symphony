@@ -36,8 +36,6 @@ public class MqttListener implements MessageHandler {
             if (resourceDataController.getThing(thing.getUid()) == null) {
                 resourceDataController.addThing(thing);
             }
-//            thing.setActivityListenerManager(activityListenerManager);
-//            resourceDataController.addThing(thing);
         } else if (checkIfAttributeTopic(topic)) {
             Thing thing = resourceDataController.getThing(topicLevels[1]);
             if (thing == null) {

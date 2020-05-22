@@ -14,8 +14,8 @@ import symphony.bm.data.iot.attribute.AttributeValueRecord;
 import java.util.Date;
 
 @Component
-//@RepositoryRestResource(collectionResourceRel = "attributes/values", path = "attributes/values")
-//@CrossOrigin
+@RepositoryRestResource(collectionResourceRel = "attributeValueRecords", path = "attributeValueRecords")
+@CrossOrigin
 public interface AttributeValueRecordRepository extends MongoRepository<AttributeValueRecord, Date> {
     
     @Query(sort = "{timestamp: -1 }")
@@ -24,13 +24,13 @@ public interface AttributeValueRecordRepository extends MongoRepository<Attribut
     @Query(sort = "{timestamp: -1 }")
     Page<AttributeValueRecord> findByThingAndAid(String thing, String aid, Pageable p);
     
-//    @RestResource(path = "findByThingAndAidFrom", rel = "findByThingAndAidFrom")
+    @RestResource(path = "findByThingAndAidFrom", rel = "findByThingAndAidFrom")
     @Query(sort = "{timestamp: -1 }")
     Page<AttributeValueRecord> findByThingAndAidAndTimestampGreaterThanEqual(String thing, String aid,
                                                                   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date from,
                                                                   Pageable p);
     
-//    @RestResource(path = "findByThingAndAidBetween", rel = "findByThingAndAidBetween")
+    @RestResource(path = "findByThingAndAidBetween", rel = "findByThingAndAidBetween")
     @Query(value = "{'thing': ?0, 'aid': ?1, 'timestamp': {'$gte': ?2, '$lte': ?3}}", sort = "{timestamp: -1 }")
     Page<AttributeValueRecord> findByThingAndAidAndTimestampBetween(String thing, String aid,
                                                                     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date from,
