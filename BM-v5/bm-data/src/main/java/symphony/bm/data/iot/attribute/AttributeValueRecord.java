@@ -1,4 +1,4 @@
-package symphony.bm.data.iot;
+package symphony.bm.data.iot.attribute;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;

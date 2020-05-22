@@ -109,7 +109,7 @@ public class AttributeController {
         if (thing != null) {
             Attribute a = thing.getAttribute(aid);
             if (a == null) {
-                log.info("Adding attribute " + attribute.getAid() + " to thing " + uid);
+                log.debug("Adding attribute " + attribute.getAid() + " to thing " + uid);
                 thing.addAttribute(attribute);
                 return successResponseEntity("Attribute " + thing.getUid() + "/" + aid + " added",
                         HttpStatus.OK);

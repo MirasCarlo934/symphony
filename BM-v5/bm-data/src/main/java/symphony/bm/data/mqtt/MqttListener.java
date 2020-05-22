@@ -31,16 +31,14 @@ public class MqttListener implements MessageHandler {
         assert topic != null;
     
         String[] topicLevels = topic.split("/");
-//        if (checkIfThingTopic(topic)) {
-////            try {
-////                Thing thing = objectMapper.readValue(payload, Thing.class);
-////                thing.setActivityListenerManager(activityListenerManager);
-////                resourceDataController.addThing(thing);
-////            } catch (JsonProcessingException e) {
-////                throw new MessagingException(e.getMessage(), e);
-////            }
-//        } else
-        if (checkIfAttributeTopic(topic)) {
+        if (checkIfThingTopic(topic)) { // new Thing added to BeeHive
+            Thing thing = objectMapper.readValue(payload, Thing.class);
+            if (resourceDataController.getThing(thing.getUid()) == null) {
+                resourceDataController.addThing(thing);
+            }
+//            thing.setActivityListenerManager(activityListenerManager);
+//            resourceDataController.addThing(thing);
+        } else if (checkIfAttributeTopic(topic)) {
             Thing thing = resourceDataController.getThing(topicLevels[1]);
             if (thing == null) {
                 throw new MessagingException("Thing " + topicLevels[1] + " does not exist");

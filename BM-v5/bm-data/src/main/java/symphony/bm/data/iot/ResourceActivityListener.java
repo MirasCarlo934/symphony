@@ -2,12 +2,12 @@ package symphony.bm.data.iot;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Component;
 import symphony.bm.core.activitylisteners.ActivityListener;
 import symphony.bm.core.iot.Attribute;
 import symphony.bm.core.iot.Group;
 import symphony.bm.core.iot.Thing;
+import symphony.bm.data.iot.attribute.AttributeValueRecord;
 import symphony.bm.data.repositories.AttributeValueRecordRepository;
 
 import java.util.Calendar;
