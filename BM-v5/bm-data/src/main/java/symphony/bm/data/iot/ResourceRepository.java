@@ -62,6 +62,9 @@ public class ResourceRepository {
             things.put(thing.getUid(), thing);
     
             ThingActiveState tas = tasRepository.findFirstByUid(thing.getUid());
+            if (tas == null || tas.isActive() != thing.isActive()) {
+                tasRepository.save(new ThingActiveState(thing.getUid(), Calendar.getInstance().getTime(), thing.isActive()));
+            }
             for (Attribute attr : thing.getAttributes()) {
                 AttributeValueRecord avr = avrRepository.findFirstByThingAndAid(attr.getThing(), attr.getAid());
                 if (avr == null || !attr.getDataType().checkValuesForEquality(avr.getValue(), attr.getValue())) {
@@ -74,6 +77,13 @@ public class ResourceRepository {
                 }
             }
             log.debug("Thing " + thing.getUid() + " added");
+        }
+    }
+    
+    public void deleteThing(String uid) {
+        Thing thing = things.remove(uid);
+        if (thing != null) {
+            thing.delete();
         }
     }
     

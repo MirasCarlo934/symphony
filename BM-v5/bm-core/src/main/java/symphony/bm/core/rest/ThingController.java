@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import symphony.bm.core.activitylisteners.ActivityListenerManager;
 import symphony.bm.core.iot.Attribute;
 import symphony.bm.core.iot.Group;
 import symphony.bm.core.iot.SuperGroup;
@@ -29,6 +30,7 @@ public class ThingController {
     private final SuperGroup superGroup;
     private final GroupController groupController;
     private final AttributeController attributeController;
+    private final ActivityListenerManager activityListenerManager;
     private final ObjectMapper objectMapper;
     
     @GetMapping
@@ -109,11 +111,14 @@ public class ThingController {
             }
             groupList.add(group);
         }
+        
+        thing.setActivityListenerManager(activityListenerManager);
+        thing.create();
+        
         for (Group group : groupList) {
             log.info("Adding thing " + uid + " to group " + group.getGid() + "(" + group.getName() + ")");
             group.addThing(thing);
         }
-        thing.create();
 
         return successResponseEntity("Thing added", HttpStatus.CREATED);
     }

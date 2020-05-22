@@ -36,10 +36,14 @@ public class MqttListener implements MessageHandler {
                 if (resourceRepository.getThing(thing.getUid()) == null) {
                     resourceRepository.addThing(thing);
                 }
-            } catch (JsonMappingException e) { // MQTT message is a Thing field update
-                if (topicLevels.length == 3) {
+            } catch (JsonMappingException e) {
+                if (topicLevels.length == 2 && payload.isEmpty()) {
+                    resourceRepository.deleteThing(topicLevels[1]);
+                } else if (topicLevels.length == 3) { // MQTT message is a Thing field update
                     thing = resourceRepository.getThing(topicLevels[1]);
-                    thing.update(topicLevels[2], payload);
+                    if (thing != null) {
+                        thing.update(topicLevels[2], payload);
+                    }
                 }
             }
         } else if (checkIfAttributeTopic(topic)) {

@@ -27,11 +27,11 @@ public class ActivityListenerManager implements ActivityListener {
 
     @Override
     public void thingCreated(Thing thing) {
-        for (ActivityListener listener : singleThreadedListeners) {
-            listener.thingCreated(thing);
-        }
         for (ActivityListener listener : multiThreadedListeners) {
             executorService.submit(() -> listener.thingCreated(thing));
+        }
+        for (ActivityListener listener : singleThreadedListeners) {
+            listener.thingCreated(thing);
         }
     }
 

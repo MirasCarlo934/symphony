@@ -46,7 +46,9 @@ public class ResourceActivityListener implements ActivityListener {
     
     @Override
     public void thingDeleted(Thing thing) {
-    
+        if (thing.isActive()) {
+            thingUpdated(thing, "active", false);
+        }
     }
     
     @Override
