@@ -50,6 +50,7 @@ public class ResourceRepository {
             thing.setActivityListenerManager(activityListenerManager);
             things.put(thing.getUid(), thing);
         }
+        logContents();
     }
     
     /**
@@ -79,6 +80,7 @@ public class ResourceRepository {
             }
             log.debug("Thing " + thing.getUid() + " added");
         }
+        logContents();
     }
     
     public void deleteThing(String uid) {
@@ -86,9 +88,14 @@ public class ResourceRepository {
         if (thing != null) {
             thing.delete();
         }
+        logContents();
     }
     
     public Thing getThing(String uid) {
         return things.get(uid);
+    }
+    
+    public void logContents() {
+        log.info(things.size() + " Things currently in repository");
     }
 }

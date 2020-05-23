@@ -12,7 +12,7 @@ import symphony.bm.core.iot.Thing;
 import symphony.bm.data.iot.ResourceRepository;
 import symphony.bm.data.iot.attribute.AttributeValueRecord;
 import symphony.bm.data.repositories.AttributeValueRecordRepository;
-import symphony.bm.data.rest.resource.stats.*;
+import symphony.bm.data.rest.resource.stats.avr.*;
 import symphony.bm.generics.exceptions.RestControllerProcessingException;
 
 import java.util.*;
@@ -32,15 +32,7 @@ public class AttributeValueRecordRestController {
                                                @RequestParam("from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date from,
                                                @RequestParam(value = "to", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date to,
                                                Pageable p) throws RestControllerProcessingException {
-        Thing t = resourceRepository.getThing(thing);
-        if (t == null) {
-            throw new RestControllerProcessingException("Thing " + thing + " does not exist", HttpStatus.NOT_FOUND);
-        }
-        Attribute attr = t.getAttribute(aid);
-        if (attr == null) {
-            throw new RestControllerProcessingException("Attribute " + aid + " in Thing " + thing + " does not exist",
-                    HttpStatus.NOT_FOUND);
-        }
+        Attribute attr = getAttribute(thing, aid);
         if (to != null && from.compareTo(to) >= 0) {
             throw new RestControllerProcessingException("Date 'to' must always be greater than date 'from'",
                     HttpStatus.BAD_REQUEST);
@@ -53,6 +45,7 @@ public class AttributeValueRecordRestController {
         } else {
             records = avrRepository.findByThingAndAidAndTimestampBetween(thing, aid, from, to, p);
         }
+        
         switch (attr.getDataType().getType()) {
             
             case number:
@@ -129,11 +122,25 @@ public class AttributeValueRecordRestController {
                     }
                 } while (records.hasNext());
                 stats = new EnumerationAttributeValueRecordsStats(timeSpentAt, totalTime, thing, aid, from, to , p);
+                break;
                 
             default:
                 stats = new EmptyAttributeValueRecordsStats(thing, aid, from, to, p);
         }
         
         return stats;
+    }
+    
+    private Attribute getAttribute(String thing, String aid) throws RestControllerProcessingException {
+        Thing t = resourceRepository.getThing(thing);
+        if (t == null) {
+            throw new RestControllerProcessingException("Thing " + thing + " does not exist", HttpStatus.NOT_FOUND);
+        }
+        Attribute attr = t.getAttribute(aid);
+        if (attr == null) {
+            throw new RestControllerProcessingException("Attribute " + aid + " in Thing " + thing + " does not exist",
+                    HttpStatus.NOT_FOUND);
+        }
+        return attr;
     }
 }

@@ -1,4 +1,4 @@
-package symphony.bm.data.rest.resource.stats;
+package symphony.bm.data.rest.resource.stats.avr;
 
 import org.springframework.data.domain.Pageable;
 

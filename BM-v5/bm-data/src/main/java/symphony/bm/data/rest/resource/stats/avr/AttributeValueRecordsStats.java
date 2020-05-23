@@ -1,9 +1,8 @@
-package symphony.bm.data.rest.resource.stats;
+package symphony.bm.data.rest.resource.stats.avr;
 
 import lombok.SneakyThrows;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.RepresentationModel;
-import symphony.bm.data.repositories.AttributeValueRecordRepository;
 import symphony.bm.data.rest.AttributeValueRecordRestController;
 
 import java.util.Date;
