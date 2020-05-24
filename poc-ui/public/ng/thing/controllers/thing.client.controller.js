@@ -57,8 +57,13 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
         chart.update();
     }
     $scope.loadRecordsChart = function(aid) {
+        let dateNow = new Date();
+        let yesterday = new Date();
+        yesterday.setDate(dateNow.getDate()-1);
         $http.get(appProperties.serverURL + ":" + appProperties.ports.data +
-            "/data/attributeValueRecords/search/findByThingAndAid?thing=" + $scope.thing.uid + "&aid=" + aid).then(
+            // "/data/attributeValueRecords/search/findByThingAndAid?thing=" + $scope.thing.uid + "&aid=" + aid).then(
+            "/data/attributeValueRecords/search/findByThingAndAidFrom?thing=" + $scope.thing.uid + "&aid=" + aid +
+            "&from=" + yesterday.toISOString()).then(
             (response) => {
                 let $chart = $("#" + aid + "-chart-records");
                 let records = response.data._embedded.attributeValueRecords;
@@ -82,6 +87,9 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
                         }]
                     },
                     options: {
+                        legend: {
+                            display: false
+                        },
                         scales: {
                             xAxes: [{
                                 type: 'time'
