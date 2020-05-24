@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <section ng-controller="ThingController">
     <h1>{{thing.name}}</h1>
+    <br/>
+    <br/>
 
+    <h2>Controls</h2>
     <div>
         <div style="padding-left: 16px; border-left: 4px solid steelblue">
             <table style="border-collapse: collapse">
@@ -34,6 +37,28 @@
                 </tr>
             </table>
         </div>
+        <br/>
+        <br/>
 
+        <h2>Data</h2>
+        <div style="padding-left: 16px; border-left: 4px solid darkorange">
+            <div ng-repeat="attr in thing.attributes">
+                <h2>{{attr.name}}</h2>
+                <div style="padding-left: 16px">
+                    <div ng-if="attr.dataType.type == 'number'">
+                        <h3>Value over Time</h3>
+                        <canvas id="{{attr.aid}}-chart-records" ng-init="loadRecordsChart(attr.aid)">
+<!--                                class="chart chart-line"-->
+<!--                                chart-data="charts.abcdefgh.data"-->
+<!--                                chart-labels="charts.abcdefgh.labels"-->
+<!--                                chart-series="charts.abcdefgh.series"-->
+<!--                                chart-dataset-override="charts.abcdefgh.datasetOverride"-->
+<!--                                chart-options="charts.abcdefgh.options"-->
+<!--                                chart-click="onClick">-->
+                        </canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </section>

@@ -5,6 +5,7 @@ appProperties = {
     // mqttURL: "ws://localhost",
     ports: {
         core: "8080",
+        data: "8083",
         mqtt: "9001"
     }
 }
