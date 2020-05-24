@@ -45,7 +45,7 @@
             <div ng-repeat="attr in thing.attributes">
                 <h2>{{attr.name}}</h2>
                 <div style="padding-left: 16px">
-                    <div ng-if="attr.dataType.type == 'number'">
+                    <div ng-if="attr.dataType.type == 'number' || attr.dataType.type == 'binary'">
                         <h3>Value over Time</h3>
                         <canvas id="{{attr.aid}}-chart-records" ng-init="loadRecordsChart(attr.aid)">
 <!--                                class="chart chart-line"-->

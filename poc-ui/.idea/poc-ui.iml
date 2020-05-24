@@ -12,5 +12,7 @@
     <orderEntry type="library" name="angular" level="application" />
     <orderEntry type="library" name="angular-route" level="application" />
     <orderEntry type="library" name="paho-mqtt" level="application" />
+    <orderEntry type="library" name="hammerjs" level="application" />
+    <orderEntry type="library" name="chartjs-plugin-zoom" level="application" />
   </component>
 </module>

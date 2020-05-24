@@ -1,4 +1,5 @@
 angular.module("thing").controller("ThingController", ["$scope", "$http", "$location", "ngmqtt", "uuid", function($scope, $http, $location, ngmqtt, uuid) {
+    $scope.charts = {};
     let uid = $location.path().split("/")[1];
     const thingTopic = "things/" + uid + "/#";
     const bmTopic = "BM/" + uid;
@@ -28,7 +29,7 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
                 if (attr.aid == aid) {
                     attr[field] = message;
                     if (field === "value") {
-                        $scope.loadRecordsChart(aid);
+                        $scope.addLatestRecordToChart(aid, new Date().toISOString(), message);
                     }
                     break;
                 }
@@ -43,24 +44,35 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
     });
 
     // chart functions
+    $scope.addLatestRecordToChart = function(aid, timestamp, value) {
+        let chart = $scope.charts[aid];
+        console.log(timestamp);
+        chart.data.datasets.forEach( (dataset) => {
+            dataset.data.push({
+                x: timestamp,
+                y: value
+            });
+            dataset.data.shift();
+        });
+        chart.update();
+    }
     $scope.loadRecordsChart = function(aid) {
         $http.get(appProperties.serverURL + ":" + appProperties.ports.data +
-            "/data/attributeValueRecords/search/findByThingAndAid?thing=" + $scope.thing.uid + "&aid=" + aid + "&size=50").then(
+            "/data/attributeValueRecords/search/findByThingAndAid?thing=" + $scope.thing.uid + "&aid=" + aid).then(
             (response) => {
                 let $chart = $("#" + aid + "-chart-records");
                 let records = response.data._embedded.attributeValueRecords;
-                let labels = [];
                 let data = [];
                 records.forEach( (record) => {
-                   labels.push(record.timestamp);
-                   data.push(record.value);
+                   data.push({
+                       x: record.timestamp,
+                       y: record.value
+                   });
                 });
-                labels.reverse();
                 data.reverse();
-                new Chart($chart, {
+                $scope.charts[aid] = new Chart($chart, {
                     type: 'line',
                     data: {
-                        labels: labels,
                         datasets: [{
                             label: 'value',
                             data: data,
@@ -71,6 +83,9 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
                     },
                     options: {
                         scales: {
+                            xAxes: [{
+                                type: 'time'
+                            }],
                             yAxes: [{
                                 ticks: {
                                     beginAtZero: true
