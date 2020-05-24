@@ -1,6 +1,7 @@
 angular.module("thing").controller("ThingController", ["$scope", "$http", "$location", "ngmqtt", function($scope, $http, $location, ngmqtt) {
     let uid = $location.path().split("/")[1];
     const mqttTopic = "things/" + uid;
+    const attributeValueTopics = "things/" + uid + "/attributes/+/value";
     const bmTopic = "BM/" + uid;
     let options = {
         clientId: "poc-ui." + uid,
@@ -11,10 +12,17 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
     ngmqtt.connect(appProperties.mqttURL + ":" + appProperties.ports.mqtt, options);
     ngmqtt.listenConnection("ThingController", () => {
         console.log("connected to MQTT");
-        ngmqtt.subscribe(mqttTopic);
+        // ngmqtt.subscribe(mqttTopic);
+        ngmqtt.subscribe(attributeValueTopics);
     });
     ngmqtt.listenMessage("ThingController", (topic, message) => {
-        $scope.thing = JSON.parse(message.toString())
+        let topicAid = topic.split("/")[3];
+        for (const attr of $scope.thing.attributes) {
+            if (attr.aid == topicAid) {
+                attr.value = message;
+                break;
+            }
+        }
         $scope.$apply();
     });
 
