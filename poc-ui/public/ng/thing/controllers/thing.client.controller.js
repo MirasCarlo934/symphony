@@ -1,30 +1,6 @@
-/*
-    $scope definition:
-    {
-        thing: thingObj
-        charts: {
-            [aid]: {
-                labels:
-                series:
-                data:
-            }
-        }
-    }
- */
 angular.module("thing").controller("ThingController", ["$scope", "$http", "$location", "ngmqtt", "uuid", function($scope, $http, $location, ngmqtt, uuid) {
-    // $scope = {
-    //     thing: null,
-    //     charts: {
-    //         aid: {
-    //             labels: null,
-    //             series: null,
-    //             data: null
-    //         }
-    //     }
-    // }
     let uid = $location.path().split("/")[1];
-    const mqttTopic = "things/" + uid;
-    const attributeValueTopics = "things/" + uid + "/attributes/+/value";
+    const thingTopic = "things/" + uid + "/#";
     const bmTopic = "BM/" + uid;
     let options = {
         clientId: uuid.v4(),
@@ -36,14 +12,26 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
     ngmqtt.listenConnection("ThingController", () => {
         console.log("connected to MQTT");
         // ngmqtt.subscribe(mqttTopic);
-        ngmqtt.subscribe(attributeValueTopics);
+        ngmqtt.subscribe(thingTopic);
     });
     ngmqtt.listenMessage("ThingController", (topic, message) => {
-        let topicAid = topic.split("/")[3];
-        for (const attr of $scope.thing.attributes) {
-            if (attr.aid == topicAid) {
-                attr.value = message;
-                break;
+        let topicLevels = topic.split("/");
+
+        if (topicLevels.length === 3) { // thing field update
+            let uid = topicLevels[1];
+            let field = topicLevels[2];
+            $scope.thing[field] = message;
+        } else if (topicLevels.length === 5) { // attribute field update
+            let aid = topicLevels[3];
+            let field = topicLevels[4]
+            for (const attr of $scope.thing.attributes) {
+                if (attr.aid == aid) {
+                    attr[field] = message;
+                    if (field === "value") {
+                        $scope.loadRecordsChart(aid);
+                    }
+                    break;
+                }
             }
         }
         $scope.$apply();
