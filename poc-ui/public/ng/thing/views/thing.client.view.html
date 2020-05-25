@@ -24,7 +24,12 @@
                                 <button type="button" ng-click="updateValue(attr.aid)">submit</button>
                             </label>
                             <label ng-if="attr.dataType.type == 'enumeration'">
-                                <input ng-repeat="val in attr.dataType.constraints.values" type="radio" name="value" value="{{val}}"/>
+                                <div ng-repeat="val in attr.dataType.constraints.values" >
+                                    <input ng-if="val == attr.value" type="radio" name="value" value="{{val}}" checked/>
+                                    <input ng-if="val != attr.value" type="radio" name="value" value="{{val}}"/>
+                                    {{val}}
+                                </div>
+                                <br/>
                                 <button type="button" ng-click="updateValue(attr.aid)">submit</button>
                             </label>
                             <br/>
@@ -41,10 +46,10 @@
         <br/>
 
         <h2>in the last 24 hours...</h2>
-        <div style="padding-left: 16px; border-left: 4px solid darkorange">
-            <div ng-repeat="attr in thing.attributes">
+        <div style="padding-left: 16px; border-left: 4px solid steelblue">
+            <div ng-repeat="attr in thing.attributes" ng-if="attr.dataType.type != 'string'" style="margin-bottom: 48px">
                 <h2>{{attr.name}}</h2>
-                <div style="padding-left: 16px">
+                <div style="padding-left: 16px; border-left: 4px solid #cccccc">
                     <div ng-if="attr.dataType.type == 'number' || attr.dataType.type == 'binary'">
                         <h3>Value over Time</h3>
                         <canvas width="400" height="300" id="{{attr.aid}}-chart-records" ng-init="loadRecordsChart(attr.aid)">

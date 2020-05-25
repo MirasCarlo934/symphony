@@ -38,7 +38,7 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
         $scope.$apply();
     });
 
-    // get resources from server
+    // get thing resource from server
     $http.get(appProperties.serverURL + ":" + appProperties.ports.core + "/things/" + uid).then( (response) => {
         $scope.thing = response.data;
         $scope.thing.attributes.forEach( (attr) => {
@@ -77,10 +77,6 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
                         y: record.value
                     });
                 });
-                // data.unshift({
-                //     x: new Date().toISOString(),
-                //     y: attr.value
-                // })
                 $scope.charts[aid].records = new Chart($chart, {
                     type: 'line',
                     data: {
@@ -120,13 +116,13 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
             // "/data/attributeValueRecords/search/findByThingAndAid?thing=" + $scope.thing.uid + "&aid=" + aid).then(
             "/data/attributeValueRecords/stats/byDate?thing=" + $scope.thing.uid + "&aid=" + aid +
             "&from=" + yesterday.toISOString()).then( (response) => {
+                console.log(response);
                 let $chart = $("#" + aid + "-chart-timeSpentAt");
                 let timeSpentAt = response.data.timeSpentAt;
                 let labels = []
                 let data = [];
                 for (let value in timeSpentAt) {
                     if (!timeSpentAt.hasOwnProperty(value)) continue;
-                    if (timeSpentAt[value] !== 0) allZero = false;
                     labels.unshift(value);
                     data.unshift(timeSpentAt[value]);
                 }
@@ -170,7 +166,7 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
                                         if (time / timeDiv.millis > 1) {
                                             timeStr += Math.floor(time/timeDiv.millis) + timeDiv.unit + " ";
                                             time = time % timeDiv.millis;
-                                        } else continue;
+                                        }
                                     }
                                     label += timeStr;
                                     return label;
@@ -187,11 +183,6 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
         let $valueForm = $("#" + aid + "-valueForm");
         let val = $valueForm.find("input[name='value']").val();
         ngmqtt.publish(bmTopic + "/attributes/" + aid + "/value", val.toString());
-    }
-    $scope.enterKeyPressUpdateValue = (aid, $event) => {
-        if ($event.which === 13) {
-            alert("Enter pressed");
-        }
     }
     // for binary data types only
     $scope.toggleValue = (aid) => {
