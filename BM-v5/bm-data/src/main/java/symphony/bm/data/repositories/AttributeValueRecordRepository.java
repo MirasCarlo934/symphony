@@ -21,8 +21,15 @@ public interface AttributeValueRecordRepository extends MongoRepository<Attribut
     @Query(sort = "{timestamp: -1 }")
     AttributeValueRecord findFirstByThingAndAid(String thing, String aid);
     
+    
     @Query(sort = "{timestamp: -1 }")
     Page<AttributeValueRecord> findByThingAndAid(String thing, String aid, Pageable p);
+    
+    @RestResource(path = "findByThingAndAidBefore", rel = "findByThingAndAidFrom")
+    @Query(sort = "{timestamp: -1 }")
+    Page<AttributeValueRecord> findByThingAndAidAndTimestampLessThanEqual(String thing, String aid,
+                                                                         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date before,
+                                                                         Pageable p);
     
     @RestResource(path = "findByThingAndAidFrom", rel = "findByThingAndAidFrom")
     @Query(sort = "{timestamp: -1 }")

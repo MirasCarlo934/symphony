@@ -91,6 +91,15 @@ public class AttributeValueRecordRestController {
                         records = avrRepository.findByThingAndAidAndTimestampBetween(thing, aid, from, to, records.nextPageable());
                     }
                 } while (records.hasNext());
+                if (timeAtOne == 0 && timeAtZero == 0) {
+                    Page<AttributeValueRecord> latestData = avrRepository.findByThingAndAidAndTimestampLessThanEqual(thing, aid, currentTimestamp1, p);
+                    AttributeValueRecord avr = latestData.toList().get(0);
+                    if (Integer.parseInt(avr.getValue().toString()) == 1) {
+                        timeAtOne += currentTimestamp1.getTime() - from.getTime();
+                    } else {
+                        timeAtZero += currentTimestamp1.getTime() - from.getTime();
+                    }
+                }
                 stats = new BinaryAttributeValueRecordsStats(timeAtOne, timeAtZero, timeAtOne + timeAtZero, thing, aid, from, to, p);
                 break;
                 

@@ -40,21 +40,19 @@
         <br/>
         <br/>
 
-        <h2>Data</h2>
+        <h2>in the last 24 hours...</h2>
         <div style="padding-left: 16px; border-left: 4px solid darkorange">
             <div ng-repeat="attr in thing.attributes">
                 <h2>{{attr.name}}</h2>
                 <div style="padding-left: 16px">
                     <div ng-if="attr.dataType.type == 'number' || attr.dataType.type == 'binary'">
                         <h3>Value over Time</h3>
-                        <canvas id="{{attr.aid}}-chart-records" ng-init="loadRecordsChart(attr.aid)">
-<!--                                class="chart chart-line"-->
-<!--                                chart-data="charts.abcdefgh.data"-->
-<!--                                chart-labels="charts.abcdefgh.labels"-->
-<!--                                chart-series="charts.abcdefgh.series"-->
-<!--                                chart-dataset-override="charts.abcdefgh.datasetOverride"-->
-<!--                                chart-options="charts.abcdefgh.options"-->
-<!--                                chart-click="onClick">-->
+                        <canvas id="{{attr.aid}}-chart-records" ng-init="loadCharts(attr.aid)">
+                        </canvas>
+                    </div>
+                    <div ng-if="attr.dataType.type == 'enumeration' || attr.dataType.type == 'binary'">
+                        <h3>Time Spent At</h3>
+                        <canvas id="{{attr.aid}}-chart-timeSpentAt" ng-init="loadTimeSpentAtChart(attr.aid)">
                         </canvas>
                     </div>
                 </div>

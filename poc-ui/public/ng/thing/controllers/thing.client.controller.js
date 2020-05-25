@@ -41,6 +41,9 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
     // get resources from server
     $http.get(appProperties.serverURL + ":" + appProperties.ports.core + "/things/" + uid).then( (response) => {
         $scope.thing = response.data;
+        $scope.thing.attributes.forEach( (attr) => {
+            $scope.charts[attr.aid] = {};
+        })
     });
 
     // chart functions
@@ -57,9 +60,9 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
         chart.update();
     }
     $scope.loadRecordsChart = function(aid) {
-        let dateNow = new Date();
+        let attr = $scope.getAttribute(aid);
         let yesterday = new Date();
-        yesterday.setDate(dateNow.getDate()-1);
+        yesterday.setDate(yesterday.getDate()-1);
         $http.get(appProperties.serverURL + ":" + appProperties.ports.data +
             // "/data/attributeValueRecords/search/findByThingAndAid?thing=" + $scope.thing.uid + "&aid=" + aid).then(
             "/data/attributeValueRecords/search/findByThingAndAidFrom?thing=" + $scope.thing.uid + "&aid=" + aid +
@@ -69,13 +72,16 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
                 let records = response.data._embedded.attributeValueRecords;
                 let data = [];
                 records.forEach( (record) => {
-                   data.push({
-                       x: record.timestamp,
-                       y: record.value
-                   });
+                    data.unshift({
+                        x: record.timestamp,
+                        y: record.value
+                    });
                 });
-                data.reverse();
-                $scope.charts[aid] = new Chart($chart, {
+                data.unshift({
+                    x: new Date().toISOString(),
+                    y: attr.value
+                })
+                $scope.charts[aid].records = new Chart($chart, {
                     type: 'line',
                     data: {
                         datasets: [{
@@ -102,6 +108,40 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
                         }
                     }
                 });
+            });
+    }
+    $scope.loadTimeSpentAtChart = function(aid) {
+        let yesterday = new Date();
+        yesterday.setDate(yesterday.getDate()-1);
+        $http.get(appProperties.serverURL + ":" + appProperties.ports.data +
+            // "/data/attributeValueRecords/search/findByThingAndAid?thing=" + $scope.thing.uid + "&aid=" + aid).then(
+            "/data/attributeValueRecords/stats/byDate?thing=" + $scope.thing.uid + "&aid=" + aid +
+            "&from=" + yesterday.toISOString()).then( (response) => {
+                let $chart = $("#" + aid + "-chart-timeSpentAt");
+                let timeSpentAt = response.data.timeSpentAt;
+                let labels = []
+                let data = [];
+                for (let value in timeSpentAt) {
+                    if (!timeSpentAt.hasOwnProperty(value)) continue;
+                    if (timeSpentAt[value] !== 0) allZero = false;
+                    console.log(value + ": " + timeSpentAt[value]);
+                    labels.unshift(value);
+                    data.unshift(timeSpentAt[value]);
+                }
+                $scope.charts[aid].timeSpentAt = new Chart($chart, {
+                    type: 'radar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: data
+                        }]
+                    },
+                    options: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                });
         });
     }
 
@@ -124,30 +164,12 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
         ngmqtt.publish(bmTopic + "/attributes/" + aid + "/value", val.toString());
     }
 
-    // for angular-charts testing
-    $scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
-    $scope.series = ['Series A', 'Series B'];
-    $scope.data = [
-        [65, 59, 80, 81, 56, 55, 40],
-        [28, 48, 40, 19, 86, 27, 90]
-    ];
-    $scope.datasetOverride = [{ yAxisID: 'y-axis-1' }, { yAxisID: 'y-axis-2' }];
-    $scope.options = {
-        scales: {
-            yAxes: [
-                {
-                    id: 'y-axis-1',
-                    type: 'linear',
-                    display: true,
-                    position: 'left'
-                },
-                {
-                    id: 'y-axis-2',
-                    type: 'linear',
-                    display: true,
-                    position: 'right'
-                }
-            ]
+    // utility functions
+    $scope.getAttribute = (aid) => {
+        for (const attr of $scope.thing.attributes) {
+            if (attr.aid == aid) {
+                return attr;
+            }
         }
-    };
+    }
 }]);
