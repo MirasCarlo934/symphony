@@ -91,8 +91,9 @@ public class AttributeValueRecordRestController {
                         records = avrRepository.findByThingAndAidAndTimestampBetween(thing, aid, from, to, records.nextPageable());
                     }
                 } while (records.hasNext());
+                // if no records were retrieved from the time range, get latest record since 'from'
                 if (timeAtOne == 0 && timeAtZero == 0) {
-                    Page<AttributeValueRecord> latestData = avrRepository.findByThingAndAidAndTimestampLessThanEqual(thing, aid, currentTimestamp1, p);
+                    Page<AttributeValueRecord> latestData = avrRepository.findByThingAndAidAndTimestampLessThanEqual(thing, aid, from, p);
                     AttributeValueRecord avr = latestData.toList().get(0);
                     if (Integer.parseInt(avr.getValue().toString()) == 1) {
                         timeAtOne += currentTimestamp1.getTime() - from.getTime();
@@ -130,6 +131,13 @@ public class AttributeValueRecordRestController {
                         records = avrRepository.findByThingAndAidAndTimestampBetween(thing, aid, from, to, records.nextPageable());
                     }
                 } while (records.hasNext());
+                // if no records were retrieved from the time range, get latest record since 'from'
+                if (totalTime == 0) {
+                    Page<AttributeValueRecord> latestData = avrRepository.findByThingAndAidAndTimestampLessThanEqual(thing, aid, from, p);
+                    AttributeValueRecord avr = latestData.toList().get(0);
+                    totalTime = currentTimestamp2.getTime() - from.getTime();
+                    timeSpentAt.put(avr.getValue().toString(), totalTime);
+                }
                 stats = new EnumerationAttributeValueRecordsStats(timeSpentAt, totalTime, thing, aid, from, to , p);
                 break;
                 
