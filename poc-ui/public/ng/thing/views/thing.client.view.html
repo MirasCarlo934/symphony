@@ -47,12 +47,12 @@
                 <div style="padding-left: 16px">
                     <div ng-if="attr.dataType.type == 'number' || attr.dataType.type == 'binary'">
                         <h3>Value over Time</h3>
-                        <canvas id="{{attr.aid}}-chart-records" ng-init="loadCharts(attr.aid)">
+                        <canvas width="400" height="300" id="{{attr.aid}}-chart-records" ng-init="loadRecordsChart(attr.aid)">
                         </canvas>
                     </div>
                     <div ng-if="attr.dataType.type == 'enumeration' || attr.dataType.type == 'binary'">
                         <h3>Time Spent At</h3>
-                        <canvas id="{{attr.aid}}-chart-timeSpentAt" ng-init="loadTimeSpentAtChart(attr.aid)">
+                        <canvas width="300" height="300" id="{{attr.aid}}-chart-timeSpentAt" ng-init="loadTimeSpentAtChart(attr.aid)">
                         </canvas>
                     </div>
                 </div>

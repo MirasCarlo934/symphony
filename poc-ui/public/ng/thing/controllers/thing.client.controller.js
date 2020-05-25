@@ -77,10 +77,10 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
                         y: record.value
                     });
                 });
-                data.unshift({
-                    x: new Date().toISOString(),
-                    y: attr.value
-                })
+                // data.unshift({
+                //     x: new Date().toISOString(),
+                //     y: attr.value
+                // })
                 $scope.charts[aid].records = new Chart($chart, {
                     type: 'line',
                     data: {
@@ -93,6 +93,8 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
                         }]
                     },
                     options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
                         legend: {
                             display: false
                         },
@@ -111,6 +113,7 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
             });
     }
     $scope.loadTimeSpentAtChart = function(aid) {
+        const colors = ["red", "blue", "yellow", "green", "purple", "orange", "cyan", "magenta"]
         let yesterday = new Date();
         yesterday.setDate(yesterday.getDate()-1);
         $http.get(appProperties.serverURL + ":" + appProperties.ports.data +
@@ -124,21 +127,55 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
                 for (let value in timeSpentAt) {
                     if (!timeSpentAt.hasOwnProperty(value)) continue;
                     if (timeSpentAt[value] !== 0) allZero = false;
-                    console.log(value + ": " + timeSpentAt[value]);
                     labels.unshift(value);
                     data.unshift(timeSpentAt[value]);
                 }
                 $scope.charts[aid].timeSpentAt = new Chart($chart, {
-                    type: 'radar',
+                    type: 'doughnut',
                     data: {
                         labels: labels,
                         datasets: [{
-                            data: data
+                            data: data,
+                            backgroundColor: colors
                         }]
                     },
                     options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
                         legend: {
-                            display: false
+                            display: true
+                        },
+                        tooltips: {
+                            callbacks: {
+                                label: function(tooltipItem, data) {
+                                    let label = data.labels[tooltipItem.index] || '';
+                                    let time = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                                    let timeStr = "";
+                                    const timeDivisions = [{
+                                        millis: 24*60*60*1000, unit: "d"
+                                    }, {
+                                        millis: 60*60*1000, unit: "h"
+                                    }, {
+                                        millis: 60*1000, unit: "m"
+                                    }, {
+                                        millis: 1000, unit: "s"
+                                    }]
+
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    for (let i = 0; i < timeDivisions.length; i++) {
+                                        let timeDiv = timeDivisions[i];
+                                        console.log(time / timeDiv.millis);
+                                        if (time / timeDiv.millis > 1) {
+                                            timeStr += Math.floor(time/timeDiv.millis) + timeDiv.unit + " ";
+                                            time = time % timeDiv.millis;
+                                        } else continue;
+                                    }
+                                    label += timeStr;
+                                    return label;
+                                }
+                            }
                         }
                     }
                 });
