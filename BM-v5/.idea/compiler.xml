@@ -8,10 +8,10 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="bm-data" />
-        <module name="bm-core" />
         <module name="bm-generics" />
         <module name="bm-mqtt" />
         <module name="bm-cir" />
+        <module name="bm-core" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

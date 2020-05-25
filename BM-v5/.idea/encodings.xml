@@ -6,6 +6,7 @@
     <file url="file://$PROJECT_DIR$/bm-core/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/bm-core/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/bm-data/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/bm-data/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/bm-mqtt/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/bm-mqtt/src/main/resources" charset="UTF-8" />
   </component>
