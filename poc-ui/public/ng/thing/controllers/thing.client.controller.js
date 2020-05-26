@@ -48,7 +48,7 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
 
     // chart functions
     $scope.addLatestRecordToChart = function(aid, timestamp, value) {
-        let chart = $scope.charts[aid];
+        let chart = $scope.charts[aid].records;
         console.log(timestamp);
         chart.data.datasets.forEach( (dataset) => {
             dataset.data.push({

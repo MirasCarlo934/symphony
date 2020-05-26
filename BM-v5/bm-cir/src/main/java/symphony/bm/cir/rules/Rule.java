@@ -31,6 +31,7 @@ import symphony.bm.core.activitylisteners.ActivityListenerManager;
 import symphony.bm.core.iot.Attribute;
 import symphony.bm.core.iot.IotResource;
 import symphony.bm.core.iot.Thing;
+import symphony.bm.core.iot.attribute.AttributeMode;
 
 import java.util.Iterator;
 import java.util.List;
@@ -100,7 +101,12 @@ public class Rule implements MessageHandler {
                 Facts facts = new Facts();
                 namespaces.forEach(n -> {
                     n.getResource().setActivityListenerManager(activityListenerManager);
-                    facts.put(n.getName(), n.getResource());
+                    if (n.isCondition() || n.isThing() || ((Attribute) n.getResource()).getMode() == AttributeMode.controllable) {
+                        facts.put(n.getName(), n.getResource());
+                    } else {
+                        log.warn("Namespace attribute " + n.getURL() + " is not a condition and is not controllable. " +
+                                "It will not be updated.");
+                    }
                 });
                 rules.register(r);
                 engine.fire(rules, facts);
