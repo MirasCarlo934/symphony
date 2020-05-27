@@ -1,4 +1,4 @@
-angular.module("thing").controller("ThingController", ["$scope", "$http", "$location", "ngmqtt", "uuid", function($scope, $http, $location, ngmqtt, uuid) {
+angular.module("thing").controller("ThingController", ["$scope", "$http", "$location", "ngmqtt", "uuid", "moment", function($scope, $http, $location, ngmqtt, uuid, moment) {
     $scope.charts = {};
     let uid = $location.path().split("/")[1];
     const thingTopic = "things/" + uid + "/#";
@@ -98,6 +98,16 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
                         legend: {
                             display: false
                         },
+                        tooltips: {
+                            callbacks: {
+                                title: function(tooltipItem, data) {
+                                    let datasetIndex = tooltipItem[0].datasetIndex;
+                                    let index = tooltipItem[0].index;
+                                    let title = data.datasets[datasetIndex].data[index].x;
+                                    return moment(title).calendar();
+                                }
+                            }
+                        },
                         scales: {
                             xAxes: [{
                                 type: 'time'
@@ -120,7 +130,6 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
             // "/data/attributeValueRecords/search/findByThingAndAid?thing=" + $scope.thing.uid + "&aid=" + aid).then(
             "/data/attributeValueRecords/stats/byDate?thing=" + $scope.thing.uid + "&aid=" + aid +
             "&from=" + yesterday.toISOString()).then( (response) => {
-                console.log(response);
                 let $chart = $("#" + aid + "-chart-timeSpentAt");
                 let timeSpentAt = response.data.timeSpentAt;
                 let labels = []
