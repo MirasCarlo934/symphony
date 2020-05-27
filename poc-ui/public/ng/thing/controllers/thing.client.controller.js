@@ -55,7 +55,7 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
                 x: timestamp,
                 y: value
             });
-            dataset.data.shift();
+            // dataset.data.shift();
         });
         chart.update();
     }
