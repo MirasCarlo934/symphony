@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <section ng-controller="ThingController">
-    <h1>{{thing.name}}</h1>
-    <br/>
+    <h1 class="header1">{{thing.name}}</h1>
     <br/>
 
-    <h2>Controls</h2>
+<!--    <h2 class="header2">Controls</h2>-->
     <div>
         <div style="padding-left: 16px; border-left: 4px solid steelblue">
             <table style="border-collapse: collapse">
                 <tr ng-repeat="attr in thing.attributes">
-                    <td style="text-align: left; padding-right: 32px;"><h2>{{attr.name}}</h2></td>
+                    <td style="text-align: left; padding-right: 32px;"><h3 class="header3">{{attr.name}}</h3></td>
                     <td style="text-align: left; padding-left: 32px; border-left: 1px solid lightsteelblue">
                         <form id="{{attr.aid}}-valueForm">
                             <label ng-if="attr.dataType.type == 'binary'" ng-click="toggleValue(attr.aid)" class="switch">
@@ -23,19 +22,19 @@
                                        max="{{attr.dataType.constraints.max}}"/>
                                 <button type="button" ng-click="updateValue(attr.aid)">submit</button>
                             </label>
-                            <label ng-if="attr.dataType.type == 'enumeration'">
-                                <div ng-repeat="val in attr.dataType.constraints.values" >
+                            <div ng-if="attr.dataType.type == 'enumeration'">
+                                <label ng-repeat="val in attr.dataType.constraints.values" >
                                     <input ng-if="val == attr.value" type="radio" name="value" value="{{val}}" checked/>
                                     <input ng-if="val != attr.value" type="radio" name="value" value="{{val}}"/>
                                     {{val}}
-                                </div>
-                                <br/>
-                                <button type="button" ng-click="updateValue(attr.aid)">submit</button>
-                            </label>
+                                    <br/>
+                                </label>
+                                <button type="button" ng-click="updateValue(attr.aid, 'radio')">submit</button>
+                            </div>
                             <br/>
                             <label ng-if="attr.dataType.type == 'string'">
                                 <textarea name="value">{{attr.value}}</textarea>
-                                <button type="button" ng-click="updateValue(attr.aid)">submit</button>
+                                <button type="button" ng-click="updateValue(attr.aid, 'textarea')">submit</button>
                             </label>
                         </form>
                     </td>
@@ -45,18 +44,16 @@
         <br/>
         <br/>
 
-        <h2>in the last 24 hours...</h2>
+        <h2 class="header2">in the last 24 hours...</h2>
         <div style="padding-left: 16px; border-left: 4px solid steelblue">
             <div ng-repeat="attr in thing.attributes" ng-if="attr.dataType.type != 'string'" style="margin-bottom: 48px">
-                <h2>{{attr.name}}</h2>
-                <div style="padding-left: 16px; border-left: 4px solid #cccccc">
-                    <div ng-if="attr.dataType.type == 'number' || attr.dataType.type == 'binary'">
-                        <h3>Value over Time</h3>
+                <h3 class="header3">{{attr.name}}</h3>
+                <div class="row" style="padding-left: 16px; border-left: 4px solid #cccccc">
+                    <div class="col-8" ng-if="attr.dataType.type == 'number' || attr.dataType.type == 'binary'">
                         <canvas width="400" height="300" id="{{attr.aid}}-chart-records" ng-init="loadRecordsChart(attr.aid)">
                         </canvas>
                     </div>
-                    <div ng-if="attr.dataType.type == 'enumeration' || attr.dataType.type == 'binary'">
-                        <h3>Time Spent At</h3>
+                    <div class="col-4" ng-if="attr.dataType.type == 'enumeration' || attr.dataType.type == 'binary'">
                         <canvas width="300" height="300" id="{{attr.aid}}-chart-timeSpentAt" ng-init="loadTimeSpentAtChart(attr.aid)">
                         </canvas>
                     </div>

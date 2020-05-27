@@ -1,10 +1,10 @@
 appProperties = {
     // serverURL: "http://192.168.0.125",
     // serverURL: "http://localhost",
-    serverURL: "http://ec2-3-135-233-237.us-east-2.compute.amazonaws.com",
+    serverURL: "http://35.241.123.200",
     // mqttURL: "ws://192.168.0.125",
     // mqttURL: "ws://localhost",
-    mqttURL: "ws://ec2-3-135-233-237.us-east-2.compute.amazonaws.com",
+    mqttURL: "ws://35.241.123.200",
     ports: {
         core: "8080",
         data: "8083",

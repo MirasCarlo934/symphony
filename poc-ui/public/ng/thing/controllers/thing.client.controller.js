@@ -91,6 +91,10 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        title: {
+                            display: true,
+                            text: "Value over Time"
+                        },
                         legend: {
                             display: false
                         },
@@ -138,6 +142,10 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        title: {
+                            display: true,
+                            text: "Time Spent At"
+                        },
                         legend: {
                             display: true
                         },
@@ -179,9 +187,16 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
     }
 
     // view functions
-    $scope.updateValue = (aid) => {
+    $scope.updateValue = (aid, inputType) => {
         let $valueForm = $("#" + aid + "-valueForm");
-        let val = $valueForm.find("input[name='value']").val();
+        let val;
+        if (inputType === "radio") {
+            val = $valueForm.find("input[name='value']:checked").val();
+        } else if (inputType === "textarea"){
+            val = $valueForm.find("textarea[name='value']").val();
+        } else {
+            val = $valueForm.find("input[name='value']").val();
+        }
         ngmqtt.publish(bmTopic + "/attributes/" + aid + "/value", val.toString());
     }
     // for binary data types only

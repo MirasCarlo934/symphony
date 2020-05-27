@@ -3,6 +3,19 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
+.header1 {
+  font: 48px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+.header2 {
+  font: italic 24px "Lucida Grande", Helvetica, Arial, sans-serif;
+  margin-bottom: 16px;
+}
+
+.header3 {
+  font: bold 24px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
 a {
   color: #00B7FF;
 }
