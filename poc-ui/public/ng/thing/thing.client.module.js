@@ -1,1 +1,1 @@
-angular.module("thing", []);
+const thingModule = angular.module("thing", []);

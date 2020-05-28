@@ -317,9 +317,4 @@ public class ThingController {
         log.info(msg);
         return new ResponseEntity<>(new MicroserviceSuccessfulMessage(msg), status);
     }
-
-//    private ResponseEntity<MicroserviceMessage> buildErrorResponseEntity(String msg, HttpStatus status) {
-//        log.error(msg);
-//        return new ResponseEntity<>(new MicroserviceUnsuccessfulMesage(msg), status);
-//    }
 }
