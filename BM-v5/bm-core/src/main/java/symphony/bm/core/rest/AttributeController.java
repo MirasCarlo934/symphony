@@ -14,6 +14,7 @@ import symphony.bm.core.iot.Attribute;
 import symphony.bm.core.iot.attribute.AttributeDataType;
 import symphony.bm.core.rest.forms.attribute.AttributeUpdateForm;
 import symphony.bm.core.rest.hateoas.AttributeModel;
+import symphony.bm.core.rest.hateoas.GroupModel;
 import symphony.bm.generics.exceptions.RestControllerProcessingException;
 import symphony.bm.generics.messages.MicroserviceMessage;
 import symphony.bm.generics.messages.MicroserviceSuccessfulMessage;
@@ -63,6 +64,27 @@ public class AttributeController {
                 } else {
                     return attribute;
                 }
+            } else {
+                throw new RestControllerProcessingException("Attribute " + thing.getUid() + "/" + aid
+                        + " does not exist", HttpStatus.NOT_FOUND);
+            }
+        } else {
+            throw new RestControllerProcessingException("Thing " + uid + " does not exist", HttpStatus.NOT_FOUND);
+        }
+    }
+    
+    @GetMapping("/{aid}/{field}")
+    public Object getField(@PathVariable String uid, @PathVariable String aid, @PathVariable String field)
+            throws RestControllerProcessingException {
+        Thing thing = superGroup.getThingRecursively(uid);
+        if (thing != null) {
+            Attribute attribute = thing.getAttribute(aid);
+            if (attribute != null) {
+                Object fieldValue = attribute.getField(field);
+                if (fieldValue == null) {
+                    throw new RestControllerProcessingException("Field " + field + " does not exist for resource", HttpStatus.BAD_REQUEST);
+                }
+                return fieldValue;
             } else {
                 throw new RestControllerProcessingException("Attribute " + thing.getUid() + "/" + aid
                         + " does not exist", HttpStatus.NOT_FOUND);
