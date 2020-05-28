@@ -1,4 +1,4 @@
-angular.module("thing").controller("ThingController", ["$scope", "$http", "$location", "ngmqtt", "uuid", "moment", function($scope, $http, $location, ngmqtt, uuid, moment) {
+angular.module("thing").controller("ThingController", ["$scope", "$http", "$location", "$interval", "ngmqtt", "uuid", "moment", function($scope, $http, $location, $interval, ngmqtt, uuid, moment) {
     $scope.charts = {};
     let uid = $location.path().split("/")[1];
     const thingTopic = "things/" + uid + "/#";
@@ -12,7 +12,6 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
     ngmqtt.connect(appProperties.mqttURL + ":" + appProperties.ports.mqtt, options);
     ngmqtt.listenConnection("ThingController", () => {
         console.log("connected to MQTT");
-        // ngmqtt.subscribe(mqttTopic);
         ngmqtt.subscribe(thingTopic);
     });
     ngmqtt.listenMessage("ThingController", (topic, message) => {
@@ -192,6 +191,8 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
                         }
                     }
                 });
+                // TODO time spent at chart should reload every minute
+                // $interval($scope.loadTimeSpentAtChart(aid), 60*1000);
         });
     }
 
