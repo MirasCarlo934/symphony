@@ -186,7 +186,6 @@ thingModule.controller("ThingController", ["$log", "$scope", "$http", "$location
 
             // reload data every minute
             $interval(() => {
-                $log.error("update...");
                 let yesterday = new Date();
                 yesterday.setDate(yesterday.getDate()-1);
                 dataService.getAttributeValueStats($scope.thing.uid, aid, yesterday).then( (response) => {
