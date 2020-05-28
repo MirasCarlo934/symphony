@@ -229,8 +229,15 @@ public class Group extends Groupable implements Resource {
     }
     
     @Override
+    @SneakyThrows
     public Object getField(String fieldName) {
-        // TODO
+        for (Method method : this.getClass().getMethods()) {
+            String methodName = method.getName().toLowerCase();
+            if ( (methodName.startsWith("get") && methodName.substring(3).equals(fieldName))
+                    || (methodName.startsWith("is")) && methodName.substring(2).equals(fieldName)) {
+                return method.invoke(this);
+            }
+        }
         return null;
     }
     

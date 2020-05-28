@@ -39,7 +39,7 @@ public class GroupController {
             return superGroup.getContainedGroups();
         }
     }
-
+    
     @GetMapping("/{gid}")
     public Object get(@PathVariable String gid,
                       @RequestParam(value = "restful", required = false, defaultValue = "true") Boolean restful) throws RestControllerProcessingException {
@@ -52,6 +52,19 @@ public class GroupController {
         } else {
             return group;
         }
+    }
+    
+    @GetMapping("/{gid}/{field}")
+    public Object getField(@PathVariable String gid, @PathVariable String field) throws RestControllerProcessingException {
+        Group group = superGroup.getGroupRecursively(gid);
+        if (group == null) {
+            throw new RestControllerProcessingException("Group " + gid + " does not exist", HttpStatus.NOT_FOUND);
+        }
+        Object fieldValue = group.getField(field);
+        if (fieldValue == null) {
+            throw new RestControllerProcessingException("Field " + field + " does not exist for resource", HttpStatus.BAD_REQUEST);
+        }
+        return fieldValue;
     }
 
     @DeleteMapping("/{gid}")
