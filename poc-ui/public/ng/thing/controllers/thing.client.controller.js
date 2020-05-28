@@ -1,4 +1,4 @@
-thingModule.controller("ThingController", ["$scope", "$http", "$location", "ngmqtt", "uuid", "moment", "data", function($scope, $http, $location, ngmqtt, uuid, moment, data) {
+thingModule.controller("ThingController", ["$log", "$scope", "$http", "$location", "$interval", "ngmqtt", "uuid", "moment", "data", function($log, $scope, $http, $location, $interval, ngmqtt, uuid, moment, dataService) {
     $scope.charts = {};
     let uid = $location.path().split("/")[1];
     const thingTopic = "things/" + uid + "/#";
@@ -11,8 +11,7 @@ thingModule.controller("ThingController", ["$scope", "$http", "$location", "ngmq
 
     ngmqtt.connect(appProperties.mqttURL + ":" + appProperties.ports.mqtt, options);
     ngmqtt.listenConnection("ThingController", () => {
-        console.log("connected to MQTT");
-        // ngmqtt.subscribe(mqttTopic);
+        $log.info("connected to MQTT");
         ngmqtt.subscribe(thingTopic);
     });
     ngmqtt.listenMessage("ThingController", (topic, message) => {
@@ -49,7 +48,6 @@ thingModule.controller("ThingController", ["$scope", "$http", "$location", "ngmq
     // chart functions
     $scope.addLatestRecordToChart = function(aid, timestamp, value) {
         let chart = $scope.charts[aid].records;
-        console.log(timestamp);
         chart.data.datasets.forEach( (dataset) => {
             dataset.data.push({
                 x: timestamp,
@@ -63,11 +61,7 @@ thingModule.controller("ThingController", ["$scope", "$http", "$location", "ngmq
         let attr = $scope.getAttribute(aid);
         let yesterday = new Date();
         yesterday.setDate(yesterday.getDate()-1);
-        // $http.get(appProperties.serverURL + ":" + appProperties.ports.data +
-        //     // "/data/attributeValueRecords/search/findByThingAndAid?thing=" + $scope.thing.uid + "&aid=" + aid).then(
-        //     "/data/attributeValueRecords/search/findByThingAndAidFrom?thing=" + $scope.thing.uid + "&aid=" + aid +
-        //     "&from=" + yesterday.toISOString()).then(
-        data.getAttributeValueRecords($scope.thing.uid, aid, yesterday).then(
+        dataService.getAttributeValueRecords($scope.thing.uid, aid, yesterday).then(
             (response) => {
                 let $chart = $("#" + aid + "-chart-records");
                 let records = response.data._embedded.attributeValueRecords;
@@ -127,72 +121,86 @@ thingModule.controller("ThingController", ["$scope", "$http", "$location", "ngmq
         const colors = ["red", "blue", "yellow", "green", "purple", "orange", "cyan", "magenta"]
         let yesterday = new Date();
         yesterday.setDate(yesterday.getDate()-1);
-        $http.get(appProperties.serverURL + ":" + appProperties.ports.data +
-            // "/data/attributeValueRecords/search/findByThingAndAid?thing=" + $scope.thing.uid + "&aid=" + aid).then(
-            "/data/attributeValueRecords/stats/byDate?thing=" + $scope.thing.uid + "&aid=" + aid +
-            "&from=" + yesterday.toISOString()).then( (response) => {
-                let $chart = $("#" + aid + "-chart-timeSpentAt");
-                let timeSpentAt = response.data.timeSpentAt;
-                let labels = []
-                let data = [];
-                for (let value in timeSpentAt) {
-                    if (!timeSpentAt.hasOwnProperty(value)) continue;
-                    labels.unshift(value);
-                    data.unshift(timeSpentAt[value]);
-                }
-                $scope.charts[aid].timeSpentAt = new Chart($chart, {
-                    type: 'doughnut',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            data: data,
-                            backgroundColor: colors
-                        }]
+        dataService.getAttributeValueStats($scope.thing.uid, aid, yesterday).then( (response) => {
+            let $chart = $("#" + aid + "-chart-timeSpentAt");
+            let timeSpentAt = response.data.timeSpentAt;
+            let labels = []
+            let data = [];
+            for (let value in timeSpentAt) {
+                if (!timeSpentAt.hasOwnProperty(value)) continue;
+                labels.unshift(value);
+                data.unshift(timeSpentAt[value]);
+            }
+            $scope.charts[aid].timeSpentAt = new Chart($chart, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    title: {
+                        display: true,
+                        text: "Time Spent At"
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        title: {
-                            display: true,
-                            text: "Time Spent At"
-                        },
-                        legend: {
-                            display: true
-                        },
-                        tooltips: {
-                            callbacks: {
-                                label: function(tooltipItem, data) {
-                                    let label = data.labels[tooltipItem.index] || '';
-                                    let time = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-                                    let timeStr = "";
-                                    const timeDivisions = [{
-                                        millis: 24*60*60*1000, unit: "d"
-                                    }, {
-                                        millis: 60*60*1000, unit: "h"
-                                    }, {
-                                        millis: 60*1000, unit: "m"
-                                    }, {
-                                        millis: 1000, unit: "s"
-                                    }]
+                    legend: {
+                        display: true
+                    },
+                    tooltips: {
+                        callbacks: {
+                            label: function(tooltipItem, data) {
+                                let label = data.labels[tooltipItem.index] || '';
+                                let time = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                                let timeStr = "";
+                                const timeDivisions = [{
+                                    millis: 24*60*60*1000, unit: "d"
+                                }, {
+                                    millis: 60*60*1000, unit: "h"
+                                }, {
+                                    millis: 60*1000, unit: "m"
+                                }, {
+                                    millis: 1000, unit: "s"
+                                }]
 
-                                    if (label) {
-                                        label += ': ';
-                                    }
-                                    for (let i = 0; i < timeDivisions.length; i++) {
-                                        let timeDiv = timeDivisions[i];
-                                        console.log(time / timeDiv.millis);
-                                        if (time / timeDiv.millis > 1) {
-                                            timeStr += Math.floor(time/timeDiv.millis) + timeDiv.unit + " ";
-                                            time = time % timeDiv.millis;
-                                        }
-                                    }
-                                    label += timeStr;
-                                    return label;
+                                if (label) {
+                                    label += ': ';
                                 }
+                                for (let i = 0; i < timeDivisions.length; i++) {
+                                    let timeDiv = timeDivisions[i];
+                                    if (time / timeDiv.millis > 1) {
+                                        timeStr += Math.floor(time/timeDiv.millis) + timeDiv.unit + " ";
+                                        time = time % timeDiv.millis;
+                                    }
+                                }
+                                label += timeStr;
+                                return label;
                             }
                         }
                     }
+                }
+            });
+
+            // reload data every minute
+            $interval(() => {
+                $log.error("update...");
+                let yesterday = new Date();
+                yesterday.setDate(yesterday.getDate()-1);
+                dataService.getAttributeValueStats($scope.thing.uid, aid, yesterday).then( (response) => {
+                    let timeSpentAt = response.data.timeSpentAt;
+                    let data = [];
+                    for (let value in timeSpentAt) {
+                        if (!timeSpentAt.hasOwnProperty(value)) continue;
+                        labels.unshift(value);
+                        data.unshift(timeSpentAt[value]);
+                    }
+                    $scope.charts[aid].timeSpentAt.data.datasets[0].data = data;
+                    $scope.charts[aid].timeSpentAt.update;
                 });
+            }, 60*1000);
         });
     }
 
