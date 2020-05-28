@@ -170,7 +170,19 @@ public class Thing extends Groupable implements Resource {
         }
         return false;
     }
-
+    
+    @Override
+    @SneakyThrows
+    public Object getField(String fieldName) {
+        for (Method method : this.getClass().getMethods()) {
+            String methodName = method.getName().toLowerCase();
+            if (methodName.contains("get") && methodName.substring(3).equalsIgnoreCase(fieldName)) {
+                return method.invoke(this);
+            }
+        }
+        return null;
+    }
+    
     @Override
     public void delete() {
         for (Attribute attribute : attributes) {

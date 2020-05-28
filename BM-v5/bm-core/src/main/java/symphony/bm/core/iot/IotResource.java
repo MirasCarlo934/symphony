@@ -12,6 +12,7 @@ public abstract class IotResource {
 
     public abstract void create();
     public abstract boolean update(String fieldName, Object fieldValue) throws Exception;
+    public abstract Object getField(String fieldName);
     public abstract void delete();
 
 //    public void addActivityListener(ActivityListener activityListener) {

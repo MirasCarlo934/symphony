@@ -227,7 +227,13 @@ public class Group extends Groupable implements Resource {
         }
         return false;
     }
-
+    
+    @Override
+    public Object getField(String fieldName) {
+        // TODO
+        return null;
+    }
+    
     @Override
     public void delete() {
         activityListenerManager.groupDeleted(this);

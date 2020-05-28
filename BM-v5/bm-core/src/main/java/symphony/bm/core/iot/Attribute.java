@@ -148,7 +148,13 @@ public class Attribute extends IotResource implements Resource {
         }
         return false;
     }
-
+    
+    @Override
+    public Object getField(String fieldName) {
+        // TODO
+        return null;
+    }
+    
     @Override
     public void delete() {
         // all attribute create/delete functions are done on Thing-level

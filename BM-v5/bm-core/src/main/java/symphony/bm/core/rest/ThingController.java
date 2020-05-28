@@ -61,6 +61,19 @@ public class ThingController {
         }
     }
     
+    @GetMapping("/{uid}/{field}")
+    public Object getField(@PathVariable String uid, @PathVariable String field) throws RestControllerProcessingException {
+        Thing thing = superGroup.getThingRecursively(uid);
+        if (thing == null) {
+            throw new RestControllerProcessingException("Thing " + uid + " does not exist", HttpStatus.NOT_FOUND);
+        }
+        Object fieldValue = thing.getField(field);
+        if (fieldValue == null) {
+            throw new RestControllerProcessingException("Field " + field + " does not exist for resource", HttpStatus.BAD_REQUEST);
+        }
+        return fieldValue;
+    }
+    
     @DeleteMapping("/{uid}")
     public ResponseEntity<MicroserviceMessage> delete(@PathVariable String uid) throws RestControllerProcessingException {
         Thing thing = superGroup.getThingRecursively(uid);
