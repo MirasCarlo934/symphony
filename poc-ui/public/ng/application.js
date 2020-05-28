@@ -1,6 +1,6 @@
 var mainApplicationModuleName = "poc-ui";
 
-var mainApplicationModule = angular.module(mainApplicationModuleName, ["ngRoute", "ngmqtt", "thing", "angular-uuid"]);
+var mainApplicationModule = angular.module(mainApplicationModuleName, ["ngRoute", "ngmqtt", "thing", "angular-uuid", "angularMoment"]);
 
 mainApplicationModule.config(["$locationProvider",
     function ($locationProvider) {

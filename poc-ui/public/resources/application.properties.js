@@ -1,8 +1,10 @@
 appProperties = {
-    serverURL: "http://192.168.0.125",
+    // serverURL: "http://192.168.0.125",
     // serverURL: "http://localhost",
-    mqttURL: "ws://192.168.0.125",
+    serverURL: "http://35.241.123.200",
+    // mqttURL: "ws://192.168.0.125",
     // mqttURL: "ws://localhost",
+    mqttURL: "ws://35.241.123.200",
     ports: {
         core: "8080",
         data: "8083",

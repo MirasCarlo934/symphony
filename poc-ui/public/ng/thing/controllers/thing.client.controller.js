@@ -1,4 +1,4 @@
-angular.module("thing").controller("ThingController", ["$scope", "$http", "$location", "ngmqtt", "uuid", function($scope, $http, $location, ngmqtt, uuid) {
+angular.module("thing").controller("ThingController", ["$scope", "$http", "$location", "ngmqtt", "uuid", "moment", function($scope, $http, $location, ngmqtt, uuid, moment) {
     $scope.charts = {};
     let uid = $location.path().split("/")[1];
     const thingTopic = "things/" + uid + "/#";
@@ -48,14 +48,14 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
 
     // chart functions
     $scope.addLatestRecordToChart = function(aid, timestamp, value) {
-        let chart = $scope.charts[aid];
+        let chart = $scope.charts[aid].records;
         console.log(timestamp);
         chart.data.datasets.forEach( (dataset) => {
             dataset.data.push({
                 x: timestamp,
                 y: value
             });
-            dataset.data.shift();
+            // dataset.data.shift();
         });
         chart.update();
     }
@@ -91,8 +91,22 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        title: {
+                            display: true,
+                            text: "Value over Time"
+                        },
                         legend: {
                             display: false
+                        },
+                        tooltips: {
+                            callbacks: {
+                                title: function(tooltipItem, data) {
+                                    let datasetIndex = tooltipItem[0].datasetIndex;
+                                    let index = tooltipItem[0].index;
+                                    let title = data.datasets[datasetIndex].data[index].x;
+                                    return moment(title).calendar();
+                                }
+                            }
                         },
                         scales: {
                             xAxes: [{
@@ -116,7 +130,6 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
             // "/data/attributeValueRecords/search/findByThingAndAid?thing=" + $scope.thing.uid + "&aid=" + aid).then(
             "/data/attributeValueRecords/stats/byDate?thing=" + $scope.thing.uid + "&aid=" + aid +
             "&from=" + yesterday.toISOString()).then( (response) => {
-                console.log(response);
                 let $chart = $("#" + aid + "-chart-timeSpentAt");
                 let timeSpentAt = response.data.timeSpentAt;
                 let labels = []
@@ -138,6 +151,10 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        title: {
+                            display: true,
+                            text: "Time Spent At"
+                        },
                         legend: {
                             display: true
                         },
@@ -179,9 +196,16 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
     }
 
     // view functions
-    $scope.updateValue = (aid) => {
+    $scope.updateValue = (aid, inputType) => {
         let $valueForm = $("#" + aid + "-valueForm");
-        let val = $valueForm.find("input[name='value']").val();
+        let val;
+        if (inputType === "radio") {
+            val = $valueForm.find("input[name='value']:checked").val();
+        } else if (inputType === "textarea"){
+            val = $valueForm.find("textarea[name='value']").val();
+        } else {
+            val = $valueForm.find("input[name='value']").val();
+        }
         ngmqtt.publish(bmTopic + "/attributes/" + aid + "/value", val.toString());
     }
     // for binary data types only

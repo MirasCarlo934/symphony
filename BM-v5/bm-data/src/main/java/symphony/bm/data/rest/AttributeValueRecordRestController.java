@@ -93,10 +93,12 @@ public class AttributeValueRecordRestController {
                 } while (records.hasNext());
                 // get latest record since 'from' for the complete time range
                 AttributeValueRecord latestSinceFrom = avrRepository.findFirstByThingAndAidAndTimestampLessThanEqual(thing, aid, from);
-                if (Integer.parseInt(latestSinceFrom.getValue().toString()) == 1) {
-                    timeAtOne += currentTimestamp.getTime() - from.getTime();
-                } else {
-                    timeAtZero += currentTimestamp.getTime() - from.getTime();
+                if (latestSinceFrom != null) {
+                    if (Integer.parseInt(latestSinceFrom.getValue().toString()) == 1) {
+                        timeAtOne += currentTimestamp.getTime() - from.getTime();
+                    } else {
+                        timeAtZero += currentTimestamp.getTime() - from.getTime();
+                    }
                 }
                 stats = new BinaryAttributeValueRecordsStats(timeAtOne, timeAtZero, timeAtOne + timeAtZero, thing, aid, from, to, p);
                 break;
@@ -128,12 +130,14 @@ public class AttributeValueRecordRestController {
                         records = avrRepository.findByThingAndAidAndTimestampBetween(thing, aid, from, to, records.nextPageable());
                     }
                 } while (records.hasNext());
-                // if no records were retrieved from the time range, get latest record since 'from'
+                // get latest record since 'from' for the complete time range
                 AttributeValueRecord latestSinceFrom = avrRepository.findFirstByThingAndAidAndTimestampLessThanEqual(thing, aid, from);
-                long difference = currentTimestamp.getTime() - from.getTime();
-                timeSpentAt.put(latestSinceFrom.getValue().toString(), difference);
-                for (long time : timeSpentAt.values()) {
-                    totalTime += time;
+                if (latestSinceFrom != null) {
+                    long difference = currentTimestamp.getTime() - from.getTime();
+                    timeSpentAt.put(latestSinceFrom.getValue().toString(), difference);
+                    for (long time : timeSpentAt.values()) {
+                        totalTime += time;
+                    }
                 }
                 stats = new EnumerationAttributeValueRecordsStats(timeSpentAt, totalTime, thing, aid, from, to, p);
                 break;

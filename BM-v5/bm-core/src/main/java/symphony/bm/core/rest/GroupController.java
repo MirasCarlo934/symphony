@@ -105,6 +105,9 @@ public class GroupController {
             }
             parent.addGroup(group);
         }
+        if (group.getParentGroups().isEmpty()) {
+            superGroup.addGroup(group);
+        }
         group.create();
 
         return successResponseEntity("Group " + gid + " added", HttpStatus.CREATED);

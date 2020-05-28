@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="JavaScriptLibraryMappings">
-    <file url="PROJECT" libraries="{angular, angular-route, chartjs-plugin-zoom, hammerjs, jquery-3.5.1, paho-mqtt}" />
+    <file url="PROJECT" libraries="{angular, angular-route, bootstrap, chartjs-plugin-zoom, hammerjs, jquery-3.5.1, paho-mqtt}" />
     <includedPredefinedLibrary name="Node.js Core" />
   </component>
 </project>

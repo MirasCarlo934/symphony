@@ -101,10 +101,11 @@ public class Rule implements MessageHandler {
                 Facts facts = new Facts();
                 namespaces.forEach(n -> {
                     n.getResource().setActivityListenerManager(activityListenerManager);
-                    if (n.isThing() || ((Attribute) n.getResource()).getMode() == AttributeMode.controllable) {
+                    if (n.isCondition() || n.isThing() || ((Attribute) n.getResource()).getMode() == AttributeMode.controllable) {
                         facts.put(n.getName(), n.getResource());
-                    } else if (!n.isCondition()) {
-                        log.warn("Namespace attribute " + n.getURL() + " is not controllable. Its value will not change");
+                    } else {
+                        log.warn("Namespace attribute " + n.getURL() + " is not a condition and is not controllable. " +
+                                "It will not be updated.");
                     }
                 });
                 rules.register(r);
