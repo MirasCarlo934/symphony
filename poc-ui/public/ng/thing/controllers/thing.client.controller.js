@@ -1,4 +1,4 @@
-angular.module("thing").controller("ThingController", ["$scope", "$http", "$location", "ngmqtt", "uuid", "moment", function($scope, $http, $location, ngmqtt, uuid, moment) {
+thingModule.controller("ThingController", ["$scope", "$http", "$location", "ngmqtt", "uuid", "moment", "data", function($scope, $http, $location, ngmqtt, uuid, moment, data) {
     $scope.charts = {};
     let uid = $location.path().split("/")[1];
     const thingTopic = "things/" + uid + "/#";
@@ -63,10 +63,11 @@ angular.module("thing").controller("ThingController", ["$scope", "$http", "$loca
         let attr = $scope.getAttribute(aid);
         let yesterday = new Date();
         yesterday.setDate(yesterday.getDate()-1);
-        $http.get(appProperties.serverURL + ":" + appProperties.ports.data +
-            // "/data/attributeValueRecords/search/findByThingAndAid?thing=" + $scope.thing.uid + "&aid=" + aid).then(
-            "/data/attributeValueRecords/search/findByThingAndAidFrom?thing=" + $scope.thing.uid + "&aid=" + aid +
-            "&from=" + yesterday.toISOString()).then(
+        // $http.get(appProperties.serverURL + ":" + appProperties.ports.data +
+        //     // "/data/attributeValueRecords/search/findByThingAndAid?thing=" + $scope.thing.uid + "&aid=" + aid).then(
+        //     "/data/attributeValueRecords/search/findByThingAndAidFrom?thing=" + $scope.thing.uid + "&aid=" + aid +
+        //     "&from=" + yesterday.toISOString()).then(
+        data.getAttributeValueRecords($scope.thing.uid, aid, yesterday).then(
             (response) => {
                 let $chart = $("#" + aid + "-chart-records");
                 let records = response.data._embedded.attributeValueRecords;
