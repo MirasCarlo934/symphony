@@ -10,7 +10,7 @@
  */
 #include "MqttHandler.h"
 
-AsyncMqttClient mqttClient;
+AsyncMQTT mqttClient;
 String myId = "myMqttID";
 const char* mqttServer = "localhost";
 String subscribeTopic = "things/";
@@ -24,7 +24,7 @@ boolean connected = false, doReconnect = false;
 /*
  * This is the callback handler in Symphony.cpp that will be called when a message arrives.
  */
-void (* msgCallback) (char* topic, String payload, size_t len);
+void (* msgCallback) (const char* topic, String payload, size_t len);
 
 void onMqttConnect(bool sessionPresent) {
   Serial.println("[MQTT] Connected to MQTT.");
@@ -47,7 +47,7 @@ void onMqttConnect(bool sessionPresent) {
   doReconnect = false;
 }
 
-void onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
+void onMqttDisconnect(uint8_t reason) {
   Serial.printf("[MQTT] Disconnected from MQTT reason %i.\n", reason);
   //we send a message to the callback handler with topic="reboot" and len=reason
   connected = false;
@@ -69,7 +69,8 @@ void onMqttUnsubscribe(uint16_t packetId) {
 }
 
 String payloadBuf;	//this is the buffer for messages that may be sent in multiple packets
-void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total) {
+void onMqttMessage(const char* topic, uint8_t* payload, ASMQ_PROPS_t properties, size_t len, size_t index, size_t total) {
+//void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total) {
   Serial.println("[MQTT] Messsage received.");
   Serial.print("[MQTT] **************   topic: ");
   Serial.println(topic);
@@ -86,14 +87,15 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
   Serial.print(",  total: ");
   Serial.println(total);
   Serial.print("[MQTT]   payload: ");
+//  mqttClient.dumphex(payload,len);
   char str2[len];
-  strncpy ( str2, payload, len );
+  strncpy ( str2, (char*)payload, len );
   Serial.println(str2);
   if (index == 0) {
 	payloadBuf = "";
   }
   auto pl = len;
-  auto p = payload;
+  auto p = (char*)payload;
   while (pl--) {
 	payloadBuf += *(p++);
   }
@@ -101,7 +103,6 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
 	/// Do your stuff with complete payloadBuf here
 	msgCallback(topic, payloadBuf, total);
   }
-
 }
 
 void onMqttPublish(uint16_t packetId) {
@@ -122,7 +123,7 @@ MqttHandler::MqttHandler() {
  * This will be from Symphony.cpp
  *
  */
-void MqttHandler::setMsgCallback(void (* Callback) (char* topic, String payload, size_t len)) {
+void MqttHandler::setMsgCallback(void (* Callback) (const char* topic, String payload, size_t len)) {
 	msgCallback= Callback;
 }
 /**
@@ -158,7 +159,8 @@ void MqttHandler::connect() { //to connect to MQTT server
 	mqttClient.onMessage(onMqttMessage);
 	mqttClient.onPublish(onMqttPublish);
 	willTopic = "BM/" + myId + "/active";
-	mqttClient.setWill(willTopic.c_str(), 1, false, "false", 5);
+	//mqttClient.setWill(willTopic.c_str(), 1, false, "false", 5);
+	mqttClient.setWill(willTopic.c_str(), 1, false, "false");
 	Serial.printf("[MQTT] url=%s port=%i\n", mqttServer, mqttPort);
 	mqttClient.setServer(mqttServer, mqttPort);
 	mqttClient.connect();
