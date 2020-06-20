@@ -7,12 +7,16 @@ CopySymphony Launcher
 4. In the Build tab, uncheck "Build before Launch"
 
 CompileWithVersionUp Launcher
-
 1. Click on Run-->External Tools-->External Tools Configuration
 2. Click on New launch Configuration
 3. Set the following Name: CompileWithVersionUp Location: click on "Browse File System", locate compile.bat from the workspace. Click Open. Arguments: ${workspace_loc}${project_path}
 4. In the Build tab, check "Build before Launch" the select "The project containing the selected resource"
 
+NewCompileWithVersionUp Launcher
+1. Click on Run-->External Tools-->External Tools Configuration
+2. Click on New launch Configuration
+3. Set the following Name: NewCompile Location: click on "Browse File System", locate newCompile.bat from the workspace. Click Open. Arguments: ${workspace_loc}${project_path} ${project_name}
+4. In the Build tab, check "Build before Launch" then select "The project containing the selected resource"
 
 runGulp Launcher
 1. Click on Run-->External Tools-->External Tools Configuration
